@@ -1,0 +1,41 @@
+﻿<Window x:Class="SlimViewer.Scale"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SlimViewer"
+        mc:Ignorable="d"
+        x:ClassModifier="internal"
+        Title="Scale" Height="300" Width="300">
+    <Window.DataContext>
+        <local:ScaleView />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="139" />
+        </Grid.RowDefinitions>
+        <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
+                 VerticalAlignment="Stretch" Text="{Binding Path=Degree, Mode=TwoWay}" />
+        <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="3" TextWrapping="Wrap"
+                 VerticalAlignment="Stretch" Text="{Binding Path=Scaling, Mode=TwoWay}" />
+        <Button Content="Okay" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Stretch"
+                Command="{Binding OkayCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+        <Label Content="Degree" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" />
+        <Label Content="Factor" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Stretch" />
+    </Grid>
+</Window>

@@ -1,0 +1,56 @@
+﻿<Window x:Class="SlimViewer.Rename"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SlimViewer"
+        mc:Ignorable="d"
+        x:ClassModifier="internal"
+        Title="Rename" Height="400" Width="400">
+    <Window.DataContext>
+        <local:RenameView x:Name="View" />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="30" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"
+                 Text="{Binding Path= Replacement, Mode=TwoWay}" />
+        <Button Content="Remove Appendages" Grid.Column="1" Grid.Row="3"
+                Command="{Binding RemoveAppendageCommand}" />
+        <Button Content="Add Appendages" Grid.Column="1" Grid.Row="5"
+                Command="{Binding AddCommand}" />
+        <Button Content="Reorder" Grid.Column="1" Grid.Row="9" Command="{Binding ReorderCommand}" />
+        <Button Content="Remove Content" Grid.Column="1" Grid.Row="7" Command="{Binding RemoveCommand}" />
+        <Label Content="Add a String" Grid.Column="3" Grid.Row="5" />
+        <Label Content="Reorder Numbers" Grid.Column="3" Grid.Row="9" />
+        <Label Content="Remove Start String" Grid.Column="3" Grid.Row="3" />
+        <Label Content="Replacement String" Grid.Column="3" Grid.Row="1" />
+        <Button Content="Replace" Grid.Column="1" Grid.Row="11" Command="{Binding ReplaceCommand}" />
+        <TextBox Grid.Column="3" Grid.Row="11" TextWrapping="Wrap" Text="{Binding Replacer, Mode=TwoWay}" />
+        <Button Content="Remove Appendages at" Grid.Column="1" Grid.Row="13"
+                Command="{Binding AppendagesAtCommand}" />
+        <TextBox Grid.Column="3" Grid.Row="13" TextWrapping="Wrap" Text="{Binding Numbers, Mode=TwoWay}" />
+    </Grid>
+</Window>
