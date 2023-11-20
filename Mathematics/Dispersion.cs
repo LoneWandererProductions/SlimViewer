@@ -24,7 +24,10 @@ namespace Mathematics
         /// <param name="row">The row.</param>
         public Dispersion(List<double> row)
         {
-            if (row == null || row.Count == 0) return;
+            if (row == null || row.Count == 0)
+            {
+                return;
+            }
 
             Row = row;
             CalcArithmeticMean();
@@ -73,7 +76,7 @@ namespace Mathematics
         /// <value>
         ///     The coefficient of variation.
         /// </value>
-        public double CoefficientOfVariation { get; set; }
+        public double CoefficientOfVariation { get; private set; }
 
         /// <summary>
         ///     Gets or sets the span.
@@ -81,7 +84,7 @@ namespace Mathematics
         /// <value>
         ///     The span.
         /// </value>
-        public double Span { get; set; }
+        public double Span { get; private set; }
 
         /// <summary>
         ///     Gets or sets the mean absolute deviation.
@@ -89,7 +92,7 @@ namespace Mathematics
         /// <value>
         ///     The mean absolute deviation.
         /// </value>
-        public double MeanAbsoluteDeviation { get; set; }
+        public double MeanAbsoluteDeviation { get; private set; }
 
         /// <summary>
         ///     Calculates the arithmetic mean.
@@ -137,9 +140,15 @@ namespace Mathematics
 
             foreach (var element in Row)
             {
-                if (min >= element) min = element;
+                if (min >= element)
+                {
+                    min = element;
+                }
 
-                if (max <= element) max = element;
+                if (max <= element)
+                {
+                    max = element;
+                }
             }
 
             Span = max - min;

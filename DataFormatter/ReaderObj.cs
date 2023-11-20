@@ -30,10 +30,7 @@ namespace DataFormatter
         public static ObjFile ReadObj(string filepath)
         {
             var lst = ReadText.ReadFile(filepath);
-            if (lst == null)
-            {
-                return null;
-            }
+            if (lst == null) return null;
 
             var vectors = new List<TertiaryVector>();
             var faces = new List<TertiaryFace>();
@@ -50,22 +47,13 @@ namespace DataFormatter
                     var bits = DataHelper.GetParts(cache, DataFormatterResources.Space);
 
                     var check = double.TryParse(bits[0], out var x);
-                    if (!check)
-                    {
-                        continue;
-                    }
+                    if (!check) continue;
 
                     check = double.TryParse(bits[1], out var y);
-                    if (!check)
-                    {
-                        continue;
-                    }
+                    if (!check) continue;
 
                     check = double.TryParse(bits[1], out var z);
-                    if (!check)
-                    {
-                        continue;
-                    }
+                    if (!check) continue;
 
                     var vector = new TertiaryVector { X = x, Y = y, Z = z };
 
@@ -80,22 +68,13 @@ namespace DataFormatter
                     var bits = DataHelper.GetParts(cache, DataFormatterResources.Space);
 
                     var check = int.TryParse(bits[0], out var x);
-                    if (!check)
-                    {
-                        continue;
-                    }
+                    if (!check) continue;
 
                     check = int.TryParse(bits[1], out var y);
-                    if (!check)
-                    {
-                        continue;
-                    }
+                    if (!check) continue;
 
                     check = int.TryParse(bits[1], out var z);
-                    if (!check)
-                    {
-                        continue;
-                    }
+                    if (!check) continue;
 
                     var vector = new TertiaryFace { X = x, Y = y, Z = z };
 

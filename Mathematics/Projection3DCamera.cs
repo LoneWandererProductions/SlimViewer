@@ -30,7 +30,10 @@ namespace Mathematics
 
             var check = Math.Round(w, 2);
 
-            if (check == 0.0f) return new Vector3D(x, y, z);
+            if (check == 0.0f)
+            {
+                return new Vector3D(x, y, z);
+            }
 
             x /= w;
             y /= w;
@@ -47,7 +50,8 @@ namespace Mathematics
             double[,] translation =
             {
                 { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
-                { 0, 0, Projection3DRegister.Q, 1 }, { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
+                { 0, 0, Projection3DRegister.Q, 1 },
+                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
             };
 
             //now lacks /w, has to be done at the end!

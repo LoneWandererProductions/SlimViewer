@@ -55,7 +55,6 @@ namespace Imaging
 
                 info.Frames = frameCount;
             }
-
             catch (OutOfMemoryException ex)
             {
                 var currentProcess = Process.GetCurrentProcess();

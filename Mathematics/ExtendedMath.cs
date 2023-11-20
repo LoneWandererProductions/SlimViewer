@@ -61,7 +61,10 @@ namespace Mathematics
                 cos = Constants.CoSinus[Math.Abs(degree)];
 
                 //catch negative degrees
-                if (degree < 0) cos *= -1;
+                if (degree < 0)
+                {
+                    cos *= -1;
+                }
             }
             else
             {
@@ -87,7 +90,10 @@ namespace Mathematics
                 sin = Constants.Sinus[Math.Abs(degree)];
 
                 //catch negative degrees
-                if (degree < 0) sin *= -1;
+                if (degree < 0)
+                {
+                    sin *= -1;
+                }
             }
             else
             {

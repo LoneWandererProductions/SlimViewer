@@ -19,6 +19,18 @@ namespace ImageCompare
     internal readonly struct ImageDuplicate : IComparable<ImageDuplicate>
     {
         /// <summary>
+        ///     Determines whether the specified <see cref="object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
+        /// <returns>
+        ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return obj is ImageDuplicate other && Equals(other);
+        }
+
+        /// <summary>
         ///     Gets the image Color Values.
         /// </summary>
         /// <value>
@@ -112,7 +124,7 @@ namespace ImageCompare
         /// </returns>
         public override int GetHashCode()
         {
-            return Convert.ToInt32(string.Concat(Image));
+            return HashCode.Combine(Image);
         }
 
         /// <summary>

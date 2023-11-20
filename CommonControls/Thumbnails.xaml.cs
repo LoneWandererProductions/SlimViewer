@@ -46,28 +46,28 @@ namespace CommonControls
         /// <summary>
         ///     The Thumb Height (in lines)
         /// </summary>
-        public static readonly DependencyProperty ThmbHeight = DependencyProperty.Register(nameof(ThmbHeight),
+        public static readonly DependencyProperty ThumbnailHeight = DependencyProperty.Register(nameof(ThumbnailHeight),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Length (in lines)
         /// </summary>
-        public static readonly DependencyProperty ThmbLength = DependencyProperty.Register(nameof(ThmbLength),
+        public static readonly DependencyProperty ThumbnailLength = DependencyProperty.Register(nameof(ThumbnailLength),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty ThmbCellSize = DependencyProperty.Register(nameof(ThmbCellSize),
+        public static readonly DependencyProperty ThumbnailCellSize = DependencyProperty.Register(nameof(ThumbnailCellSize),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty ThmbGrid = DependencyProperty.Register(nameof(ThmbGrid),
+        public static readonly DependencyProperty ThumbnailGrid = DependencyProperty.Register(nameof(ThumbnailGrid),
             typeof(bool),
             typeof(Thumbnails), null);
 
@@ -112,8 +112,8 @@ namespace CommonControls
         /// </value>
         public int ThumbHeight
         {
-            get => (int)GetValue(ThmbHeight);
-            set => SetValue(ThmbHeight, value);
+            get => (int)GetValue(ThumbnailHeight);
+            set => SetValue(ThumbnailHeight, value);
         }
 
         /// <summary>
@@ -124,8 +124,8 @@ namespace CommonControls
         /// </value>
         public int ThumbLength
         {
-            get => (int)GetValue(ThmbLength);
-            set => SetValue(ThmbLength, value);
+            get => (int)GetValue(ThumbnailLength);
+            set => SetValue(ThumbnailLength, value);
         }
 
         /// <summary>
@@ -136,8 +136,8 @@ namespace CommonControls
         /// </value>
         public int ThumbCellSize
         {
-            get => (int)GetValue(ThmbCellSize);
-            set => SetValue(ThmbCellSize, value);
+            get => (int)GetValue(ThumbnailCellSize);
+            set => SetValue(ThumbnailCellSize, value);
         }
 
         /// <summary>
@@ -149,8 +149,8 @@ namespace CommonControls
         public bool ThumbGrid
 
         {
-            get => (bool)GetValue(ThmbGrid);
-            set => SetValue(ThmbGrid, value);
+            get => (bool)GetValue(ThumbnailGrid);
+            set => SetValue(ThumbnailGrid, value);
         }
 
         /// <summary>

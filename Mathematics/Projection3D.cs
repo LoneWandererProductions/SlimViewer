@@ -12,7 +12,9 @@ using System;
 
 namespace Mathematics
 {
-    //TODO https://bhavesh7393.artstation.com/pages/3d-transformation-to-4x4-matrix
+    /// <summary>
+    ///     Helper Class that handles some 3D Transformations
+    /// </summary>
     public static class Projection3D
     {
         private const double Rad = Math.PI / 180.0;
@@ -37,8 +39,8 @@ namespace Mathematics
 
             double[,] rotation =
             {
-                { 1, 0, 0, 0 }, { 0, Math.Cos(angle), Math.Sin(angle), 0 }, { 0, -Math.Sin(angle), Math.Cos(angle), 0 },
-                { 0, 0, 0, 1 }
+                { 1, 0, 0, 0 }, { 0, Math.Cos(angle), Math.Sin(angle), 0 },
+                { 0, -Math.Sin(angle), Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
             };
 
             var m2 = new BaseMatrix { Matrix = rotation };
@@ -66,8 +68,8 @@ namespace Mathematics
 
             double[,] rotation =
             {
-                { Math.Cos(angle), 0, -Math.Sin(angle), 0 }, { 0, 1, 0, 0 }, { Math.Sin(angle), 0, Math.Cos(angle), 0 },
-                { 0, 0, 0, 1 }
+                { Math.Cos(angle), 0, -Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
+                { Math.Sin(angle), 0, Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
             };
 
             var m2 = new BaseMatrix { Matrix = rotation };
@@ -96,8 +98,8 @@ namespace Mathematics
 
             double[,] rotation =
             {
-                { Math.Cos(angle), Math.Sin(angle), 0, 0 }, { -Math.Sin(angle), Math.Cos(angle), 0, 0 }, { 0, 0, 1, 0 },
-                { 0, 0, 0, 1 }
+                { Math.Cos(angle), Math.Sin(angle), 0, 0 }, { -Math.Sin(angle), Math.Cos(angle), 0, 0 },
+                { 0, 0, 1, 0 }, { 0, 0, 0, 1 }
             };
 
             var m2 = new BaseMatrix { Matrix = rotation };
