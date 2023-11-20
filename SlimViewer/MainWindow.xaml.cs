@@ -68,7 +68,7 @@ namespace SlimViewer
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             if (files == null || files.Length == 0) return;
 

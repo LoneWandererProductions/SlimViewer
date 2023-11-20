@@ -72,7 +72,7 @@ namespace Imaging
                 BitmapCacheOption.Default);
             _animation = new Int32Animation(0, _gifDecoder.Frames.Count - 1,
                 new Duration(new TimeSpan(0, 0, 0, _gifDecoder.Frames.Count / 10,
-                    (int)(((_gifDecoder.Frames.Count / 10.0) - (_gifDecoder.Frames.Count / 10)) * 1000))))
+                    (int)((_gifDecoder.Frames.Count / 10.0 - _gifDecoder.Frames.Count / 10) * 1000))))
             {
                 RepeatBehavior = RepeatBehavior.Forever
             };
@@ -84,29 +84,19 @@ namespace Imaging
         private static void VisibilityPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if ((Visibility)e.NewValue == Visibility.Visible)
-            {
                 ((GifImage)sender).StartAnimation();
-            }
             else
-            {
                 ((GifImage)sender).StopAnimation();
-            }
         }
 
         private static void ChangingFrameIndex(DependencyObject obj, DependencyPropertyChangedEventArgs ev)
         {
-            if (obj is GifImage gifImage)
-            {
-                gifImage.Source = gifImage._gifDecoder.Frames[(int)ev.NewValue];
-            }
+            if (obj is GifImage gifImage) gifImage.Source = gifImage._gifDecoder.Frames[(int)ev.NewValue];
         }
 
         private static void AutoStartPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue)
-            {
-                (sender as GifImage)?.StartAnimation();
-            }
+            if ((bool)e.NewValue) (sender as GifImage)?.StartAnimation();
         }
 
         private static void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -119,10 +109,7 @@ namespace Imaging
         /// </summary>
         public void StartAnimation()
         {
-            if (!_isInitialized)
-            {
-                Initialize();
-            }
+            if (!_isInitialized) Initialize();
 
             BeginAnimation(FrameIndexProperty, _animation);
         }

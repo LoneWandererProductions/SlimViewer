@@ -15,42 +15,7 @@ using System.Linq;
 namespace ExtendedSystemObjects
 {
     /// <summary>
-    ///     Example Implementation for the Log:
-    ///     internal static bool HandleLog(TransactionLogs changeLog)
-    ///     {
-    ///     var dct = changeLog.GetNewItems();
-    ///     if (dct.Count == 0) return false;
-    ///     foreach (var (key, logEntry) in dct)
-    ///     {
-    ///     var obj = logEntry.Data as DataItem;
-    ///     if (obj == null)
-    ///     {
-    ///     changeLog.Changelog[key].Error = true;
-    ///     return false;
-    ///     }
-    ///     bool check;
-    ///     switch (logEntry.State)
-    ///     {
-    ///     case LogState.Add:
-    ///     Save(obj.Name);
-    ///     break;
-    ///     case LogState.Remove:
-    ///     ...
-    ///     break;
-    ///     case LogState.Change:
-    ///     var id = changeLog.GetPredecessor(key);
-    ///     if (id == -1)
-    ///     {
-    ///     changeLog.Changelog[key].Error = true;
-    ///     return false;
-    ///     }
-    ///     ...
-    ///     break;
-    ///     }
-    ///     changeLog.Changelog[key].Processed = true;
-    ///     }
-    ///     return true;
-    ///     }
+    ///     Basic Transaction Log with unique entries and generic entries
     /// </summary>
     public sealed class TransactionLogs
     {
@@ -101,7 +66,7 @@ namespace ExtendedSystemObjects
             var id = GetItem(uniqueIdentifier, LogState.Add);
             var item = Changelog[id].Data;
 
-            var log = new LogEntry {State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier};
+            var log = new LogEntry { State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier };
             Changelog.Add(Changelog.Count, log);
 
             Changed = true;
@@ -118,7 +83,7 @@ namespace ExtendedSystemObjects
 
             if (entry == -1)
             {
-                var log = new LogEntry {State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier};
+                var log = new LogEntry { State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier };
                 Changelog.Add(Changelog.Count, log);
 
                 Changed = true;
@@ -151,7 +116,7 @@ namespace ExtendedSystemObjects
             var unique = Changelog[id].UniqueIdentifier;
 
             foreach (var item in Changelog.Reverse().Where(item =>
-                item.Key < id && item.Value.UniqueIdentifier == unique && item.Value.State == LogState.Add))
+                         item.Key < id && item.Value.UniqueIdentifier == unique && item.Value.State == LogState.Add))
             {
                 return item.Key;
             }
@@ -192,6 +157,27 @@ namespace ExtendedSystemObjects
             }
 
             return -1;
+        }
+
+        /// <summary>
+        ///     Gets the new key.
+        /// </summary>
+        /// <returns>First available Key</returns>
+        public int GetNewKey()
+        {
+            if (Changelog == null)
+            {
+                return -1;
+            }
+
+            if (Changelog.Count == 0)
+            {
+                return 0;
+            }
+
+            var lst = Changelog.Keys.ToList();
+
+            return Utility.GetFirstAvailableIndex(lst);
         }
     }
 }

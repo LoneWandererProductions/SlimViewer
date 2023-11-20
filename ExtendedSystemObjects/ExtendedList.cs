@@ -129,6 +129,22 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        ///     Chunks the by.
+        /// </summary>
+        /// <typeparam name="TValue">Generic Object Type</typeparam>
+        /// <param name="source">The source.</param>
+        /// <param name="chunkSize">Size of the chunk.</param>
+        /// <returns>List split into chunks</returns>
+        public static List<List<TValue>> ChunkBy<TValue>(this IEnumerable<TValue> source, int chunkSize)
+        {
+            return source
+                .Select((x, i) => new { Index = i, Value = x })
+                .GroupBy(x => x.Index / chunkSize)
+                .Select(x => x.Select(v => v.Value).ToList())
+                .ToList();
+        }
+
+        /// <summary>
         ///     Shuffles the specified list.
         /// </summary>
         /// <typeparam name="T">Type of list</typeparam>

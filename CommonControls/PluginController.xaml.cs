@@ -85,32 +85,21 @@ namespace CommonControls
         /// </summary>
         private void Initiate()
         {
-            if (!Directory.Exists(PluginPath))
-            {
-                return;
-            }
+            if (!Directory.Exists(PluginPath)) return;
 
             var check = PluginLoad.LoadAll(PluginPath);
 
-            if (!check)
-            {
-                return;
-            }
+            if (!check) return;
 
-            if (PluginLoad.PluginContainer.IsNullOrEmpty())
-            {
-                return;
-            }
+            if (PluginLoad.PluginContainer.IsNullOrEmpty()) return;
 
             var lst = new ObservableCollection<PluginItem>();
 
             foreach (var item in PluginLoad.PluginContainer.Select(plugin => new PluginItem
-            {
-                Command = plugin, Name = plugin.Name, Version = plugin.Version
-            }))
-            {
+                     {
+                         Command = plugin, Name = plugin.Name, Version = plugin.Version
+                     }))
                 lst.Add(item);
-            }
 
             ObservablePlugin = new ObservableCollection<PluginItem>(lst);
 
@@ -125,10 +114,7 @@ namespace CommonControls
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var selectedItem = DataGrid.SelectedItem;
-            if (selectedItem is not PluginItem item)
-            {
-                return;
-            }
+            if (selectedItem is not PluginItem item) return;
 
             var exe = item.Command.Execute();
 

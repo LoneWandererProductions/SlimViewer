@@ -49,7 +49,7 @@ namespace Imaging
 
             try
             {
-                var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+                var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
                 bmp.BeginInit();
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
                 bmp.UriSource = new Uri(path);
@@ -97,7 +97,7 @@ namespace Imaging
 
             try
             {
-                var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+                var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
                 bmp.BeginInit();
                 bmp.DecodePixelHeight = height;
                 bmp.DecodePixelWidth = width;
@@ -141,7 +141,7 @@ namespace Imaging
                 throw new IOException(ImagingResources.ErrorMissingFile, innerException);
             }
 
-            var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+            var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
 
             try
             {
@@ -201,7 +201,7 @@ namespace Imaging
                 throw new IOException(ImagingResources.ErrorMissingFile, innerException);
             }
 
-            var bmp = new BitmapImage {CreateOptions = BitmapCreateOptions.DelayCreation};
+            var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
 
             try
             {
@@ -249,10 +249,7 @@ namespace Imaging
         /// <exception cref="IOException">File not Found</exception>
         internal static Bitmap GetBitmapFile(string path)
         {
-            if (!string.IsNullOrEmpty(path) && File.Exists(path))
-            {
-                return new Bitmap(path, true);
-            }
+            if (!string.IsNullOrEmpty(path) && File.Exists(path)) return new Bitmap(path, true);
 
             var innerException = path != null
                 ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
@@ -472,16 +469,11 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
-                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
-                }
             }
 
-            foreach (var image in images)
-            {
-                image.Dispose();
-            }
+            foreach (var image in images) image.Dispose();
 
             //before return please Convert
             return btm;
@@ -697,10 +689,7 @@ namespace Imaging
         internal static Bitmap RotateImage(Bitmap image, int degree)
         {
             //no need to do anything
-            if (degree is 360 or 0)
-            {
-                return image;
-            }
+            if (degree is 360 or 0) return image;
 
             if (image == null)
             {
@@ -720,15 +709,15 @@ namespace Imaging
             var hOver = image.Height / 2.0f;
 
             // Get the coordinates of the corners, taking the origin to be the centre of the bitmap.
-            PointF[] corners = {new(-wOver, -hOver), new(+wOver, -hOver), new(+wOver, +hOver), new(-wOver, +hOver)};
+            PointF[] corners = { new(-wOver, -hOver), new(+wOver, -hOver), new(+wOver, +hOver), new(-wOver, +hOver) };
 
             for (var i = 0; i < 4; i++)
             {
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
-                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
+                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
+                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
             }
 
             // Find the min and max x and y coordinates.
@@ -795,20 +784,14 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
-                    {
-                        continue;
-                    }
+                    if (CheckTransparent(color)) continue;
 
                     // this pixel is either not white or not fully transparent
                     top = x;
                     break;
                 }
 
-                if (top != -1)
-                {
-                    break;
-                }
+                if (top != -1) break;
             }
 
             //Get the Bottom
@@ -817,20 +800,14 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
-                    {
-                        continue;
-                    }
+                    if (CheckTransparent(color)) continue;
 
                     // this pixel is either not white or not fully transparent
                     bottom = x;
                     break;
                 }
 
-                if (bottom != -1)
-                {
-                    break;
-                }
+                if (bottom != -1) break;
             }
 
             //Get the left
@@ -839,20 +816,14 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
-                    {
-                        continue;
-                    }
+                    if (CheckTransparent(color)) continue;
 
                     // this pixel is either not white or not fully transparent
                     left = x;
                     break;
                 }
 
-                if (left != -1)
-                {
-                    break;
-                }
+                if (left != -1) break;
             }
 
             //Get the right
@@ -861,20 +832,14 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color))
-                    {
-                        continue;
-                    }
+                    if (CheckTransparent(color)) continue;
 
                     // this pixel is either not white or not fully transparent
                     right = x;
                     break;
                 }
 
-                if (right != -1)
-                {
-                    break;
-                }
+                if (right != -1) break;
             }
 
             first.X = left;
@@ -941,10 +906,7 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory))
-                {
-                    return;
-                }
+                if (!Directory.Exists(directory)) return;
 
                 var newPath = path;
 
@@ -995,10 +957,7 @@ namespace Imaging
                 var color = dbm.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
-                {
-                    continue;
-                }
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
 
                 //replace Value under the threshold with pure White
                 dbm.SetPixel(x, y, replacementColor);
@@ -1055,10 +1014,7 @@ namespace Imaging
 
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0)
-            {
-                return GetPixel(image, point);
-            }
+            if (points.Count == 0) return GetPixel(image, point);
 
             var r = 0;
             var g = 0;
@@ -1183,28 +1139,16 @@ namespace Imaging
             var lst = new List<Point>();
 
             var minX = point.X - radius;
-            if (minX < 0)
-            {
-                minX = 0;
-            }
+            if (minX < 0) minX = 0;
 
             var maxX = point.X + radius;
-            if (maxX > width)
-            {
-                maxX = width;
-            }
+            if (maxX > width) maxX = width;
 
             var minY = point.Y - radius;
-            if (minY < 0)
-            {
-                minY = 0;
-            }
+            if (minY < 0) minY = 0;
 
             var maxY = point.Y + radius;
-            if (maxY > width)
-            {
-                maxY = length;
-            }
+            if (maxY > width) maxY = length;
 
             for (var x = minX; x <= maxX; x++)
             for (var y = minY; y <= maxY; y++)
@@ -1213,10 +1157,7 @@ namespace Imaging
 
                 var dist = Math.Sqrt(Math.Pow(calcPoint.X - point.X, 2) + Math.Pow(calcPoint.Y - point.Y, 2));
 
-                if (dist <= radius)
-                {
-                    lst.Add(calcPoint);
-                }
+                if (dist <= radius) lst.Add(calcPoint);
             }
 
             return lst;

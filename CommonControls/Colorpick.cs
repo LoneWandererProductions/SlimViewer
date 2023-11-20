@@ -136,10 +136,7 @@ namespace CommonControls
 
             //Check circle
             check = ColorProcessing.InCircle(x, y);
-            if (check)
-            {
-                _hue = ColorProcessing.CalcHue(x, y);
-            }
+            if (check) _hue = ColorProcessing.CalcHue(x, y);
 
             ColorPickerRegister.Colors = new ColorHsv(_hue, _sat, _val, alpha);
         }
@@ -190,52 +187,38 @@ namespace CommonControls
         /// <returns>Clicked results</returns>
         private static PickResult Pick(double x, double y)
         {
-            var distanceFromCenter = Math.Sqrt(((x - Center) * (x - Center)) + ((y - Center) * (y - Center)));
+            var distanceFromCenter = Math.Sqrt((x - Center) * (x - Center) + (y - Center) * (y - Center));
             var sqrt3 = Math.Sqrt(3);
 
             if (distanceFromCenter > OuterRadius)
                 // Outside
-            {
-                return new PickResult {Area = Area.Outside};
-            }
+                return new PickResult { Area = Area.Outside };
 
             if (distanceFromCenter > InnerRadius)
             {
                 // Wheel
-                var angle = Math.Atan2(y - Center, x - Center) + (Math.PI / 2);
-                if (angle < 0)
-                {
-                    angle += 2 * Math.PI;
-                }
+                var angle = Math.Atan2(y - Center, x - Center) + Math.PI / 2;
+                if (angle < 0) angle += 2 * Math.PI;
 
                 var hue = angle;
 
-                return new PickResult {Area = Area.Wheel, Hue = hue};
+                return new PickResult { Area = Area.Wheel, Hue = hue };
             }
 
             // Inside
             var x1 = (x - Center) * 1.0 / InnerRadius;
             var y1 = (y - Center) * 1.0 / InnerRadius;
-            if ((0 * x1) + (2 * y1) > 1)
-            {
-                return new PickResult {Area = Area.Outside};
-            }
+            if (0 * x1 + 2 * y1 > 1) return new PickResult { Area = Area.Outside };
 
-            if ((sqrt3 * x1) + ((-1) * y1) > 1)
-            {
-                return new PickResult {Area = Area.Outside};
-            }
+            if (sqrt3 * x1 + -1 * y1 > 1) return new PickResult { Area = Area.Outside };
 
-            if ((-sqrt3 * x1) + ((-1) * y1) > 1)
-            {
-                return new PickResult {Area = Area.Outside};
-            }
+            if (-sqrt3 * x1 + -1 * y1 > 1) return new PickResult { Area = Area.Outside };
 
             // Triangle
-            var sat = (1 - (2 * y1)) / ((sqrt3 * x1) - y1 + 2);
-            var val = ((sqrt3 * x1) - y1 + 2) / 3;
+            var sat = (1 - 2 * y1) / (sqrt3 * x1 - y1 + 2);
+            var val = (sqrt3 * x1 - y1 + 2) / 3;
 
-            return new PickResult {Area = Area.Triangle, Sat = sat, Val = val};
+            return new PickResult { Area = Area.Triangle, Sat = sat, Val = val };
         }
 
         /// <summary>
@@ -250,33 +233,18 @@ namespace CommonControls
         {
             var chroma = val * sat;
             const double step = Math.PI / 3;
-            var intern = chroma * (1 - Math.Abs((hue / step % 2.0) - 1));
+            var intern = chroma * (1 - Math.Abs(hue / step % 2.0 - 1));
             var shift = val - chroma;
 
-            if (hue < 1 * step)
-            {
-                return Rgb(shift + chroma, shift + intern, shift + 0, alpha);
-            }
+            if (hue < 1 * step) return Rgb(shift + chroma, shift + intern, shift + 0, alpha);
 
-            if (hue < 2 * step)
-            {
-                return Rgb(shift + intern, shift + chroma, shift + 0, alpha);
-            }
+            if (hue < 2 * step) return Rgb(shift + intern, shift + chroma, shift + 0, alpha);
 
-            if (hue < 3 * step)
-            {
-                return Rgb(shift + 0, shift + chroma, shift + intern, alpha);
-            }
+            if (hue < 3 * step) return Rgb(shift + 0, shift + chroma, shift + intern, alpha);
 
-            if (hue < 4 * step)
-            {
-                return Rgb(shift + 0, shift + intern, shift + chroma, alpha);
-            }
+            if (hue < 4 * step) return Rgb(shift + 0, shift + intern, shift + chroma, alpha);
 
-            if (hue < 5 * step)
-            {
-                return Rgb(shift + intern, shift + 0, shift + chroma, alpha);
-            }
+            if (hue < 5 * step) return Rgb(shift + intern, shift + 0, shift + chroma, alpha);
 
             return Rgb(shift + chroma, shift + 0, shift + intern, alpha);
         }
@@ -291,7 +259,7 @@ namespace CommonControls
 
             return new Point
             {
-                X = Center + (middleRadius * Math.Sin(_hue)), Y = Center - (middleRadius * Math.Cos(_hue))
+                X = Center + middleRadius * Math.Sin(_hue), Y = Center - middleRadius * Math.Cos(_hue)
             };
         }
 
@@ -305,8 +273,8 @@ namespace CommonControls
 
             return new Point
             {
-                X = Center + (InnerRadius * ((2 * _val) - (_sat * _val) - 1) * sqrt3 / 2),
-                Y = Center + (InnerRadius * (1 - (3 * _sat * _val)) / 2)
+                X = Center + InnerRadius * (2 * _val - _sat * _val - 1) * sqrt3 / 2,
+                Y = Center + InnerRadius * (1 - 3 * _sat * _val) / 2
             };
         }
 

@@ -39,15 +39,9 @@ namespace Imaging
                 info.Name = Path.GetFileName(path);
                 info.Size = image.Size;
 
-                if (!image.RawFormat.Equals(ImageFormat.Gif))
-                {
-                    return null;
-                }
+                if (!image.RawFormat.Equals(ImageFormat.Gif)) return null;
 
-                if (!ImageAnimator.CanAnimate(image))
-                {
-                    return info;
-                }
+                if (!ImageAnimator.CanAnimate(image)) return info;
 
                 var frameDimension = new FrameDimension(image.FrameDimensionsList[0]);
 

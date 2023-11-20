@@ -121,7 +121,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetPixel(int x, int y, Color color)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             _bits[index] = color.ToArgb();
         }
 
@@ -133,7 +133,7 @@ namespace Imaging
         /// <returns>Color of the Pixel</returns>
         public Color GetPixel(int x, int y)
         {
-            var index = x + (y * Width);
+            var index = x + y * Width;
             var col = _bits[index];
             return Color.FromArgb(col);
         }
@@ -147,10 +147,7 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {

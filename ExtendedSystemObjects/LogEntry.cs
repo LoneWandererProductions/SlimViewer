@@ -10,6 +10,9 @@
 
 namespace ExtendedSystemObjects
 {
+    /// <summary>
+    ///     Entry that describes Changes to Objects in the Dictionary
+    /// </summary>
     public sealed class LogEntry
     {
         /// <summary>
@@ -43,10 +46,6 @@ namespace ExtendedSystemObjects
         ///     <c>true</c> if [start data]; otherwise, <c>false</c>.
         /// </value>
         public bool StartData { get; init; }
-
-        public bool Processed { get; set; }
-
-        public bool Error { get; set; }
     }
 
     /// <summary>

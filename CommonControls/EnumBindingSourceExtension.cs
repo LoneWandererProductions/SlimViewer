@@ -27,19 +27,13 @@ namespace CommonControls
             get => _enumType;
             init
             {
-                if (value == _enumType)
-                {
-                    return;
-                }
+                if (value == _enumType) return;
 
                 if (value != null)
                 {
                     var enumType = Nullable.GetUnderlyingType(value) ?? value;
 
-                    if (!enumType.IsEnum)
-                    {
-                        throw new ArgumentException("Type must be for an Enum.");
-                    }
+                    if (!enumType.IsEnum) throw new ArgumentException("Type must be for an Enum.");
                 }
 
                 _enumType = value;
@@ -48,18 +42,12 @@ namespace CommonControls
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            if (_enumType == null)
-            {
-                throw new InvalidOperationException("The EnumType must be specified.");
-            }
+            if (_enumType == null) throw new InvalidOperationException("The EnumType must be specified.");
 
             var actualEnumType = Nullable.GetUnderlyingType(_enumType) ?? _enumType;
             var enumValues = Enum.GetValues(actualEnumType);
 
-            if (actualEnumType == _enumType)
-            {
-                return enumValues;
-            }
+            if (actualEnumType == _enumType) return enumValues;
 
             var tempArray = Array.CreateInstance(actualEnumType, enumValues.Length + 1);
             enumValues.CopyTo(tempArray, 1);
