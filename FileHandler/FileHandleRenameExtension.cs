@@ -57,7 +57,7 @@ namespace FileHandler
         /// <returns>string with replaced substring</returns>
         public static string ReplacePart(this string str, string targetStr, string update)
         {
-            if (targetStr == null) targetStr = string.Empty;
+            targetStr ??= string.Empty;
             return !str.Contains(targetStr) ? str : str.Replace(targetStr, update);
         }
 
