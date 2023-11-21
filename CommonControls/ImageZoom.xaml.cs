@@ -196,7 +196,12 @@ namespace CommonControls
         /// </summary>
         private void OnImageSourceGifChanged()
         {
-            if (!File.Exists(ImageGifPath)) return;
+            if (!File.Exists(ImageGifPath))
+            {
+                BtmImage.GifSource = null;
+                BtmImage.Source = null;
+                return;
+            }
 
             BtmImage.GifSource = ImageGifPath;
         }
@@ -206,6 +211,7 @@ namespace CommonControls
         /// </summary>
         private void OnImageSourceChanged()
         {
+            BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
             if (BtmImage.Source == null) return;

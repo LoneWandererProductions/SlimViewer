@@ -1173,6 +1173,9 @@ namespace SlimViewer
             else
             {
                 Bmp = null;
+                _btm = null;
+                GifPath = null;
+                _gifPath = null;
 
                 try
                 {
@@ -1188,8 +1191,7 @@ namespace SlimViewer
                 }
 
                 Thumb.RemoveSingleItem(_currentId);
-                _btm = null;
-                Bmp = null;
+
                 NextAction(null);
             }
         }
@@ -1243,7 +1245,13 @@ namespace SlimViewer
             _currentId = -1;
             _filePath = string.Empty;
             Bmp = null;
-            if (!Directory.Exists(_currentFolder)) return;
+            GifPath = null;
+
+            if (!Directory.Exists(_currentFolder))
+            {
+                Observer = null;
+                return;
+            }
 
             LoadThumbs(_currentFolder);
         }
@@ -1321,7 +1329,10 @@ namespace SlimViewer
             if (!Directory.Exists(path)) return;
 
             _currentId = -1;
+
             Bmp = null;
+            GifPath = null;
+
             if (!Directory.Exists(path)) return;
 
             LoadThumbs(path);
@@ -1339,6 +1350,7 @@ namespace SlimViewer
             if (!Observer.ContainsKey(_currentId)) return;
 
             Bmp = null;
+            GifPath = null;
 
             Thumb.RemoveSingleItem(_currentId);
 
@@ -1347,6 +1359,9 @@ namespace SlimViewer
 
             _btm = null;
             Bmp = null;
+            GifPath = null;
+            _gifPath = null;
+
             NextAction(null);
         }
 
@@ -1684,6 +1699,8 @@ namespace SlimViewer
             }
 
             Bmp = null;
+            GifPath = null;
+
             _currentId = -1;
 
             _ = GenerateThumbView(lst);
@@ -1797,6 +1814,7 @@ namespace SlimViewer
             if (info == null)
             {
                 Bmp = null;
+                GifPath = null;
                 LoadThumbs(_currentFolder);
                 return;
             }
@@ -1833,6 +1851,9 @@ namespace SlimViewer
                 else
                 {
                     _btm = _render.GetOriginalBitmap(filePath);
+
+                    //reset gif Image
+                    GifPath = null;
 
                     Bmp = _btm.ToBitmapImage();
                     //set Infos
@@ -1911,6 +1932,9 @@ namespace SlimViewer
             if (_fileList.IsNullOrEmpty())
             {
                 Count = 0;
+                Observer = null;
+                Bmp = null;
+                GifPath = null;
                 return;
             }
 

@@ -108,7 +108,10 @@ namespace Imaging
         private void Initialize()
         {
             //check if Image exists
-            if (!File.Exists(GifSource)) return;
+            if (!File.Exists(GifSource))
+            {
+                return;
+            }
 
             var info = ImageGifHandler.GetImageInfo(GifSource);
 
@@ -193,7 +196,7 @@ namespace Imaging
         /// <summary>
         ///     Stops the animation
         /// </summary>
-        private void StopAnimation()
+        public void StopAnimation()
         {
             BeginAnimation(FrameIndexProperty, null);
         }
