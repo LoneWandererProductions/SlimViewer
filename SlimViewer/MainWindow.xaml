@@ -121,6 +121,8 @@
             <MenuItem Header="Experimental">
                 <MenuItem Header="Open Cif" Command="{Binding OpenCommandCif}" />
                 <MenuItem Header="Convert to Cif" Command="{Binding ConvertCommandCif}" />
+                <MenuItem Header="Convert Gif to jpg" Command="{Binding ConvertCommandGif}" />
+                <MenuItem Header="Convert to Gif" Command="{Binding ConvertCommandToGif}" />
                 <Separator />
                 <CheckBox IsChecked="{Binding Path = Compress}">Compress Cif</CheckBox>
             </MenuItem>

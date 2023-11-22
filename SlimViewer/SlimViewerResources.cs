@@ -29,6 +29,12 @@ namespace SlimViewer
             "Comic Book File (*.cbz)|*.cbz";
 
         /// <summary>
+        ///     The file open gif (const). Value: "Gif File (*.cbz)|*.cbz".
+        /// </summary>
+        internal const string FileOpenGif =
+            "Gif File (*.gif)|*.gif";
+
+        /// <summary>
         ///     The file open cif (const). Value: "Custom image File (*.cif)|*.cif".
         /// </summary>
         internal const string FileOpenCif =
@@ -198,6 +204,16 @@ namespace SlimViewer
         ///     The Status Compare finished (const). Value: "Compare finished."
         /// </summary>
         internal const string StatusCompareFinished = "Compare finished.";
+
+        /// <summary>
+        ///     The Slash. Value: "\\"
+        /// </summary>
+        internal const string Slash = "\\";
+
+        /// <summary>
+        ///     The New Gif file Name. Value: "NewGif"
+        /// </summary>
+        internal const string NewGif = "NewGif.gif";
 
         /// <summary>
         ///     The File Appendix

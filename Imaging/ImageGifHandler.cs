@@ -16,7 +16,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Size = System.Drawing.Size;
 
 namespace Imaging
 {
@@ -127,6 +130,23 @@ namespace Imaging
 
             return lst;
         }
+
+        public static GifBitmapEncoder ConvertGif(List<Bitmap> images)
+        {
+            var gEnc = new GifBitmapEncoder();
+
+            foreach (var src in images.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp => System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bmp,
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions())))
+            {
+                gEnc.Frames.Add(BitmapFrame.Create(src));
+            }
+
+            return gEnc;
+        }
+
 
         /// <summary>
         ///     Loads the GIF.
