@@ -131,7 +131,7 @@ namespace Imaging
             return lst;
         }
 
-        public static GifBitmapEncoder ConvertGif(List<Bitmap> images)
+        public static GifBitmapEncoder ConvertGif(IEnumerable<Bitmap> images)
         {
             var gEnc = new GifBitmapEncoder();
 
