@@ -6,8 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Collections.Generic;
-
 namespace SlimViewer
 {
     /// <summary>

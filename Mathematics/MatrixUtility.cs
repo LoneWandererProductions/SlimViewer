@@ -45,12 +45,9 @@ namespace Mathematics
 
                         double res = 0;
 
-                        for (var k = 0; k < l; k++, iTwo += w)
-                        {
-                            res += pmOne[iOne + k] * pmTwo[iTwo];
-                        }
+                        for (var k = 0; k < l; k++, iTwo += w) res += pmOne[iOne + k] * pmTwo[iTwo];
 
-                        pm[(i * w) + j] = res;
+                        pm[i * w + j] = res;
                     }
                 }
             }
@@ -76,7 +73,7 @@ namespace Mathematics
                 for (var i = 0; i < h; i++)
                 for (var j = 0; j < w; j++)
                 {
-                    var cursor = i + (j * mOne.Width);
+                    var cursor = i + j * mOne.Width;
 
                     pm[cursor] = pmOne[cursor] + pmTwo[cursor];
                 }
@@ -102,7 +99,7 @@ namespace Mathematics
                 for (var i = 0; i < h; i++)
                 for (var j = 0; j < w; j++)
                 {
-                    var cursor = i + (j * mOne.Width);
+                    var cursor = i + j * mOne.Width;
 
                     pm[cursor] = pmOne[cursor] - pmTwo[cursor];
                 }
@@ -127,33 +124,21 @@ namespace Mathematics
 
             var lum = MatrixDecompose(matrix, out var perm, out _);
 
-            if (lum == null)
-            {
-                throw new Exception("Unable to compute inverse");
-            }
+            if (lum == null) throw new Exception("Unable to compute inverse");
 
             var b = new double[n];
 
             for (var i = 0; i < n; ++i)
             {
                 for (var j = 0; j < n; ++j)
-                {
                     if (i == perm[j])
-                    {
                         b[j] = 1.0;
-                    }
                     else
-                    {
                         b[j] = 0.0;
-                    }
-                }
 
                 var x = HelperSolve(lum, b); // 
 
-                for (var j = 0; j < n; ++j)
-                {
-                    result[j, i] = x[j];
-                }
+                for (var j = 0; j < n; ++j) result[j, i] = x[j];
             }
 
             return result;
@@ -171,16 +156,11 @@ namespace Mathematics
 
             if (lum == null)
                 //TODO replace
-            {
                 throw new Exception("Unable to compute MatrixDeterminant");
-            }
 
             double result = toggle;
 
-            for (var i = 0; i < lum.GetLength(1); ++i)
-            {
-                result *= lum[i, i];
-            }
+            for (var i = 0; i < lum.GetLength(1); ++i) result *= lum[i, i];
 
             return result;
         }
@@ -205,20 +185,14 @@ namespace Mathematics
             var rows = matrix.GetLength(0);
             var cols = matrix.GetLength(1); // assume square, Column
 
-            if (rows != cols)
-            {
-                throw new Exception("Attempt to decompose a non-square m");
-            }
+            if (rows != cols) throw new Exception("Attempt to decompose a non-square m");
 
             var n = rows; // convenience
 
             var result = matrix.Duplicate(); // MatrixDuplicate(matrix);
 
             perm = new int[n]; // set up row permutation result
-            for (var i = 0; i < n; ++i)
-            {
-                perm[i] = i;
-            }
+            for (var i = 0; i < n; ++i) perm[i] = i;
 
             toggle = 1; // toggle tracks row swaps.
             // +1 -greater-than even, -1 -greater-than odd. used by MatrixDeterminant
@@ -231,10 +205,7 @@ namespace Mathematics
                 // reader Matt V needed this:
                 for (var i = j + 1; i < n; ++i)
                 {
-                    if (!(Math.Abs(result[i, j]) > colMax))
-                    {
-                        continue;
-                    }
+                    if (!(Math.Abs(result[i, j]) > colMax)) continue;
 
                     colMax = Math.Abs(result[i, j]);
                     pRow = i;
@@ -264,17 +235,10 @@ namespace Mathematics
                     var goodRow = -1;
 
                     for (var row = j + 1; row < n; ++row)
-                    {
                         if (result[row, j] != 0.0)
-                        {
                             goodRow = row;
-                        }
-                    }
 
-                    if (goodRow == -1)
-                    {
-                        throw new Exception("Cannot use Doolittle's method");
-                    }
+                    if (goodRow == -1) throw new Exception("Cannot use Doolittle's method");
 
                     // swap rows so 0.0 no longer on diagonal
                     //TODO
@@ -296,10 +260,7 @@ namespace Mathematics
                 {
                     result[i, j] /= result[j, j];
 
-                    for (var k = j + 1; k < n; ++k)
-                    {
-                        result[i, k] -= result[i, j] * result[j, k];
-                    }
+                    for (var k = j + 1; k < n; ++k) result[i, k] -= result[i, j] * result[j, k];
                 }
             } // main j column loop
 
@@ -324,10 +285,7 @@ namespace Mathematics
             for (var i = 1; i < n; ++i)
             {
                 var sum = x[i];
-                for (var j = 0; j < i; ++j)
-                {
-                    sum -= luMatrix[i, j] * x[j];
-                }
+                for (var j = 0; j < i; ++j) sum -= luMatrix[i, j] * x[j];
 
                 x[i] = sum;
             }

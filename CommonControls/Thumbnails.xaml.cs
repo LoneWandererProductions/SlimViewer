@@ -60,7 +60,8 @@ namespace CommonControls
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty ThumbnailCellSize = DependencyProperty.Register(nameof(ThumbnailCellSize),
+        public static readonly DependencyProperty ThumbnailCellSize = DependencyProperty.Register(
+            nameof(ThumbnailCellSize),
             typeof(int),
             typeof(Thumbnails), null);
 

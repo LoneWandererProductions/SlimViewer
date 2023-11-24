@@ -47,15 +47,9 @@ namespace Imaging
                 info.Name = Path.GetFileName(path);
                 info.Size = image.Size;
 
-                if (!image.RawFormat.Equals(ImageFormat.Gif))
-                {
-                    return null;
-                }
+                if (!image.RawFormat.Equals(ImageFormat.Gif)) return null;
 
-                if (!ImageAnimator.CanAnimate(image))
-                {
-                    return info;
-                }
+                if (!ImageAnimator.CanAnimate(image)) return info;
 
                 var frameDimension = new FrameDimension(image.FrameDimensionsList[0]);
 
@@ -155,10 +149,10 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Creates the gif.
-        /// The gif is slightly bigger for now
-        /// Sources:
-        /// https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
+        ///     Creates the gif.
+        ///     The gif is slightly bigger for now
+        ///     Sources:
+        ///     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
         /// </summary>
         /// <param name="path">The path to the folder.</param>
         /// <param name="target">The target path.</param>
@@ -178,21 +172,21 @@ namespace Imaging
 
             //TODO encode and change to one size, add more sanity checks
 
-            foreach (var src in btm.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp => System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                bmp,
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions())))
-            {
+            foreach (var src in btm.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp =>
+                         System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                             bmp,
+                             IntPtr.Zero,
+                             Int32Rect.Empty,
+                             BitmapSizeOptions.FromEmptyOptions())))
                 gEnc.Frames.Add(BitmapFrame.Create(src));
-            }
 
             using var ms = new MemoryStream();
             gEnc.Save(ms);
             var fileBytes = ms.ToArray();
             // write custom header
             // This is the NETSCAPE2.0 Application Extension.
-            var applicationExtension = new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+            var applicationExtension = new byte[]
+                { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
             var newBytes = new List<byte>();
             newBytes.AddRange(fileBytes.Take(13));
             newBytes.AddRange(applicationExtension);

@@ -51,6 +51,7 @@ namespace SlimViewer
         public static string UnpackFile(string path)
         {
             var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
+            // ReSharper disable once PossibleNullReferenceException. is checked
             return lst.IsNullOrEmpty() ? null : lst[0];
         }
     }

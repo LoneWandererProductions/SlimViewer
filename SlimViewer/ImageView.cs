@@ -92,6 +92,16 @@ namespace SlimViewer
         private ICommand _convertCommandCif;
 
         /// <summary>
+        ///     The convert gif command
+        /// </summary>
+        private ICommand _convertCommandGif;
+
+        /// <summary>
+        ///     The convert to gif command
+        /// </summary>
+        private ICommand _convertCommandToGif;
+
+        /// <summary>
         ///     The File count
         /// </summary>
         private int _count;
@@ -295,16 +305,6 @@ namespace SlimViewer
         ///     The swap command
         /// </summary>
         private ICommand _swapCommand;
-
-        /// <summary>
-        /// The convert gif command
-        /// </summary>
-        private ICommand _convertCommandGif;
-
-        /// <summary>
-        /// The convert to gif command
-        /// </summary>
-        private ICommand _convertCommandToGif;
 
         /// <summary>
         ///     Check if we show thumbnails.
@@ -853,20 +853,20 @@ namespace SlimViewer
 
 
         /// <summary>
-        /// Gets the convert gif command.
+        ///     Gets the convert gif command.
         /// </summary>
         /// <value>
-        /// The convert GIF to jpg.
+        ///     The convert GIF to jpg.
         /// </value>
         public ICommand ConvertCommandGif =>
             _convertCommandGif ??= new DelegateCommand<object>(ConvertGifAction, CanExecute);
 
 
         /// <summary>
-        /// Gets the convert to gif Command.
+        ///     Gets the convert to gif Command.
         /// </summary>
         /// <value>
-        /// Converts Images to gif.
+        ///     Converts Images to gif.
         /// </value>
         public ICommand ConvertCommandToGif =>
             _convertCommandToGif ??= new DelegateCommand<object>(ConvertToGifAction, CanExecute);
@@ -997,7 +997,7 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Converts the gif to images action.
+        ///     Converts the gif to images action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ConvertGifAction(object obj)
@@ -1012,7 +1012,6 @@ namespace SlimViewer
             var count = 0;
 
             foreach (var image in images)
-            {
                 try
                 {
                     count++;
@@ -1035,11 +1034,10 @@ namespace SlimViewer
                     Trace.WriteLine(ex);
                     _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
                 }
-            }
         }
 
         /// <summary>
-        /// Converts to GIF action.
+        ///     Converts to GIF action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ConvertToGifAction(object obj)
@@ -1733,6 +1731,8 @@ namespace SlimViewer
 
             var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, _subFolders);
 
+            if (lst == null) return;
+
             var i = _fileList.Intersect(lst);
 
             if (i.Any())
@@ -2030,6 +2030,7 @@ namespace SlimViewer
                 return;
             }
 
+            // ReSharper disable once PossibleNullReferenceException, already checked
             Count = _fileList.Count;
 
             _fileList = _fileList.PathSort();
