@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ExtendedSystemObjects;
 using ImageCompare;
+using Imaging;
 using ViewModel;
 
 namespace SlimViewer
@@ -388,7 +389,7 @@ namespace SlimViewer
             Status = SlimViewerResources.StatusCompareStart;
 
             _ = await Task.Run(() =>
-                Duplicates = _compare.GetDuplicateImages(currentFolder, subFolders, SlimViewerResources.Appendix)
+                Duplicates = _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
             ).ConfigureAwait(false);
 
             _rows = Duplicates.Count / 10;
@@ -415,7 +416,7 @@ namespace SlimViewer
             Status = SlimViewerResources.StatusCompareStart;
 
             _ = await Task.Run(() =>
-                Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, SlimViewerResources.Appendix,
+                Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix,
                     similarity)
             ).ConfigureAwait(false);
 

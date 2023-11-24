@@ -252,7 +252,7 @@ namespace SlimViewer
         {
             if (string.IsNullOrEmpty(SearchString)) return;
 
-            var lst = FileHandleSearch.GetFilesWithSubString(_currentFolder, SlimViewerResources.Appendix, _subFolders,
+            var lst = FileHandleSearch.GetFilesWithSubString(_currentFolder, ImagingResources.Appendix, _subFolders,
                 SearchString, true);
 
             if (lst.IsNullOrEmpty()) return;
@@ -271,7 +271,7 @@ namespace SlimViewer
             try
             {
                 var lst = _analysis.FindImagesInColorRange(R, G, B, Range, _currentFolder, _subFolders,
-                    SlimViewerResources.Appendix);
+                    ImagingResources.Appendix);
 
                 if (lst.IsNullOrEmpty()) return;
 

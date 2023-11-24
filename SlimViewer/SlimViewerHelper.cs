@@ -9,6 +9,7 @@
 using System.IO;
 using ExtendedSystemObjects;
 using FileHandler;
+using Imaging;
 
 namespace SlimViewer
 {
@@ -49,7 +50,7 @@ namespace SlimViewer
         /// <returns>The first Image</returns>
         public static string UnpackFile(string path)
         {
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, SlimViewerResources.Appendix, true);
+            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
             return lst.IsNullOrEmpty() ? null : lst[0];
         }
     }

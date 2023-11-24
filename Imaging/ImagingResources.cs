@@ -6,12 +6,14 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Generic;
+
 namespace Imaging
 {
     /// <summary>
     ///     The com Control resources class.
     /// </summary>
-    internal static class ImagingResources
+    public static class ImagingResources
     {
         /// <summary>
         ///     The error missing file (const). Value: "File not Found: ".
@@ -52,5 +54,43 @@ namespace Imaging
         ///     The cif Separator used for compression (const). Value:  "-".
         /// </summary>
         internal const string CifSeparator = "-";
+
+        /// <summary>
+        ///     The jpg Extension (const). Value: ".jpg"
+        /// </summary>
+        public const string JpgExt = ".jpg";
+
+        /// <summary>
+        ///     The png Extension (const). Value: ".png"
+        /// </summary>
+        public const string PngExt = ".png";
+
+        /// <summary>
+        ///     The Bmp Extension (const). Value: ".Bmp"
+        /// </summary>
+        public const string BmpExt = ".Bmp";
+
+        /// <summary>
+        ///     The Gif Extension (const). Value: ".gif"
+        /// </summary>
+        public const string GifExt = ".gif";
+
+        /// <summary>
+        ///     The Tif Extension (const). Value: ".tif"
+        /// </summary>
+        public const string TifExt = ".tif";
+
+
+        /// <summary>
+        ///     The possible Image File Appendix
+        /// </summary>
+        public static readonly List<string> Appendix = new()
+        {
+            JpgExt,
+            PngExt,
+            BmpExt,
+            GifExt,
+            TifExt
+        };
     }
 }

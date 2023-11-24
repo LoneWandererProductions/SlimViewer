@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using Imaging;
 using ViewModel;
 
 namespace SlimViewer
@@ -60,7 +61,7 @@ namespace SlimViewer
         /// <value>
         ///     The selected source.
         /// </value>
-        public List<string> SelectedSource => SlimViewerResources.Appendix;
+        public List<string> SelectedSource => ImagingResources.Appendix;
 
         /// <summary>
         ///     Gets the extension source.
@@ -68,7 +69,7 @@ namespace SlimViewer
         /// <value>
         ///     The extension source.
         /// </value>
-        public List<string> ExtensionSource => SlimViewerResources.Appendix;
+        public List<string> ExtensionSource => ImagingResources.Appendix;
 
         /// <summary>
         ///     Gets or sets the extension select.

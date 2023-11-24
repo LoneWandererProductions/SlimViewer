@@ -1017,7 +1017,7 @@ namespace SlimViewer
                 {
                     count++;
                     var path = string.Concat(pathObj.Folder, SlimViewerResources.Slash, count);
-                    var check = SaveImage(path, SlimViewerResources.JpgExt, image);
+                    var check = SaveImage(path, ImagingResources.JpgExt, image);
                     if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
                 }
                 catch (ArgumentException ex)
@@ -1044,7 +1044,6 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void ConvertToGifAction(object obj)
         {
-
             //TODo not working correct
             //Initiate Folder
             if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
@@ -1052,38 +1051,9 @@ namespace SlimViewer
             //get target Folder
             var path = FileIoHandler.ShowFolder(_currentFolder);
 
-            if (!Directory.Exists(path)) return;
+            var target = string.Concat(path, SlimViewerResources.Slash, SlimViewerResources.NewGif);
 
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, SlimViewerResources.Appendix, false);
-
-            lst.Sort();
-
-            //collect and convert all images
-            var btm = lst.ConvertAll(element => _render.GetOriginalBitmap(element));
-
-            if (btm.IsNullOrEmpty()) return;
-
-            var gEnc = ImageGifHandler.ConvertGif(btm);
-
-            path = string.Concat(path, SlimViewerResources.Slash, SlimViewerResources.NewGif);
-
-            //https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
-            using (var ms = new MemoryStream())
-            {
-                gEnc.Save(ms);
-                var fileBytes = ms.ToArray();
-                // This is the NETSCAPE2.0 Application Extension.
-                var applicationExtension = new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
-                var newBytes = new List<byte>();
-                newBytes.AddRange(fileBytes.Take(13));
-                newBytes.AddRange(applicationExtension);
-                newBytes.AddRange(fileBytes.Skip(13));
-                File.WriteAllBytes(path, newBytes.ToArray());
-            }
-
-
-            //TODO
-            // var images = _render.SplitGif(pathObj.FilePath);
+            _render.CreateGif(path, target);
         }
 
         /// <summary>
@@ -1761,7 +1731,7 @@ namespace SlimViewer
 
             if (_fileList.IsNullOrEmpty()) return;
 
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, SlimViewerResources.Appendix, _subFolders);
+            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, _subFolders);
 
             var i = _fileList.Intersect(lst);
 
@@ -1839,7 +1809,7 @@ namespace SlimViewer
             if (!File.Exists(filePath)) return;
 
             //check if we even handle this file type
-            if (!SlimViewerResources.Appendix.Any(filePath.EndsWith)) return;
+            if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
 
             //load into the Image Viewer
             GenerateView(filePath);
@@ -1866,7 +1836,7 @@ namespace SlimViewer
             if (!File.Exists(filePath)) return;
 
             //check if we even handle this file type
-            if (!SlimViewerResources.Appendix.Any(filePath.EndsWith)) return;
+            if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
 
             var lst = files.ToList();
 
@@ -1955,7 +1925,7 @@ namespace SlimViewer
             {
                 var ext = Path.GetExtension(filePath);
 
-                if (ext.Equals(SlimViewerResources.GifExt, StringComparison.OrdinalIgnoreCase))
+                if (ext.Equals(ImagingResources.GifExt, StringComparison.OrdinalIgnoreCase))
                 {
                     if (GifPath?.Equals(filePath, StringComparison.OrdinalIgnoreCase) == true) return;
 
@@ -2048,7 +2018,7 @@ namespace SlimViewer
             Status.Source = _render.GetBitmapImageFileStream(Path.Combine(_root,
                 SlimViewerResources.IconPathRed));
 
-            _fileList = FileHandleSearch.GetFilesByExtensionFullPath(folder, SlimViewerResources.Appendix, _subFolders);
+            _fileList = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _subFolders);
 
             //decrease File Count
             if (_fileList.IsNullOrEmpty())
@@ -2101,7 +2071,7 @@ namespace SlimViewer
             if (File.Exists(path)) return false;
 
             if (string.Equals(extension, SlimViewerResources.JpgExtAlt, StringComparison.CurrentCultureIgnoreCase))
-                extension = SlimViewerResources.JpgExt;
+                extension = ImagingResources.JpgExt;
 
             path = Path.ChangeExtension(path, extension);
 
@@ -2110,19 +2080,19 @@ namespace SlimViewer
 
             switch (extension)
             {
-                case SlimViewerResources.PngExt:
+                case ImagingResources.PngExt:
                     _render.SaveBitmap(btm, path, ImageFormat.Png);
                     break;
-                case SlimViewerResources.JpgExt:
+                case ImagingResources.JpgExt:
                     _render.SaveBitmap(btm, path, ImageFormat.Jpeg);
                     break;
-                case SlimViewerResources.BmpExt:
+                case ImagingResources.BmpExt:
                     _render.SaveBitmap(btm, path, ImageFormat.Bmp);
                     break;
-                case SlimViewerResources.GifExt:
+                case ImagingResources.GifExt:
                     _render.SaveBitmap(btm, path, ImageFormat.Gif);
                     break;
-                case SlimViewerResources.TifExt:
+                case ImagingResources.TifExt:
                     _render.SaveBitmap(btm, path, ImageFormat.Tiff);
                     break;
                 default:
