@@ -83,6 +83,7 @@ namespace CommonControls
         private void ColorPickerMenu_ColorChanged(ColorHsv colorHsv)
         {
             AddColor(colorHsv);
+            ColorChanged?.Invoke(colorHsv);
         }
 
         /// <summary>
