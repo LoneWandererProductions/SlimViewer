@@ -968,6 +968,8 @@ namespace SlimViewer
 
             _btm = _cif.GetCifFile(pathObj.FilePath);
 
+            if (_btm == null) return;
+
             //activate Menus
             if (_bmp != null) IsActive = true;
 
@@ -976,6 +978,7 @@ namespace SlimViewer
             //set Filename
             FileName = Path.GetFileName(_filePath);
             //set Infos
+
             Information = string.Concat(SlimViewerResources.ImagePath, _filePath, SlimViewerResources.ImageName,
                 FileName, SlimViewerResources.ImageHeight, _btm.Height, SlimViewerResources.ImageWidth, _btm.Width,
                 SlimViewerResources.ImageSize, _btm.Height * _btm.Width);
@@ -1006,6 +1009,8 @@ namespace SlimViewer
             if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
 
             var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
+
+            if (pathObj == null) return;
 
             var images = _render.SplitGif(pathObj.FilePath);
 
@@ -1891,6 +1896,9 @@ namespace SlimViewer
             var folder = SlimViewerHelper.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
             if (!string.IsNullOrEmpty(folder)) _currentFolder = folder;
             var file = SlimViewerHelper.UnpackFile(folder);
+
+            if(file == null) return;
+
             GenerateView(file);
             LoadThumbs(folder, file);
         }

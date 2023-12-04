@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable PossibleNullReferenceException
+
 using System.IO;
 using ExtendedSystemObjects;
 using FileHandler;
@@ -51,6 +53,8 @@ namespace SlimViewer
         public static string UnpackFile(string path)
         {
             var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
+            if (lst.IsNullOrEmpty()) return null;
+
             // ReSharper disable once PossibleNullReferenceException. is checked
             return lst.IsNullOrEmpty() ? null : lst[0];
         }
