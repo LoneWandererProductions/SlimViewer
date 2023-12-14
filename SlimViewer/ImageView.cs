@@ -1064,7 +1064,9 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void SaveAction(object obj)
         {
-            if (_btm == null) return;
+            if (Bmp == null) return;
+
+            var btm = Bmp.ToBitmap();
 
             var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpen, _currentFolder);
 
@@ -1075,7 +1077,7 @@ namespace SlimViewer
 
             try
             {
-                var check = SaveImage(pathObj.FilePath, pathObj.Extension, _btm);
+                var check = SaveImage(pathObj.FilePath, pathObj.Extension, btm);
                 if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
             }
             catch (ArgumentException ex)
