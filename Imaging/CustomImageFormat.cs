@@ -12,7 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using DataFormatter;
 
-//TODO Checkssum in line 1. Max Numbers, custom exception class
+//TODO Checksum in line 1. Max Numbers, custom exception class
 // check sum for repairs perhaps?
 namespace Imaging
 {
@@ -27,7 +27,10 @@ namespace Imaging
         public Bitmap GetCifFile(string path)
         {
             var image = CsvHandler.ReadCsv(path, ImagingResources.Separator);
-            if (image == null) return null;
+            if (image == null)
+            {
+                return null;
+            }
 
             //compressed or not
             return image[0][2] == ImagingResources.CifCompressed

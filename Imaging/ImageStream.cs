@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -249,7 +251,10 @@ namespace Imaging
         /// <exception cref="IOException">File not Found</exception>
         internal static Bitmap GetBitmapFile(string path)
         {
-            if (!string.IsNullOrEmpty(path) && File.Exists(path)) return new Bitmap(path, true);
+            if (!string.IsNullOrEmpty(path) && File.Exists(path))
+            {
+                return new Bitmap(path, true);
+            }
 
             var innerException = path != null
                 ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
@@ -469,11 +474,16 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
+                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
+                }
             }
 
-            foreach (var image in images) image.Dispose();
+            foreach (var image in images)
+            {
+                image.Dispose();
+            }
 
             //before return please Convert
             return btm;
@@ -579,6 +589,7 @@ namespace Imaging
             using var graph = Graphics.FromImage(btm);
             //create some image attributes
             using var atr = new ImageAttributes();
+
             //set the color matrix attribute
             switch (filter)
             {
@@ -591,14 +602,12 @@ namespace Imaging
                 case ImageFilter.Sepia:
                     atr.SetColorMatrix(ImageRegister.Sepia);
                     break;
-                case ImageFilter.Swap:
-                    atr.SetColorMatrix(ImageRegister.Swap);
-                    break;
                 case ImageFilter.BlackAndWhite:
-                    //convert to Gray scale
-                    btm = FilterImage(image, ImageFilter.GrayScale);
-                    //convert to Black and White
-                    return CreateBlackAndWhite(btm);
+                    atr.SetColorMatrix(ImageRegister.BlackAndWhite);
+                    break;
+                case ImageFilter.Polaroid:
+                    atr.SetColorMatrix(ImageRegister.Polaroid);
+                    break;
                 default:
                     return null;
             }
@@ -689,7 +698,10 @@ namespace Imaging
         internal static Bitmap RotateImage(Bitmap image, int degree)
         {
             //no need to do anything
-            if (degree is 360 or 0) return image;
+            if (degree is 360 or 0)
+            {
+                return image;
+            }
 
             if (image == null)
             {
@@ -716,8 +728,8 @@ namespace Imaging
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
-                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
+                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
+                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
             }
 
             // Find the min and max x and y coordinates.
@@ -784,14 +796,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     top = x;
                     break;
                 }
 
-                if (top != -1) break;
+                if (top != -1)
+                {
+                    break;
+                }
             }
 
             //Get the Bottom
@@ -800,14 +818,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     bottom = x;
                     break;
                 }
 
-                if (bottom != -1) break;
+                if (bottom != -1)
+                {
+                    break;
+                }
             }
 
             //Get the left
@@ -816,14 +840,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     left = x;
                     break;
                 }
 
-                if (left != -1) break;
+                if (left != -1)
+                {
+                    break;
+                }
             }
 
             //Get the right
@@ -832,14 +862,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     right = x;
                     break;
                 }
 
-                if (right != -1) break;
+                if (right != -1)
+                {
+                    break;
+                }
             }
 
             first.X = left;
@@ -906,7 +942,10 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory)) return;
+                if (!Directory.Exists(directory))
+                {
+                    return;
+                }
 
                 var newPath = path;
 
@@ -957,7 +996,10 @@ namespace Imaging
                 var color = dbm.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
+                {
+                    continue;
+                }
 
                 //replace Value under the threshold with pure White
                 dbm.SetPixel(x, y, replacementColor);
@@ -1014,7 +1056,10 @@ namespace Imaging
 
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0) return GetPixel(image, point);
+            if (points.Count == 0)
+            {
+                return GetPixel(image, point);
+            }
 
             var r = 0;
             var g = 0;
@@ -1093,40 +1138,6 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Creates the black and white image.
-        ///     Averages a gray Scale Image.
-        /// </summary>
-        /// <param name="btm">The bitmap.</param>
-        /// <returns>Black and White Image</returns>
-        private static Bitmap CreateBlackAndWhite(Bitmap btm)
-        {
-            //use our new Format
-            var dbm = DirectBitmap.GetInstance(btm);
-
-            for (var y = 0; y < dbm.Height; y++)
-            for (var x = 0; x < dbm.Width; x++)
-            {
-                var pixel = dbm.GetPixel(x, y);
-                int a = pixel.A;
-                int r = pixel.R;
-                int g = pixel.G;
-                int b = pixel.B;
-                //get the average and decide based on Value
-                var avg = (r + g + b) / 3;
-
-                avg = avg < 128 ? 0 : 255;
-
-                dbm.SetPixel(x, y, Color.FromArgb(a, avg, avg, avg));
-            }
-
-            //get the Bitmap
-            btm = new Bitmap(dbm.Bitmap);
-            //cleanup
-            dbm.Dispose();
-            return btm;
-        }
-
-        /// <summary>
         ///     Gets all points in a Circle.
         /// </summary>
         /// <param name="point">The point.</param>
@@ -1139,16 +1150,28 @@ namespace Imaging
             var lst = new List<Point>();
 
             var minX = point.X - radius;
-            if (minX < 0) minX = 0;
+            if (minX < 0)
+            {
+                minX = 0;
+            }
 
             var maxX = point.X + radius;
-            if (maxX > width) maxX = width;
+            if (maxX > width)
+            {
+                maxX = width;
+            }
 
             var minY = point.Y - radius;
-            if (minY < 0) minY = 0;
+            if (minY < 0)
+            {
+                minY = 0;
+            }
 
             var maxY = point.Y + radius;
-            if (maxY > width) maxY = length;
+            if (maxY > width)
+            {
+                maxY = length;
+            }
 
             for (var x = minX; x <= maxX; x++)
             for (var y = minY; y <= maxY; y++)
@@ -1157,7 +1180,10 @@ namespace Imaging
 
                 var dist = Math.Sqrt(Math.Pow(calcPoint.X - point.X, 2) + Math.Pow(calcPoint.Y - point.Y, 2));
 
-                if (dist <= radius) lst.Add(calcPoint);
+                if (dist <= radius)
+                {
+                    lst.Add(calcPoint);
+                }
             }
 
             return lst;

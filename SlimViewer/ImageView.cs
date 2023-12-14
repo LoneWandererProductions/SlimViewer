@@ -302,15 +302,14 @@ namespace SlimViewer
         private bool _subFolders;
 
         /// <summary>
-        ///     The swap command
-        /// </summary>
-        private ICommand _swapCommand;
-
-        /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
 
+        /// <summary>
+        /// The polaroid command
+        /// </summary>
+        private ICommand _polaroidCommand;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -648,13 +647,13 @@ namespace SlimViewer
             _invertCommand ??= new DelegateCommand<object>(InvertAction, CanExecute);
 
         /// <summary>
-        ///     Gets the swap command.
+        /// Gets the polaroid command.
         /// </summary>
         /// <value>
-        ///     The swap command.
+        /// The polaroid command.
         /// </value>
-        public ICommand SwapCommand =>
-            _swapCommand ??= new DelegateCommand<object>(SwapAction, CanExecute);
+        public ICommand PolaroidCommand =>
+            _polaroidCommand ??= new DelegateCommand<object>(PolaroidAction, CanExecute);
 
         /// <summary>
         ///     Gets the compare command.
@@ -1128,8 +1127,8 @@ namespace SlimViewer
         {
             try
             {
-                _btm = _render.FilterImage(_btm, ImageFilter.GrayScale);
-                Bmp = _btm.ToBitmapImage();
+                var btm = _render.FilterImage(_btm, ImageFilter.GrayScale);
+                Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
             {
@@ -1151,8 +1150,8 @@ namespace SlimViewer
         {
             try
             {
-                _btm = _render.FilterImage(_btm, ImageFilter.BlackAndWhite);
-                Bmp = _btm.ToBitmapImage();
+                var btm = _render.FilterImage(_btm, ImageFilter.BlackAndWhite);
+                Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
             {
@@ -1174,8 +1173,8 @@ namespace SlimViewer
         {
             try
             {
-                _btm = _render.FilterImage(_btm, ImageFilter.Sepia);
-                Bmp = _btm.ToBitmapImage();
+                var btm = _render.FilterImage(_btm, ImageFilter.Sepia);
+                Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
             {
@@ -1197,8 +1196,8 @@ namespace SlimViewer
         {
             try
             {
-                _btm = _render.FilterImage(_btm, ImageFilter.Invert);
-                Bmp = _btm.ToBitmapImage();
+                var btm = _render.FilterImage(_btm, ImageFilter.Invert);
+                Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
             {
@@ -1213,14 +1212,15 @@ namespace SlimViewer
         }
 
         /// <summary>
-        ///     Swaps the Image.
+        /// Polaroids the action.
         /// </summary>
-        private void SwapAction(object obj)
+        /// <param name="obj">The object.</param>
+        private void PolaroidAction(object obj)
         {
             try
             {
-                _btm = _render.FilterImage(_btm, ImageFilter.Swap);
-                Bmp = _btm.ToBitmapImage();
+                var btm = _render.FilterImage(_btm, ImageFilter.Polaroid);
+                Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
             {
@@ -1233,6 +1233,7 @@ namespace SlimViewer
                 _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
             }
         }
+
 
         /// <summary>
         ///     Deletes the Image.
