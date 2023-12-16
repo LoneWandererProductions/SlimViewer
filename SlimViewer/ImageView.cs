@@ -1897,7 +1897,7 @@ namespace SlimViewer
             if (!string.IsNullOrEmpty(folder)) _currentFolder = folder;
             var file = SlimViewerHelper.UnpackFile(folder);
 
-            if(file == null) return;
+            if (file == null) return;
 
             GenerateView(file);
             LoadThumbs(folder, file);
