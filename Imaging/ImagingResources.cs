@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+
 using System.Collections.Generic;
 
 namespace Imaging
@@ -82,7 +85,7 @@ namespace Imaging
 
 
         /// <summary>
-        ///     The possible Image File Appendix
+        ///     The File Appendix
         /// </summary>
         public static readonly List<string> Appendix = new()
         {

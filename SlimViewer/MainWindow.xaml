@@ -68,7 +68,7 @@
                     <MenuItem Header="Black and White " Command="{Binding BlackAndWhite}"
                               IsEnabled="{Binding Path =IsActive}" />
                     <MenuItem Header="Invert" Command="{Binding InvertCommand}" IsEnabled="{Binding Path =IsActive}" />
-                    <MenuItem Header="Swap" Command="{Binding SwapCommand}" IsEnabled="{Binding Path =IsActive}" />
+                    <MenuItem Header="Polaroid" Command="{Binding PolaroidCommand}" IsEnabled="{Binding Path =IsActive}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path =IsActive}" />
