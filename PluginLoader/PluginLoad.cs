@@ -1,11 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Plugin
- * FILE:        Plugin/PluginLoader.cs
+ * FILE:        PluginLoader/PluginLoader.cs
  * PURPOSE:     Basic Plugin Support, Load all Plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
  */
+
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnassignedField.Global
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +16,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using FileHandler;
 using Plugin;
 
 namespace PluginLoader
@@ -23,6 +25,11 @@ namespace PluginLoader
     /// </summary>
     public static class PluginLoad
     {
+        /// <summary>
+        ///     The load error event
+        /// </summary>
+        public static EventHandler loadErrorEvent;
+
         /// <summary>
         ///     Gets or sets the plugin container.
         /// </summary>
@@ -38,48 +45,82 @@ namespace PluginLoader
         /// <returns>Success Status</returns>
         public static bool LoadAll(string path)
         {
-            var pluginPaths = FileHandleSearch.GetFilesByExtensionFullPath(path, PluginLoaderResources.FileExt, false);
+            var pluginPaths = GetFilesByExtensionFullPath(path);
 
-            if (pluginPaths == null) return false;
+            if (pluginPaths == null)
+            {
+                return false;
+            }
 
-            try
-            {
-                PluginContainer = new List<IPlugin>();
+            PluginContainer = new List<IPlugin>();
 
-                foreach (var pluginPath in pluginPaths)
-                    try
-                    {
-                        var pluginAssembly = LoadPlugin(pluginPath);
-                        var lst = CreateCommands(pluginAssembly).ToList();
-                        PluginContainer.AddRange(lst);
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-            }
-            catch (ArgumentException ex)
+            foreach (var pluginPath in pluginPaths)
             {
-                Trace.WriteLine(ex);
-            }
-            catch (FileLoadException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (ApplicationException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (BadImageFormatException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-            catch (FileNotFoundException ex)
-            {
-                Trace.WriteLine(ex);
+                try
+                {
+                    var pluginAssembly = LoadPlugin(pluginPath);
+                    var lst = CreateCommands(pluginAssembly).ToList();
+                    PluginContainer.AddRange(lst);
+                }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (FileLoadException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (ApplicationException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (BadImageFormatException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
+                catch (FileNotFoundException ex)
+                {
+                    Trace.WriteLine(ex);
+                    loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
+                }
             }
 
             return PluginContainer.Count != 0;
+        }
+
+        /// <summary>
+        ///     Gets the files by extension full path.
+        ///     Adopted from FileHandler to decrease dependencies
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>List of files by extension with full path</returns>
+        private static IEnumerable<string> GetFilesByExtensionFullPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                Trace.WriteLine(PluginLoaderResources.ErrorEmptyPath);
+                return null;
+            }
+
+            if (Directory.Exists(path))
+            {
+                return Directory.EnumerateFiles(path, PluginLoaderResources.FileExt,
+                        SearchOption.TopDirectoryOnly)
+                    .ToList();
+            }
+
+            Trace.WriteLine(PluginLoaderResources.ErrorDirectory);
+
+            return null;
         }
 
         /// <summary>
@@ -109,21 +150,25 @@ namespace PluginLoader
 
             foreach (var type in assembly.GetTypes().Where(type => typeof(IPlugin).IsAssignableFrom(type)))
             {
-                if (Activator.CreateInstance(type) is not IPlugin result) continue;
+                if (Activator.CreateInstance(type) is not IPlugin result)
+                {
+                    continue;
+                }
 
                 count++;
                 yield return result;
             }
 
-            if (count != 0) yield break;
+            if (count != 0)
+            {
+                yield break;
+            }
 
             var availableTypes =
                 string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));
 
             var message = string.Concat(PluginLoaderResources.ErrorCouldNotFindPlugin,
-                $" {assembly} from {assembly.Location}.",
-                Environment.NewLine, PluginLoaderResources.MessageTypes,
-                $" {availableTypes}");
+                PluginLoaderResources.Information(assembly, availableTypes));
 
             throw new ArgumentException(message);
         }

@@ -59,7 +59,10 @@ namespace CommonControls
             get => Root;
             set
             {
-                if (value == Root) return;
+                if (value == Root)
+                {
+                    return;
+                }
 
                 Root = value;
                 OnPropertyChanged(nameof(Paths));
@@ -77,7 +80,10 @@ namespace CommonControls
             get => _lookUp;
             set
             {
-                if (value == _lookUp) return;
+                if (value == _lookUp)
+                {
+                    return;
+                }
 
                 _lookUp = value;
                 OnPropertyChanged(nameof(LookUp));
@@ -118,7 +124,10 @@ namespace CommonControls
             if (!Directory.Exists(path))
             {
                 directory = Directory.GetLogicalDrives();
-                if (directory.Length == 0) return;
+                if (directory.Length == 0)
+                {
+                    return;
+                }
 
                 path = directory[0];
             }
@@ -153,7 +162,10 @@ namespace CommonControls
         private static void Folder_Expanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
-            if (item.Items.Count != 1 || item.Items[0] != null) return;
+            if (item.Items.Count != 1 || item.Items[0] != null)
+            {
+                return;
+            }
 
             item.Items.Clear();
 
@@ -161,7 +173,8 @@ namespace CommonControls
             {
                 foreach (var subItem in Directory.GetDirectories(item.Tag.ToString()!).Select(path => new TreeViewItem
                          {
-                             Header = path[(path.LastIndexOf(ComCtlResources.Path, StringComparison.Ordinal) + 1)..],
+                             Header =
+                                 path[(path.LastIndexOf(ComCtlResources.Path, StringComparison.Ordinal) + 1)..],
                              Tag = path,
                              FontWeight = FontWeights.Normal
                          }))
@@ -201,7 +214,10 @@ namespace CommonControls
 
             var selection = (TreeViewItem)tree?.SelectedItem;
 
-            if (selection != null) Paths = selection.Tag.ToString();
+            if (selection != null)
+            {
+                Paths = selection.Tag.ToString();
+            }
         }
 
         /// <summary>
@@ -213,7 +229,10 @@ namespace CommonControls
         {
             var path = Directory.GetParent(Paths);
 
-            if (path != null) SetItems(path.ToString());
+            if (path != null)
+            {
+                SetItems(path.ToString());
+            }
         }
 
         /// <summary>
@@ -223,7 +242,10 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void BtnGo_Click(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(LookUp)) return;
+            if (!Directory.Exists(LookUp))
+            {
+                return;
+            }
 
             SetItems(LookUp);
             LookUp = string.Empty;
@@ -249,7 +271,10 @@ namespace CommonControls
         private void BtnRoot_Click(object sender, RoutedEventArgs e)
         {
             var dir = Directory.GetLogicalDrives();
-            if (dir.Length == 0) return;
+            if (dir.Length == 0)
+            {
+                return;
+            }
 
             var path = dir[0];
 
@@ -300,7 +325,10 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void BtnExplorer_Click(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(Paths)) return;
+            if (!Directory.Exists(Paths))
+            {
+                return;
+            }
 
             _ = Process.Start(ComCtlResources.Explorer, Paths);
         }
@@ -316,7 +344,10 @@ namespace CommonControls
             var input = new InputBox(ComCtlResources.HeaderDirectoryName, ComCtlResources.TextNameFolder);
             _ = input.ShowDialog();
 
-            if (string.IsNullOrEmpty(input.InputText)) return;
+            if (string.IsNullOrEmpty(input.InputText))
+            {
+                return;
+            }
 
             var path = Path.Combine(Paths, input.InputText);
             _ = Directory.CreateDirectory(path);

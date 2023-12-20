@@ -1,14 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Vector3D.cs
- * PURPOSE:     Basic 3D Vector implementation
+ * FILE:        Mathematics/Vector2D.cs
+ * PURPOSE:     Basic 2D Vector implementation
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
 // ReSharper disable NonReadonlyMemberInGetHashCode
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 
@@ -19,25 +20,23 @@ namespace Mathematics
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
-    public sealed class Vector3D
+    public sealed class Vector2D
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Vector3D" /> class.
+        ///     Initializes a new instance of the <see cref="Vector2D" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
-        /// <param name="z">The z.</param>
-        public Vector3D(double x, double y, double z)
+        public Vector2D(double x, double y)
         {
             X = x;
             Y = y;
-            Z = z;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Vector3D" /> class.
+        ///     Initializes a new instance of the <see cref="Vector2D" /> class.
         /// </summary>
-        public Vector3D()
+        public Vector2D()
         {
         }
 
@@ -58,14 +57,6 @@ namespace Mathematics
         public double Y { get; set; }
 
         /// <summary>
-        ///     Gets or sets the z.
-        /// </summary>
-        /// <value>
-        ///     The z.
-        /// </value>
-        public double Z { get; set; }
-
-        /// <summary>
         ///     Gets the rounded x.
         /// </summary>
         /// <value>
@@ -81,22 +72,15 @@ namespace Mathematics
         /// </value>
         public int RoundedY => (int)Math.Round(Y, 0);
 
-        /// <summary>
-        ///     Gets the rounded z.
-        /// </summary>
-        /// <value>
-        ///     The rounded z.
-        /// </value>
-        public int RoundedZ => (int)Math.Round(Z, 0);
 
         /// <summary>
         ///     Equals the specified other.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>Equal or not</returns>
-        public bool Equals(Vector3D other)
+        public bool Equals(Vector2D other)
         {
-            return X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+            return X.Equals(other?.X) && Y.Equals(other?.Y);
         }
 
         /// <summary>
@@ -108,7 +92,16 @@ namespace Mathematics
         /// </returns>
         public override bool Equals(object obj)
         {
-            return obj is Vector3D other && Equals(other);
+            return obj is Vector2D other && Equals(other);
+        }
+
+        /// <summary>
+        ///     Converts to text.
+        /// </summary>
+        /// <returns>string representation of the Vector</returns>
+        public string ToText()
+        {
+            return string.Concat("X: ", X, " Y: ", Y);
         }
 
         /// <summary>
@@ -119,16 +112,7 @@ namespace Mathematics
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(X, Y, Z);
-        }
-
-        /// <summary>
-        ///     Converts to text.
-        /// </summary>
-        /// <returns>string representation of the Vector</returns>
-        public string ToText()
-        {
-            return string.Concat("X: ", X, " Y: ", Y, " Z: ", Z);
+            return HashCode.Combine(X, Y);
         }
 
         /// <summary>
@@ -139,9 +123,9 @@ namespace Mathematics
         /// <returns>
         ///     The result of the operator.
         /// </returns>
-        public static Vector3D operator +(Vector3D first, Vector3D second)
+        public static Vector2D operator +(Vector2D first, Vector2D second)
         {
-            return new Vector3D(first.X + second.X, first.Y + second.Y, first.Z + second.Z);
+            return new Vector2D(first.X + second.X, first.Y + second.Y);
         }
 
         /// <summary>
@@ -152,9 +136,9 @@ namespace Mathematics
         /// <returns>
         ///     The result of the operator.
         /// </returns>
-        public static Vector3D operator -(Vector3D first, Vector3D second)
+        public static Vector2D operator -(Vector2D first, Vector2D second)
         {
-            return new Vector3D(first.X - second.X, first.Y - second.Y, first.Z - second.Z);
+            return new Vector2D(first.X - second.X, first.Y - second.Y);
         }
 
         /// <summary>
@@ -165,9 +149,9 @@ namespace Mathematics
         /// <returns>
         ///     The result of the operator.
         /// </returns>
-        public static double operator *(Vector3D first, Vector3D second)
+        public static double operator *(Vector2D first, Vector2D second)
         {
-            return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
+            return (first.X * second.X) + (first.Y * second.Y);
         }
 
         /// <summary>
@@ -177,14 +161,9 @@ namespace Mathematics
         /// <returns>
         ///     The Cross Product of the Vectors.
         /// </returns>
-        public Vector3D CrossProduct(Vector3D second)
+        public double CrossProduct(Vector2D second)
         {
-            return new Vector3D
-            {
-                X = (Y * second.Z) - (Z * second.Y),
-                Y = (Z * second.X) - (X * second.Z),
-                Z = (X * second.Y) - (Y * second.X)
-            };
+            return (X * second.Y) - (Y * second.X);
         }
 
 
@@ -192,9 +171,9 @@ namespace Mathematics
         ///     Multiplies the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
-        public Vector3D Multiply(double value)
+        public Vector2D Multiply(double value)
         {
-            return new Vector3D { X = X * value, Y = Y * value, Z = Z * value };
+            return new Vector2D { X = X * value, Y = Y * value };
         }
 
         /// <summary>
@@ -210,10 +189,19 @@ namespace Mathematics
         ///     Normalizes this instance.
         /// </summary>
         /// <returns>Normalized Vector</returns>
-        public Vector3D Normalize()
+        public Vector2D Normalize()
         {
             var l = VectorLength();
-            return new Vector3D { X = X / l, Y = Y / l, Z = Z / l };
+            return new Vector2D { X = X / l, Y = Y / l };
+        }
+
+        /// <summary>
+        ///     Returns the Vector Angle
+        /// </summary>
+        /// <returns>The Vectors angle</returns>
+        public double Angle()
+        {
+            return Math.Atan(Y / X) * 180 / Math.PI;
         }
     }
 }

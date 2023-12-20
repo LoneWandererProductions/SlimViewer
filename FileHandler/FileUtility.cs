@@ -23,21 +23,33 @@ namespace FileHandler
         [return: MaybeNull]
         public static string GetNewFileName(string path)
         {
-            if (!File.Exists(path)) return null;
-
-            var count = 1;
+            if (!File.Exists(path))
+            {
+                return null;
+            }
 
             var fileNameOnly = Path.GetFileNameWithoutExtension(path);
             var extension = Path.GetExtension(path);
             var directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory)) return null;
+            if (!Directory.Exists(directory))
+            {
+                return null;
+            }
 
             var newPath = path;
 
+            var count = 0;
+
             while (File.Exists(newPath))
             {
-                var tempFileName = $"{fileNameOnly}({count++})";
-                newPath = Path.Combine(directory!, Path.ChangeExtension(tempFileName, extension));
+                var cache = $"{fileNameOnly}({count++})";
+                var tempFileName = Path.Combine(directory!, Path.ChangeExtension(cache, extension));
+                if (File.Exists(tempFileName))
+                {
+                    continue;
+                }
+
+                newPath = tempFileName;
             }
 
             return newPath;

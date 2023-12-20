@@ -97,5 +97,16 @@ namespace CommonControls
         ///     The Context Menu Deselect all (const). Value: "Deselect All".
         /// </summary>
         internal const string ContextDeselectAll = "Deselect All";
+
+
+        /// <summary>
+        ///     New Item (const). Value: "NewItem".
+        /// </summary>
+        internal const string NewItem = "New Item";
+
+        /// <summary>
+        ///     Information about Plugin Status (const). Value: "No Plugins found.".
+        /// </summary>
+        internal const string InformationPlugin = "No Plugins found.";
     }
 }

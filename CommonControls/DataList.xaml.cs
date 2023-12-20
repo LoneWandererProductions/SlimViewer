@@ -58,7 +58,6 @@ namespace CommonControls
             typeof(bool),
             typeof(DataList), null);
 
-
         /// <summary>
         ///     The unique elements
         /// </summary>

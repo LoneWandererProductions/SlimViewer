@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable UnusedType.Global
 
 using System.Windows;
 using System.Windows.Controls;

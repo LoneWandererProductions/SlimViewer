@@ -8,6 +8,7 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Runtime.InteropServices;
@@ -99,7 +100,7 @@ namespace Mathematics
         public double this[int x, int y]
         {
             get => Matrix[x, y];
-            set => Matrix[x, y] = value;
+            init => Matrix[x, y] = value;
         }
 
         /// <inheritdoc />
@@ -123,7 +124,10 @@ namespace Mathematics
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (Disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
@@ -177,7 +181,10 @@ namespace Mathematics
         public static BaseMatrix operator *(BaseMatrix first, BaseMatrix second)
         {
             //Todo rework check
-            if (first.Width != second.Width && first.Width != second.Height) throw new ArithmeticException();
+            if (first.Width != second.Width && first.Width != second.Height)
+            {
+                throw new ArithmeticException();
+            }
 
             return MatrixUtility.UnsafeMultiplication(first, second);
         }
@@ -192,9 +199,15 @@ namespace Mathematics
         /// </returns>
         public static BaseMatrix operator +(BaseMatrix first, BaseMatrix second)
         {
-            if (first.Width != second.Width) throw new ArithmeticException();
+            if (first.Width != second.Width)
+            {
+                throw new ArithmeticException();
+            }
 
-            if (first.Height != second.Height) throw new ArithmeticException();
+            if (first.Height != second.Height)
+            {
+                throw new ArithmeticException();
+            }
 
             return MatrixUtility.UnsafeAddition(first, second);
         }
@@ -209,9 +222,15 @@ namespace Mathematics
         /// </returns>
         public static BaseMatrix operator -(BaseMatrix first, BaseMatrix second)
         {
-            if (first.Width != second.Width) throw new ArithmeticException();
+            if (first.Width != second.Width)
+            {
+                throw new ArithmeticException();
+            }
 
-            if (first.Height != second.Height) throw new ArithmeticException();
+            if (first.Height != second.Height)
+            {
+                throw new ArithmeticException();
+            }
 
             return MatrixUtility.UnsafeSubtraction(first, second);
         }

@@ -6,6 +6,10 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedType.Global
+
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,7 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using ExtendedSystemObjects;
 using PluginLoader;
 
 namespace CommonControls
@@ -42,6 +45,7 @@ namespace CommonControls
 
         /// <summary>
         ///     Gets or sets the plugin path.
+        ///     The path must be equal to the Current Directory or a sub Directory.
         /// </summary>
         /// <value>
         ///     The plugin path.
@@ -85,21 +89,35 @@ namespace CommonControls
         /// </summary>
         private void Initiate()
         {
-            if (!Directory.Exists(PluginPath)) return;
+            var directory = Directory.GetCurrentDirectory();
+            var path = Path.Combine(directory, PluginPath);
 
-            var check = PluginLoad.LoadAll(PluginPath);
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
 
-            if (!check) return;
+            var check = PluginLoad.LoadAll(path);
 
-            if (PluginLoad.PluginContainer.IsNullOrEmpty()) return;
+            if (!check || PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
+            {
+                Trace.WriteLine(ComCtlResources.InformationPlugin);
+                return;
+            }
 
             var lst = new ObservableCollection<PluginItem>();
 
             foreach (var item in PluginLoad.PluginContainer.Select(plugin => new PluginItem
                      {
-                         Command = plugin, Name = plugin.Name, Version = plugin.Version
+                         Command = plugin,
+                         Name = plugin.Name,
+                         Version = plugin.Version,
+                         Type = plugin.Type,
+                         Description = plugin.Description
                      }))
+            {
                 lst.Add(item);
+            }
 
             ObservablePlugin = new ObservableCollection<PluginItem>(lst);
 
@@ -114,7 +132,10 @@ namespace CommonControls
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var selectedItem = DataGrid.SelectedItem;
-            if (selectedItem is not PluginItem item) return;
+            if (selectedItem is not PluginItem item)
+            {
+                return;
+            }
 
             var exe = item.Command.Execute();
 

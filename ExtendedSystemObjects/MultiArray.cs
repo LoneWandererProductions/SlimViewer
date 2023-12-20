@@ -14,7 +14,9 @@ namespace ExtendedSystemObjects
         public static void SwapColumn<TValue>(this TValue[,] array, int xOne, int xTwo)
         {
             for (var i = 0; i < array.GetLength(1); i++)
+            {
                 (array[xOne, i], array[xTwo, i]) = (array[xTwo, i], array[xOne, i]);
+            }
         }
 
         /// <summary>
@@ -27,7 +29,9 @@ namespace ExtendedSystemObjects
         public static void SwapRow<TValue>(this TValue[,] array, int xOne, int xTwo)
         {
             for (var i = 0; i < array.GetLength(0); i++)
+            {
                 (array[i, xOne], array[i, xTwo]) = (array[i, xTwo], array[i, xOne]);
+            }
         }
 
         /// <summary>
@@ -68,8 +72,12 @@ namespace ExtendedSystemObjects
             var result = new TValue[array.GetLength(0), array.GetLength(1)];
 
             for (var i = 0; i < array.GetLength(0); ++i) // copy the values
-            for (var j = 0; j < array.GetLength(1); ++j)
-                result[i, j] = array[i, j];
+            {
+                for (var j = 0; j < array.GetLength(1); ++j)
+                {
+                    result[i, j] = array[i, j];
+                }
+            }
 
             return result;
         }
@@ -83,14 +91,26 @@ namespace ExtendedSystemObjects
         /// <returns>Equal or not</returns>
         public static bool Equal<TValue>(this TValue[,] array, TValue[,] compare)
         {
-            if (array.GetLength(0) != compare.GetLength(0)) return false;
+            if (array.GetLength(0) != compare.GetLength(0))
+            {
+                return false;
+            }
 
-            if (array.GetLength(1) != compare.GetLength(1)) return false;
+            if (array.GetLength(1) != compare.GetLength(1))
+            {
+                return false;
+            }
 
             for (var i = 0; i < array.GetLength(0); ++i)
-            for (var j = 0; j < array.GetLength(1); ++j)
-                if (!array[i, j].Equals(compare[i, j]))
-                    return false;
+            {
+                for (var j = 0; j < array.GetLength(1); ++j)
+                {
+                    if (!array[i, j].Equals(compare[i, j]))
+                    {
+                        return false;
+                    }
+                }
+            }
 
             return true;
         }

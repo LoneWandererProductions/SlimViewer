@@ -89,7 +89,10 @@ namespace CommonControls
             {
                 Items = new BindingList<DataItem> { new() { Id = 0, Name = ComCtlResources.DatalistEntry } };
 
-                foreach (var item in Items) ChangeLog.Add(item.Id, item, true);
+                foreach (var item in Items)
+                {
+                    ChangeLog.Add(item.Id, item, true);
+                }
             }
             else
             {
@@ -105,14 +108,16 @@ namespace CommonControls
                         return;
                     }
 
-
                     ChangeLog.Add(item.Id, item, true);
                 }
             }
 
             _unique = unique;
 
-            foreach (var item in Items) _id.Add(item.Id);
+            foreach (var item in Items)
+            {
+                _id.Add(item.Id);
+            }
 
             Items.ListChanged += ItemsListChanged;
             listBox.SelectionChanged += ItemSelected;
@@ -187,7 +192,10 @@ namespace CommonControls
         /// </summary>
         public void UpdateSelectedItem()
         {
-            if (_dataList.Selection == null) return;
+            if (_dataList.Selection == null)
+            {
+                return;
+            }
 
             var item = _dataList.Selection;
 
@@ -213,7 +221,7 @@ namespace CommonControls
         /// <param name="obj">The object.</param>
         private void AddAction(object obj)
         {
-            var name = CheckName("new Item");
+            var name = CheckName(ComCtlResources.NewItem);
 
             AddItem(name);
         }
@@ -249,10 +257,23 @@ namespace CommonControls
         {
             while (true)
             {
-                if (!CheckItemName(name)) return name;
-                //TODO overhaul
+                if (!CheckItemName(name))
+                {
+                    return name;
+                }
 
-                name = string.Concat(name, " (1)");
+                var count = 0;
+
+                while (CheckItemName(name))
+                {
+                    var cache = $"{name}({count++})";
+                    if (CheckItemName(cache))
+                    {
+                        continue;
+                    }
+
+                    name = cache;
+                }
             }
         }
 
@@ -273,7 +294,10 @@ namespace CommonControls
         private void AddItem(string name)
         {
             //basic sanity checks
-            if (string.IsNullOrEmpty(name)) return;
+            if (string.IsNullOrEmpty(name))
+            {
+                return;
+            }
 
             var idList = Items.Select(element => element.Id).ToList();
 
@@ -294,11 +318,13 @@ namespace CommonControls
         private void RemoveItem(DataItem item)
         {
             var check = Items.Remove(item);
-            if (!check) return;
+            if (!check)
+            {
+                return;
+            }
 
             _dataList.Removed(item);
         }
-
 
         /// <summary>
         ///     Items changed list.
@@ -366,18 +392,28 @@ namespace CommonControls
             }
         }
 
-
+        /// <summary>
+        ///     Items the selected.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs" /> instance containing the event data.</param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e)
         {
             var lst = _listBox.SelectedItems;
 
-            if (lst.Count == 0) return;
+            if (lst.Count == 0)
+            {
+                return;
+            }
 
             var items = new List<DataItem>(lst.Count);
 
             items.AddRange(lst.Cast<DataItem>());
 
-            if (items.Count == 0) return;
+            if (items.Count == 0)
+            {
+                return;
+            }
 
             _dataList.Selection = items[0];
             _dataList.Selections = items;

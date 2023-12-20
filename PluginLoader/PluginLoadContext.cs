@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Plugin
- * FILE:        Plugin/PluginLoadContext.cs
+ * FILE:        PluginLoader/PluginLoadContext.cs
  * PURPOSE:     Basic Plugin Support, Load all Plugins
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
@@ -33,7 +33,7 @@ namespace PluginLoader
         /// <inheritdoc />
         /// <summary>
         ///     When overridden in a derived class, allows an assembly to be resolved and loaded based on its
-        ///     <see cref="T:System.Reflection.AssemblyName" />.
+        ///     <see cref="AssemblyName" />.
         /// </summary>
         /// <param name="assemblyName">The object that describes the assembly to be loaded.</param>
         /// <returns>
@@ -55,7 +55,7 @@ namespace PluginLoader
         ///     extensions.
         /// </param>
         /// <returns>
-        ///     A handle to the loaded library, or <see cref="F:System.IntPtr.Zero" />.
+        ///     A handle to the loaded library, or <see cref="IntPtr.Zero" />.
         /// </returns>
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
         {
