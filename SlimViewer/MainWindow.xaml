@@ -68,7 +68,8 @@
                     <MenuItem Header="Black and White " Command="{Binding BlackAndWhite}"
                               IsEnabled="{Binding Path =IsActive}" />
                     <MenuItem Header="Invert" Command="{Binding InvertCommand}" IsEnabled="{Binding Path =IsActive}" />
-                    <MenuItem Header="Polaroid" Command="{Binding PolaroidCommand}" IsEnabled="{Binding Path =IsActive}" />
+                    <MenuItem Header="Polaroid" Command="{Binding PolaroidCommand}"
+                              IsEnabled="{Binding Path =IsActive}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path =IsActive}" />
@@ -178,6 +179,7 @@
             <Image x:Name="ImageStatus" Grid.Row="3" Grid.Column="0" Margin="0,0,0,9" />
             <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Row="4"
                           Focusable="False" Grid.ColumnSpan="7" Grid.Column="0">
+                <!--Well not really that clean, but it works for now, events can't be transmitted without some hassle-->
                 <commonControls:Thumbnails
                     Name="Thumbnail"
                     ItemsSource="{Binding Observer}"
