@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -45,11 +44,6 @@ namespace SlimViewer
         ///     The render
         /// </summary>
         private readonly CustomImageFormat _cif;
-
-        /// <summary>
-        ///     The render
-        /// </summary>
-        private readonly ImageRender _render;
 
         /// <summary>
         ///     The black and white command.
@@ -229,6 +223,11 @@ namespace SlimViewer
         private ICommand _openCommandCif;
 
         /// <summary>
+        ///     The polaroid command
+        /// </summary>
+        private ICommand _polaroidCommand;
+
+        /// <summary>
         ///     The previous command
         /// </summary>
         private ICommand _previousCommand;
@@ -307,17 +306,11 @@ namespace SlimViewer
         private bool _thumbs = true;
 
         /// <summary>
-        /// The polaroid command
-        /// </summary>
-        private ICommand _polaroidCommand;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
         ///     Initiates all necessary Collections as well
         /// </summary>
         public ImageView()
         {
-            _render = new ImageRender();
             _cif = new CustomImageFormat();
             Observer = new Dictionary<int, string>();
         }
@@ -647,10 +640,10 @@ namespace SlimViewer
             _invertCommand ??= new DelegateCommand<object>(InvertAction, CanExecute);
 
         /// <summary>
-        /// Gets the polaroid command.
+        ///     Gets the polaroid command.
         /// </summary>
         /// <value>
-        /// The polaroid command.
+        ///     The polaroid command.
         /// </value>
         public ICommand PolaroidCommand =>
             _polaroidCommand ??= new DelegateCommand<object>(PolaroidAction, CanExecute);
@@ -1011,7 +1004,7 @@ namespace SlimViewer
 
             if (pathObj == null) return;
 
-            var images = _render.SplitGif(pathObj.FilePath);
+            var images = Helper.Render.SplitGif(pathObj.FilePath);
 
             var count = 0;
 
@@ -1055,7 +1048,7 @@ namespace SlimViewer
 
             var target = string.Concat(path, SlimViewerResources.Slash, SlimViewerResources.NewGif);
 
-            _render.CreateGif(path, target);
+            Helper.Render.CreateGif(path, target);
         }
 
         /// <summary>
@@ -1129,7 +1122,7 @@ namespace SlimViewer
         {
             try
             {
-                var btm = _render.FilterImage(_btm, ImageFilter.GrayScale);
+                var btm = Helper.Render.FilterImage(_btm, ImageFilter.GrayScale);
                 Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1152,7 +1145,7 @@ namespace SlimViewer
         {
             try
             {
-                var btm = _render.FilterImage(_btm, ImageFilter.BlackAndWhite);
+                var btm = Helper.Render.FilterImage(_btm, ImageFilter.BlackAndWhite);
                 Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1175,7 +1168,7 @@ namespace SlimViewer
         {
             try
             {
-                var btm = _render.FilterImage(_btm, ImageFilter.Sepia);
+                var btm = Helper.Render.FilterImage(_btm, ImageFilter.Sepia);
                 Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1198,7 +1191,7 @@ namespace SlimViewer
         {
             try
             {
-                var btm = _render.FilterImage(_btm, ImageFilter.Invert);
+                var btm = Helper.Render.FilterImage(_btm, ImageFilter.Invert);
                 Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1214,14 +1207,14 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Polaroids the action.
+        ///     Polaroids the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void PolaroidAction(object obj)
         {
             try
             {
-                var btm = _render.FilterImage(_btm, ImageFilter.Polaroid);
+                var btm = Helper.Render.FilterImage(_btm, ImageFilter.Polaroid);
                 Bmp = btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1362,7 +1355,7 @@ namespace SlimViewer
         {
             try
             {
-                _btm = _render.RotateImage(_btm, -90);
+                _btm = Helper.Render.RotateImage(_btm, -90);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1385,7 +1378,7 @@ namespace SlimViewer
         {
             try
             {
-                _btm = _render.RotateImage(_btm, 90);
+                _btm = Helper.Render.RotateImage(_btm, 90);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1524,9 +1517,9 @@ namespace SlimViewer
 
             try
             {
-                _btm = _render.BitmapScaling(_btm, SlimViewerRegister.Scaling);
-                _btm = _render.RotateImage(_btm, SlimViewerRegister.Degree);
-                _btm = _render.CropImage(_btm);
+                _btm = Helper.Render.BitmapScaling(_btm, SlimViewerRegister.Scaling);
+                _btm = Helper.Render.RotateImage(_btm, SlimViewerRegister.Degree);
+                _btm = Helper.Render.CropImage(_btm);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1569,8 +1562,8 @@ namespace SlimViewer
                 var error = 0;
 
                 foreach (var check in from image in lst
-                         let btm = _render.GetOriginalBitmap(image)
-                         select SaveImage(image, SlimViewerRegister.Target, btm))
+                    let btm = Helper.Render.GetOriginalBitmap(image)
+                    select SaveImage(image, SlimViewerRegister.Target, btm))
                     if (check)
                         count++;
                     else
@@ -1868,7 +1861,7 @@ namespace SlimViewer
         {
             try
             {
-                _btm = _render.CutBitmap(_btm, frame.X, frame.Y, frame.Height, frame.Width);
+                _btm = Helper.Render.CutBitmap(_btm, frame.X, frame.Y, frame.Height, frame.Width);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentNullException ex)
@@ -1884,7 +1877,7 @@ namespace SlimViewer
         /// <param name="point">The point.</param>
         internal void GetPointColor(Point point)
         {
-            var color = _btm.GetPixel((int)point.X, (int)point.Y);
+            var color = _btm.GetPixel((int) point.X, (int) point.Y);
             Picker.SetColors(color.R, color.G, color.B, color.A);
             Color = Picker.Colors;
         }
@@ -1953,7 +1946,7 @@ namespace SlimViewer
 
                 else
                 {
-                    _btm = _render.GetOriginalBitmap(filePath);
+                    _btm = Helper.Render.GetOriginalBitmap(filePath);
 
                     //reset gif Image
                     GifPath = null;
@@ -2026,7 +2019,7 @@ namespace SlimViewer
             //initiate Basic values
             _currentFolder = folder;
             Status.Source = null;
-            Status.Source = _render.GetBitmapImageFileStream(Path.Combine(_root,
+            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
                 SlimViewerResources.IconPathRed));
 
             _fileList = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _subFolders);
@@ -2062,7 +2055,7 @@ namespace SlimViewer
 
             if (string.IsNullOrEmpty(_root)) return;
 
-            Status.Source = _render.GetBitmapImageFileStream(Path.Combine(_root,
+            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
                 SlimViewerResources.IconPathRed));
 
             //load Thumbnails
@@ -2078,43 +2071,17 @@ namespace SlimViewer
         /// <returns>
         ///     Success Status
         /// </returns>
-        private bool SaveImage(string path, string extension, Bitmap btm)
+        internal bool SaveImage(string path, string extension, Bitmap btm)
         {
-            if (File.Exists(path)) return false;
-
-            if (string.Equals(extension, SlimViewerResources.JpgExtAlt, StringComparison.CurrentCultureIgnoreCase))
-                extension = ImagingResources.JpgExt;
-
-            path = Path.ChangeExtension(path, extension);
-
-            Status.Source = _render.GetBitmapImageFileStream(Path.Combine(_root,
+            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
                 SlimViewerResources.IconPathRed));
 
-            switch (extension)
-            {
-                case ImagingResources.PngExt:
-                    _render.SaveBitmap(btm, path, ImageFormat.Png);
-                    break;
-                case ImagingResources.JpgExt:
-                    _render.SaveBitmap(btm, path, ImageFormat.Jpeg);
-                    break;
-                case ImagingResources.BmpExt:
-                    _render.SaveBitmap(btm, path, ImageFormat.Bmp);
-                    break;
-                case ImagingResources.GifExt:
-                    _render.SaveBitmap(btm, path, ImageFormat.Gif);
-                    break;
-                case ImagingResources.TifExt:
-                    _render.SaveBitmap(btm, path, ImageFormat.Tiff);
-                    break;
-                default:
-                    return false;
-            }
+            var check = Helper.SaveImage(path, extension, btm);
 
-            Status.Source = _render.GetBitmapImageFileStream(Path.Combine(_root,
+            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
                 SlimViewerResources.IconPathGreen));
 
-            return true;
+            return check;
         }
 
         /// <summary>
@@ -2125,7 +2092,7 @@ namespace SlimViewer
             if (Status == null)
                 return;
 
-            Status.Source = _render.GetBitmapImageFileStream(Path.Combine(_root,
+            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
                 SlimViewerResources.IconPathGreen));
         }
     }

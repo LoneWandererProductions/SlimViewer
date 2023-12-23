@@ -32,7 +32,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D ProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,] matrix = {{start.X, start.Y, start.Z, 1}};
 
             var m1 = new BaseMatrix(matrix);
             var m2 = ProjectionTo3DMatrix();
@@ -45,10 +45,7 @@ namespace Mathematics
 
             var check = Math.Round(w, 2);
 
-            if (check == 0.0f)
-            {
-                return new Vector3D(x, y, z);
-            }
+            if (check == 0.0f) return new Vector3D(x, y, z);
 
             x /= w;
             y /= w;
@@ -64,9 +61,9 @@ namespace Mathematics
         {
             double[,] translation =
             {
-                { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
-                { 0, 0, Projection3DRegister.Q, 1 },
-                { 0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0 }
+                {Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0}, {0, Projection3DRegister.F, 0, 0},
+                {0, 0, Projection3DRegister.Q, 1},
+                {0, 0, -Projection3DRegister.ZNear * Projection3DRegister.Q, 0}
             };
 
             //now lacks /w, has to be done at the end!
@@ -124,7 +121,7 @@ namespace Mathematics
 
             //var lookDir = cameraRotation * target, (matrix * Vector)
             //TODO check, a huge mess, compare with other results
-            var mTarget = new BaseMatrix(1, 4) { [0, 0] = 0, [0, 1] = 0, [0, 2] = 1, [0, 3] = 1 };
+            var mTarget = new BaseMatrix(1, 4) {[0, 0] = 0, [0, 1] = 0, [0, 2] = 1, [0, 3] = 1};
 
             mTarget = cameraRotation * mTarget;
             var lookDir = Projection3D.GetVector(mTarget);
@@ -189,8 +186,8 @@ namespace Mathematics
         {
             double[,] rotation =
             {
-                { Math.Cos(angle), 0, Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
-                { 0, -Math.Sin(angle), 0, Math.Cos(angle) }, { 0, 0, 0, 1 }
+                {Math.Cos(angle), 0, Math.Sin(angle), 0}, {0, 1, 0, 0},
+                {0, -Math.Sin(angle), 0, Math.Cos(angle)}, {0, 0, 0, 1}
             };
 
             return new BaseMatrix(rotation);

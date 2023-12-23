@@ -62,7 +62,7 @@ namespace Mathematics
         /// <value>
         ///     The rounded x.
         /// </value>
-        public int RoundedX => (int)Math.Round(X, 0);
+        public int RoundedX => (int) Math.Round(X, 0);
 
         /// <summary>
         ///     Gets the rounded y.
@@ -70,7 +70,7 @@ namespace Mathematics
         /// <value>
         ///     The rounded y.
         /// </value>
-        public int RoundedY => (int)Math.Round(Y, 0);
+        public int RoundedY => (int) Math.Round(Y, 0);
 
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace Mathematics
         /// </returns>
         public static Vector2D operator +(Vector2D first, Vector2D second)
         {
-            return new Vector2D(first.X + second.X, first.Y + second.Y);
+            return new(first.X + second.X, first.Y + second.Y);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Mathematics
         /// </returns>
         public static Vector2D operator -(Vector2D first, Vector2D second)
         {
-            return new Vector2D(first.X - second.X, first.Y - second.Y);
+            return new(first.X - second.X, first.Y - second.Y);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public Vector2D Multiply(double value)
         {
-            return new Vector2D { X = X * value, Y = Y * value };
+            return new() {X = X * value, Y = Y * value};
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace Mathematics
         public Vector2D Normalize()
         {
             var l = VectorLength();
-            return new Vector2D { X = X / l, Y = Y / l };
+            return new Vector2D {X = X / l, Y = Y / l};
         }
 
         /// <summary>

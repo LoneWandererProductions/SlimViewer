@@ -1,8 +1,24 @@
-﻿using System;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViewer
+ * FILE:        SlimViewer/GifView.cs
+ * PURPOSE:     View Model for the Gif Window
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using CommonControls;
+using ExtendedSystemObjects;
+using FileHandler;
+using Imaging;
 
 namespace SlimViewer
 {
@@ -19,9 +35,20 @@ namespace SlimViewer
         private BitmapImage _bmp;
 
         /// <summary>
+        ///     The current folder
+        /// </summary>
+        private string _currentFolder;
+
+        /// <summary>
         ///     The current identifier
         /// </summary>
         private int _currentId;
+
+
+        /// <summary>
+        ///     The GIF path
+        /// </summary>
+        private string _gifPath;
 
         /// <summary>
         ///     The observer
@@ -117,9 +144,95 @@ namespace SlimViewer
             GenerateView(filePath);
         }
 
+        /// <summary>
+        ///     Generates the view.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
         private void GenerateView(string filePath)
         {
-            throw new NotImplementedException();
+            _currentFolder = filePath;
+            LoadThumbs();
+        }
+
+        /// <summary>
+        ///     Loads the thumbs.
+        /// </summary>
+        private void LoadThumbs()
+        {
+            var fileList =
+                FileHandleSearch.GetFilesByExtensionFullPath(_currentFolder, ImagingResources.Appendix, false);
+            _ = GenerateThumbView(fileList);
+        }
+
+        /// <summary>
+        ///     Generates the thumb view.
+        /// </summary>
+        /// <param name="lst">The File List.</param>
+        private async Task GenerateThumbView(IReadOnlyCollection<string> lst)
+        {
+            //load Thumbnails
+            _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        ///     Converts to GIF action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ConvertToGifAction(object obj)
+        {
+            //TODo not working correct
+            //Initiate Folder
+            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+
+            //get target Folder
+            var path = FileIoHandler.ShowFolder(_currentFolder);
+
+            var target = string.Concat(path, SlimViewerResources.Slash, SlimViewerResources.NewGif);
+
+            Helper.Render.CreateGif(path, target);
+        }
+
+        /// <summary>
+        ///     Converts the gif to images action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ConvertGifAction(object obj)
+        {
+            //Initiate Folder
+            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
+
+            if (pathObj == null) return;
+
+            var images = Helper.Render.SplitGif(pathObj.FilePath);
+
+            var count = 0;
+
+            foreach (var image in images)
+                try
+                {
+                    count++;
+                    var path = string.Concat(pathObj.Folder, SlimViewerResources.Slash, count);
+                    var check = Helper.SaveImage(path, ImagingResources.JpgExt, image);
+                    if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
+                }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                }
+                catch (IOException ex)
+                {
+                    Trace.WriteLine(ex);
+                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                }
+                catch (ExternalException ex)
+                {
+                    Trace.WriteLine(ex);
+                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                }
         }
     }
 }
