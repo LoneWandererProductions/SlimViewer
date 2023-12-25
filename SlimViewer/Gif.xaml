@@ -16,31 +16,40 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
             <RowDefinition Height="5" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
             <RowDefinition />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="25" />
+
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
             <ColumnDefinition />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="200" />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
 
-        <commonControls:Thumbnails Grid.Column="3" HorizontalAlignment="Center" Grid.Row="2"
-                                   VerticalAlignment="Stretch"
+        <commonControls:Thumbnails Grid.Column="4" HorizontalAlignment="Left" Grid.Row="2"
                                    ItemsSource="{Binding Observer}"
                                    ThumbCellSize="100"
                                    ThumbLength="1"
                                    SelectBox="True"
-                                   ImageClicked="Thumb_ImageClicked" />
-        <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2"
-                                  VerticalAlignment="Stretch" Grid.RowSpan="6"
+                                   ImageClicked="Thumb_ImageClicked" Grid.RowSpan="6" />
+        <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" Grid.Row="3" Grid.RowSpan="5"
                                   ItemsSource="{Binding Bmp}" />
+        <Button Grid.Row="0" Grid.Column="3" Content="Gif"
+                Command="{Binding OpenCommand}" />
+
+        <Button Grid.Row="2" Grid.Column="3" Content="Folder"
+                Command="{Binding OpenFolderCommand}" />
+        <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap"
+                 VerticalAlignment="Stretch" />
+        <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap"
+                 VerticalAlignment="Stretch" />
     </Grid>
 </Window>

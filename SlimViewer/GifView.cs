@@ -14,11 +14,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using CommonControls;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using ViewModel;
 
 namespace SlimViewer
 {
@@ -44,7 +46,6 @@ namespace SlimViewer
         /// </summary>
         private int _currentId;
 
-
         /// <summary>
         ///     The GIF path
         /// </summary>
@@ -54,6 +55,34 @@ namespace SlimViewer
         ///     The observer
         /// </summary>
         private Dictionary<int, string> _observer;
+
+        /// <summary>
+        ///     The open command
+        /// </summary>
+        private ICommand _openCommand;
+
+        /// <summary>
+        ///     The open folder command
+        /// </summary>
+        private ICommand _openFolderCommand;
+
+        /// <summary>
+        ///     Gets the open command.
+        /// </summary>
+        /// <value>
+        ///     The open command.
+        /// </value>
+        public ICommand OpenCommand =>
+            _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the open folder command.
+        /// </summary>
+        /// <value>
+        ///     The open folder command.
+        /// </value>
+        public ICommand OpenFolderCommand =>
+            _openFolderCommand ??= new DelegateCommand<object>(OpenFolderAction, CanExecute);
 
         /// <summary>
         ///     Gets or sets the image.
@@ -172,6 +201,37 @@ namespace SlimViewer
         {
             //load Thumbnails
             _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        ///     Opens the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void OpenAction(object obj)
+        {
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
+
+            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
+
+            if (!string.IsNullOrEmpty(pathObj.Folder)) _currentFolder = pathObj.Folder;
+
+            //TODO still shit
+        }
+
+        /// <summary>
+        ///     Opens the folder action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private void OpenFolderAction(object obj)
+        {
+            //Initiate Folder
+            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+
+            //get target Folder
+            var path = FileIoHandler.ShowFolder(_currentFolder);
+
+            if (!Directory.Exists(path)) return;
         }
 
 
