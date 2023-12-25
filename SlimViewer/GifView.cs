@@ -28,13 +28,23 @@ namespace SlimViewer
     /// <summary>
     ///     Gif Viewer
     /// </summary>
-    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
+    /// <seealso cref="INotifyPropertyChanged" />
     public sealed class GifView : INotifyPropertyChanged
     {
         /// <summary>
         ///     The BMP
         /// </summary>
         private BitmapImage _bmp;
+
+        /// <summary>
+        ///     The clear command
+        /// </summary>
+        private ICommand _clearCommand;
+
+        /// <summary>
+        ///     The close command
+        /// </summary>
+        private ICommand _closeCommand;
 
         /// <summary>
         ///     The current folder
@@ -67,6 +77,21 @@ namespace SlimViewer
         private ICommand _openFolderCommand;
 
         /// <summary>
+        ///     The output command
+        /// </summary>
+        private ICommand _outputCommand;
+
+        /// <summary>
+        ///     The save GIF command
+        /// </summary>
+        private ICommand _saveGifCommand;
+
+        /// <summary>
+        ///     The save images command
+        /// </summary>
+        private ICommand _saveImagesCommand;
+
+        /// <summary>
         ///     Gets the open command.
         /// </summary>
         /// <value>
@@ -83,6 +108,52 @@ namespace SlimViewer
         /// </value>
         public ICommand OpenFolderCommand =>
             _openFolderCommand ??= new DelegateCommand<object>(OpenFolderAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the open folder command.
+        /// </summary>
+        /// <value>
+        ///     The open folder command.
+        /// </value>
+        public ICommand OutputCommand =>
+            _outputCommand ??= new DelegateCommand<object>(OutputAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the clear command.
+        /// </summary>
+        /// <value>
+        ///     The clear command.
+        /// </value>
+        public ICommand ClearCommand =>
+            _clearCommand ??= new DelegateCommand<object>(ClearAction, CanExecute);
+
+
+        /// <summary>
+        ///     Gets the save GIF command.
+        /// </summary>
+        /// <value>
+        ///     The save GIF command.
+        /// </value>
+        public ICommand SaveGifCommand =>
+            _saveGifCommand ??= new DelegateCommand<object>(SaveGifAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the save images command.
+        /// </summary>
+        /// <value>
+        ///     The save images command.
+        /// </value>
+        public ICommand SaveImagesCommand =>
+            _saveImagesCommand ??= new DelegateCommand<object>(SaveImagesAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the close command.
+        /// </summary>
+        /// <value>
+        ///     The close command.
+        /// </value>
+        public ICommand CloseCommand =>
+            _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
         ///     Gets or sets the image.
@@ -211,11 +282,12 @@ namespace SlimViewer
         {
             var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
 
-            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
-
-            if (!string.IsNullOrEmpty(pathObj.Folder)) _currentFolder = pathObj.Folder;
+            if (pathObj == null || !File.Exists(pathObj.FilePath) || !string.Equals(pathObj.Extension, "gif")) return;
 
             //TODO still shit
+            var lst = Helper.Render.LoadGif(pathObj.FilePath);
+
+            _gifPath = pathObj.FilePath;
         }
 
         /// <summary>
@@ -232,8 +304,35 @@ namespace SlimViewer
             var path = FileIoHandler.ShowFolder(_currentFolder);
 
             if (!Directory.Exists(path)) return;
+
+
+            //TODO still shit
         }
 
+        private void OutputAction(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ClearAction(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SaveImagesAction(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CloseAction(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SaveGifAction(object obj)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         ///     Converts to GIF action.

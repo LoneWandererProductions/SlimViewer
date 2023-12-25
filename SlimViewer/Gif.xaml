@@ -8,48 +8,65 @@
     x:Class="SlimViewer.Gif"
     mc:Ignorable="d"
     x:ClassModifier="internal"
-    Title="Gif" Height="450" Width="800">
+    Title="Gif" Height="450" Width="800" Closing="Window_Closing">
     <Window.DataContext>
         <local:GifView x:Name="View" />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="25" />
             <RowDefinition Height="5" />
             <RowDefinition Height="25" />
             <RowDefinition Height="25" />
             <RowDefinition Height="25" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="25" />
             <RowDefinition />
-
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
             <ColumnDefinition />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="120" />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
-
-        <commonControls:Thumbnails Grid.Column="4" HorizontalAlignment="Left" Grid.Row="2"
+        <MenuItem Header="Menu">
+            <MenuItem Header="Open Gif" Command="{Binding OpenCommand}" />
+            <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" />
+            <MenuItem Header="Define Output Folder" Command="{Binding OutputCommand}"
+                      IsEnabled="{Binding Path =IsActive}" />
+            <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}"
+                      IsEnabled="{Binding Path =IsActive}" />
+            <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path =IsActive}" />
+            <MenuItem Header="Save as images" Command="{Binding SaveImagesCommand}"
+                      IsEnabled="{Binding Path =IsActive}" />
+            <Separator />
+            <MenuItem Header="Close" Command="{Binding CloseCommand}" />
+        </MenuItem>
+        <commonControls:Thumbnails Grid.Column="3" Grid.Row="1" Grid.RowSpan="10"
                                    ItemsSource="{Binding Observer}"
                                    ThumbCellSize="100"
                                    ThumbLength="1"
                                    SelectBox="True"
-                                   ImageClicked="Thumb_ImageClicked" Grid.RowSpan="6" />
-        <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" Grid.Row="3" Grid.RowSpan="5"
+                                   ImageClicked="Thumb_ImageClicked" />
+        <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" Grid.Row="1" Grid.RowSpan="10"
                                   ItemsSource="{Binding Bmp}" />
-        <Button Grid.Row="0" Grid.Column="3" Content="Gif"
-                Command="{Binding OpenCommand}" />
-
-        <Button Grid.Row="2" Grid.Column="3" Content="Folder"
-                Command="{Binding OpenFolderCommand}" />
-        <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch" />
-        <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch" />
+        <Label Grid.Row="1" Grid.Column="5" Content="File Path" />
+        <Label Grid.Row="3" Grid.Column="5" Content="Information" />
+        <Label Grid.Row="5" Grid.Column="5" Content="Output Path" />
+        <Button Grid.Row="7" Grid.Column="5" Content="Clear"
+                Command="{Binding ClearCommand}" />
+        <TextBox Grid.Row="1" Grid.Column="7" TextWrapping="Wrap" />
+        <TextBox Grid.Row="3" Grid.Column="7" TextWrapping="Wrap" />
+        <TextBox Grid.Row="5" Grid.Column="7" TextWrapping="Wrap" />
+        <CheckBox Content="Auto Clear" Grid.Column="7" HorizontalAlignment="Stretch" Grid.Row="7" />
     </Grid>
 </Window>

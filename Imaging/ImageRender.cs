@@ -415,7 +415,6 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="target">The target.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void CreateGif(string path, string target)
         {
             ImageGifHandler.CreateGif(path, target);

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using CommonControls;
 
 namespace SlimViewer
@@ -22,6 +23,17 @@ namespace SlimViewer
         private void Thumb_ImageClicked(ImageEventArgs itemId)
         {
             View.ChangeImage(itemId.Id);
+        }
+
+        /// <summary>
+        ///     Handles the Closing event of the Window control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            //TODO add Check
+            View.ClearCommand.Execute(null);
         }
     }
 }
