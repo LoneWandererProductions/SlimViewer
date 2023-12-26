@@ -76,7 +76,7 @@ namespace SlimViewer
             foreach (var image in Render.SplitGif(gifPath))
                 try
                 {
-                    var check = Helper.SaveImage(imageExport, ImagingResources.JpgExt, image);
+                    var check = SaveImage(imageExport, ImagingResources.JpgExt, image);
                     if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
                 }
                 catch (ArgumentException ex)
@@ -94,6 +94,20 @@ namespace SlimViewer
                     Trace.WriteLine(ex);
                     _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
                 }
+        }
+
+        /// <summary>
+        ///     Converts to GIF action.
+        /// </summary>
+        /// <param name="folder">Source Folder.</param>
+        /// <param name="gifPath">Target Folder.</param>
+        /// <returns>Path to new gif file</returns>
+        internal static string ConvertToGifAction(string folder, string gifPath)
+        {
+            var target = Path.Combine(gifPath, SlimViewerResources.NewGif);
+            Render.CreateGif(folder, target);
+
+            return target;
         }
     }
 }

@@ -9,11 +9,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using CommonControls;
@@ -57,9 +54,24 @@ namespace SlimViewer
         private int _currentId;
 
         /// <summary>
+        ///     The GIF export
+        /// </summary>
+        private string _gifExport;
+
+        /// <summary>
         ///     The GIF path
         /// </summary>
         private string _gifPath;
+
+        /// <summary>
+        ///     The image export
+        /// </summary>
+        private string _imageExport;
+
+        /// <summary>
+        ///     The is active
+        /// </summary>
+        private bool _isActive;
 
         /// <summary>
         ///     The observer
@@ -92,25 +104,10 @@ namespace SlimViewer
         private ICommand _saveImagesCommand;
 
         /// <summary>
-        /// The is active
-        /// </summary>
-        private bool _isActive;
-
-        /// <summary>
-        /// The image export
-        /// </summary>
-        private string _imageExport;
-
-        /// <summary>
-        /// The GIF export
-        /// </summary>
-        private string _gifExport;
-
-        /// <summary>
-        /// Gets the open command.
+        ///     Gets the open command.
         /// </summary>
         /// <value>
-        /// The open command.
+        ///     The open command.
         /// </value>
         public ICommand OpenCommand =>
             _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
@@ -215,10 +212,10 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is active.
+        ///     Gets or sets a value indicating whether this instance is active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is active; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
         /// </value>
         public bool IsActive
         {
@@ -275,27 +272,7 @@ namespace SlimViewer
             _currentId = id;
 
             var filePath = Observer[id];
-            GenerateView(filePath);
-        }
-
-        /// <summary>
-        ///     Generates the view.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        private void GenerateView(string filePath)
-        {
-            _currentFolder = filePath;
-            LoadThumbs();
-        }
-
-        /// <summary>
-        ///     Loads the thumbs.
-        /// </summary>
-        private void LoadThumbs()
-        {
-            var fileList =
-                FileHandleSearch.GetFilesByExtensionFullPath(_currentFolder, ImagingResources.Appendix, false);
-            _ = GenerateThumbView(fileList);
+            //TODO!
         }
 
         /// <summary>
@@ -314,16 +291,23 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
+            //Initiate Folder
+            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+
             var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
 
-            if (pathObj == null || !File.Exists(pathObj.FilePath) || !string.Equals(pathObj.Extension, "gif")) return;
+            if (pathObj == null || !File.Exists(pathObj.FilePath) ||
+                !string.Equals(pathObj.Extension, ImagingResources.GifExt)) return;
 
             Initiate();
 
             _gifPath = pathObj.FilePath;
             Helper.ConvertGifAction(_gifPath, _imageExport);
+            _currentFolder = _imageExport;
 
-            LoadThumbs();
+            var fileList =
+                FileHandleSearch.GetFilesByExtensionFullPath(_currentFolder, ImagingResources.JpgExt, false);
+            _ = GenerateThumbView(fileList);
         }
 
         /// <summary>
@@ -339,9 +323,19 @@ namespace SlimViewer
             //get target Folder
             var path = FileIoHandler.ShowFolder(_currentFolder);
 
+            var fileList =
+                FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
+
+            if (fileList.Count >= 200)
+                //TODO error
+                return;
+
             Initiate();
 
-            //TODO still shit
+            _currentFolder = path;
+            _ = GenerateThumbView(fileList);
+
+            _gifPath = Helper.ConvertToGifAction(path, _gifPath);
         }
 
         private void OutputAction(object obj)
@@ -370,33 +364,12 @@ namespace SlimViewer
         }
 
         /// <summary>
-        ///     Converts to GIF action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void ConvertToGifAction(object obj)
-        {
-            //TODo not working correct
-            //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
-
-            //get target Folder
-            var path = FileIoHandler.ShowFolder(_currentFolder);
-
-            var target = string.Concat(path, SlimViewerResources.Slash, SlimViewerResources.NewGif);
-
-            Helper.Render.CreateGif(path, target);
-        }
-
-        /// <summary>
-        /// Initiates this instance.
+        ///     Initiates this instance.
         /// </summary>
         private void Initiate()
         {
             var root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
-            if (!Directory.Exists(root))
-            {
-                Directory.CreateDirectory(root);
-            }
+            if (!Directory.Exists(root)) Directory.CreateDirectory(root);
 
             _imageExport = Path.Combine(root, SlimViewerResources.ImagesPath);
             {
