@@ -7,4 +7,18 @@
     <Company>Lone Wanderer Productions</Company>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="System\green.png" />
+    <None Remove="System\red.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="System\green.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System\red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

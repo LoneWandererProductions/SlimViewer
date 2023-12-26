@@ -22,7 +22,7 @@ namespace SlimViewer
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SlimViewer.MainWindow" /> class.
+        ///     Initializes a new instance of the <see cref="MainWindow" /> class.
         /// </summary>
         public MainWindow()
         {

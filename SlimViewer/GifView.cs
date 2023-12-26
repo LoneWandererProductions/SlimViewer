@@ -92,10 +92,15 @@ namespace SlimViewer
         private ICommand _saveImagesCommand;
 
         /// <summary>
-        ///     Gets the open command.
+        /// The is active
+        /// </summary>
+        private bool _isActive;
+
+        /// <summary>
+        /// Gets the open command.
         /// </summary>
         /// <value>
-        ///     The open command.
+        /// The open command.
         /// </value>
         public ICommand OpenCommand =>
             _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
@@ -198,6 +203,25 @@ namespace SlimViewer
                 OnPropertyChanged(nameof(Observer));
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsActive
+        {
+            get => _isActive;
+            set
+            {
+                if (_isActive == value) return;
+
+                _isActive = value;
+                OnPropertyChanged(nameof(IsActive));
+            }
+        }
+
 
         /// <inheritdoc />
         /// <summary>
