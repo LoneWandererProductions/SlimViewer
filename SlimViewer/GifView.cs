@@ -49,7 +49,7 @@ namespace SlimViewer
         /// <summary>
         ///     The current folder
         /// </summary>
-        private string _currentFolder;
+        private string _currentFolder = Directory.GetCurrentDirectory();
 
         /// <summary>
         ///     The current identifier
@@ -95,6 +95,16 @@ namespace SlimViewer
         /// The is active
         /// </summary>
         private bool _isActive;
+
+        /// <summary>
+        /// The image export
+        /// </summary>
+        private string _imageExport;
+
+        /// <summary>
+        /// The GIF export
+        /// </summary>
+        private string _gifExport;
 
         /// <summary>
         /// Gets the open command.
@@ -308,10 +318,12 @@ namespace SlimViewer
 
             if (pathObj == null || !File.Exists(pathObj.FilePath) || !string.Equals(pathObj.Extension, "gif")) return;
 
-            //TODO still shit
-            var lst = Helper.Render.LoadGif(pathObj.FilePath);
+            Initiate();
 
             _gifPath = pathObj.FilePath;
+            Helper.ConvertGifAction(_gifPath, _imageExport);
+
+            LoadThumbs();
         }
 
         /// <summary>
@@ -327,8 +339,7 @@ namespace SlimViewer
             //get target Folder
             var path = FileIoHandler.ShowFolder(_currentFolder);
 
-            if (!Directory.Exists(path)) return;
-
+            Initiate();
 
             //TODO still shit
         }
@@ -377,45 +388,25 @@ namespace SlimViewer
         }
 
         /// <summary>
-        ///     Converts the gif to images action.
+        /// Initiates this instance.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void ConvertGifAction(object obj)
+        private void Initiate()
         {
-            //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+            var root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
+            if (!Directory.Exists(root))
+            {
+                Directory.CreateDirectory(root);
+            }
 
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
+            _imageExport = Path.Combine(root, SlimViewerResources.ImagesPath);
+            {
+                Directory.CreateDirectory(_imageExport);
+            }
 
-            if (pathObj == null) return;
-
-            var images = Helper.Render.SplitGif(pathObj.FilePath);
-
-            var count = 0;
-
-            foreach (var image in images)
-                try
-                {
-                    count++;
-                    var path = string.Concat(pathObj.Folder, SlimViewerResources.Slash, count);
-                    var check = Helper.SaveImage(path, ImagingResources.JpgExt, image);
-                    if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
-                }
-                catch (ArgumentException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-                }
-                catch (IOException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-                }
-                catch (ExternalException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-                }
+            _gifExport = Path.Combine(root, SlimViewerResources.NewGifPath);
+            {
+                Directory.CreateDirectory(_gifExport);
+            }
         }
     }
 }

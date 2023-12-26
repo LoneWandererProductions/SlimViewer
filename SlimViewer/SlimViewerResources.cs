@@ -184,8 +184,23 @@ namespace SlimViewer
         internal const string Slash = "\\";
 
         /// <summary>
-        ///     The New Gif file Name. Value: "NewGif"
+        ///     The New Gif file Name. (const). Value: "NewGif.gif"
         /// </summary>
         internal const string NewGif = "NewGif.gif";
+
+        /// <summary>
+        ///     The  Gif Path, we do some gif Manipulations. (const). Value: "Gif"
+        /// </summary>
+        internal const string GifPath = "Gif";
+
+        /// <summary>
+        ///     The Images Path (const). Value: "Images"
+        /// </summary>
+        internal const string ImagesPath = "Images";
+
+        /// <summary>
+        ///     The New Gif file Name.(const).  Value: "NewGif"
+        /// </summary>
+        internal const string NewGifPath = "NewGif";
     }
 }

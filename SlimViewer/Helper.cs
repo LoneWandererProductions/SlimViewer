@@ -8,9 +8,12 @@
 
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows;
 using Imaging;
 
 namespace SlimViewer
@@ -60,6 +63,37 @@ namespace SlimViewer
             }
 
             return true;
+        }
+
+
+        /// <summary>
+        ///     Converts the gif to images action.
+        /// </summary>
+        /// <param name="gifPath"></param>
+        /// <param name="imageExport"></param>
+        internal static void ConvertGifAction(string gifPath, string imageExport)
+        {
+            foreach (var image in Render.SplitGif(gifPath))
+                try
+                {
+                    var check = Helper.SaveImage(imageExport, ImagingResources.JpgExt, image);
+                    if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
+                }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                }
+                catch (IOException ex)
+                {
+                    Trace.WriteLine(ex);
+                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                }
+                catch (ExternalException ex)
+                {
+                    Trace.WriteLine(ex);
+                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                }
         }
     }
 }
