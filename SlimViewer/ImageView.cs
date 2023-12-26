@@ -1562,8 +1562,8 @@ namespace SlimViewer
                 var error = 0;
 
                 foreach (var check in from image in lst
-                    let btm = Helper.Render.GetOriginalBitmap(image)
-                    select SaveImage(image, SlimViewerRegister.Target, btm))
+                         let btm = Helper.Render.GetOriginalBitmap(image)
+                         select SaveImage(image, SlimViewerRegister.Target, btm))
                     if (check)
                         count++;
                     else
@@ -1877,7 +1877,7 @@ namespace SlimViewer
         /// <param name="point">The point.</param>
         internal void GetPointColor(Point point)
         {
-            var color = _btm.GetPixel((int) point.X, (int) point.Y);
+            var color = _btm.GetPixel((int)point.X, (int)point.Y);
             Picker.SetColors(color.R, color.G, color.B, color.A);
             Color = Picker.Colors;
         }

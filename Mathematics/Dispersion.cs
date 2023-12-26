@@ -24,10 +24,7 @@ namespace Mathematics
         /// <param name="row">The row.</param>
         public Dispersion(List<double> row)
         {
-            if (row == null || row.Count == 0)
-            {
-                return;
-            }
+            if (row == null || row.Count == 0) return;
 
             Row = row;
             CalcArithmeticMean();
@@ -140,15 +137,9 @@ namespace Mathematics
 
             foreach (var element in Row)
             {
-                if (min >= element)
-                {
-                    min = element;
-                }
+                if (min >= element) min = element;
 
-                if (max <= element)
-                {
-                    max = element;
-                }
+                if (max <= element) max = element;
             }
 
             Span = max - min;

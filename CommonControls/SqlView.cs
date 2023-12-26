@@ -25,14 +25,14 @@ namespace CommonControls
     public sealed class SqlView : INotifyPropertyChanged
     {
         /// <summary>
+        ///     The close command
+        /// </summary>
+        private ICommand _closeCommand;
+
+        /// <summary>
         ///     The connect command
         /// </summary>
         private ICommand _connectCommand;
-
-        /// <summary>
-        /// The close command
-        /// </summary>
-        private ICommand _closeCommand;
 
         /// <summary>
         ///     The data base
@@ -60,10 +60,7 @@ namespace CommonControls
             get => _isActive;
             set
             {
-                if (_isActive == value)
-                {
-                    return;
-                }
+                if (_isActive == value) return;
 
                 _isActive = value;
                 OnPropertyChanged(nameof(IsActive));
@@ -81,10 +78,7 @@ namespace CommonControls
             get => _dataBase;
             set
             {
-                if (_dataBase == value)
-                {
-                    return;
-                }
+                if (_dataBase == value) return;
 
                 _dataBase = value;
                 OnPropertyChanged(nameof(Database));
@@ -102,10 +96,7 @@ namespace CommonControls
             get => _server;
             set
             {
-                if (_server == value)
-                {
-                    return;
-                }
+                if (_server == value) return;
 
                 _server = value;
                 OnPropertyChanged(nameof(Server));
@@ -123,10 +114,7 @@ namespace CommonControls
             get => AddLog;
             set
             {
-                if (AddLog == value)
-                {
-                    return;
-                }
+                if (AddLog == value) return;
 
                 AddLog = value;
                 OnPropertyChanged(nameof(Log));
@@ -143,10 +131,10 @@ namespace CommonControls
             _connectCommand ??= new DelegateCommand<object>(ConnectAction, CanExecute);
 
         /// <summary>
-        /// Gets the close command.
+        ///     Gets the close command.
         /// </summary>
         /// <value>
-        /// The close command.
+        ///     The close command.
         /// </value>
         public ICommand CloseCommand =>
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);

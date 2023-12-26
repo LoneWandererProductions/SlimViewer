@@ -63,7 +63,7 @@ namespace Mathematics
 
                         for (var k = 0; k < l; k++, iTwo += w) res += pmOne[iOne + k] * pmTwo[iTwo];
 
-                        pm[(i * w) + j] = res;
+                        pm[i * w + j] = res;
                     }
                 }
             }
@@ -89,7 +89,7 @@ namespace Mathematics
                 for (var i = 0; i < h; i++)
                 for (var j = 0; j < w; j++)
                 {
-                    var cursor = i + (j * mOne.Width);
+                    var cursor = i + j * mOne.Width;
 
                     pm[cursor] = pmOne[cursor] + pmTwo[cursor];
                 }
@@ -115,7 +115,7 @@ namespace Mathematics
                 for (var i = 0; i < h; i++)
                 for (var j = 0; j < w; j++)
                 {
-                    var cursor = i + (j * mOne.Width);
+                    var cursor = i + j * mOne.Width;
 
                     pm[cursor] = pmOne[cursor] - pmTwo[cursor];
                 }

@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Gif\**" />
+    <EmbeddedResource Remove="Gif\**" />
+    <None Remove="Gif\**" />
+    <Page Remove="Gif\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="System\green.png" />
     <None Remove="System\red.png" />
   </ItemGroup>
@@ -25,10 +32,6 @@
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
     <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Gif\" />
   </ItemGroup>
 
 </Project>

@@ -15,7 +15,7 @@ namespace CommonControls
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
-    /// Login Window for Sql Server
+    ///     Login Window for Sql Server
     /// </summary>
     /// <seealso cref="Window" />
     /// <seealso cref="IComponentConnector" />
@@ -23,7 +23,7 @@ namespace CommonControls
     {
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:CommonControls.SqlLogin" /> class.
+        ///     Initializes a new instance of the <see cref="T:CommonControls.SqlLogin" /> class.
         /// </summary>
         public SqlLogin()
         {
