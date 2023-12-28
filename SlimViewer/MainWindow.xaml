@@ -79,6 +79,7 @@
                           IsEnabled="{Binding Path =IsActive}" />
                 <Separator />
                 <MenuItem Header="Scale Image" Command="{Binding ScaleCommand}" IsEnabled="{Binding Path =IsActive}" />
+                <MenuItem Header="Gif Generator" Command="{Binding GifWindowCommand}"  />
             </MenuItem>
             <MenuItem Header="Folder">
                 <MenuItem Header="Open Folder" Command="{Binding FolderCommand}" />

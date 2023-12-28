@@ -18,7 +18,7 @@ namespace SlimViewer
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SlimViewer.Scale" /> class.
+        ///     Initializes a new instance of the <see cref="Scale" /> class.
         /// </summary>
         public Scale()
         {

@@ -291,6 +291,11 @@ namespace SlimViewer
         private ICommand _similarCommand;
 
         /// <summary>
+        /// The GIF window command
+        /// </summary>
+        private ICommand _gifWindowCommand;
+
+        /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
         /// </summary>
         private int _similarity = 90;
@@ -306,8 +311,33 @@ namespace SlimViewer
         private bool _thumbs = true;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ImageView" /> class.
-        ///     Initiates all necessary Collections as well
+        /// The GIF window
+        /// </summary>
+        private Gif _gifWindow;
+
+        /// <summary>
+        /// The compare Window
+        /// </summary>
+        private Compare _compareWindow;
+
+        /// <summary>
+        /// The search Window
+        /// </summary>
+        private Search _searchWindow;
+
+        /// <summary>
+        /// The scale window
+        /// </summary>
+        private Converter _converterWindow;
+
+        /// <summary>
+        /// The scale window
+        /// </summary>
+        private Scale _scaleWindow;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageView" /> class.
+        /// Initiates all necessary Collections as well
         /// </summary>
         public ImageView()
         {
@@ -863,6 +893,22 @@ namespace SlimViewer
         public ICommand ConvertCommandToGif =>
             _convertCommandToGif ??= new DelegateCommand<object>(ConvertToGifAction, CanExecute);
 
+        /// <summary>
+        /// The GIF window command.
+        /// </summary>
+        /// <value>
+        /// The GIF window command.
+        /// </value>
+        public ICommand GifWindowCommand =>
+            _gifWindowCommand ??= new DelegateCommand<object>(GifWindowAction, CanExecute);
+
+        /// <summary>
+        /// Gets or sets the main.
+        /// </summary>
+        /// <value>
+        /// The main.
+        /// </value>
+        public MainWindow Main { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -1229,7 +1275,6 @@ namespace SlimViewer
             }
         }
 
-
         /// <summary>
         ///     Deletes the Image.
         /// </summary>
@@ -1489,7 +1534,8 @@ namespace SlimViewer
 
             var rename = new Rename(dct)
             {
-                Topmost = true
+                Topmost = true,
+                Owner = Main
             };
             _ = rename.ShowDialog();
 
@@ -1509,11 +1555,12 @@ namespace SlimViewer
         {
             SlimViewerRegister.ResetScaling();
 
-            var scale = new Scale
+            _scaleWindow = new Scale
             {
-                Topmost = true
+                Topmost = true,
+                Owner = Main
             };
-            _ = scale.ShowDialog();
+            _ = _scaleWindow.ShowDialog();
 
             try
             {
@@ -1542,11 +1589,12 @@ namespace SlimViewer
         {
             SlimViewerRegister.ResetConvert();
 
-            var scale = new Converter
+            _converterWindow = new Converter
             {
-                Topmost = true
+                Topmost = true,
+                Owner = Main
             };
-            _ = scale.ShowDialog();
+            _ = _converterWindow.ShowDialog();
 
             if (string.IsNullOrEmpty(SlimViewerRegister.Target) ||
                 string.IsNullOrEmpty(SlimViewerRegister.Source)) return;
@@ -1596,11 +1644,12 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void SimilarAction(object obj)
         {
-            var compare = new Compare(SubFolders, _currentFolder, this, Similarity)
+            _compareWindow = new Compare(SubFolders, _currentFolder, this, Similarity)
             {
-                Topmost = true
+                Topmost = true,
+                Owner = Main
             };
-            compare.Show();
+            _compareWindow.Show();
         }
 
         /// <summary>
@@ -1610,11 +1659,26 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void DuplicateAction(object obj)
         {
-            var compare = new Compare(SubFolders, _currentFolder, this)
+            _compareWindow = new Compare(SubFolders, _currentFolder, this)
             {
-                Topmost = true
+                Topmost = true,
+                Owner = Main
             };
-            compare.Show();
+            _compareWindow.Show();
+        }
+
+        /// <summary>
+        /// GIFs the window action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void GifWindowAction(object obj)
+        {
+            _gifWindow = new Gif()
+            {
+                Topmost = true,
+                Owner = Main
+            };
+            _gifWindow.Show();
         }
 
         /// <summary>
@@ -1645,11 +1709,12 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void SearchAction(object obj)
         {
-            var search = new Search(SubFolders, _currentFolder, this, Color)
+            _searchWindow = new Search(SubFolders, _currentFolder, this, Color)
             {
-                Topmost = true
+                Topmost = true,
+                Owner = Main
             };
-            search.Show();
+            _searchWindow.Show();
         }
 
         /// <summary>

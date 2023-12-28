@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.ComponentModel;
 using System.Windows;
 using CommonControls;
 using Imaging;
@@ -27,6 +28,7 @@ namespace SlimViewer
         public MainWindow()
         {
             InitializeComponent();
+            View.Main = this;
             View.Thumb = Thumbnail;
             View.Status = ImageStatus;
             View.Picker = ColorPick;
