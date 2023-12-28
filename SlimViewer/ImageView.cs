@@ -163,6 +163,11 @@ namespace SlimViewer
         private string _gifPath;
 
         /// <summary>
+        ///     The GIF window command
+        /// </summary>
+        private ICommand _gifWindowCommand;
+
+        /// <summary>
         ///     The gray scale command
         /// </summary>
         private ICommand _grayScaleCommand;
@@ -291,11 +296,6 @@ namespace SlimViewer
         private ICommand _similarCommand;
 
         /// <summary>
-        /// The GIF window command
-        /// </summary>
-        private ICommand _gifWindowCommand;
-
-        /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
         /// </summary>
         private int _similarity = 90;
@@ -311,33 +311,8 @@ namespace SlimViewer
         private bool _thumbs = true;
 
         /// <summary>
-        /// The GIF window
-        /// </summary>
-        private Gif _gifWindow;
-
-        /// <summary>
-        /// The compare Window
-        /// </summary>
-        private Compare _compareWindow;
-
-        /// <summary>
-        /// The search Window
-        /// </summary>
-        private Search _searchWindow;
-
-        /// <summary>
-        /// The scale window
-        /// </summary>
-        private Converter _converterWindow;
-
-        /// <summary>
-        /// The scale window
-        /// </summary>
-        private Scale _scaleWindow;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImageView" /> class.
-        /// Initiates all necessary Collections as well
+        ///     Initializes a new instance of the <see cref="ImageView" /> class.
+        ///     Initiates all necessary Collections as well
         /// </summary>
         public ImageView()
         {
@@ -894,19 +869,19 @@ namespace SlimViewer
             _convertCommandToGif ??= new DelegateCommand<object>(ConvertToGifAction, CanExecute);
 
         /// <summary>
-        /// The GIF window command.
+        ///     The GIF window command.
         /// </summary>
         /// <value>
-        /// The GIF window command.
+        ///     The GIF window command.
         /// </value>
         public ICommand GifWindowCommand =>
             _gifWindowCommand ??= new DelegateCommand<object>(GifWindowAction, CanExecute);
 
         /// <summary>
-        /// Gets or sets the main.
+        ///     Gets or sets the main.
         /// </summary>
         /// <value>
-        /// The main.
+        ///     The main.
         /// </value>
         public MainWindow Main { get; set; }
 
@@ -1555,12 +1530,12 @@ namespace SlimViewer
         {
             SlimViewerRegister.ResetScaling();
 
-            _scaleWindow = new Scale
+            var scaleWindow = new Scale
             {
                 Topmost = true,
                 Owner = Main
             };
-            _ = _scaleWindow.ShowDialog();
+            scaleWindow.ShowDialog();
 
             try
             {
@@ -1589,12 +1564,12 @@ namespace SlimViewer
         {
             SlimViewerRegister.ResetConvert();
 
-            _converterWindow = new Converter
+            var converterWindow = new Converter
             {
                 Topmost = true,
                 Owner = Main
             };
-            _ = _converterWindow.ShowDialog();
+            _ = converterWindow.ShowDialog();
 
             if (string.IsNullOrEmpty(SlimViewerRegister.Target) ||
                 string.IsNullOrEmpty(SlimViewerRegister.Source)) return;
@@ -1610,8 +1585,8 @@ namespace SlimViewer
                 var error = 0;
 
                 foreach (var check in from image in lst
-                         let btm = Helper.Render.GetOriginalBitmap(image)
-                         select SaveImage(image, SlimViewerRegister.Target, btm))
+                    let btm = Helper.Render.GetOriginalBitmap(image)
+                    select SaveImage(image, SlimViewerRegister.Target, btm))
                     if (check)
                         count++;
                     else
@@ -1644,12 +1619,12 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void SimilarAction(object obj)
         {
-            _compareWindow = new Compare(SubFolders, _currentFolder, this, Similarity)
+            var compareWindow = new Compare(SubFolders, _currentFolder, this, Similarity)
             {
                 Topmost = true,
                 Owner = Main
             };
-            _compareWindow.Show();
+            compareWindow.Show();
         }
 
         /// <summary>
@@ -1659,26 +1634,26 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void DuplicateAction(object obj)
         {
-            _compareWindow = new Compare(SubFolders, _currentFolder, this)
+            var compareWindow = new Compare(SubFolders, _currentFolder, this)
             {
                 Topmost = true,
                 Owner = Main
             };
-            _compareWindow.Show();
+            compareWindow.Show();
         }
 
         /// <summary>
-        /// GIFs the window action.
+        ///     GIFs the window action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void GifWindowAction(object obj)
         {
-            _gifWindow = new Gif()
+            var gifWindow = new Gif
             {
                 Topmost = true,
                 Owner = Main
             };
-            _gifWindow.Show();
+            gifWindow.Show();
         }
 
         /// <summary>
@@ -1709,12 +1684,12 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void SearchAction(object obj)
         {
-            _searchWindow = new Search(SubFolders, _currentFolder, this, Color)
+            var searchWindow = new Search(SubFolders, _currentFolder, this, Color)
             {
                 Topmost = true,
                 Owner = Main
             };
-            _searchWindow.Show();
+            searchWindow.Show();
         }
 
         /// <summary>
@@ -1942,7 +1917,7 @@ namespace SlimViewer
         /// <param name="point">The point.</param>
         internal void GetPointColor(Point point)
         {
-            var color = _btm.GetPixel((int)point.X, (int)point.Y);
+            var color = _btm.GetPixel((int) point.X, (int) point.Y);
             Picker.SetColors(color.R, color.G, color.B, color.A);
             Color = Picker.Colors;
         }
