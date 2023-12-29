@@ -345,7 +345,6 @@ namespace SlimViewer
 
         private void ClearAction(object obj)
         {
-            throw new NotImplementedException();
         }
 
         private void SaveImagesAction(object obj)
@@ -355,7 +354,6 @@ namespace SlimViewer
 
         private void CloseAction(object obj)
         {
-            throw new NotImplementedException();
         }
 
         private void SaveGifAction(object obj)
