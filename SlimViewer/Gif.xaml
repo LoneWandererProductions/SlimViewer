@@ -32,7 +32,7 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="5" />
@@ -43,8 +43,7 @@
         <MenuItem Header="Menu">
             <MenuItem Header="Open Gif" Command="{Binding OpenCommand}" />
             <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" />
-            <MenuItem Header="Define Output Folder" Command="{Binding OutputCommand}"
-                      IsEnabled="{Binding Path =IsActive}" />
+            <MenuItem Header="Define Output Folder" Command="{Binding OutputCommand}"/>
             <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}"
                       IsEnabled="{Binding Path =IsActive}" />
             <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path =IsActive}" />
@@ -54,12 +53,15 @@
             <MenuItem Header="Close" Command="{Binding CloseCommand}" />
         </MenuItem>
         </Menu>
-        <commonControls:Thumbnails Grid.Column="3" Grid.Row="2" Grid.RowSpan="10"
+        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Column="3" Grid.Row="2" Grid.RowSpan="10"
+                      Focusable="False">
+            <commonControls:Thumbnails VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                    ItemsSource="{Binding Observer}"
                                    ThumbCellSize="100"
                                    ThumbLength="1"
                                    SelectBox="True"
                                    ImageClicked="Thumb_ImageClicked" />
+        </ScrollViewer>
         <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" Grid.Row="2" Grid.RowSpan="10"
                                   ItemsSource="{Binding Bmp}" />
         <Label Grid.Row="2" Grid.Column="5" Content="File Path" />
@@ -70,6 +72,6 @@
         <TextBox Grid.Row="2" Grid.Column="7" TextWrapping="Wrap" />
         <TextBox Grid.Row="4" Grid.Column="7" TextWrapping="Wrap" />
         <TextBox Grid.Row="6" Grid.Column="7" TextWrapping="Wrap" />
-        <CheckBox Content="Auto Clear" Grid.Column="7" HorizontalAlignment="Stretch" Grid.Row="8" />
+        <CheckBox Content="Auto Clear" Grid.Column="7" HorizontalAlignment="Stretch" Grid.Row="8"  IsEnabled="{Binding Path =AutoClear}" />
     </Grid>
 </Window>

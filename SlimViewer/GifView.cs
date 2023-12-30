@@ -17,6 +17,7 @@ using CommonControls;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using Microsoft.VisualBasic;
 using ViewModel;
 
 namespace SlimViewer
@@ -104,10 +105,17 @@ namespace SlimViewer
         private ICommand _saveImagesCommand;
 
         /// <summary>
-        ///     Gets the open command.
+        /// The root
+        /// </summary>
+        private string _root;
+
+        private bool _autoClear;
+
+        /// <summary>
+        /// Gets the open command.
         /// </summary>
         /// <value>
-        ///     The open command.
+        /// The open command.
         /// </value>
         public ICommand OpenCommand =>
             _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
@@ -229,6 +237,23 @@ namespace SlimViewer
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [automatic clear].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [automatic clear]; otherwise, <c>false</c>.
+        /// </value>
+        public bool AutoClear
+        {
+            get => _autoClear;
+            set
+            {
+                if (_autoClear == value) return;
+
+                _autoClear = value;
+                OnPropertyChanged(nameof(IsActive));
+            }
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -302,7 +327,9 @@ namespace SlimViewer
             Initiate();
 
             _gifPath = pathObj.FilePath;
-            Helper.ConvertGifAction(_gifPath, _imageExport);
+            //add name of the split files
+            var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
+            Helper.ConvertGifAction(_gifPath, name);
             _currentFolder = _imageExport;
 
             var fileList =
@@ -314,17 +341,20 @@ namespace SlimViewer
         ///     Opens the folder action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         private void OpenFolderAction(object obj)
         {
             //Initiate Folder
             if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+
+            if (_currentFolder == null || !Directory.Exists(_currentFolder)) return;
 
             //get target Folder
             var path = FileIoHandler.ShowFolder(_currentFolder);
 
             var fileList =
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
+
+            if (fileList == null) return;
 
             if (fileList.Count >= 200)
                 //TODO error
@@ -343,8 +373,13 @@ namespace SlimViewer
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Clears the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         private void ClearAction(object obj)
         {
+            if(Directory.Exists(_root)) Directory.Delete(_root, true);
         }
 
         private void SaveImagesAction(object obj)
@@ -365,19 +400,21 @@ namespace SlimViewer
         ///     Initiates this instance.
         /// </summary>
         private void Initiate()
-        {
-            var root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
-            if (!Directory.Exists(root)) Directory.CreateDirectory(root);
+        { 
+            _root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
+            if (!Directory.Exists(_root)) Directory.CreateDirectory(_root);
 
-            _imageExport = Path.Combine(root, SlimViewerResources.ImagesPath);
+            _imageExport = Path.Combine(_root, SlimViewerResources.ImagesPath);
             {
                 Directory.CreateDirectory(_imageExport);
             }
 
-            _gifExport = Path.Combine(root, SlimViewerResources.NewGifPath);
+            _gifExport = Path.Combine(_root, SlimViewerResources.NewGifPath);
             {
                 Directory.CreateDirectory(_gifExport);
             }
+
+            IsActive = true;
         }
     }
 }

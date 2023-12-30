@@ -305,16 +305,21 @@ namespace CommonControls
             if (ThumbCellSize == 0) ThumbCellSize = 100;
 
             if (ThumbHeight == 0) ThumbHeight = 1;
+            if (ThumbLength == 0) ThumbLength = 1;
 
             //here we are especial clever, if we add the Height in the Designer we can generate a custom Length
             //catch on reload
             if (ThumbHeight * ThumbLength < pics.Count)
             {
-                if (pics.Count == 1)
+                if (ThumbHeight == 1)
                 {
-                    ThumbLength = 1;
+                    ThumbLength = pics.Count;
                 }
-                else
+                else if(ThumbLength == 1)
+                {
+                    ThumbHeight = pics.Count;
+                }
+                else if(ThumbHeight != 1 || ThumbLength != 1)
                 {
                     var fraction = new ExtendedMath.Fraction(pics.Count, ThumbHeight);
                     ThumbLength = (int)Math.Ceiling(fraction.Decimal);
