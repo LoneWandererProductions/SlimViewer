@@ -58,6 +58,7 @@
             <commonControls:Thumbnails VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                    ItemsSource="{Binding Observer}"
                                    ThumbCellSize="100"
+                                   ThumbHeight="1"
                                    ThumbLength="1"
                                    SelectBox="True"
                                    ImageClicked="Thumb_ImageClicked" />
