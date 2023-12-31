@@ -59,11 +59,11 @@
                                    ItemsSource="{Binding Observer}"
                                    ThumbCellSize="100"
                                    ThumbHeight="1"
-                                   ThumbLength="1"
+                                   ThumbWidth="1"
                                    SelectBox="True"
                                    ImageClicked="Thumb_ImageClicked" />
         </ScrollViewer>
-        <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" Grid.Row="2" Grid.RowSpan="10"
+        <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" Grid.Row="2" Grid.RowSpan="10" AutoplayGifImage="True"
                                   ItemsSource="{Binding Bmp}" />
         <Label Grid.Row="2" Grid.Column="5" Content="File Path" />
         <Label Grid.Row="4" Grid.Column="5" Content="Information" />
