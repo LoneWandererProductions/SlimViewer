@@ -36,7 +36,7 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="220" />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="9">
@@ -63,7 +63,8 @@
                                    SelectBox="True"
                                    ImageClicked="Thumb_ImageClicked" />
         </ScrollViewer>
-        <commonControls:ImageZoom x:Name="ImageGif" Grid.Column="1" Grid.Row="2" Grid.RowSpan="10" AutoplayGifImage="True"
+        <commonControls:ImageZoom  Grid.Column="1" Grid.Row="2" Grid.RowSpan="10" AutoplayGifImage="True"
+                                  ImageGifPath="{Binding GifPath}"
                                   ItemsSource="{Binding Bmp}" />
         <Label Grid.Row="2" Grid.Column="5" Content="File Path" />
         <Label Grid.Row="4" Grid.Column="5" Content="Information" />

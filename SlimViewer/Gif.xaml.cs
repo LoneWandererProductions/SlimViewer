@@ -13,7 +13,6 @@ namespace SlimViewer
         public Gif()
         {
             InitializeComponent();
-            View.Image = ImageGif;
         }
 
         /// <summary>

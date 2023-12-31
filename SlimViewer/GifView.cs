@@ -109,6 +109,9 @@ namespace SlimViewer
         /// </summary>
         private string _root;
 
+        /// <summary>
+        /// The automatic clear
+        /// </summary>
         private bool _autoClear;
 
         /// <summary>
@@ -198,6 +201,24 @@ namespace SlimViewer
 
                 _bmp = value;
                 OnPropertyChanged(nameof(Bmp));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the GIF path.
+        /// </summary>
+        /// <value>
+        /// The GIF path.
+        /// </value>
+        public string GifPath
+        {
+            get => _gifPath;
+            set
+            {
+                if (_gifPath == value) return;
+
+                _gifPath = value;
+                OnPropertyChanged(nameof(GifPath));
             }
         }
 
@@ -326,7 +347,8 @@ namespace SlimViewer
 
             Initiate();
 
-            _gifPath = pathObj.FilePath;
+            GifPath = pathObj.FilePath;
+
             //add name of the split files
             var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
             Helper.ConvertGifAction(_gifPath, name);
@@ -354,11 +376,11 @@ namespace SlimViewer
             var fileList =
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
 
-            if (fileList == null) return;
-
-            if (fileList.Count >= 200)
-                //TODO error
+            if (fileList is not {Count: < 200})
+            {
+                //TODO MessageBox
                 return;
+            }
 
             Initiate();
 

@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -368,7 +367,6 @@ namespace CommonControls
                 Keys.Add(images.Name, key);
                 ImageDct.Add(images.Name, images);
                 images.MouseDown += ImageClick_MouseDown;
-                if (SelectBox) images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
 
                 //Add Image to Canvas
                 Grid.SetRow(images, y);
@@ -378,6 +376,8 @@ namespace CommonControls
                 //add an overlay here to get a selection frame
                 if (SelectBox)
                 {
+                    images.MouseRightButtonDown += ImageClick_MouseRightButtonDown;
+
                     var checkbox = new CheckBox
                     {
                         Height = 23,
