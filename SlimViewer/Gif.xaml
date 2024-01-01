@@ -44,13 +44,14 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition />
+                    <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="5"/>
                 </Grid.ColumnDefinitions>
                 <commonControls:ImageZoom  Grid.Column="1" Grid.Row="1" AutoplayGifImage="True"
                                            ImageGifPath="{Binding GifPath}"
                                            ItemsSource="{Binding Bmp}" />
-                <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Column="2" Grid.Row="1"
+                <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Column="3" Grid.Row="1"
                               Focusable="False">
                     <commonControls:Thumbnails
                         ItemsSource="{Binding Observer}"

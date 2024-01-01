@@ -104,11 +104,6 @@ namespace SlimViewer
         private ICommand _saveImagesCommand;
 
         /// <summary>
-        /// The root
-        /// </summary>
-        public string Root;
-
-        /// <summary>
         /// The automatic clear
         /// </summary>
         private bool _autoClear;
@@ -127,6 +122,11 @@ namespace SlimViewer
         /// The output path
         /// </summary>
         private string _outputPath;
+
+        /// <summary>
+        /// The root
+        /// </summary>
+        private string _root;
 
         /// <summary>
         /// Gets the open command.
@@ -480,7 +480,7 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void ClearAction(object obj)
         {
-            if(Directory.Exists(Root)) Directory.Delete(Root, true);
+            if (Directory.Exists(_root)) Directory.Delete(_root, true);
         }
 
         private void SaveImagesAction(object obj)
@@ -502,17 +502,19 @@ namespace SlimViewer
         /// </summary>
         private void Initiate()
         {
-            Root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
-            if (!Directory.Exists(Root)) Directory.CreateDirectory(Root);
+            //TODO change with ini File
+            _root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
+            if (Directory.Exists(_root)) Directory.Delete(_root, true);
+            _ = Directory.CreateDirectory(_root);
 
-            OutputPath = Root;
+            OutputPath = _root;
 
-            _imageExport = Path.Combine(Root, SlimViewerResources.ImagesPath);
+            _imageExport = Path.Combine(_root, SlimViewerResources.ImagesPath);
             {
                 Directory.CreateDirectory(_imageExport);
             }
 
-            _gifExport = Path.Combine(Root, SlimViewerResources.NewGifPath);
+            _gifExport = Path.Combine(_root, SlimViewerResources.NewGifPath);
             {
                 Directory.CreateDirectory(_gifExport);
             }

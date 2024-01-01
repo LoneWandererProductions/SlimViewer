@@ -5,9 +5,9 @@ using CommonControls;
 namespace SlimViewer
 {
     /// <summary>
-    /// Interaktionslogik für Test.xaml
+    /// Gif Window
     /// </summary>
-    public partial class Gif : Window
+    public partial class Gif
     {
         public Gif()
         {
@@ -32,6 +32,13 @@ namespace SlimViewer
         {
             //TODO add Check
             View.ClearCommand.Execute(null);
+        }
+
+        private void OnClosing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            View.ClearCommand.Execute(null);
+            //Do whatever you want here..
         }
     }
 }
