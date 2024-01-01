@@ -17,7 +17,6 @@ using CommonControls;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
-using Microsoft.VisualBasic;
 using ViewModel;
 
 namespace SlimViewer
@@ -115,6 +114,21 @@ namespace SlimViewer
         private bool _autoClear;
 
         /// <summary>
+        /// The information
+        /// </summary>
+        private string _information;
+
+        /// <summary>
+        /// The file path
+        /// </summary>
+        private string _filePath;
+
+        /// <summary>
+        /// The output path
+        /// </summary>
+        private string _outputPath;
+
+        /// <summary>
         /// Gets the open command.
         /// </summary>
         /// <value>
@@ -179,12 +193,59 @@ namespace SlimViewer
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
-        ///     Gets or sets the image.
+        ///     Gets or sets the basic File information.
         /// </summary>
         /// <value>
-        ///     The image.
+        ///     The information.
         /// </value>
-        public ImageZoom Image { get; set; }
+        public string Information
+        {
+            get => _information;
+            set
+            {
+                if (value == _information) return;
+
+                _information = value;
+                OnPropertyChanged(nameof(Information));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the file path.
+        /// </summary>
+        /// <value>
+        /// The file path.
+        /// </value>
+        public string FilePath
+        {
+            get => _filePath;
+            set
+            {
+                if (value == _filePath) return;
+
+                _filePath = value;
+                OnPropertyChanged(nameof(FilePath));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the output path.
+        /// </summary>
+        /// <value>
+        /// The output path.
+        /// </value>
+        public string OutputPath
+        {
+            get => _outputPath;
+            set
+            {
+                if (value == _outputPath) return;
+
+                _outputPath = value;
+                OnPropertyChanged(nameof(OutputPath));
+            }
+        }
+
 
         /// <summary>
         ///     Gets or sets the BitmapImage.
@@ -349,6 +410,15 @@ namespace SlimViewer
 
             GifPath = pathObj.FilePath;
 
+            FilePath = GifPath;
+
+            var info = ImageGifHandler.GetImageInfo(_gifPath);
+            //set Infos
+            Information = string.Concat(SlimViewerResources.ImageName,
+                info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
+                info.Width,
+                SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
+
             //add name of the split files
             var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
             Helper.ConvertGifAction(_gifPath, name);
@@ -388,6 +458,15 @@ namespace SlimViewer
             _ = GenerateThumbView(fileList);
 
             _gifPath = Helper.ConvertToGifAction(path, _gifPath);
+
+            FilePath = _gifPath;
+
+            var info = ImageGifHandler.GetImageInfo(_gifPath);
+            //set Infos
+            Information = string.Concat(SlimViewerResources.ImageName,
+                info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
+                info.Width,
+                SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
         }
 
         private void OutputAction(object obj)
@@ -422,9 +501,11 @@ namespace SlimViewer
         ///     Initiates this instance.
         /// </summary>
         private void Initiate()
-        { 
+        {
             _root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
             if (!Directory.Exists(_root)) Directory.CreateDirectory(_root);
+
+            OutputPath = _root;
 
             _imageExport = Path.Combine(_root, SlimViewerResources.ImagesPath);
             {

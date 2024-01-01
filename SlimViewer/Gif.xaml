@@ -71,9 +71,9 @@
         <Label Grid.Row="6" Grid.Column="5" Content="Output Path" />
         <Button Grid.Row="8" Grid.Column="5" Content="Clear"
                 Command="{Binding ClearCommand}" />
-        <TextBox Grid.Row="2" Grid.Column="7" TextWrapping="Wrap" />
-        <TextBox Grid.Row="4" Grid.Column="7" TextWrapping="Wrap" />
-        <TextBox Grid.Row="6" Grid.Column="7" TextWrapping="Wrap" />
+        <TextBox Grid.Row="2" Grid.Column="7" TextWrapping="Wrap" Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Row="4" Grid.Column="7" TextWrapping="Wrap" Text="{Binding Path=Information, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Row="6" Grid.Column="7" TextWrapping="Wrap"  Text="{Binding Path=OutputPath, UpdateSourceTrigger=PropertyChanged}" />
         <CheckBox Content="Auto Clear" Grid.Column="7" HorizontalAlignment="Stretch" Grid.Row="8"  IsEnabled="{Binding Path =AutoClear}" />
     </Grid>
 </Window>
