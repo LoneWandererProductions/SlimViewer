@@ -4,11 +4,10 @@ using CommonControls;
 
 namespace SlimViewer
 {
-    /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     Gif creator window
+    /// Interaktionslogik für Test.xaml
     /// </summary>
-    internal partial class Gif
+    public partial class Gif : Window
     {
         public Gif()
         {
