@@ -36,26 +36,26 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="220" />
+            <ColumnDefinition  />
             <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="9">
-        <MenuItem Header="Menu">
-            <MenuItem Header="Open Gif" Command="{Binding OpenCommand}" />
-            <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" />
-            <MenuItem Header="Define Output Folder" Command="{Binding OutputCommand}"/>
-            <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}"
+            <MenuItem Header="Menu">
+                <MenuItem Header="Open Gif" Command="{Binding OpenCommand}" />
+                <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" />
+                <MenuItem Header="Define Output Folder" Command="{Binding OutputCommand}"/>
+                <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}"
                       IsEnabled="{Binding Path =IsActive}" />
-            <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <MenuItem Header="Save as images" Command="{Binding SaveImagesCommand}"
+                <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path =IsActive}" />
+                <MenuItem Header="Save as images" Command="{Binding SaveImagesCommand}"
                       IsEnabled="{Binding Path =IsActive}" />
-            <Separator />
-            <MenuItem Header="Close" Command="{Binding CloseCommand}" />
-        </MenuItem>
+                <Separator />
+                <MenuItem Header="Close" Command="{Binding CloseCommand}" />
+            </MenuItem>
         </Menu>
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Column="3" Grid.Row="2" Grid.RowSpan="10"
                       Focusable="False">
-            <commonControls:Thumbnails VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+            <commonControls:Thumbnails
                                    ItemsSource="{Binding Observer}"
                                    ThumbCellSize="100"
                                    ThumbHeight="1"

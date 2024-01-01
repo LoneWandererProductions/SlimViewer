@@ -106,7 +106,7 @@ namespace SlimViewer
         /// <summary>
         /// The root
         /// </summary>
-        private string _root;
+        public string Root;
 
         /// <summary>
         /// The automatic clear
@@ -414,7 +414,7 @@ namespace SlimViewer
 
             var info = ImageGifHandler.GetImageInfo(_gifPath);
             //set Infos
-            Information = string.Concat(SlimViewerResources.ImageName,
+            Information = string.Concat(_gifPath, SlimViewerResources.ImageName,
                 info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
                 info.Width,
                 SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
@@ -463,7 +463,7 @@ namespace SlimViewer
 
             var info = ImageGifHandler.GetImageInfo(_gifPath);
             //set Infos
-            Information = string.Concat(SlimViewerResources.ImageName,
+            Information = string.Concat(_gifPath, SlimViewerResources.ImageName,
                 info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
                 info.Width,
                 SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
@@ -480,7 +480,7 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void ClearAction(object obj)
         {
-            if(Directory.Exists(_root)) Directory.Delete(_root, true);
+            if(Directory.Exists(Root)) Directory.Delete(Root, true);
         }
 
         private void SaveImagesAction(object obj)
@@ -502,17 +502,17 @@ namespace SlimViewer
         /// </summary>
         private void Initiate()
         {
-            _root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
-            if (!Directory.Exists(_root)) Directory.CreateDirectory(_root);
+            Root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
+            if (!Directory.Exists(Root)) Directory.CreateDirectory(Root);
 
-            OutputPath = _root;
+            OutputPath = Root;
 
-            _imageExport = Path.Combine(_root, SlimViewerResources.ImagesPath);
+            _imageExport = Path.Combine(Root, SlimViewerResources.ImagesPath);
             {
                 Directory.CreateDirectory(_imageExport);
             }
 
-            _gifExport = Path.Combine(_root, SlimViewerResources.NewGifPath);
+            _gifExport = Path.Combine(Root, SlimViewerResources.NewGifPath);
             {
                 Directory.CreateDirectory(_gifExport);
             }
