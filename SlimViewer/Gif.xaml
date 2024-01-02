@@ -49,7 +49,7 @@
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="5" />
                 </Grid.ColumnDefinitions>
-                <commonControls:ImageZoom Grid.Column="1" Grid.Row="1" AutoplayGifImage="True"
+                <commonControls:ImageZoom Grid.Column="1" Grid.Row="1"
                                           ImageGifPath="{Binding GifPath}"
                                           ItemsSource="{Binding Bmp}" />
                 <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto"

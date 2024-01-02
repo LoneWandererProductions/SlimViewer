@@ -1,4 +1,3 @@
 - Add a global Config File
 - Add a move feature in thumbview
-- Change the Behavior of the Zoomimage Control
 - add new Folder to FolderView
