@@ -187,6 +187,7 @@
                     ThumbCellSize="100"
                     ThumbHeight="1"
                     SelectBox="True"
+                    IsCheckBoxSelected="False"
                     ImageClicked="Thumb_ImageClicked"
                     ImageLoaded="Thumbnail_OnImageLoaded" />
             </ScrollViewer>

@@ -1,17 +1,29 @@
-﻿using System.ComponentModel;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViewer
+ * FILE:        SlimViewer/Gif.xaml.cs
+ * PURPOSE:     Gif Editor Window
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal
+
+using System.ComponentModel;
 using System.Windows;
 using CommonControls;
 
 namespace SlimViewer
 {
+    /// <inheritdoc cref="Window" />
     /// <summary>
     /// Gif Window
     /// </summary>
-    public partial class Gif
+    public sealed partial class Gif
     {
         public Gif()
         {
             InitializeComponent();
+            View.Thumbnail = Thumb;
         }
 
         /// <summary>
@@ -32,13 +44,6 @@ namespace SlimViewer
         {
             //TODO add Check
             View.ClearCommand.Execute(null);
-        }
-
-        private void OnClosing(object sender, CancelEventArgs e)
-        {
-            e.Cancel = true;
-            View.ClearCommand.Execute(null);
-            //Do whatever you want here..
         }
     }
 }

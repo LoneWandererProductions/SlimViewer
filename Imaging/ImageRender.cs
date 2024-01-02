@@ -411,11 +411,22 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IImageRender" /> interface.
+        /// Creates a gif.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="target">The target.</param>
         public void CreateGif(string path, string target)
+        {
+            ImageGifHandler.CreateGif(path, target);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a gif.
+        /// </summary>
+        /// <param name="path">The paths of the images.</param>
+        /// <param name="target">The target File.</param>
+        public void CreateGif(List<string> path, string target)
         {
             ImageGifHandler.CreateGif(path, target);
         }

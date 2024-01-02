@@ -169,6 +169,11 @@ namespace SlimViewer
         internal const string MessageMoved = "Files moved: ";
 
         /// <summary>
+        ///     The error File not Found Text (const). Value: "File not found: "
+        /// </summary>
+        internal const string MessageErrorFileNotFound = "File not found: ";
+
+        /// <summary>
         ///     The Status Compare started (const). Value: "Compare started."
         /// </summary>
         internal const string StatusCompareStart = "Compare started.";

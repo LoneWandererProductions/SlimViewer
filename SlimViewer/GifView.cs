@@ -6,11 +6,15 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
+// ReSharper disable MemberCanBeMadeStatic.Local
+// ReSharper disable MemberCanBeInternal
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using CommonControls;
@@ -29,6 +33,11 @@ namespace SlimViewer
     public sealed class GifView : INotifyPropertyChanged
     {
         /// <summary>
+        ///     The automatic clear
+        /// </summary>
+        private bool _autoClear;
+
+        /// <summary>
         ///     The BMP
         /// </summary>
         private BitmapImage _bmp;
@@ -44,14 +53,14 @@ namespace SlimViewer
         private ICommand _closeCommand;
 
         /// <summary>
-        ///     The current folder
+        ///     The custom path
         /// </summary>
-        private string _currentFolder = Directory.GetCurrentDirectory();
+        private bool _customPath;
 
         /// <summary>
-        ///     The current identifier
+        ///     The file path
         /// </summary>
-        private int _currentId;
+        private string _filePath;
 
         /// <summary>
         ///     The GIF export
@@ -67,6 +76,11 @@ namespace SlimViewer
         ///     The image export
         /// </summary>
         private string _imageExport;
+
+        /// <summary>
+        ///     The information
+        /// </summary>
+        private string _information;
 
         /// <summary>
         ///     The is active
@@ -94,6 +108,11 @@ namespace SlimViewer
         private ICommand _outputCommand;
 
         /// <summary>
+        ///     The output path
+        /// </summary>
+        private string _outputPath;
+
+        /// <summary>
         ///     The save GIF command
         /// </summary>
         private ICommand _saveGifCommand;
@@ -104,35 +123,10 @@ namespace SlimViewer
         private ICommand _saveImagesCommand;
 
         /// <summary>
-        /// The automatic clear
-        /// </summary>
-        private bool _autoClear;
-
-        /// <summary>
-        /// The information
-        /// </summary>
-        private string _information;
-
-        /// <summary>
-        /// The file path
-        /// </summary>
-        private string _filePath;
-
-        /// <summary>
-        /// The output path
-        /// </summary>
-        private string _outputPath;
-
-        /// <summary>
-        /// The root
-        /// </summary>
-        private string _root;
-
-        /// <summary>
-        /// Gets the open command.
+        ///     Gets the open command.
         /// </summary>
         /// <value>
-        /// The open command.
+        ///     The open command.
         /// </value>
         public ICommand OpenCommand =>
             _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
@@ -211,10 +205,10 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Gets or sets the file path.
+        ///     Gets or sets the file path.
         /// </summary>
         /// <value>
-        /// The file path.
+        ///     The file path.
         /// </value>
         public string FilePath
         {
@@ -229,10 +223,10 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Gets or sets the output path.
+        ///     Gets or sets the output path.
         /// </summary>
         /// <value>
-        /// The output path.
+        ///     The output path.
         /// </value>
         public string OutputPath
         {
@@ -245,7 +239,6 @@ namespace SlimViewer
                 OnPropertyChanged(nameof(OutputPath));
             }
         }
-
 
         /// <summary>
         ///     Gets or sets the BitmapImage.
@@ -266,10 +259,10 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Gets or sets the GIF path.
+        ///     Gets or sets the GIF path.
         /// </summary>
         /// <value>
-        /// The GIF path.
+        ///     The GIF path.
         /// </value>
         public string GifPath
         {
@@ -320,10 +313,10 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [automatic clear].
+        ///     Gets or sets a value indicating whether [automatic clear].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [automatic clear]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [automatic clear]; otherwise, <c>false</c>.
         /// </value>
         public bool AutoClear
         {
@@ -336,6 +329,14 @@ namespace SlimViewer
                 OnPropertyChanged(nameof(IsActive));
             }
         }
+
+        /// <summary>
+        /// Gets or sets the thumbnail.
+        /// </summary>
+        /// <value>
+        /// The thumbnail.
+        /// </value>
+        internal Thumbnails Thumbnail { private get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -376,10 +377,26 @@ namespace SlimViewer
         {
             if (!Observer.ContainsKey(id)) return;
 
-            _currentId = id;
-
             var filePath = Observer[id];
-            //TODO!
+            GifPath = null;
+            var bmp = Helper.Render.GetBitmapImage(filePath);
+            Bmp = bmp;
+
+            var fileName = Path.GetFileName(filePath);
+
+            var info = ImageGifHandler.GetImageInfo(filePath);
+
+            if (info == null)
+            {
+                Information = string.Concat(SlimViewerResources.MessageErrorFileNotFound, filePath);
+                return;
+            }
+
+            //set Infos
+            Information = string.Concat(SlimViewerResources.ImagePath, filePath, SlimViewerResources.ImageName,
+                fileName, SlimViewerResources.ImageHeight, bmp.Height, SlimViewerResources.ImageWidth,
+                bmp.Width,
+                SlimViewerResources.ImageSize, bmp.Height * bmp.Width);
         }
 
         /// <summary>
@@ -399,33 +416,43 @@ namespace SlimViewer
         private void OpenAction(object obj)
         {
             //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+            if (string.IsNullOrEmpty(OutputPath)) OutputPath = Directory.GetCurrentDirectory();
 
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, OutputPath);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath) ||
                 !string.Equals(pathObj.Extension, ImagingResources.GifExt)) return;
 
-            Initiate();
+            if (!_customPath)
+            {
+                var custom = Path.Combine(OutputPath, SlimViewerResources.GifPath);
+                Initiate(custom);
+            }
 
             GifPath = pathObj.FilePath;
 
             FilePath = GifPath;
 
-            var info = ImageGifHandler.GetImageInfo(_gifPath);
+            var info = ImageGifHandler.GetImageInfo(GifPath);
+            if (info == null)
+            {
+                Information = string.Concat(SlimViewerResources.MessageErrorFileNotFound, FilePath);
+                return;
+            }
+
             //set Infos
-            Information = string.Concat(_gifPath, SlimViewerResources.ImageName,
+            Information = string.Concat(GifPath, SlimViewerResources.ImageName,
                 info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
                 info.Width,
                 SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
 
             //add name of the split files
             var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
-            Helper.ConvertGifAction(_gifPath, name);
-            _currentFolder = _imageExport;
+            Helper.ConvertGifAction(GifPath, name);
+            var currentFolder = _imageExport;
 
             var fileList =
-                FileHandleSearch.GetFilesByExtensionFullPath(_currentFolder, ImagingResources.JpgExt, false);
+                FileHandleSearch.GetFilesByExtensionFullPath(currentFolder, ImagingResources.JpgExt, false);
             _ = GenerateThumbView(fileList);
         }
 
@@ -436,25 +463,26 @@ namespace SlimViewer
         private void OpenFolderAction(object obj)
         {
             //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+            if (string.IsNullOrEmpty(OutputPath)) OutputPath = Directory.GetCurrentDirectory();
 
-            if (_currentFolder == null || !Directory.Exists(_currentFolder)) return;
+            if (OutputPath == null || !Directory.Exists(OutputPath)) return;
 
             //get target Folder
-            var path = FileIoHandler.ShowFolder(_currentFolder);
+            var path = FileIoHandler.ShowFolder(OutputPath);
 
             var fileList =
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
 
             if (fileList is not {Count: < 200})
-            {
                 //TODO MessageBox
                 return;
+
+            if (!_customPath)
+            {
+                var custom = Path.Combine(OutputPath, SlimViewerResources.GifPath);
+                Initiate(custom);
             }
 
-            Initiate();
-
-            _currentFolder = path;
             _ = GenerateThumbView(fileList);
 
             _gifPath = Helper.ConvertToGifAction(path, _gifPath);
@@ -462,6 +490,12 @@ namespace SlimViewer
             FilePath = _gifPath;
 
             var info = ImageGifHandler.GetImageInfo(_gifPath);
+            if (info == null)
+            {
+                Information = string.Concat(SlimViewerResources.MessageErrorFileNotFound, FilePath);
+                return;
+            }
+
             //set Infos
             Information = string.Concat(_gifPath, SlimViewerResources.ImageName,
                 info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
@@ -469,52 +503,92 @@ namespace SlimViewer
                 SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
         }
 
+        /// <summary>
+        ///     Outputs the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         private void OutputAction(object obj)
         {
-            throw new NotImplementedException();
+            var currentFolder = Directory.GetCurrentDirectory();
+
+            if (!Directory.Exists(currentFolder)) return;
+
+            //get target Folder
+            var path = FileIoHandler.ShowFolder(currentFolder);
+
+            if(string.IsNullOrEmpty(path)) return;
+
+            Initiate(path);
+            _customPath = true;
         }
 
         /// <summary>
-        /// Clears the action.
+        ///     Clears the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ClearAction(object obj)
         {
-            if (Directory.Exists(_root)) Directory.Delete(_root, true);
+            if (Directory.Exists(OutputPath)) Directory.Delete(OutputPath, true);
         }
 
-        private void SaveImagesAction(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        ///     Closes the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         private void CloseAction(object obj)
         {
+            ClearAction(null);
+            Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// Saves the GIF action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         private void SaveGifAction(object obj)
         {
-            throw new NotImplementedException();
+            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenGif, OutputPath);
+
+            if (pathObj == null) return;
+
+            var lst = Thumbnail.Selection.Select(id => Observer[id]).ToList();
+            lst = lst.PathSort();
+
+            Helper.ConvertGifAction(lst, pathObj.FilePath);
+        }
+
+        /// <summary>
+        /// Saves the images action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void SaveImagesAction(object obj)
+        {
+            //get target Folder
+            var path = FileIoHandler.ShowFolder(OutputPath);
+
+            if (string.IsNullOrEmpty(path)) return;
+
+            var lst = Thumbnail.Selection.Select(id => Observer[id]).ToList();
+
+            _ = FileHandleCopy.CopyFiles(lst, path, false);
         }
 
         /// <summary>
         ///     Initiates this instance.
         /// </summary>
-        private void Initiate()
+        /// <param name="path"></param>
+        private void Initiate(string path)
         {
-            //TODO change with ini File
-            _root = Path.Combine(_currentFolder, SlimViewerResources.GifPath);
-            if (Directory.Exists(_root)) Directory.Delete(_root, true);
-            _ = Directory.CreateDirectory(_root);
+            if (Directory.Exists(path)) _ = Directory.CreateDirectory(path);
 
-            OutputPath = _root;
+            OutputPath = path;
 
-            _imageExport = Path.Combine(_root, SlimViewerResources.ImagesPath);
+            _imageExport = Path.Combine(path, SlimViewerResources.ImagesPath);
             {
                 Directory.CreateDirectory(_imageExport);
             }
 
-            _gifExport = Path.Combine(_root, SlimViewerResources.NewGifPath);
+            _gifExport = Path.Combine(path, SlimViewerResources.NewGifPath);
             {
                 Directory.CreateDirectory(_gifExport);
             }

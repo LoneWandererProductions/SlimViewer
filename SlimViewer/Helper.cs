@@ -8,6 +8,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -65,7 +66,6 @@ namespace SlimViewer
             return true;
         }
 
-
         /// <summary>
         ///     Converts the gif to images action.
         /// </summary>
@@ -108,6 +108,16 @@ namespace SlimViewer
             Render.CreateGif(folder, target);
 
             return target;
+        }
+
+        /// <summary>
+        /// Converts the GIF action.
+        /// </summary>
+        /// <param name="images">The Paths to the images.</param>
+        /// <param name="filePath">The file path.</param>
+        internal static void ConvertGifAction(List<string> images, string filePath)
+        {
+            Render.CreateGif(images, filePath);
         }
     }
 }
