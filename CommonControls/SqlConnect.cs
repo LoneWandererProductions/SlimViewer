@@ -78,7 +78,7 @@ namespace CommonControls
         /// <value>
         ///     <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
         /// </value>
-        internal bool TrustServerCertificate { get; set; } = true;
+        internal bool TrustServerCertificate { get; set; }
 
         /// <summary>
         ///     Gets the connection string to a SQL Server.
@@ -99,9 +99,15 @@ namespace CommonControls
         /// <returns>Connection string</returns>
         private string SqlWindowsAuthentication()
         {
-            if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
+            if (string.IsNullOrEmpty(Server))
+            {
+                return "Error: Server Name";
+            }
 
-            if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
+            if (string.IsNullOrEmpty(Database))
+            {
+                return "Error: Database Name";
+            }
 
             return string.Concat(_persistInfo, _trust, _security, Server, ";", Database);
         }

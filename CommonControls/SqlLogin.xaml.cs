@@ -19,7 +19,7 @@ namespace CommonControls
     /// </summary>
     /// <seealso cref="Window" />
     /// <seealso cref="IComponentConnector" />
-    public partial class SqlLogin
+    public sealed partial class SqlLogin
     {
         /// <inheritdoc />
         /// <summary>
