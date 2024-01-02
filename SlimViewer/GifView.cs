@@ -331,10 +331,10 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Gets or sets the thumbnail.
+        ///     Gets or sets the thumbnail.
         /// </summary>
         /// <value>
-        /// The thumbnail.
+        ///     The thumbnail.
         /// </value>
         internal Thumbnails Thumbnail { private get; set; }
 
@@ -473,7 +473,7 @@ namespace SlimViewer
             var fileList =
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
 
-            if (fileList is not {Count: < 200})
+            if (fileList is not { Count: < 200 })
                 //TODO MessageBox
                 return;
 
@@ -516,7 +516,7 @@ namespace SlimViewer
             //get target Folder
             var path = FileIoHandler.ShowFolder(currentFolder);
 
-            if(string.IsNullOrEmpty(path)) return;
+            if (string.IsNullOrEmpty(path)) return;
 
             Initiate(path);
             _customPath = true;
@@ -542,7 +542,7 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Saves the GIF action.
+        ///     Saves the GIF action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void SaveGifAction(object obj)
@@ -558,7 +558,7 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Saves the images action.
+        ///     Saves the images action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void SaveImagesAction(object obj)

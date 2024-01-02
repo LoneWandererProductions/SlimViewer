@@ -51,14 +51,16 @@ namespace CommonControls
         /// <summary>
         ///     The Thumb Height (in lines)
         /// </summary>
-        public static readonly DependencyProperty DependencyThumbHeight = DependencyProperty.Register(nameof(DependencyThumbHeight),
+        public static readonly DependencyProperty DependencyThumbHeight = DependencyProperty.Register(
+            nameof(DependencyThumbHeight),
             typeof(int),
             typeof(Thumbnails), null);
 
         /// <summary>
         ///     The Thumb Length (in lines)
         /// </summary>
-        public static readonly DependencyProperty DependencyThumbWidth = DependencyProperty.Register(nameof(DependencyThumbWidth),
+        public static readonly DependencyProperty DependencyThumbWidth = DependencyProperty.Register(
+            nameof(DependencyThumbWidth),
             typeof(int),
             typeof(Thumbnails), null);
 
@@ -73,7 +75,8 @@ namespace CommonControls
         /// <summary>
         ///     The Thumb Cell Size
         /// </summary>
-        public static readonly DependencyProperty DependencyThumbGrid = DependencyProperty.Register(nameof(DependencyThumbGrid),
+        public static readonly DependencyProperty DependencyThumbGrid = DependencyProperty.Register(
+            nameof(DependencyThumbGrid),
             typeof(bool),
             typeof(Thumbnails), null);
 
@@ -104,19 +107,19 @@ namespace CommonControls
         private static bool _refresh = true;
 
         /// <summary>
-        ///     The selection
+        ///     The original height
         /// </summary>
-        private int _selection;
+        private int _originalHeight;
 
         /// <summary>
-        /// The original width
+        ///     The original width
         /// </summary>
         private int _originalWidth;
 
         /// <summary>
-        /// The original height
+        ///     The selection
         /// </summary>
-        private int _originalHeight;
+        private int _selection;
 
         /// <inheritdoc />
         /// <summary>
@@ -190,10 +193,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is CheckBox selected.
+        ///     Gets or sets a value indicating whether this instance is CheckBox selected.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is CheckBox selected; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is CheckBox selected; otherwise, <c>false</c>.
         /// </value>
         public bool IsCheckBoxSelected
 
@@ -349,17 +352,11 @@ namespace CommonControls
             //catch on reload
             if (ThumbHeight * ThumbWidth < pics.Count)
             {
-                if (ThumbWidth == 1)
-                {
-                    ThumbHeight = pics.Count;
-                }
+                if (ThumbWidth == 1) ThumbHeight = pics.Count;
 
-                if (ThumbHeight == 1)
-                {
-                    ThumbWidth = pics.Count;
-                }
+                if (ThumbHeight == 1) ThumbWidth = pics.Count;
 
-                if(ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
+                if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
                 {
                     var fraction = new ExtendedMath.Fraction(pics.Count, ThumbHeight);
                     ThumbWidth = (int)Math.Ceiling(fraction.Decimal);
@@ -406,7 +403,7 @@ namespace CommonControls
                     };
 
                     //add to our List of selected Items
-                    if(IsCheckBoxSelected) Selection.Add(key);
+                    if (IsCheckBoxSelected) Selection.Add(key);
 
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;
@@ -456,7 +453,7 @@ namespace CommonControls
 
             timer.Stop();
 
-            Trace.WriteLine("End: "+ timer.Elapsed);
+            Trace.WriteLine("End: " + timer.Elapsed);
         }
 
         /// <summary>

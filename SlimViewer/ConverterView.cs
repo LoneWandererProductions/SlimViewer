@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;

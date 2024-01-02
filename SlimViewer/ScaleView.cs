@@ -89,6 +89,7 @@ namespace SlimViewer
         /// <summary>
         ///     Triggers if an Attribute gets changed
         /// </summary>
+        // ReSharper disable once EventNeverSubscribedTo.Global
         public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
 
         /// <summary>

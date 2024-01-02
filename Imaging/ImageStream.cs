@@ -482,7 +482,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Combines the bitmaps.
+        ///     Combines the bitmaps.
         /// </summary>
         /// <param name="original">The original image.</param>
         /// <param name="overlay">The overlay image.</param>

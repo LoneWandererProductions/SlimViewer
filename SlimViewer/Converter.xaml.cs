@@ -20,7 +20,7 @@ namespace SlimViewer
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SlimViewer.Converter" /> class.
+        ///     Initializes a new instance of the <see cref="Converter" /> class.
         /// </summary>
         public Converter()
         {

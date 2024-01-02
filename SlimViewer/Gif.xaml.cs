@@ -16,7 +16,7 @@ namespace SlimViewer
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
-    /// Gif Window
+    ///     Gif Window
     /// </summary>
     public sealed partial class Gif
     {

@@ -111,7 +111,7 @@ namespace SlimViewer
         }
 
         /// <summary>
-        /// Converts the GIF action.
+        ///     Converts the GIF action.
         /// </summary>
         /// <param name="images">The Paths to the images.</param>
         /// <param name="filePath">The file path.</param>

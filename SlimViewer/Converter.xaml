@@ -8,7 +8,7 @@
         x:ClassModifier="internal"
         Title="Converter" Height="300" Width="300">
     <Window.DataContext>
-        <local:ConverterView x:Name="View" />
+        <local:ConverterView />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>

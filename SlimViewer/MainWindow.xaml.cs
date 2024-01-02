@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.ComponentModel;
 using System.Windows;
 using CommonControls;
 using Imaging;

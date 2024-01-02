@@ -182,7 +182,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Create the gif.
+        ///     Create the gif.
         /// </summary>
         /// <param name="btm">A list of Bitmaps.</param>
         /// <param name="target">The target.</param>
@@ -193,11 +193,11 @@ namespace Imaging
             //TODO encode and change to one size, add more sanity checks
 
             foreach (var src in btm.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp =>
-                System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                    bmp,
-                    IntPtr.Zero,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions())))
+                         System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                             bmp,
+                             IntPtr.Zero,
+                             Int32Rect.Empty,
+                             BitmapSizeOptions.FromEmptyOptions())))
                 gEnc.Frames.Add(BitmapFrame.Create(src));
 
             using var ms = new MemoryStream();
