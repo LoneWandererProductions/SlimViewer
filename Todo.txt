@@ -1,3 +1,2 @@
 - Add a global Config File
 - Add a move feature in thumbview
-- add new Folder to FolderView

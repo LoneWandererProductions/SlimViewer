@@ -579,7 +579,10 @@ namespace SlimViewer
         /// <param name="path"></param>
         private void Initiate(string path)
         {
-            if (Directory.Exists(path)) _ = Directory.CreateDirectory(path);
+            //if exists, clean up
+            if (Directory.Exists(path)) Directory.Delete(path, true);
+
+            _ = Directory.CreateDirectory(path);
 
             OutputPath = path;
 
