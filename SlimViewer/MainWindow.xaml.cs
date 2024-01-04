@@ -33,6 +33,13 @@ namespace SlimViewer
             View.Picker = ColorPick;
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var obj = new Config();
+            obj.SetConfig();
+            SlimViewerRegister.SetRegister(obj);
+        }
+
         /// <summary>
         ///     Thumbs the image clicked. Easier to handle than in the view model.
         /// </summary>
@@ -69,7 +76,7 @@ namespace SlimViewer
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
 
             if (files == null || files.Length == 0) return;
 

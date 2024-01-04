@@ -50,6 +50,16 @@ namespace SlimViewer
         /// </value>
         internal static string Target { get; set; }
 
+        internal static bool GifCleanUp { get; set; }
+
+        internal static string GifOutPutPath { get; set; }
+
+        internal static bool MainCleanUp { get; set; }
+
+        internal static int MainSimilarity { get; set; }
+
+        internal static bool MainAutoPlayGif { get; set; }
+
         /// <summary>
         ///     Resets the scaling.
         /// </summary>
@@ -74,6 +84,27 @@ namespace SlimViewer
         {
             Source = string.Empty;
             Target = string.Empty;
+        }
+
+        internal static void SetRegister(Config obj)
+        {
+            GifCleanUp = obj.GifCleanUp;
+            GifOutPutPath = obj.GifOutPutPath;
+            MainAutoPlayGif = obj.MainAutoPlayGif;
+            MainCleanUp = obj.MainCleanUp;
+            MainSimilarity = obj.MainSimilarity;
+        }
+
+        internal static Config GetRegister()
+        {
+            return new()
+            {
+                GifCleanUp = GifCleanUp,
+                GifOutPutPath = GifOutPutPath,
+                MainAutoPlayGif = MainAutoPlayGif,
+                MainCleanUp = MainCleanUp,
+                MainSimilarity = MainSimilarity
+            };
         }
     }
 }

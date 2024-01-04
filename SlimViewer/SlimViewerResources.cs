@@ -89,6 +89,11 @@ namespace SlimViewer
         internal const string ErrorCouldNotSaveFile = "Could not Save the File";
 
         /// <summary>
+        ///     The error with the Serializer (const). Value: "Could not Serialize: ".
+        /// </summary>
+        internal const string ErrorSerializer = "Could not Serialize: ";
+
+        /// <summary>
         ///     The Message Box Message (const). Value: "Shall we overwrite the file?."
         /// </summary>
         internal const string MessageFileAlreadyExists = "Shall we overwrite the file?";
