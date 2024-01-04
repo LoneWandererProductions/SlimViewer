@@ -922,6 +922,8 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void CloseAction(object obj)
         {
+            var config = SlimViewerRegister.GetRegister();
+            Config.SetConfig(config);
             Application.Current.Shutdown();
         }
 

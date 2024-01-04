@@ -35,8 +35,7 @@ namespace SlimViewer
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var obj = new Config();
-            obj.SetConfig();
+            var obj = Config.GetConfig();
             SlimViewerRegister.SetRegister(obj);
         }
 

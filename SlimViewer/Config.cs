@@ -6,12 +6,27 @@ using System.Xml.Serialization;
 
 namespace SlimViewer
 {
-    public class Config
+    public sealed class Config
     {
-        private readonly string _path = Path.Combine(Directory.GetCurrentDirectory(), nameof(Config));
+        /// <summary>
+        /// The path
+        /// </summary>
+        private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), nameof(Config));
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [GIF clean up].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
+        /// </value>
         public bool GifCleanUp { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets the GIF out put path.
+        /// </summary>
+        /// <value>
+        /// The GIF out put path.
+        /// </value>
         public string GifOutPutPath { get; set; }
 
         /// <summary>
@@ -31,16 +46,19 @@ namespace SlimViewer
         /// </value>
         public int MainSimilarity { get; set; } = 90;
 
-        public bool MainAutoPlayGif { get; set; } = false;
+        public bool MainAutoPlayGif { get; set; }
 
-        internal void SetConfig()
+        /// <summary>
+        /// Sets the configuration.
+        /// </summary>
+        internal static void SetConfig(Config obj)
         {
             try
             {
-                var serializer = new XmlSerializer(GetType());
+                var serializer = new XmlSerializer(obj.GetType());
 
-                using var tr = new StreamWriter(_path);
-                serializer.Serialize(tr, this);
+                using var tr = new StreamWriter(Path);
+                serializer.Serialize(tr, obj);
             }
             catch (InvalidOperationException ex)
             {
@@ -68,14 +86,18 @@ namespace SlimViewer
             }
         }
 
-        internal Config GetConfig()
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <returns>Config File</returns>
+        internal static Config GetConfig()
         {
-            if (!File.Exists(_path)) return new Config();
+            if (!File.Exists(Path)) return new Config();
 
             try
             {
                 var deserializer = new XmlSerializer(typeof(Config));
-                using TextReader reader = new StreamReader(_path);
+                using TextReader reader = new StreamReader(Path);
                 //can return null but unlikely
                 return deserializer.Deserialize(reader) as Config;
             }
