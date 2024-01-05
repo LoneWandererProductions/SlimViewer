@@ -297,8 +297,9 @@ namespace SlimViewer
 
         /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
+        ///     Configured from Register
         /// </summary>
-        private int _similarity = 90;
+        private int _similarity = SlimViewerRegister.MainSimilarity;
 
         /// <summary>
         ///     Check if Subfolders should be used too
@@ -408,9 +409,11 @@ namespace SlimViewer
             set
             {
                 if (value == _similarity) return;
-                if (value > 100 || value < 0) return;
+                if (value is > 100 or < 0) return;
 
                 _similarity = value;
+                SlimViewerRegister.MainSimilarity = value;
+
                 OnPropertyChanged(nameof(Similarity));
             }
         }

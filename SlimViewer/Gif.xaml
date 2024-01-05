@@ -20,7 +20,6 @@
             <MenuItem Header="Menu">
                 <MenuItem Header="Open Gif" Command="{Binding OpenCommand}" />
                 <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" />
-                <MenuItem Header="Define Output Folder" Command="{Binding OutputCommand}" />
                 <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}"
                           IsEnabled="{Binding Path =IsActive}" />
                 <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path =IsActive}" />

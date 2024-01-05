@@ -34,8 +34,9 @@ namespace SlimViewer
     {
         /// <summary>
         ///     The automatic clear
+        ///     Configured from Register
         /// </summary>
-        private bool _autoClear;
+        private bool _autoClear = SlimViewerRegister.GifCleanUp;
 
         /// <summary>
         ///     The BMP
@@ -51,11 +52,6 @@ namespace SlimViewer
         ///     The close command
         /// </summary>
         private ICommand _closeCommand;
-
-        /// <summary>
-        ///     The custom path
-        /// </summary>
-        private bool _customPath;
 
         /// <summary>
         ///     The file path
@@ -103,14 +99,9 @@ namespace SlimViewer
         private ICommand _openFolderCommand;
 
         /// <summary>
-        ///     The output command
-        /// </summary>
-        private ICommand _outputCommand;
-
-        /// <summary>
         ///     The output path
         /// </summary>
-        private string _outputPath;
+        private string _outputPath = Directory.GetCurrentDirectory();
 
         /// <summary>
         ///     The save GIF command
@@ -139,15 +130,6 @@ namespace SlimViewer
         /// </value>
         public ICommand OpenFolderCommand =>
             _openFolderCommand ??= new DelegateCommand<object>(OpenFolderAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the open folder command.
-        /// </summary>
-        /// <value>
-        ///     The open folder command.
-        /// </value>
-        public ICommand OutputCommand =>
-            _outputCommand ??= new DelegateCommand<object>(OutputAction, CanExecute);
 
         /// <summary>
         ///     Gets the clear command.
@@ -326,6 +308,7 @@ namespace SlimViewer
                 if (_autoClear == value) return;
 
                 _autoClear = value;
+                SlimViewerRegister.GifCleanUp = value;
                 OnPropertyChanged(nameof(IsActive));
             }
         }
@@ -415,19 +398,12 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
-            //Initiate Folder
-            if (string.IsNullOrEmpty(OutputPath)) OutputPath = Directory.GetCurrentDirectory();
+            Initiate(OutputPath);
 
             var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, OutputPath);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath) ||
                 !string.Equals(pathObj.Extension, ImagingResources.GifExt)) return;
-
-            if (!_customPath)
-            {
-                var custom = Path.Combine(OutputPath, SlimViewerResources.GifPath);
-                Initiate(custom);
-            }
 
             GifPath = pathObj.FilePath;
 
@@ -462,10 +438,7 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void OpenFolderAction(object obj)
         {
-            //Initiate Folder
-            if (string.IsNullOrEmpty(OutputPath)) OutputPath = Directory.GetCurrentDirectory();
-
-            if (OutputPath == null || !Directory.Exists(OutputPath)) return;
+            Initiate(OutputPath);
 
             //get target Folder
             var path = FileIoHandler.ShowFolder(OutputPath);
@@ -476,12 +449,6 @@ namespace SlimViewer
             if (fileList is not { Count: < 200 })
                 //TODO MessageBox
                 return;
-
-            if (!_customPath)
-            {
-                var custom = Path.Combine(OutputPath, SlimViewerResources.GifPath);
-                Initiate(custom);
-            }
 
             _ = GenerateThumbView(fileList);
 
@@ -501,25 +468,6 @@ namespace SlimViewer
                 info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
                 info.Width,
                 SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
-        }
-
-        /// <summary>
-        ///     Outputs the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void OutputAction(object obj)
-        {
-            var currentFolder = Directory.GetCurrentDirectory();
-
-            if (!Directory.Exists(currentFolder)) return;
-
-            //get target Folder
-            var path = FileIoHandler.ShowFolder(currentFolder);
-
-            if (string.IsNullOrEmpty(path)) return;
-
-            Initiate(path);
-            _customPath = true;
         }
 
         /// <summary>

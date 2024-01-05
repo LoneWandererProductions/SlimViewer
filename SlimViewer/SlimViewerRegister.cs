@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.IO;
+
 namespace SlimViewer
 {
     internal static class SlimViewerRegister
@@ -50,14 +52,31 @@ namespace SlimViewer
         /// </value>
         internal static string Target { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [GIF clean up].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
+        /// </value>
         internal static bool GifCleanUp { get; set; }
-
-        internal static string GifOutPutPath { get; set; }
 
         internal static bool MainCleanUp { get; set; }
 
+        /// <summary>
+        /// Gets or sets the main similarity.
+        /// </summary>
+        /// <value>
+        /// The main similarity.
+        /// </value>
         internal static int MainSimilarity { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [main automatic play GIF].
+        /// TODO IMPLEMENT
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
+        /// </value>
         internal static bool MainAutoPlayGif { get; set; }
 
         /// <summary>
@@ -86,21 +105,27 @@ namespace SlimViewer
             Target = string.Empty;
         }
 
+        /// <summary>
+        /// Sets the register.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         internal static void SetRegister(Config obj)
         {
             GifCleanUp = obj.GifCleanUp;
-            GifOutPutPath = obj.GifOutPutPath;
             MainAutoPlayGif = obj.MainAutoPlayGif;
             MainCleanUp = obj.MainCleanUp;
             MainSimilarity = obj.MainSimilarity;
         }
 
+        /// <summary>
+        /// Gets the register.
+        /// </summary>
+        /// <returns>The config object</returns>
         internal static Config GetRegister()
         {
             return new()
             {
                 GifCleanUp = GifCleanUp,
-                GifOutPutPath = GifOutPutPath,
                 MainAutoPlayGif = MainAutoPlayGif,
                 MainCleanUp = MainCleanUp,
                 MainSimilarity = MainSimilarity

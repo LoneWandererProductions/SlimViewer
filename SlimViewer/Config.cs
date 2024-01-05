@@ -1,3 +1,13 @@
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViewer
+ * FILE:        SlimViewer/Config.cs
+ * PURPOSE:     Config object and creator
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable MemberCanBeInternal, can't be made internal, else the serializer will make some trouble.
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -6,6 +16,9 @@ using System.Xml.Serialization;
 
 namespace SlimViewer
 {
+    /// <summary>
+    /// Config File
+    /// </summary>
     public sealed class Config
     {
         /// <summary>
@@ -20,14 +33,6 @@ namespace SlimViewer
         ///   <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
         /// </value>
         public bool GifCleanUp { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets the GIF out put path.
-        /// </summary>
-        /// <value>
-        /// The GIF out put path.
-        /// </value>
-        public string GifOutPutPath { get; set; }
 
         /// <summary>
         ///     TODO implement flag
@@ -46,6 +51,12 @@ namespace SlimViewer
         /// </value>
         public int MainSimilarity { get; set; } = 90;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [main automatic play GIF].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
+        /// </value>
         public bool MainAutoPlayGif { get; set; }
 
         /// <summary>
