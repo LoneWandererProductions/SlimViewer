@@ -86,16 +86,6 @@ namespace SlimViewer
         private ICommand _convertCommandCif;
 
         /// <summary>
-        ///     The convert gif command
-        /// </summary>
-        private ICommand _convertCommandGif;
-
-        /// <summary>
-        ///     The convert to gif command
-        /// </summary>
-        private ICommand _convertCommandToGif;
-
-        /// <summary>
         ///     The File count
         /// </summary>
         private int _count;
@@ -851,26 +841,6 @@ namespace SlimViewer
         public ICommand ConvertCommandCif =>
             _convertCommandCif ??= new DelegateCommand<object>(ConvertCifAction, CanExecute);
 
-
-        /// <summary>
-        ///     Gets the convert gif command.
-        /// </summary>
-        /// <value>
-        ///     The convert GIF to jpg.
-        /// </value>
-        public ICommand ConvertCommandGif =>
-            _convertCommandGif ??= new DelegateCommand<object>(ConvertGifAction, CanExecute);
-
-
-        /// <summary>
-        ///     Gets the convert to gif Command.
-        /// </summary>
-        /// <value>
-        ///     Converts Images to gif.
-        /// </value>
-        public ICommand ConvertCommandToGif =>
-            _convertCommandToGif ??= new DelegateCommand<object>(ConvertToGifAction, CanExecute);
-
         /// <summary>
         ///     The GIF window command.
         /// </summary>
@@ -1015,66 +985,6 @@ namespace SlimViewer
 
             if (Compress) _cif.CompressedToCifFile(_btm, pathObj.FilePath);
             else _cif.SaveToCifFile(_btm, pathObj.FilePath);
-        }
-
-        /// <summary>
-        ///     Converts the gif to images action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void ConvertGifAction(object obj)
-        {
-            //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
-
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, _currentFolder);
-
-            if (pathObj == null) return;
-
-            var images = Helper.Render.SplitGif(pathObj.FilePath);
-
-            var count = 0;
-
-            foreach (var image in images)
-                try
-                {
-                    count++;
-                    var path = string.Concat(pathObj.Folder, SlimViewerResources.Slash, count);
-                    var check = SaveImage(path, ImagingResources.JpgExt, image);
-                    if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
-                }
-                catch (ArgumentException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-                }
-                catch (IOException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-                }
-                catch (ExternalException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-                }
-        }
-
-        /// <summary>
-        ///     Converts to GIF action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void ConvertToGifAction(object obj)
-        {
-            //TODo not working correct
-            //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
-
-            //get target Folder
-            var path = FileIoHandler.ShowFolder(_currentFolder);
-
-            var target = string.Concat(path, SlimViewerResources.Slash, SlimViewerResources.NewGif);
-
-            Helper.Render.CreateGif(path, target);
         }
 
         /// <summary>
