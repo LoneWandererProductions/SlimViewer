@@ -97,7 +97,6 @@
                          Text="{Binding Path=Information, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox Grid.Row="5" Grid.Column="2" TextWrapping="Wrap"
                          Text="{Binding Path=OutputPath, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Row="5" Grid.Column="3" Content="..." Command="{Binding OutputCommand}" />
                 <Button Grid.Row="7" Grid.Column="0" Content="Clear"
                         Command="{Binding ClearCommand}" />
             </Grid>

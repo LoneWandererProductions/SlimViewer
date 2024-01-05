@@ -6,12 +6,12 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System.ComponentModel;
 using System.Windows;
 using CommonControls;
 using Imaging;
-
-// ReSharper disable MemberCanBeInternal
 
 namespace SlimViewer
 {
@@ -106,9 +106,9 @@ namespace SlimViewer
 
         /// <inheritdoc />
         /// <summary>
-        /// Raises the <see cref="E:System.Windows.Window.Closing" /> event.
+        /// Raises the <see cref="Window.Closing" /> event.
         /// </summary>
-        /// <param name="e">A <see cref="T:System.ComponentModel.CancelEventArgs" /> that contains the event data.</param>
+        /// <param name="e">A <see cref="CancelEventArgs" /> that contains the event data.</param>
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
