@@ -6,8 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.IO;
-
 namespace SlimViewer
 {
     internal static class SlimViewerRegister
@@ -60,6 +58,13 @@ namespace SlimViewer
         /// </value>
         internal static bool GifCleanUp { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [main clean up].
+        /// TODO IMPLEMENT
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [main clean up]; otherwise, <c>false</c>.
+        /// </value>
         internal static bool MainCleanUp { get; set; }
 
         /// <summary>

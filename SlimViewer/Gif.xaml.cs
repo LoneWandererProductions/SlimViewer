@@ -35,15 +35,15 @@ namespace SlimViewer
             View.ChangeImage(itemId.Id);
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Handles the Closing event of the Window control.
+        /// Raises the <see cref="Window.Closing" /> event.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="CancelEventArgs" /> instance containing the event data.</param>
-        private void Window_Closing(object sender, CancelEventArgs e)
+        /// <param name="e">A <see cref="CancelEventArgs" /> that contains the event data.</param>
+        protected override void OnClosing(CancelEventArgs e)
         {
-            //TODO add Check
-            View.ClearCommand.Execute(null);
+            e.Cancel = true;
+            View.CloseCommand.Execute(null);
         }
     }
 }

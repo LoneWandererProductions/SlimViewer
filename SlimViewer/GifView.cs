@@ -485,7 +485,7 @@ namespace SlimViewer
         /// <param name="obj">The object.</param>
         private void CloseAction(object obj)
         {
-            ClearAction(null);
+            if(SlimViewerRegister.GifCleanUp) ClearAction(null);
             Application.Current.Shutdown();
         }
 
