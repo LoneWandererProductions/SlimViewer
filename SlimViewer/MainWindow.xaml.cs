@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.ComponentModel;
 using System.Windows;
 using CommonControls;
 using Imaging;
@@ -101,6 +102,17 @@ namespace SlimViewer
         private void Thumbnail_OnImageLoaded()
         {
             View.Loaded();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Window.Closing" /> event.
+        /// </summary>
+        /// <param name="e">A <see cref="T:System.ComponentModel.CancelEventArgs" /> that contains the event data.</param>
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            e.Cancel = true;
+            View.CloseCommand.Execute(null);
         }
     }
 }
