@@ -85,6 +85,14 @@ namespace SlimViewer
         internal static bool MainAutoPlayGif { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [main sub folders].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
+        /// </value>
+        internal static bool MainSubFolders { get; set; }
+
+        /// <summary>
         ///     Resets the scaling.
         /// </summary>
         internal static void ResetScaling()
@@ -120,6 +128,7 @@ namespace SlimViewer
             MainAutoPlayGif = obj.MainAutoPlayGif;
             MainCleanUp = obj.MainCleanUp;
             MainSimilarity = obj.MainSimilarity;
+            MainSubFolders = obj.MainSubFolders;
         }
 
         /// <summary>
@@ -133,7 +142,8 @@ namespace SlimViewer
                 GifCleanUp = GifCleanUp,
                 MainAutoPlayGif = MainAutoPlayGif,
                 MainCleanUp = MainCleanUp,
-                MainSimilarity = MainSimilarity
+                MainSimilarity = MainSimilarity,
+                MainSubFolders = MainSubFolders
             };
         }
     }

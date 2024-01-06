@@ -116,7 +116,15 @@
                 <CheckBox IsChecked="{Binding Path =SubFolders}">Subfolders</CheckBox>
                 <CheckBox IsChecked="{Binding Path =Thumbs}">Show Thumbs</CheckBox>
                 <Separator />
-                <MenuItem Header="Clean Temp Folder" Command="{Binding CleanTempFolder}" />
+                <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    <CheckBox IsChecked="{Binding Path = AutoClean}" Content="Auto Clean Temp Folder" />
+                    <Button Content="Clean"  Command="{Binding CleanTempFolder}" Grid.Column="2"/>
+                </Grid>
                 <Separator />
                 <CheckBox IsChecked="{Binding ElementName=ImageZoom, Path=AutoplayGifImage}">Autoplay Gif</CheckBox>
             </MenuItem>

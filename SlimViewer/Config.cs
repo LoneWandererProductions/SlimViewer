@@ -60,6 +60,14 @@ namespace SlimViewer
         public bool MainAutoPlayGif { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [main sub folders].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
+        /// </value>
+        public bool MainSubFolders { get; set; }
+
+        /// <summary>
         /// Sets the configuration.
         /// </summary>
         internal static void SetConfig(Config obj)

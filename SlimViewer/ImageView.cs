@@ -294,12 +294,17 @@ namespace SlimViewer
         /// <summary>
         ///     Check if Subfolders should be used too
         /// </summary>
-        private bool _subFolders;
+        private bool _subFolders = SlimViewerRegister.MainSubFolders;
 
         /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
+
+        /// <summary>
+        /// The automatic clean
+        /// </summary>
+        private bool _autoClean;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -476,7 +481,27 @@ namespace SlimViewer
                 if (_subFolders == value) return;
 
                 _subFolders = value;
+                SlimViewerRegister.MainSubFolders = value;
                 OnPropertyChanged(nameof(SubFolders));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [automatic clean].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
+        /// </value>
+        public bool AutoClean
+        {
+            get => _autoClean;
+            set
+            {
+                if (_autoClean == value) return;
+
+                _autoClean = value;
+                SlimViewerRegister.MainCleanUp = value;
+                OnPropertyChanged(nameof(AutoClean));
             }
         }
 
@@ -897,6 +922,7 @@ namespace SlimViewer
         {
             var config = SlimViewerRegister.GetRegister();
             Config.SetConfig(config);
+            if(AutoClean) CleanTempAction(null);
             Application.Current.Shutdown();
         }
 
@@ -1578,6 +1604,7 @@ namespace SlimViewer
         private void CleanTempAction(object obj)
         {
             var root = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
+
             try
             {
                 _ = FileHandleDelete.DeleteAllContents(root, true);
