@@ -261,7 +261,7 @@ namespace CommonControls
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
-                    {
+                {
                     // Get the Position on the Image
                     _imageStartPoint = e.GetPosition(BtmImage);
 
@@ -273,7 +273,6 @@ namespace CommonControls
 
                     // Make the drag selection box visible.
                     SelectionBox.Visibility = Visibility.Visible;
-
                 }
                     break;
                 default:
