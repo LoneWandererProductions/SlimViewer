@@ -1,14 +1,14 @@
 ﻿<!-- ReSharper disable once MemberCanBeInternal -->
-<Window x:Class="SlimViewer.Search"
+<Window x:Class="SlimViews.Search"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:slimViewer="clr-namespace:SlimViewer"
+        xmlns:slimViews="clr-namespace:SlimViews"
         mc:Ignorable="d"
         Title="Search" Height="150" Width="650">
     <Window.DataContext>
-        <slimViewer:SearchView x:Name="View" />
+        <slimViews:SearchView x:Name="View" />
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>

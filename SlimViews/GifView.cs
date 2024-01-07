@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/GifView.cs
+ * FILE:        SlimViews/GifView.cs
  * PURPOSE:     View Model for the Gif Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -23,7 +23,7 @@ using FileHandler;
 using Imaging;
 using ViewModel;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>

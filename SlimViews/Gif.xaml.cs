@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/Gif.xaml.cs
+ * FILE:        SlimViews/Gif.xaml.cs
  * PURPOSE:     Gif Editor Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@ using System.ComponentModel;
 using System.Windows;
 using CommonControls;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

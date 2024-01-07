@@ -1,7 +1,7 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/CompareView.cs
+ * FILE:        SlimViews/CompareView.cs
  * PURPOSE:     View Model for the Comparer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -18,7 +18,7 @@ using ImageCompare;
 using Imaging;
 using ViewModel;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>

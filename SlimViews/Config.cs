@@ -1,7 +1,7 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/Config.cs
+ * FILE:        SlimViews/Config.cs
  * PURPOSE:     Config object and creator
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -14,7 +14,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <summary>
     /// Config File
@@ -109,7 +109,7 @@ namespace SlimViewer
         /// Gets the configuration.
         /// </summary>
         /// <returns>Config File</returns>
-        internal static Config GetConfig()
+        public static Config GetConfig()
         {
             if (!File.Exists(Path)) return new Config();
 

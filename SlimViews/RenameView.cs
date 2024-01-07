@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/RenameView.cs
+ * FILE:        SlimViews/RenameView.cs
  * PURPOSE:     View Model for Rename
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -19,7 +19,7 @@ using System.Windows.Input;
 using FileHandler;
 using ViewModel;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <summary>
     ///     The View for Rename

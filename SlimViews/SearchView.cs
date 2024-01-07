@@ -1,7 +1,7 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/SearchView.cs
+ * FILE:        SlimViews/SearchView.cs
  * PURPOSE:     View Model for Search
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -19,7 +19,7 @@ using ImageCompare;
 using Imaging;
 using ViewModel;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>

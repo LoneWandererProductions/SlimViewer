@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/Converter.xaml.cs
+ * FILE:        SlimViews/Converter.xaml.cs
  * PURPOSE:     Basic Converter Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Windows;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <summary>
     ///     Window for converting all Files

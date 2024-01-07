@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/SlimViewerHelper.cs
+ * FILE:        SlimViews/SlimViewerHelper.cs
  * PURPOSE:     Helper Functions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -13,7 +13,7 @@ using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <summary>
     ///     Basic Helper functions

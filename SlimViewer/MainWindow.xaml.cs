@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Windows;
 using CommonControls;
 using Imaging;
+using SlimViews;
 
 namespace SlimViewer
 {

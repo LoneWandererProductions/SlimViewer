@@ -32,6 +32,7 @@
     <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
+    <ProjectReference Include="..\SlimViews\SlimViews.csproj" />
     <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/ImageView.cs
+ * FILE:        SlimViews/ImageView.cs
  * PURPOSE:     View Model for the SlimViewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -36,7 +36,7 @@ using Point = System.Windows.Point;
 // TODO add Zoom lock and rotate as it's own Control
 // TODO add more User Feedback
 
-namespace SlimViewer
+namespace SlimViews
 {
     public sealed class ImageView : INotifyPropertyChanged
     {
@@ -322,7 +322,7 @@ namespace SlimViewer
         /// <value>
         ///     The thumb.
         /// </value>
-        internal Thumbnails Thumb { get; set; }
+        public Thumbnails Thumb { get; set; }
 
         /// <summary>
         ///     Gets or sets the color.
@@ -330,7 +330,7 @@ namespace SlimViewer
         /// <value>
         ///     The color.
         /// </value>
-        internal ColorHsv Color { get; set; }
+        public ColorHsv Color { get; set; }
 
         /// <summary>
         ///     Sets the status.
@@ -338,7 +338,7 @@ namespace SlimViewer
         /// <value>
         ///     The status.
         /// </value>
-        internal ColorPickerMenu Picker { get; set; }
+        public ColorPickerMenu Picker { get; set; }
 
         /// <summary>
         ///     Sets the status Image.
@@ -346,7 +346,7 @@ namespace SlimViewer
         /// <value>
         ///     The status Image.
         /// </value>
-        internal Image Status { private get; set; }
+        public Image Status { private get; set; }
 
         /// <summary>
         ///     Gets or sets the selected tool.
@@ -881,7 +881,7 @@ namespace SlimViewer
         /// <value>
         ///     The main.
         /// </value>
-        public MainWindow Main { get; set; }
+        public Window Main { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -1734,7 +1734,7 @@ namespace SlimViewer
         ///     Changes the image.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        internal void ChangeImage(int id)
+        public void ChangeImage(int id)
         {
             if (!Observer.ContainsKey(id)) return;
 
@@ -1748,7 +1748,7 @@ namespace SlimViewer
         ///     Changes the image.
         /// </summary>
         /// <param name="files">The files we want to view.</param>
-        internal void ChangeImage(IEnumerable<string> files)
+        public void ChangeImage(IEnumerable<string> files)
         {
             //no need to check for null it was already checked
             var lst = files.ToList();
@@ -1786,7 +1786,7 @@ namespace SlimViewer
         ///     Changes the image.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        internal void ChangeImage(string filePath)
+        public void ChangeImage(string filePath)
         {
             //check if it exists
             if (!File.Exists(filePath)) return;
@@ -1839,7 +1839,7 @@ namespace SlimViewer
         ///     Cuts the image.
         /// </summary>
         /// <param name="frame">The frame.</param>
-        internal void CutImage(SelectionFrame frame)
+        public void CutImage(SelectionFrame frame)
         {
             try
             {
@@ -1857,7 +1857,7 @@ namespace SlimViewer
         ///     Gets the color of the point.
         /// </summary>
         /// <param name="point">The point.</param>
-        internal void GetPointColor(Point point)
+        public void GetPointColor(Point point)
         {
             var color = _btm.GetPixel((int)point.X, (int)point.Y);
             Picker.SetColors(color.R, color.G, color.B, color.A);
@@ -2069,7 +2069,7 @@ namespace SlimViewer
         /// <summary>
         ///     Thumbnails are loaded.
         /// </summary>
-        internal void Loaded()
+        public void Loaded()
         {
             if (Status == null)
                 return;

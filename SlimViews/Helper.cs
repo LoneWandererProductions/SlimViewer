@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/Helper.cs
+ * FILE:        SlimViews/Helper.cs
  * PURPOSE:     Basic Helper Methods that are used across controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using Imaging;
 
-namespace SlimViewer
+namespace SlimViews
 {
     internal static class Helper
     {

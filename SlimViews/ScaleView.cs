@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/ScaleView.cs
+ * FILE:        SlimViews/ScaleView.cs
  * PURPOSE:     View Model for Scale
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ using System.Windows;
 using System.Windows.Input;
 using ViewModel;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <summary>
     ///     The View for Rename

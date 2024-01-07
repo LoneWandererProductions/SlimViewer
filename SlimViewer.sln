@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtendedSystemObjects", "Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imaging", "Imaging\Imaging.csproj", "{0F7349DF-0F92-4E3B-BC00-15DF481B6971}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimViews", "SlimViews\SlimViews.csproj", "{838A1F90-0DCA-4AD2-9D74-6F48B5F53D2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{0F7349DF-0F92-4E3B-BC00-15DF481B6971}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F7349DF-0F92-4E3B-BC00-15DF481B6971}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F7349DF-0F92-4E3B-BC00-15DF481B6971}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838A1F90-0DCA-4AD2-9D74-6F48B5F53D2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838A1F90-0DCA-4AD2-9D74-6F48B5F53D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838A1F90-0DCA-4AD2-9D74-6F48B5F53D2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838A1F90-0DCA-4AD2-9D74-6F48B5F53D2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

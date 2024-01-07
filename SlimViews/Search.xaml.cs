@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/Search.xaml.cs
+ * FILE:        SlimViews/Search.xaml.cs
  * PURPOSE:     Search Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@
 
 using Imaging;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <inheritdoc cref="Search" />
     /// <summary>
@@ -21,7 +21,7 @@ namespace SlimViewer
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SlimViewer.Search" /> class.
+        ///     Initializes a new instance of the <see cref="T:SlimViews.Search" /> class.
         /// </summary>
         public Search()
         {
@@ -30,7 +30,7 @@ namespace SlimViewer
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SlimViewer.Search" /> class.
+        ///     Initializes a new instance of the <see cref="T:SlimViews.Search" /> class.
         /// </summary>
         /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
         /// <param name="currentFolder">The current folder.</param>

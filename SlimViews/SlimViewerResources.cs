@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/SlimViewerResources.cs
+ * FILE:        SlimViews/SlimViewerResources.cs
  * PURPOSE:     Resources for the SlimViewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <summary>
     ///     SlimViewer Resources

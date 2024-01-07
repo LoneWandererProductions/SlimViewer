@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/Rename.xaml.cs
+ * FILE:        SlimViews/Rename.xaml.cs
  * PURPOSE:     View Model for Rename
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using System.Windows;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
@@ -28,7 +28,7 @@ namespace SlimViewer
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SlimViewer.Rename" /> class.
+        ///     Initializes a new instance of the <see cref="T:SlimViews.Rename" /> class.
         /// </summary>
         /// <param name="observer">The Dictionary of files.</param>
         public Rename(Dictionary<int, string> observer)

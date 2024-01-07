@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/SlimViewerRegister.cs
+ * FILE:        SlimViews/SlimViewerRegister.cs
  * PURPOSE:     SlimViewer Register
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace SlimViewer
+namespace SlimViews
 {
-    internal static class SlimViewerRegister
+    public static class SlimViewerRegister
     {
         /// <summary>
         ///     Gets or sets the scaling.
@@ -122,7 +122,7 @@ namespace SlimViewer
         /// Sets the register.
         /// </summary>
         /// <param name="obj">The object.</param>
-        internal static void SetRegister(Config obj)
+        public static void SetRegister(Config obj)
         {
             GifCleanUp = obj.GifCleanUp;
             MainAutoPlayGif = obj.MainAutoPlayGif;

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/ConverterView.cs
+ * FILE:        SlimViews/ConverterView.cs
  * PURPOSE:     View Model for the Converter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ using System.Windows.Input;
 using Imaging;
 using ViewModel;
 
-namespace SlimViewer
+namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
