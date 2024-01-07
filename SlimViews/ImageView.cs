@@ -1838,12 +1838,30 @@ namespace SlimViews
         /// <summary>
         ///     Cuts the image.
         /// </summary>
-        /// <param name="frame">The frame.</param>
+        /// <param name="frame">The selection frame.</param>
         public void CutImage(SelectionFrame frame)
         {
             try
             {
                 _btm = Helper.Render.CutBitmap(_btm, frame.X, frame.Y, frame.Height, frame.Width);
+                Bmp = _btm.ToBitmapImage();
+            }
+            catch (ArgumentNullException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+            }
+        }
+
+        /// <summary>
+        /// Erases part of the image.
+        /// </summary>
+        /// <param name="frame">The selection frame.</param>
+        public void EraseImage(SelectionFrame frame)
+        {
+            try
+            {
+                _btm = Helper.Render.EraseRectangle(_btm, frame.X, frame.Y, frame.Height, frame.Width);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentNullException ex)

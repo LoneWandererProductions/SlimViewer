@@ -276,6 +276,21 @@ namespace CommonControls
                 case SelectionTools.SelectPixel:
                     // nothing
                     break;
+                case SelectionTools.Erase:
+                {
+                    // Get the Position on the Image
+                    _imageStartPoint = e.GetPosition(BtmImage);
+
+                    // Initial placement of the drag selection box.
+                    Canvas.SetLeft(SelectionBox, _startPoint.X);
+                    Canvas.SetTop(SelectionBox, _startPoint.Y);
+                    SelectionBox.Width = 0;
+                    SelectionBox.Height = 0;
+
+                    // Make the drag selection box visible.
+                    SelectionBox.Visibility = Visibility.Visible;
+                    break;
+                }
                 default:
                     // nothing
                     return;
@@ -494,6 +509,11 @@ namespace CommonControls
         /// <summary>
         ///     The select Color of Point
         /// </summary>
-        SelectPixel = 2
+        SelectPixel = 2,
+
+        /// <summary>
+        /// The erase
+        /// </summary>
+        Erase = 3
     }
 }

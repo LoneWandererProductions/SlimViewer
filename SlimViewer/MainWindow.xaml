@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-    xmlns:slimViewer="clr-namespace:SlimViewer;assembly=SlimViews"
     xmlns:slimViews="clr-namespace:SlimViews;assembly=SlimViews"
     x:Class="SlimViewer.MainWindow"
     mc:Ignorable="d"

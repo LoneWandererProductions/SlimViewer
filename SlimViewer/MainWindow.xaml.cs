@@ -56,7 +56,8 @@ namespace SlimViewer
         /// <param name="frame">The frame.</param>
         private void ImageZoom_SelectedFrame(SelectionFrame frame)
         {
-            View.CutImage(frame);
+            if (View.SelectedTool == SelectionTools.SelectRectangle) View.CutImage(frame);
+            if (View.SelectedTool == SelectionTools.Erase) View.EraseImage(frame);
         }
 
         /// <summary>
