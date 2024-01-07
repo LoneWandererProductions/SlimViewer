@@ -247,10 +247,12 @@ namespace CommonControls
         {
             // Capture and track the mouse.
             _mouseDown = true;
-            _startPoint = e.GetPosition(MainCanvas);
+            _startPoint = e.GetPosition(BtmImage);
             _originPoint.X = BtmImage.RenderTransform.Value.OffsetX;
             _originPoint.Y = BtmImage.RenderTransform.Value.OffsetY;
             _ = MainCanvas.CaptureMouse();
+
+            //TODO Selection Rectangle start Position!
 
             switch (ZoomTool)
             {
@@ -266,8 +268,9 @@ namespace CommonControls
                     _imageStartPoint = e.GetPosition(BtmImage);
 
                     // Initial placement of the drag selection box.
-                    Canvas.SetLeft(SelectionBox, _startPoint.X);
-                    Canvas.SetTop(SelectionBox, _startPoint.Y);
+                    Canvas.SetLeft(SelectionBox, _originPoint.X);
+                    Canvas.SetTop(SelectionBox, _originPoint.Y);
+
                     SelectionBox.Width = 0;
                     SelectionBox.Height = 0;
 
