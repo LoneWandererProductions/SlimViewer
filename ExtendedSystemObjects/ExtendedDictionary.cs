@@ -41,17 +41,20 @@ namespace ExtendedSystemObjects
         /// <param name="dic">Internal Target Dictionary</param>
         /// <param name="key">Unique Key</param>
         /// <param name="value">Value to add</param>
-        /// <exception cref="ArgumentNullException"><paramref name="dic" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Element was already Contained</exception>
         public static void AddDistinctKeyValue<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, TValue value)
         {
             if (dic.ContainsKey(key))
+            {
                 throw new ArgumentException(string.Concat(ExtendedSystemObjectsResources.ErrorKeyExists,
                     nameof(value)));
+            }
 
             if (dic.ContainsValue(value))
+            {
                 throw new ArgumentException(string.Concat(ExtendedSystemObjectsResources.ErrorValueExists,
                     nameof(value)));
+            }
 
             dic.Add(key, value);
         }
@@ -63,7 +66,6 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">Internal Value</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <returns>Sorted Dictionary</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="dic" /> is <c>null</c>.</exception>
         public static Dictionary<TKey, TValue> Sort<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
             var sorted = new SortedDictionary<TKey, TValue>(dic);
@@ -79,7 +81,10 @@ namespace ExtendedSystemObjects
         /// <returns>If Dictionary is Null or has zero Elements</returns>
         public static bool IsNullOrEmpty<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
-            if (dic == null) return true;
+            if (dic == null)
+            {
+                return true;
+            }
 
             return dic.Count == 0;
         }
@@ -104,17 +109,17 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">Internal Value</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <returns>If Dictionary has distinct Values</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="dic" /> is <c>null</c>.</exception>
         public static bool IsValueDistinct<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
-            if (dic == null) throw new ArgumentNullException(nameof(dic));
-
             var sort = new Dictionary<TKey, TValue>(dic);
 
-            foreach (var element in dic)
+            foreach (var (key, value) in dic)
             {
-                _ = sort.Remove(element.Key);
-                if (sort.ContainsValue(element.Value)) return false;
+                _ = sort.Remove(key);
+                if (sort.ContainsValue(value))
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -131,7 +136,10 @@ namespace ExtendedSystemObjects
         /// <exception cref="ValueNotFoundException"><paramref name="value" /> not found.</exception>
         public static TKey GetFirstKeyByValue<TKey, TValue>(this IDictionary<TKey, TValue> dic, TValue value)
         {
-            foreach (var pair in dic.Where(pair => value.Equals(pair.Value))) return pair.Key;
+            foreach (var pair in dic.Where(pair => value.Equals(pair.Value)))
+            {
+                return pair.Key;
+            }
 
             throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
         }
@@ -144,34 +152,39 @@ namespace ExtendedSystemObjects
         /// <param name="dic">Internal Target Dictionary</param>
         /// <param name="value">Value we look up</param>
         /// <returns>List of Keys with described Value</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="dic" /> is <c>null</c>.</exception>
+        /// <exception cref="ValueNotFoundException"><paramref name="dic" /> value not found.</exception>
         public static List<TKey> GetKeysByValue<TKey, TValue>(this IDictionary<TKey, TValue> dic, TValue value)
         {
-            if (dic == null) throw new ArgumentNullException(nameof(dic));
-
             var collection = (from pair in dic where value.Equals(pair.Value) select pair.Key).ToList();
 
             if (collection.Count == 0)
+            {
                 throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
+            }
 
             return collection;
         }
 
         /// <summary>
-        ///     Get All Keys by Value
+        /// Get All Keys by Value
         /// </summary>
         /// <typeparam name="TKey">Internal Key</typeparam>
         /// <typeparam name="TValue">Internal Value</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <param name="value">Value we look up</param>
-        /// <returns>List of Keys with described Value</returns>
+        /// <returns>
+        /// List of Keys with described Value
+        /// </returns>
+        /// <exception cref="ValueNotFoundException"><paramref name="dic" /> value not found.</exception>
         public static Dictionary<TKey, TValue> GetDictionaryByValues<TKey, TValue>(this IDictionary<TKey, TValue> dic,
             IEnumerable<TKey> value)
         {
             var collection = value.Where(dic.ContainsKey).ToDictionary(key => key, key => dic[key]);
 
             if (collection.Count == 0)
+            {
                 throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorNoValueFound);
+            }
 
             return collection;
         }
