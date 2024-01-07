@@ -617,8 +617,6 @@ namespace Imaging
             graph.DrawImage(btm,
                 new Rectangle(x, y, btm.Width, btm.Height));
 
-            btm.Dispose();
-
             return image;
         }
 

@@ -161,6 +161,7 @@
                 Name="ImageZoom"
                 ZoomTool="{Binding ElementName=CmbBxSelection, Path=SelectedItem}"
                 SelectedFrame="ImageZoom_SelectedFrame"
+
                 SelectedPoint="ImageZoom_SelectedPointColor" />
             <TextBox Grid.Row="1" TextWrapping="Wrap"
                      Focusable="True"
