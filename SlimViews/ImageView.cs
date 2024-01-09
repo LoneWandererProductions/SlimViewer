@@ -46,6 +46,11 @@ namespace SlimViews
         private readonly CustomImageFormat _cif;
 
         /// <summary>
+        ///     The automatic clean
+        /// </summary>
+        private bool _autoClean;
+
+        /// <summary>
         ///     The black and white command.
         /// </summary>
         private ICommand _blackAndWhite;
@@ -302,11 +307,6 @@ namespace SlimViews
         private bool _thumbs = true;
 
         /// <summary>
-        /// The automatic clean
-        /// </summary>
-        private bool _autoClean;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
         ///     Initiates all necessary Collections as well
         /// </summary>
@@ -487,10 +487,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [automatic clean].
+        ///     Gets or sets a value indicating whether [automatic clean].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
         /// </value>
         public bool AutoClean
         {
@@ -922,7 +922,7 @@ namespace SlimViews
         {
             var config = SlimViewerRegister.GetRegister();
             Config.SetConfig(config);
-            if(AutoClean) CleanTempAction(null);
+            if (AutoClean) CleanTempAction(null);
             Application.Current.Shutdown();
         }
 
@@ -1854,7 +1854,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Erases part of the image.
+        ///     Erases part of the image.
         /// </summary>
         /// <param name="frame">The selection frame.</param>
         public void EraseImage(SelectionFrame frame)

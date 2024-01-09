@@ -78,7 +78,7 @@ namespace SlimViewer
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             if (files == null || files.Length == 0) return;
 
@@ -108,7 +108,7 @@ namespace SlimViewer
 
         /// <inheritdoc />
         /// <summary>
-        /// Raises the <see cref="Window.Closing" /> event.
+        ///     Raises the <see cref="Window.Closing" /> event.
         /// </summary>
         /// <param name="e">A <see cref="CancelEventArgs" /> that contains the event data.</param>
         protected override void OnClosing(CancelEventArgs e)

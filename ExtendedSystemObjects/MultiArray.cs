@@ -15,9 +15,7 @@ namespace ExtendedSystemObjects
         public static void SwapColumn<TValue>(this TValue[,] array, int xOne, int xTwo)
         {
             for (var i = 0; i < array.GetLength(1); i++)
-            {
                 (array[xOne, i], array[xTwo, i]) = (array[xTwo, i], array[xOne, i]);
-            }
         }
 
         /// <summary>
@@ -30,9 +28,7 @@ namespace ExtendedSystemObjects
         public static void SwapRow<TValue>(this TValue[,] array, int xOne, int xTwo)
         {
             for (var i = 0; i < array.GetLength(0); i++)
-            {
                 (array[i, xOne], array[i, xTwo]) = (array[i, xTwo], array[i, xOne]);
-            }
         }
 
 
@@ -60,7 +56,7 @@ namespace ExtendedSystemObjects
                     Trace.WriteLine(i);
                     Trace.WriteLine(i % row);
 
-                    if ((i + 1) % row == 0 && (i + 1) >= row)
+                    if ((i + 1) % row == 0 && i + 1 >= row)
                     {
                         _ = str.Append(Environment.NewLine);
                         Trace.WriteLine("here");
@@ -92,7 +88,7 @@ namespace ExtendedSystemObjects
                 for (var i = 0; i < array.GetLength(0); i++)
                 for (var j = 0; j < array.GetLength(1); j++)
                 {
-                    var cursor = i + (j * array.GetLength(1));
+                    var cursor = i + j * array.GetLength(1);
 
                     one[cursor] = two[cursor];
                 }
@@ -110,34 +106,24 @@ namespace ExtendedSystemObjects
         /// <returns>Equal or not</returns>
         public static unsafe bool Equal<TValue>(this TValue[,] array, TValue[,] compare) where TValue : unmanaged
         {
-            if (array.GetLength(0) != compare.GetLength(0))
-            {
-                return false;
-            }
+            if (array.GetLength(0) != compare.GetLength(0)) return false;
 
-            if (array.GetLength(1) != compare.GetLength(1))
-            {
-                return false;
-            }
+            if (array.GetLength(1) != compare.GetLength(1)) return false;
 
             var length = array.GetLength(0) * array.GetLength(1);
 
             fixed (TValue* one = array, two = compare)
             {
                 for (var i = 0; i < length; ++i)
-                {
                     if (!one[i].Equals(two[i]))
-                    {
                         return false;
-                    }
-                }
             }
 
             return true;
         }
 
         /// <summary>
-        /// Converts an array to span.
+        ///     Converts an array to span.
         /// </summary>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="array">The array.</param>
