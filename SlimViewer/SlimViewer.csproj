@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Gif\**" />
-    <EmbeddedResource Remove="Gif\**" />
-    <None Remove="Gif\**" />
-    <Page Remove="Gif\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="GifView.cs~RFc4f4835.TMP" />
     <None Remove="System\green.png" />
     <None Remove="System\red.png" />
   </ItemGroup>
