@@ -476,7 +476,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ClearAction(object obj)
         {
-            if (Directory.Exists(OutputPath)) Directory.Delete(OutputPath, true);
+            if (Directory.Exists(_imageExport)) Directory.Delete(_imageExport, true);
+            if (Directory.Exists(_gifExport)) Directory.Delete(_gifExport, true);
         }
 
         /// <summary>
@@ -527,20 +528,21 @@ namespace SlimViews
         /// <param name="path"></param>
         private void Initiate(string path)
         {
-            //if exists, clean up
-            if (Directory.Exists(path)) Directory.Delete(path, true);
-
             _ = Directory.CreateDirectory(path);
 
             OutputPath = path;
 
             _imageExport = Path.Combine(path, SlimViewerResources.ImagesPath);
             {
+                //if exists, clean up
+                if (Directory.Exists(_imageExport)) Directory.Delete(_imageExport, true);
                 Directory.CreateDirectory(_imageExport);
             }
 
             _gifExport = Path.Combine(path, SlimViewerResources.NewGifPath);
             {
+                //if exists, clean up
+                if (Directory.Exists(_gifExport)) Directory.Delete(_gifExport, true);
                 Directory.CreateDirectory(_gifExport);
             }
 
