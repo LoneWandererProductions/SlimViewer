@@ -934,20 +934,26 @@ namespace SlimViews
         {
             var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, _currentFolder);
 
-            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
+            if (string.IsNullOrEmpty(pathObj.FilePath)) return;
 
-            if (!string.IsNullOrEmpty(pathObj.Folder)) _currentFolder = pathObj.Folder;
+            _currentFolder = pathObj.Folder;
 
+            //handle cbz files
             if (string.Equals(pathObj.Extension, SlimViewerResources.CbzExt, StringComparison.OrdinalIgnoreCase))
             {
                 GenerateCbrView(pathObj);
+                return;
             }
-            else
+
+            //check if file extension is supported
+            if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
             {
-                if (!string.IsNullOrEmpty(pathObj.Folder)) _currentFolder = pathObj.Folder;
-                GenerateView(pathObj.FilePath);
-                LoadThumbs(pathObj.Folder, pathObj.FilePath);
+                _ = MessageBox.Show(string.Concat(SlimViewerResources.MessageFileNotSupported, pathObj.Extension), SlimViewerResources.MessageError);
+                return;
             }
+
+            GenerateView(pathObj.FilePath);
+            LoadThumbs(pathObj.Folder, pathObj.FilePath);
 
             //activate Menus
             if (_bmp != null) IsActive = true;

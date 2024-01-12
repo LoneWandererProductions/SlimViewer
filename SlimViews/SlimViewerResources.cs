@@ -179,6 +179,11 @@ namespace SlimViews
         internal const string MessageErrorFileNotFound = "File not found: ";
 
         /// <summary>
+        ///     The error Message extension not supported (const). Value: "Extension not yet supported: "
+        /// </summary>
+        internal const string MessageFileNotSupported = "Extension not yet supported: ";
+
+        /// <summary>
         ///     The Status Compare started (const). Value: "Compare started."
         /// </summary>
         internal const string StatusCompareStart = "Compare started.";
@@ -189,19 +194,9 @@ namespace SlimViews
         internal const string StatusCompareFinished = "Compare finished.";
 
         /// <summary>
-        ///     The Slash. Value: "\\"
-        /// </summary>
-        internal const string Slash = "\\";
-
-        /// <summary>
         ///     The New Gif file Name. (const). Value: "NewGif.gif"
         /// </summary>
         internal const string NewGif = "NewGif.gif";
-
-        /// <summary>
-        ///     The  Gif Path, we do some gif Manipulations. (const). Value: "Gif"
-        /// </summary>
-        internal const string GifPath = "Gif";
 
         /// <summary>
         ///     The Images Path (const). Value: "Images"
