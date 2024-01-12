@@ -17,20 +17,20 @@ using System.Xml.Serialization;
 namespace SlimViews
 {
     /// <summary>
-    ///     Config File
+    /// Config File
     /// </summary>
     public sealed class Config
     {
         /// <summary>
-        ///     The path
+        /// The path
         /// </summary>
         private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), nameof(Config));
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [GIF clean up].
+        /// Gets or sets a value indicating whether [GIF clean up].
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
         /// </value>
         public bool GifCleanUp { get; set; } = true;
 
@@ -52,23 +52,23 @@ namespace SlimViews
         public int MainSimilarity { get; set; } = 90;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [main automatic play GIF].
+        /// Gets or sets a value indicating whether [main automatic play GIF].
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
         /// </value>
         public bool MainAutoPlayGif { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [main sub folders].
+        /// Gets or sets a value indicating whether [main sub folders].
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
         /// </value>
         public bool MainSubFolders { get; set; }
 
         /// <summary>
-        ///     Sets the configuration.
+        /// Sets the configuration.
         /// </summary>
         internal static void SetConfig(Config obj)
         {
@@ -106,7 +106,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the configuration.
+        /// Gets the configuration.
         /// </summary>
         /// <returns>Config File</returns>
         public static Config GetConfig()

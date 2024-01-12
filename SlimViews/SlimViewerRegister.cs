@@ -51,44 +51,44 @@ namespace SlimViews
         internal static string Target { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [GIF clean up].
+        /// Gets or sets a value indicating whether [GIF clean up].
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
         /// </value>
         internal static bool GifCleanUp { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [main clean up].
-        ///     TODO IMPLEMENT
+        /// Gets or sets a value indicating whether [main clean up].
+        /// TODO IMPLEMENT
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [main clean up]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [main clean up]; otherwise, <c>false</c>.
         /// </value>
         internal static bool MainCleanUp { get; set; }
 
         /// <summary>
-        ///     Gets or sets the main similarity.
+        /// Gets or sets the main similarity.
         /// </summary>
         /// <value>
-        ///     The main similarity.
+        /// The main similarity.
         /// </value>
         internal static int MainSimilarity { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [main automatic play GIF].
-        ///     TODO IMPLEMENT
+        /// Gets or sets a value indicating whether [main automatic play GIF].
+        /// TODO IMPLEMENT
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
         /// </value>
         internal static bool MainAutoPlayGif { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [main sub folders].
+        /// Gets or sets a value indicating whether [main sub folders].
         /// </summary>
         /// <value>
-        ///     <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
         /// </value>
         internal static bool MainSubFolders { get; set; }
 
@@ -119,7 +119,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Sets the register.
+        /// Sets the register.
         /// </summary>
         /// <param name="obj">The object.</param>
         public static void SetRegister(Config obj)
@@ -132,12 +132,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the register.
+        /// Gets the register.
         /// </summary>
         /// <returns>The config object</returns>
         internal static Config GetRegister()
         {
-            return new Config
+            return new()
             {
                 GifCleanUp = GifCleanUp,
                 MainAutoPlayGif = MainAutoPlayGif,

@@ -5,11 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-        xmlns:slimViews="clr-namespace:SlimViews"
+        xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
         Title="Gif" Height="450" Width="800">
     <Window.DataContext>
-        <slimViews:GifView x:Name="View" />
+        <local:GifView x:Name="View" />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -93,10 +93,10 @@
                 <CheckBox Content="Auto Clear" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Stretch"
                           IsEnabled="{Binding Path =AutoClear}" />
                 <TextBox Grid.Row="1" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBox Grid.Row="3" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
+                         Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"  />
+                <TextBox Grid.Row="3" Grid.Column="2" TextWrapping="NoWrap"  HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Path=Information, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBox Grid.Row="5" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
+                <TextBox Grid.Row="5" Grid.Column="2" TextWrapping="NoWrap"  HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Path=OutputPath, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Grid.Row="7" Grid.Column="0" Content="Clear"
                         Command="{Binding ClearCommand}" />

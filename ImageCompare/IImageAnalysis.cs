@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace ImageCompare
 {
@@ -52,5 +53,23 @@ namespace ImageCompare
         /// <exception cref="ArgumentException">Argument Exception</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
         List<ImageData> GetImageDetails(List<string> imagePaths);
+
+        /// <summary>
+        /// Compares the two images.
+        /// </summary>
+        /// <param name="first">The Bitmap one.</param>
+        /// <param name="second">The Bitmap two.</param>
+        /// <returns>Data about two images</returns>
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        ImageCompareData CompareImages(Bitmap first, Bitmap second);
+
+        /// <summary>
+        /// Compares the two images.
+        /// </summary>
+        /// <param name="first">The path to image one.</param>
+        /// <param name="second">The path to image two.</param>
+        /// <returns>Data about two images</returns>
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        ImageCompareData CompareImages(string first, string second);
     }
 }

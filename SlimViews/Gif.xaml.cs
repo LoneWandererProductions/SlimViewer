@@ -37,7 +37,7 @@ namespace SlimViews
 
         /// <inheritdoc />
         /// <summary>
-        ///     Raises the <see cref="Window.Closing" /> event.
+        /// Raises the <see cref="Window.Closing" /> event.
         /// </summary>
         /// <param name="e">A <see cref="CancelEventArgs" /> that contains the event data.</param>
         protected override void OnClosing(CancelEventArgs e)

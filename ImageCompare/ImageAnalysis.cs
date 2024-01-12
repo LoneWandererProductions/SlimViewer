@@ -6,9 +6,12 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Linq;
 
 namespace ImageCompare
@@ -71,12 +74,47 @@ namespace ImageCompare
             lst.AddRange(imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache != null));
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count) return null;
+            if (lst.Count != imagePaths.Count)
+            {
+                return null;
+            }
 
             var similarity = AnalysisProcessing.GetSimilarity(imagePaths);
-            for (var i = 0; i < lst.Count; i++) lst[i].Similarity = similarity[i];
+            for (var i = 0; i < lst.Count; i++)
+            {
+                lst[i].Similarity = similarity[i];
+            }
 
             return lst;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Compares the two images.
+        /// </summary>
+        /// <param name="first">The Bitmap one.</param>
+        /// <param name="second">The Bitmap two.</param>
+        /// <returns>Data about two images</returns>
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        public ImageCompareData CompareImages(Bitmap first, Bitmap second)
+        {
+            if (first == null) throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(first)));
+            if (second == null) throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(second)));
+
+            return ImageHelper.CompareImages(first, second);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Compares the two images.
+        /// </summary>
+        /// <param name="first">The path to image one.</param>
+        /// <param name="second">The path to image two.</param>
+        /// <returns>Data about two images</returns>
+        /// <exception cref="ArgumentException">Argument Exception</exception>
+        public ImageCompareData CompareImages(string first, string second)
+        {
+            return ImageHelper.CompareImages(first, second);
         }
     }
 }
