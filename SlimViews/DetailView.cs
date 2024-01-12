@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
+
+using System.ComponentModel;
 
 namespace SlimViews
 {

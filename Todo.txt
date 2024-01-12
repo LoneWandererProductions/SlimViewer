@@ -1,2 +1,1 @@
-- Add a global Config File
 - Add a move feature in thumbview

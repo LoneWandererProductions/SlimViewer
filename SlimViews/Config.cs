@@ -17,22 +17,22 @@ using System.Xml.Serialization;
 namespace SlimViews
 {
     /// <summary>
-    /// Config File
+    ///     Config File
     /// </summary>
     public sealed class Config
     {
         /// <summary>
-        /// The path
+        ///     The path
         /// </summary>
         private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), nameof(Config));
 
         /// <summary>
-        /// Gets or sets a value indicating whether [GIF clean up].
+        ///     Gets or sets a value indicating whether [GIF clean up].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [GIF clean up]; otherwise, <c>false</c>.
         /// </value>
-        public bool GifCleanUp { get; set; } = true;
+        public bool GifCleanUp { get; init; } = true;
 
         /// <summary>
         ///     TODO implement flag
@@ -41,7 +41,7 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [main clean up]; otherwise, <c>false</c>.
         /// </value>
-        public bool MainCleanUp { get; set; } = true;
+        public bool MainCleanUp { get; init; } = true;
 
         /// <summary>
         ///     Gets or sets the main similarity.
@@ -49,26 +49,26 @@ namespace SlimViews
         /// <value>
         ///     The main similarity.
         /// </value>
-        public int MainSimilarity { get; set; } = 90;
+        public int MainSimilarity { get; init; } = 90;
 
         /// <summary>
-        /// Gets or sets a value indicating whether [main automatic play GIF].
+        ///     Gets or sets a value indicating whether [main automatic play GIF].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
         /// </value>
-        public bool MainAutoPlayGif { get; set; }
+        public bool MainAutoPlayGif { get; init; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [main sub folders].
+        ///     Gets or sets a value indicating whether [main sub folders].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [main sub folders]; otherwise, <c>false</c>.
         /// </value>
-        public bool MainSubFolders { get; set; }
+        public bool MainSubFolders { get; init; }
 
         /// <summary>
-        /// Sets the configuration.
+        ///     Sets the configuration.
         /// </summary>
         internal static void SetConfig(Config obj)
         {
@@ -106,7 +106,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets the configuration.
+        ///     Gets the configuration.
         /// </summary>
         /// <returns>Config File</returns>
         public static Config GetConfig()

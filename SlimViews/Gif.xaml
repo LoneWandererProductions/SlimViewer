@@ -93,10 +93,10 @@
                 <CheckBox Content="Auto Clear" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Stretch"
                           IsEnabled="{Binding Path =AutoClear}" />
                 <TextBox Grid.Row="1" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"  />
-                <TextBox Grid.Row="3" Grid.Column="2" TextWrapping="NoWrap"  HorizontalScrollBarVisibility="Auto"
+                         Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Grid.Row="3" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Path=Information, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBox Grid.Row="5" Grid.Column="2" TextWrapping="NoWrap"  HorizontalScrollBarVisibility="Auto"
+                <TextBox Grid.Row="5" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Path=OutputPath, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Grid.Row="7" Grid.Column="0" Content="Clear"
                         Command="{Binding ClearCommand}" />
