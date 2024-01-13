@@ -958,7 +958,7 @@ namespace SlimViews
         {
             var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, _currentFolder);
 
-            if (string.IsNullOrEmpty(pathObj.FilePath)) return;
+            if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
             _currentFolder = pathObj.Folder;
 

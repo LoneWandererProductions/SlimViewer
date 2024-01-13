@@ -140,13 +140,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25" />
                 <ColumnDefinition Width="25" />
-                <ColumnDefinition Width="18*" />
-                <ColumnDefinition Width="32*"/>
-                <ColumnDefinition Width="335*" />
+                <ColumnDefinition />
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="10" />
                 <ColumnDefinition Width="80" />
-                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width ="5"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -167,10 +165,10 @@
                 SelectedPoint="ImageZoom_SelectedPointColor" />
             <TextBox Grid.Row="1" TextWrapping="Wrap"
                      Focusable="True"
-                     Text="{Binding Path=Information}" Grid.Column="2" Grid.ColumnSpan="7" />
+                     Text="{Binding Path=Information}" Grid.Column="2" Grid.ColumnSpan="4" />
             <TextBox TextWrapping="Wrap"
                      Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3"
-                     Grid.Column="2" Grid.ColumnSpan="3">
+                     Grid.Column="2">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding RenameCommand}" Key="Enter" />
                 </TextBox.InputBindings>
@@ -182,13 +180,13 @@
                     Command="{Binding DeleteCommand}" IsEnabled="{Binding Path =IsActive}" />
             <Button Content="//" Grid.Row="1" Grid.Column="1"
                     Command="{Binding ExplorerCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Button Content="Move" Grid.Row="3" Grid.Column="5"
+            <Button Content="Move" Grid.Row="3" Grid.Column="3"
                     Command="{Binding MoveCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Button Content="Move Al" Grid.Row="3" Grid.Column="7"
+            <Button Content="Move All" Grid.Row="3" Grid.Column="5"
                     Command="{Binding MoveAllCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Image x:Name="ImageStatus" Grid.Row="3" Grid.Column="0" Margin="0,0,0,9" />
+            <Image x:Name="ImageStatus" Grid.Row="3" Grid.Column="0"  />
             <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Row="4"
-                          Focusable="False" Grid.ColumnSpan="8" Grid.Column="0">
+                          Focusable="False" Grid.ColumnSpan="6" Grid.Column="0">
                 <!--Well not really that clean, but it works for now, events can't be transmitted without some hassle-->
                 <commonControls:Thumbnails
                     Name="Thumbnail"
