@@ -35,13 +35,12 @@ namespace SlimViews
         public bool GifCleanUp { get; init; } = true;
 
         /// <summary>
-        ///     TODO implement flag
         ///     Gets or sets a value indicating whether [main clean up].
         /// </summary>
         /// <value>
         ///     <c>true</c> if [main clean up]; otherwise, <c>false</c>.
         /// </value>
-        public bool MainCleanUp { get; init; } = true;
+        public bool MainAutoClean { get; init; } = true;
 
         /// <summary>
         ///     Gets or sets the main similarity.
@@ -57,7 +56,7 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
         /// </value>
-        public bool MainAutoPlayGif { get; init; }
+        public bool MainAutoPlayGif { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [main sub folders].

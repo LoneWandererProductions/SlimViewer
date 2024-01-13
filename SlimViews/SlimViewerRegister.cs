@@ -65,7 +65,7 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [main clean up]; otherwise, <c>false</c>.
         /// </value>
-        internal static bool MainCleanUp { get; set; }
+        internal static bool MainAutoClean { get; set; }
 
         /// <summary>
         ///     Gets or sets the main similarity.
@@ -126,7 +126,7 @@ namespace SlimViews
         {
             GifCleanUp = obj.GifCleanUp;
             MainAutoPlayGif = obj.MainAutoPlayGif;
-            MainCleanUp = obj.MainCleanUp;
+            MainAutoClean = obj.MainAutoClean;
             MainSimilarity = obj.MainSimilarity;
             MainSubFolders = obj.MainSubFolders;
         }
@@ -141,7 +141,7 @@ namespace SlimViews
             {
                 GifCleanUp = GifCleanUp,
                 MainAutoPlayGif = MainAutoPlayGif,
-                MainCleanUp = MainCleanUp,
+                MainAutoClean = MainAutoClean,
                 MainSimilarity = MainSimilarity,
                 MainSubFolders = MainSubFolders
             };

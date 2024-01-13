@@ -33,12 +33,16 @@ namespace SlimViewer
             View.Thumb = Thumbnail;
             View.Status = ImageStatus;
             View.Picker = ColorPick;
+            View.ImageZoom = ImageZoom;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var obj = Config.GetConfig();
+
             SlimViewerRegister.SetRegister(obj);
+
+            ImageZoom.AutoplayGifImage = obj.MainAutoPlayGif;
         }
 
         /// <summary>

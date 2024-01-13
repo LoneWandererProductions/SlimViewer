@@ -48,7 +48,7 @@ namespace SlimViews
         /// <summary>
         ///     The automatic clean
         /// </summary>
-        private bool _autoClean;
+        private bool _autoClean = SlimViewerRegister.MainAutoClean;
 
         /// <summary>
         ///     The black and white command.
@@ -161,6 +161,11 @@ namespace SlimViews
         ///     The GIF window command
         /// </summary>
         private ICommand _gifWindowCommand;
+
+        /// <summary>
+        /// The analyzer window command
+        /// </summary>
+        private ICommand _analyzerWindowCommand;
 
         /// <summary>
         ///     The gray scale command
@@ -500,7 +505,7 @@ namespace SlimViews
                 if (_autoClean == value) return;
 
                 _autoClean = value;
-                SlimViewerRegister.MainCleanUp = value;
+                SlimViewerRegister.MainAutoClean = value;
                 OnPropertyChanged(nameof(AutoClean));
             }
         }
@@ -876,12 +881,29 @@ namespace SlimViews
             _gifWindowCommand ??= new DelegateCommand<object>(GifWindowAction, CanExecute);
 
         /// <summary>
+        /// Gets the analyzer window command.
+        /// </summary>
+        /// <value>
+        /// The analyzer window command.
+        /// </value>
+        public ICommand AnalyzerWindowCommand =>
+            _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerAction, CanExecute);
+
+        /// <summary>
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
         ///     The main.
         /// </value>
         public Window Main { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image zoom.
+        /// </summary>
+        /// <value>
+        /// The image zoom.
+        /// </value>
+        public ImageZoom ImageZoom { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -921,6 +943,8 @@ namespace SlimViews
         private void CloseAction(object obj)
         {
             var config = SlimViewerRegister.GetRegister();
+            config.MainAutoPlayGif = ImageZoom.AutoplayGifImage;
+
             Config.SetConfig(config);
             if (AutoClean) CleanTempAction(null);
             Application.Current.Shutdown();
@@ -1577,7 +1601,6 @@ namespace SlimViews
 
         /// <summary>
         ///     Duplicates the action.
-        ///     TODO add Collection Action
         /// </summary>
         /// <param name="obj">The object.</param>
         private void DuplicateAction(object obj)
@@ -1602,6 +1625,20 @@ namespace SlimViews
                 Owner = Main
             };
             gifWindow.Show();
+        }
+
+        /// <summary>
+        /// Analyzer Window
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void AnalyzerAction(object obj)
+        {
+            var detailWindow = new DetailCompare()
+            {
+                Topmost = true,
+                Owner = Main
+            };
+            detailWindow.Show();
         }
 
         /// <summary>
