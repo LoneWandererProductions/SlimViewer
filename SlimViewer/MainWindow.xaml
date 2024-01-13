@@ -35,7 +35,7 @@
     </Window.InputBindings>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="400" />
             <ColumnDefinition Width="25" />
             <ColumnDefinition Width="25" />
             <ColumnDefinition Width="100" />
@@ -79,8 +79,6 @@
                           IsEnabled="{Binding Path =IsActive}" />
                 <Separator />
                 <MenuItem Header="Scale Image" Command="{Binding ScaleCommand}" IsEnabled="{Binding Path =IsActive}" />
-                <MenuItem Header="Gif Generator" Command="{Binding GifWindowCommand}" />
-                <MenuItem Header="Image Analyzer" Command="{Binding AnalyzerWindowCommand}" />
             </MenuItem>
             <MenuItem Header="Folder">
                 <MenuItem Header="Open Folder" Command="{Binding FolderCommand}" />
@@ -112,6 +110,10 @@
                         </Grid>
                     </MenuItem>
                 </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Tool">
+                <MenuItem Header="Gif Generator" Command="{Binding GifWindowCommand}" />
+                <MenuItem Header="Image Analyzer" Command="{Binding AnalyzerWindowCommand}" />
             </MenuItem>
             <MenuItem Header="Option">
                 <CheckBox IsChecked="{Binding Path =SubFolders}">Subfolders</CheckBox>
@@ -161,7 +163,6 @@
                 Name="ImageZoom"
                 ZoomTool="{Binding ElementName=CmbBxSelection, Path=SelectedItem}"
                 SelectedFrame="ImageZoom_SelectedFrame"
-
                 SelectedPoint="ImageZoom_SelectedPointColor" />
             <TextBox Grid.Row="1" TextWrapping="Wrap"
                      Focusable="True"

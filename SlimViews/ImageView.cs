@@ -1403,18 +1403,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void FolderAction(object obj)
         {
-            //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
-
             //get target Folder
             var path = FileIoHandler.ShowFolder(_currentFolder);
-
-            if (!Directory.Exists(path)) return;
-
-            _currentId = -1;
-
-            Bmp = null;
-            GifPath = null;
 
             if (!Directory.Exists(path)) return;
 
@@ -2052,6 +2042,8 @@ namespace SlimViews
 
             //Reset the Id of the displayed image
             _currentId = -1;
+            Bmp = null;
+            GifPath = null;
         }
 
         /// <summary>

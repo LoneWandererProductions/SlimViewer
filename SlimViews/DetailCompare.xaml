@@ -33,8 +33,8 @@
                 <RowDefinition />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-            <commonControls:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" />
-            <Button Grid.Column="2" Grid.Row="1" Content="..." />
+            <commonControls:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding BmpOne }" />
+            <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenOneCommand}" />
             <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" />
         </Grid>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
@@ -52,8 +52,8 @@
                 <RowDefinition />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-            <commonControls:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" />
-            <Button Grid.Column="2" Grid.Row="1" Content="..." />
+            <commonControls:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding BmpOne}" />
+            <Button Grid.Column="2" Grid.Row="1" Content="..."  Command="{Binding OpenTwoCommand}"/>
             <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" />
         </Grid>
         <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
