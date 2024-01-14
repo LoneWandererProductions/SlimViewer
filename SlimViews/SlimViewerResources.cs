@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Windows.Media.Imaging;
+using Imaging;
+
 namespace SlimViews
 {
     /// <summary>
@@ -104,36 +107,6 @@ namespace SlimViews
         internal const string CaptionFileAlreadyExists = "File already exists";
 
         /// <summary>
-        ///     The Image Name (const). Value: "Name: "
-        /// </summary>
-        internal const string ImageName = ", Name: ";
-
-        /// <summary>
-        ///     The Image Size (const). Value: " , Size: "
-        /// </summary>
-        internal const string ImageSize = " , Size: ";
-
-        /// <summary>
-        ///     The gif Frames (const). Value: " , Frames: "
-        /// </summary>
-        internal const string Frames = " , Frames: ";
-
-        /// <summary>
-        ///     The Image Height (const). Value: "Bytes, Height: "
-        /// </summary>
-        internal const string ImageHeight = " , Height: ";
-
-        /// <summary>
-        ///     The Image Width (const). Value: " , Width: "
-        /// </summary>
-        internal const string ImageWidth = " , Width: ";
-
-        /// <summary>
-        ///     The Image Path (const). Value: " Path: "
-        /// </summary>
-        internal const string ImagePath = " Path: ";
-
-        /// <summary>
         ///     The Icon Path Green (const). Value: @"System\green.png"
         /// </summary>
         internal const string IconPathGreen = @"System\green.png";
@@ -207,5 +180,69 @@ namespace SlimViews
         ///     The New Gif file Name.(const).  Value: "NewGif"
         /// </summary>
         internal const string NewGifPath = "NewGif";
+
+        /// <summary>
+        ///     The similarity.(const).  Value: "Similarity: "
+        /// </summary>
+        internal const string Similarity = "Similarity: ";
+
+        /// <summary>
+        ///     The Image Name (const). Value: "Name: "
+        /// </summary>
+        private const string ImageName = ", Name: ";
+
+        /// <summary>
+        ///     The Image Size (const). Value: " , Size: "
+        /// </summary>
+        private const string ImageSize = " , Size: ";
+
+        /// <summary>
+        ///     The gif Frames (const). Value: " , Frames: "
+        /// </summary>
+        private const string Frames = " , Frames: ";
+
+        /// <summary>
+        ///     The Image Height (const). Value: "Bytes, Height: "
+        /// </summary>
+        private const string ImageHeight = " , Height: ";
+
+        /// <summary>
+        ///     The Image Width (const). Value: " , Width: "
+        /// </summary>
+        private const string ImageWidth = " , Width: ";
+
+        /// <summary>
+        ///     The Image Path (const). Value: " Path: "
+        /// </summary>
+        private const string ImagePath = " Path: ";
+
+        /// <summary>
+        ///     Builds the gif Image information.
+        /// </summary>
+        /// <param name="gifPath">The GIF path.</param>
+        /// <param name="info">The information.</param>
+        /// <returns>String of Image Information</returns>
+        internal static string BuildGifInformation(string gifPath, ImageGifInfo info)
+        {
+            return string.Concat(gifPath, ImageName,
+                info.Name, ImageHeight, info.Height, ImageWidth,
+                info.Width,
+                ImageSize, info.Size, Frames.Length, info.Frames);
+        }
+
+        /// <summary>
+        ///     Builds the image information.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="bmp">The BMP.</param>
+        /// <returns>String of Image Information</returns>
+        internal static string BuildImageInformation(string filePath, string fileName, BitmapImage bmp)
+        {
+            return string.Concat(ImagePath, filePath, ImageName,
+                fileName, ImageHeight, bmp.Height, ImageWidth,
+                bmp.Width,
+                ImageSize, bmp.Height * bmp.Width);
+        }
     }
 }

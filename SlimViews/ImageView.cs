@@ -1023,10 +1023,7 @@ namespace SlimViews
             //set Filename
             FileName = Path.GetFileName(_filePath);
             //set Infos
-
-            Information = string.Concat(SlimViewerResources.ImagePath, _filePath, SlimViewerResources.ImageName,
-                FileName, SlimViewerResources.ImageHeight, _btm.Height, SlimViewerResources.ImageWidth, _btm.Width,
-                SlimViewerResources.ImageSize, _btm.Height * _btm.Width);
+            Information = SlimViewerResources.BuildImageInformation(_filePath, FileName, Bmp);
         }
 
         /// <summary>
@@ -1972,10 +1969,7 @@ namespace SlimViews
                     var info = ImageGifHandler.GetImageInfo(filePath);
 
                     //set Infos
-                    Information = string.Concat(SlimViewerResources.ImagePath, filePath, SlimViewerResources.ImageName,
-                        info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
-                        info.Width,
-                        SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
+                    Information = SlimViewerResources.BuildGifInformation(filePath, info);
                 }
 
                 else
@@ -1987,10 +1981,7 @@ namespace SlimViews
 
                     Bmp = _btm.ToBitmapImage();
                     //set Infos
-                    Information = string.Concat(SlimViewerResources.ImagePath, filePath, SlimViewerResources.ImageName,
-                        FileName, SlimViewerResources.ImageHeight, _btm.Height, SlimViewerResources.ImageWidth,
-                        _btm.Width,
-                        SlimViewerResources.ImageSize, _btm.Height * _btm.Width);
+                    Information = SlimViewerResources.BuildImageInformation(filePath, FileName, Bmp);
                 }
 
                 _filePath = filePath;

@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using CommonControls;
+using ImageCompare;
 using Imaging;
 using ViewModel;
 
@@ -69,6 +70,39 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Gets or sets the path one.
+        /// </summary>
+        /// <value>
+        /// The path one.
+        /// </value>
+        public string PathOne
+        {
+            get => _pathOne;
+            set
+            {
+                _pathOne = value;
+                OnPropertyChanged(nameof(PathOne));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the path two.
+        /// </summary>
+        /// <value>
+        /// The path two.
+        /// </value>
+        public string PathTwo
+        {
+            get => _pathTwo;
+            set
+            {
+                _pathTwo = value;
+                OnPropertyChanged(nameof(PathTwo));
+            }
+        }
+
+
+        /// <summary>
         /// The first BitmapImage
         /// </summary>
         private BitmapImage _bmpOne;
@@ -97,6 +131,34 @@ namespace SlimViews
         /// The open two command
         /// </summary>
         private ICommand _openTwoCommand;
+
+        /// <summary>
+        /// The path one
+        /// </summary>
+        private string _pathOne;
+
+        /// <summary>
+        /// The path two
+        /// </summary>
+        private string _pathTwo;
+
+        /// <summary>
+        /// The information
+        /// </summary>
+        public ScrollingTextBoxes Information;
+
+        /// <summary>
+        /// The analysis
+        /// </summary>
+        private readonly ImageAnalysis _analysis;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DetailView"/> class.
+        /// </summary>
+        public DetailView()
+        {
+            _analysis = new ImageAnalysis();
+        }
 
         /// <summary>
         /// Gets the open one command.
@@ -166,8 +228,15 @@ namespace SlimViews
             }
 
             var btm = GenerateImage(pathObj.FilePath);
+            if (btm == null) return;
+
+            PathOne = pathObj.FilePath;
+
             _btmOne = btm;
             BmpOne = btm.ToBitmapImage();
+
+            Information.Append(SlimViewerResources.BuildImageInformation(pathObj.FilePath, pathObj.FileName, BmpOne));
+            Compare();
         }
 
         /// <summary>
@@ -189,8 +258,26 @@ namespace SlimViews
             }
 
             var btm = GenerateImage(pathObj.FilePath);
+            if (btm == null) return;
+
+            PathTwo = pathObj.FilePath;
             _btmTwo = btm;
             BmpTwo = btm.ToBitmapImage();
+
+            Information.Append(SlimViewerResources.BuildImageInformation(pathObj.FilePath, pathObj.FileName, BmpTwo));
+            Compare();
+        }
+
+        /// <summary>
+        /// Compares this instance.
+        /// </summary>
+        private void Compare()
+        {
+            if (_btmOne == null || _btmTwo == null) return;
+
+            var data = _analysis.CompareImages(_btmOne, _btmTwo);
+
+            Information.Append(string.Concat(SlimViewerResources.Similarity, data.Similarity));
         }
 
         /// <summary>

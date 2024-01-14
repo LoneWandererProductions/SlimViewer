@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBeMadeStatic.Local
 // ReSharper disable MemberCanBeInternal
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -376,10 +377,7 @@ namespace SlimViews
             }
 
             //set Infos
-            Information = string.Concat(SlimViewerResources.ImagePath, filePath, SlimViewerResources.ImageName,
-                fileName, SlimViewerResources.ImageHeight, bmp.Height, SlimViewerResources.ImageWidth,
-                bmp.Width,
-                SlimViewerResources.ImageSize, bmp.Height * bmp.Width);
+            Information = SlimViewerResources.BuildImageInformation(filePath, fileName, bmp);
         }
 
         /// <summary>
@@ -398,12 +396,11 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, null);
+
+            if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, SlimViewerResources.CbzExt, StringComparison.OrdinalIgnoreCase)) return;
+
             Initiate(OutputPath);
-
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, OutputPath);
-
-            if (pathObj == null || !File.Exists(pathObj.FilePath) ||
-                !string.Equals(pathObj.Extension, ImagingResources.GifExt)) return;
 
             GifPath = pathObj.FilePath;
 
@@ -417,10 +414,7 @@ namespace SlimViews
             }
 
             //set Infos
-            Information = string.Concat(GifPath, SlimViewerResources.ImageName,
-                info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
-                info.Width,
-                SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
+            Information = SlimViewerResources.BuildGifInformation(GifPath, info);
 
             //add name of the split files
             var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
@@ -438,10 +432,10 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenFolderAction(object obj)
         {
-            Initiate(OutputPath);
-
             //get target Folder
-            var path = FileIoHandler.ShowFolder(OutputPath);
+            var path = FileIoHandler.ShowFolder(null);
+
+            Initiate(OutputPath);
 
             var fileList =
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
@@ -464,10 +458,7 @@ namespace SlimViews
             }
 
             //set Infos
-            Information = string.Concat(_gifPath, SlimViewerResources.ImageName,
-                info.Name, SlimViewerResources.ImageHeight, info.Height, SlimViewerResources.ImageWidth,
-                info.Width,
-                SlimViewerResources.ImageSize, info.Size, SlimViewerResources.Frames.Length, info.Frames);
+            Information = SlimViewerResources.BuildGifInformation(_gifPath, info);
         }
 
         /// <summary>
