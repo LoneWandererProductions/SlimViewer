@@ -54,7 +54,7 @@
             </Grid.RowDefinitions>
             <commonControls:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding BmpTwo}" />
             <Button Grid.Column="2" Grid.Row="1" Content="..."  Command="{Binding OpenTwoCommand}"/>
-            <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" Text="{Binding Path=PathOne}" />
+            <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" Text="{Binding Path=PathTwo}" />
         </Grid>
         <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
         <Grid Grid.Column="4">
@@ -71,7 +71,15 @@
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
             <Button Content="Show Differences" Grid.Column="1" Grid.Row="1"/>
-            <commonControls:ScrollingTextBoxes Name="Information"  Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="1" TextWrapping="Wrap"/>
+            <TabControl Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="1" >
+                <TabItem Header="Information">
+                    <commonControls:ScrollingTextBoxes Name="Information"  TextWrapping="Wrap"/>
+                </TabItem>
+                <TabItem Header="Color Details">
+                    <commonControls:ScrollingTextBoxes Name="ColorInformation"  TextWrapping="Wrap"/>
+                </TabItem>
+            </TabControl>
+
         </Grid>
     </Grid>
 </Window>

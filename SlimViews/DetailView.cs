@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -84,6 +85,11 @@ namespace SlimViews
         ///     The information
         /// </summary>
         public ScrollingTextBoxes Information;
+
+        /// <summary>
+        /// The color information
+        /// </summary>
+        public ScrollingTextBoxes ColorInformation;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -235,7 +241,12 @@ namespace SlimViews
 
             _btmOne = btm;
             BmpOne = btm.ToBitmapImage();
-            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+
+            var str = SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+
+            ColorInformation.Append(str);
+
+            Compare();
         }
 
         /// <summary>
@@ -263,7 +274,11 @@ namespace SlimViews
             _btmTwo = btm;
             BmpTwo = btm.ToBitmapImage();
 
-            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+            var str = SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+
+            ColorInformation.Append(str);
+
+            Compare();
         }
 
         /// <summary>
@@ -272,25 +287,22 @@ namespace SlimViews
         /// <param name="filePath">The file path.</param>
         /// <param name="fileName">Name of the file.</param>
         /// <param name="btm">The BTM.</param>
-        private void SetInformation(string filePath, string fileName, Bitmap btm)
+        private string SetInformation(string filePath, string fileName, Bitmap btm)
         {
             Information.Append(SlimViewerResources.BuildImageInformation(filePath, fileName, btm.ToBitmapImage()));
 
             var str = new StringBuilder();
-
-            //TODO make optional, because it is huge!
+            str.Append(Environment.NewLine);
 
             foreach (var (color, count) in _analysis.GetColors(btm))
             {
-                str.Append(SlimViewerResources.InformationColor);
-                str.Append(color);
-                str.Append(SlimViewerResources.InformationCount);
-                str.Append(count);
-                str.Append(Environment.NewLine);
+                var cache = string.Concat(SlimViewerResources.InformationColor, color,
+                    SlimViewerResources.InformationCount, count, Environment.NewLine);
+
+                str.Append(cache);
             }
 
-            Information.Append(str.ToString());
-            Compare();
+            return str.ToString();
         }
 
         /// <summary>
