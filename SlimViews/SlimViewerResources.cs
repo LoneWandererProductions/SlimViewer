@@ -87,6 +87,16 @@ namespace SlimViews
         internal const string InformationErrors = "Errors: ";
 
         /// <summary>
+        ///     The Information Color (const). Value: "Color: "
+        /// </summary>
+        internal const string InformationColor = "Color: ";
+
+        /// <summary>
+        ///     The Information Count fo Colors (const). Value: " count: "
+        /// </summary>
+        internal const string InformationCount = " count: ";
+
+        /// <summary>
         ///     The error could not save file (const). Value: "Could not Save the File."
         /// </summary>
         internal const string ErrorCouldNotSaveFile = "Could not Save the File";

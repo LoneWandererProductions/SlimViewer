@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 
 namespace ImageCompare
@@ -111,6 +112,38 @@ namespace ImageCompare
         public ImageCompareData CompareImages(string first, string second)
         {
             return ImageHelper.CompareImages(first, second);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Color Dictionary</returns>
+        /// <exception cref="T:System.ArgumentException">Argument Exception</exception>
+        public Dictionary<Color, int> GetColors(string path)
+        {
+            if (!File.Exists(path))
+                throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, path));
+
+            var image = new Bitmap(path);
+
+            return ImageHelper.GetColors(image);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>Color Dictionary</returns>
+        /// <exception cref="T:System.ArgumentException">Argument Exception</exception>
+        public Dictionary<Color, int> GetColors(Bitmap image)
+        {
+            if (image == null)
+                throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(image)));
+
+            return ImageHelper.GetColors(image);
         }
     }
 }

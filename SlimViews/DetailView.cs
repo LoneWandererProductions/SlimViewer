@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -28,11 +29,70 @@ namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
-    /// View for Detail Window
+    ///     View for Detail Window
     /// </summary>
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class DetailView : INotifyPropertyChanged
     {
+        /// <summary>
+        ///     The analysis
+        /// </summary>
+        private readonly ImageAnalysis _analysis;
+
+
+        /// <summary>
+        ///     The first BitmapImage
+        /// </summary>
+        private BitmapImage _bmpOne;
+
+        /// <summary>
+        ///     The first BitmapImage
+        /// </summary>
+        private BitmapImage _bmpTwo;
+
+        /// <summary>
+        ///     The first bitmap
+        /// </summary>
+        private Bitmap _btmOne;
+
+        /// <summary>
+        ///     The first bitmap
+        /// </summary>
+        private Bitmap _btmTwo;
+
+        /// <summary>
+        ///     The open one command
+        /// </summary>
+        private ICommand _openOneCommand;
+
+        /// <summary>
+        ///     The open two command
+        /// </summary>
+        private ICommand _openTwoCommand;
+
+        /// <summary>
+        ///     The path one
+        /// </summary>
+        private string _pathOne;
+
+        /// <summary>
+        ///     The path two
+        /// </summary>
+        private string _pathTwo;
+
+        /// <summary>
+        ///     The information
+        /// </summary>
+        public ScrollingTextBoxes Information;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DetailView" /> class.
+        /// </summary>
+        public DetailView()
+        {
+            _analysis = new ImageAnalysis();
+        }
+
         /// <summary>
         ///     Gets or sets the BitmapImage.
         /// </summary>
@@ -52,10 +112,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the BMP two.
+        ///     Gets or sets the BMP two.
         /// </summary>
         /// <value>
-        /// The BMP two.
+        ///     The BMP two.
         /// </value>
         public BitmapImage BmpTwo
         {
@@ -70,10 +130,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the path one.
+        ///     Gets or sets the path one.
         /// </summary>
         /// <value>
-        /// The path one.
+        ///     The path one.
         /// </value>
         public string PathOne
         {
@@ -86,10 +146,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the path two.
+        ///     Gets or sets the path two.
         /// </summary>
         /// <value>
-        /// The path two.
+        ///     The path two.
         /// </value>
         public string PathTwo
         {
@@ -101,79 +161,20 @@ namespace SlimViews
             }
         }
 
-
         /// <summary>
-        /// The first BitmapImage
-        /// </summary>
-        private BitmapImage _bmpOne;
-
-        /// <summary>
-        /// The first bitmap
-        /// </summary>
-        private Bitmap _btmOne;
-
-        /// <summary>
-        /// The first BitmapImage
-        /// </summary>
-        private BitmapImage _bmpTwo;
-
-        /// <summary>
-        /// The first bitmap
-        /// </summary>
-        private Bitmap _btmTwo;
-
-        /// <summary>
-        /// The open one command
-        /// </summary>
-        private ICommand _openOneCommand;
-
-        /// <summary>
-        /// The open two command
-        /// </summary>
-        private ICommand _openTwoCommand;
-
-        /// <summary>
-        /// The path one
-        /// </summary>
-        private string _pathOne;
-
-        /// <summary>
-        /// The path two
-        /// </summary>
-        private string _pathTwo;
-
-        /// <summary>
-        /// The information
-        /// </summary>
-        public ScrollingTextBoxes Information;
-
-        /// <summary>
-        /// The analysis
-        /// </summary>
-        private readonly ImageAnalysis _analysis;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DetailView"/> class.
-        /// </summary>
-        public DetailView()
-        {
-            _analysis = new ImageAnalysis();
-        }
-
-        /// <summary>
-        /// Gets the open one command.
+        ///     Gets the open one command.
         /// </summary>
         /// <value>
-        /// The open one command.
+        ///     The open one command.
         /// </value>
         public ICommand OpenOneCommand =>
             _openOneCommand ??= new DelegateCommand<object>(OpenOneAction, CanExecute);
 
         /// <summary>
-        /// Gets the open two command.
+        ///     Gets the open two command.
         /// </summary>
         /// <value>
-        /// The open two command.
+        ///     The open two command.
         /// </value>
         public ICommand OpenTwoCommand =>
             _openTwoCommand ??= new DelegateCommand<object>(OpenTwoAction, CanExecute);
@@ -210,7 +211,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Opens the one action.
+        ///     Opens the one action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void OpenOneAction(object obj)
@@ -234,13 +235,11 @@ namespace SlimViews
 
             _btmOne = btm;
             BmpOne = btm.ToBitmapImage();
-
-            Information.Append(SlimViewerResources.BuildImageInformation(pathObj.FilePath, pathObj.FileName, BmpOne));
-            Compare();
+            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
         }
 
         /// <summary>
-        /// Opens the two action.
+        ///     Opens the two action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void OpenTwoAction(object obj)
@@ -264,12 +263,38 @@ namespace SlimViews
             _btmTwo = btm;
             BmpTwo = btm.ToBitmapImage();
 
-            Information.Append(SlimViewerResources.BuildImageInformation(pathObj.FilePath, pathObj.FileName, BmpTwo));
+            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+        }
+
+        /// <summary>
+        ///     Sets the information.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="btm">The BTM.</param>
+        private void SetInformation(string filePath, string fileName, Bitmap btm)
+        {
+            Information.Append(SlimViewerResources.BuildImageInformation(filePath, fileName, btm.ToBitmapImage()));
+
+            var str = new StringBuilder();
+
+            //TODO make optional, because it is huge!
+
+            foreach (var (color, count) in _analysis.GetColors(btm))
+            {
+                str.Append(SlimViewerResources.InformationColor);
+                str.Append(color);
+                str.Append(SlimViewerResources.InformationCount);
+                str.Append(count);
+                str.Append(Environment.NewLine);
+            }
+
+            Information.Append(str.ToString());
             Compare();
         }
 
         /// <summary>
-        /// Compares this instance.
+        ///     Compares this instance.
         /// </summary>
         private void Compare()
         {
@@ -281,7 +306,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Opens the file.
+        ///     Opens the file.
         /// </summary>
         /// <returns>Path object with all needed file information</returns>
         private static PathObject OpenFile()
@@ -290,7 +315,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Generates the image.
+        ///     Generates the image.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Bitmap from the Image in Question</returns>

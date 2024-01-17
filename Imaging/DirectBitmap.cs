@@ -12,10 +12,13 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace Imaging
 {
@@ -189,6 +192,31 @@ namespace Imaging
             var index = x + y * Width;
             var col = _bits[index];
             return Color.FromArgb(col);
+        }
+
+
+        /// <summary>
+        /// Gets the color list.
+        /// </summary>
+        /// <returns>The Image as a list of Colors</returns>
+        [return: MaybeNull]
+        public Span<Color> GetColors()
+        {
+            if (_bits == null) return null;
+
+            var length = Height * Width;
+
+            var array = new Color[length];
+
+            var span = new Span<Color>(array, 0, length);
+
+            for (var i = 0; i < length; i++)
+            {
+                var col = _bits[i];
+                span[i] = Color.FromArgb(col);
+            }
+
+            return span;
         }
 
         /// <summary>
