@@ -64,11 +64,6 @@ namespace Imaging
         public const string JpgExt = ".jpg";
 
         /// <summary>
-        ///     The jpeg Extension (const). Value: ".jpeg"
-        /// </summary>
-        public const string JpegExt = ".jpeg";
-
-        /// <summary>
         ///     The png Extension (const). Value: ".png"
         /// </summary>
         public const string PngExt = ".png";
@@ -98,8 +93,7 @@ namespace Imaging
             PngExt,
             BmpExt,
             GifExt,
-            TifExt,
-            JpegExt
+            TifExt
         };
     }
 }

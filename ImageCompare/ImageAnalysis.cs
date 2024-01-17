@@ -128,7 +128,7 @@ namespace ImageCompare
 
             var image = new Bitmap(path);
 
-            return ImageHelper.GetColors(image);
+            return AnalysisProcessing.GetColors(image);
         }
 
         /// <inheritdoc />
@@ -143,7 +143,7 @@ namespace ImageCompare
             if (image == null)
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(image)));
 
-            return ImageHelper.GetColors(image);
+            return AnalysisProcessing.GetColors(image);
         }
     }
 }

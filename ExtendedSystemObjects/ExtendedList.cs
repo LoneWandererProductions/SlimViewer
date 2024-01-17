@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,10 @@ namespace ExtendedSystemObjects
         /// <returns>Empty or not</returns>
         public static bool IsNullOrEmpty<TValue>(this List<TValue> lst)
         {
-            if (lst == null) return true;
+            if (lst == null)
+            {
+                return true;
+            }
 
             return lst.Count == 0;
         }
@@ -41,7 +45,10 @@ namespace ExtendedSystemObjects
         /// <param name="item">item we will replace or add</param>
         public static void AddFirst<TValue>(this List<TValue> lst, TValue item)
         {
-            if (lst == null) throw new ArgumentNullException(nameof(lst));
+            if (lst == null)
+            {
+                throw new ArgumentNullException(nameof(lst));
+            }
 
             lst.Insert(0, item);
         }
@@ -55,7 +62,10 @@ namespace ExtendedSystemObjects
         /// <returns>if [true] item was added, else [false]</returns>
         public static bool AddDistinct<TValue>(this List<TValue> lst, TValue item)
         {
-            if (lst.Contains(item)) return false;
+            if (lst.Contains(item))
+            {
+                return false;
+            }
 
             lst.Add(item);
             return true;
@@ -81,7 +91,10 @@ namespace ExtendedSystemObjects
         /// <param name="range">List with elements we want to remove</param>
         public static void RemoveListRange<TValue>(this List<TValue> lst, IEnumerable<TValue> range)
         {
-            foreach (var element in range.Where(lst.Contains)) _ = lst.Remove(element);
+            foreach (var element in range.Where(lst.Contains))
+            {
+                _ = lst.Remove(element);
+            }
         }
 
         /// <summary>
@@ -94,6 +107,50 @@ namespace ExtendedSystemObjects
         public static List<TValue> Clone<TValue>(this IEnumerable<TValue> lst)
         {
             return lst?.ToList();
+        }
+
+        /// <summary>
+        ///     Equals the specified compare.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="lst">The first list.</param>
+        /// <param name="compare">The compare.</param>
+        /// <returns>If lists are equal, ignores order and count</returns>
+        public static bool Equal<TValue>(this IEnumerable<TValue> lst, IEnumerable<TValue> compare)
+        {
+            var set1 = new HashSet<TValue>(lst);
+            var set2 = new HashSet<TValue>(compare);
+            return set1.SetEquals(set2);
+        }
+
+        /// <summary>
+        ///     Equals the specified compare.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="lst">The first list.</param>
+        /// <param name="compare">The compare.</param>
+        /// <param name="comparer">The compare Operator.</param>
+        /// <returns>If lists are equal,based on the condition</returns>
+        /// <exception cref="ArgumentOutOfRangeException">comparer - null</exception>
+        public static bool Equal<TValue>(this List<TValue> lst, List<TValue> compare, EnumerableCompare comparer)
+        {
+            switch (comparer)
+            {
+                case EnumerableCompare.IgnoreOrderCount:
+                    return lst.Equal(compare);
+
+                case EnumerableCompare.IgnoreOrder:
+                    return lst.Count == compare.Count && lst.Equal(compare);
+                case EnumerableCompare.AllEqual:
+                    if (lst.Count != compare.Count)
+                    {
+                        return false;
+                    }
+
+                    return !lst.Where((t, i) => !t.Equals(compare[i])).Any();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(comparer), comparer, null);
+            }
         }
 
         /// <summary>

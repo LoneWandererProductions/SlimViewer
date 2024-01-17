@@ -31,22 +31,13 @@ namespace Imaging
 
             var dbm = DirectBitmap.GetInstance(image);
 
-            for (var y = 0; y < image.Height; y++)
-            for (var x = 0; x < image.Width; x++)
-            {
-                var id = CalculateId(x, y, image.Width);
-                var color = dbm.GetPixel(x, y);
+            var colorMap = dbm.GetColors();
 
-                //get our new Image format
-                if (imageFormat.ContainsKey(color))
-                {
-                    imageFormat[color].Add(id);
-                }
-                else
-                {
-                    imageFormat.Add(color, new List<int>());
-                    imageFormat[color].Add(id);
-                }
+            for (int i = 0; i < image.Height * image.Width; i++)
+            {
+                var color = colorMap[i];
+
+                imageFormat.Add(color, i);
             }
 
             return imageFormat;
@@ -62,10 +53,16 @@ namespace Imaging
         {
             //get image size
             var check = int.TryParse(data[0][0], out var height);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             check = int.TryParse(data[0][1], out var length);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             //remove the Height, length data
             data.RemoveAt(0);
@@ -80,7 +77,10 @@ namespace Imaging
 
                 check = int.TryParse(line[1], out var a);
 
-                if (!check) continue;
+                if (!check)
+                {
+                    continue;
+                }
 
                 var converter = new ColorHsv(hex, a);
 
@@ -91,7 +91,10 @@ namespace Imaging
                 for (var i = 2; i < line.Count; i++)
                 {
                     check = int.TryParse(line[i], out var idMaster);
-                    if (!check) continue;
+                    if (!check)
+                    {
+                        continue;
+                    }
 
                     var x = IdToX(idMaster, length);
                     var y = IdToY(idMaster, length);
@@ -113,10 +116,16 @@ namespace Imaging
             //get image size
             var check = int.TryParse(data[0][0], out var height);
 
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             check = int.TryParse(data[0][1], out var length);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             //remove the Height, length data
             data.RemoveAt(0);
@@ -131,7 +140,10 @@ namespace Imaging
 
                 check = int.TryParse(line[1], out var a);
 
-                if (!check) continue;
+                if (!check)
+                {
+                    continue;
+                }
 
                 var converter = new ColorHsv(hex, a);
 
@@ -140,17 +152,24 @@ namespace Imaging
 
                 //get coordinates
                 for (var i = 2; i < line.Count; i++)
+                {
                     if (line[i].Contains("-"))
                     {
                         //split get start and end
                         var lst = line[i].Split(ImagingResources.CifSeparator).ToList();
                         check = int.TryParse(lst[0], out var start);
 
-                        if (!check) continue;
+                        if (!check)
+                        {
+                            continue;
+                        }
 
                         check = int.TryParse(lst[1], out var end);
 
-                        if (!check) continue;
+                        if (!check)
+                        {
+                            continue;
+                        }
 
                         //paint area
                         for (var j = start; j <= end; j++)
@@ -164,12 +183,16 @@ namespace Imaging
                     {
                         check = int.TryParse(line[i], out var idMaster);
 
-                        if (!check) continue;
+                        if (!check)
+                        {
+                            continue;
+                        }
 
                         var x = IdToX(idMaster, length);
                         var y = IdToY(idMaster, length);
                         dbm.SetPixel(x, y, color);
                     }
+                }
             }
 
             return dbm.Bitmap;
@@ -249,7 +272,10 @@ namespace Imaging
 
                 var compressed = new List<int>();
 
-                if (sequence == null) continue;
+                if (sequence == null)
+                {
+                    continue;
+                }
 
                 foreach (var (startS, endS) in sequence)
                 {
@@ -285,7 +311,7 @@ namespace Imaging
         /// <returns>Id of Coordinate</returns>
         internal static int CalculateId(int x, int y, int length)
         {
-            return y * length + x;
+            return (y * length) + x;
         }
 
         /// <summary>
