@@ -73,10 +73,10 @@
             <Button Content="Show Differences" Grid.Column="1" Grid.Row="1"/>
             <TabControl Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="1" >
                 <TabItem Header="Information">
-                    <commonControls:ScrollingTextBoxes Name="Information"  TextWrapping="Wrap"/>
+                    <commonControls:ScrollingTextBoxes Name="Information"/>
                 </TabItem>
                 <TabItem Header="Color Details">
-                    <commonControls:ScrollingTextBoxes Name="ColorInformation"  TextWrapping="Wrap"/>
+                    <commonControls:ScrollingTextBoxes Name="ColorInformation"/>
                 </TabItem>
             </TabControl>
 

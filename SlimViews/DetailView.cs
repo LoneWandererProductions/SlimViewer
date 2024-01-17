@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -220,7 +221,7 @@ namespace SlimViews
         ///     Opens the one action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void OpenOneAction(object obj)
+        private async void OpenOneAction(object obj)
         {
             var pathObj = OpenFile();
 
@@ -242,18 +243,44 @@ namespace SlimViews
             _btmOne = btm;
             BmpOne = btm.ToBitmapImage();
 
-            var str = SetInformation(pathObj.FilePath, pathObj.FileName, btm);
-
-            ColorInformation.Append(str);
-
             Compare();
+
+            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+
+            ColorInformation.Text += await _ComputeText(btm);
+        }
+
+        /// <summary>
+        /// Computes the text.
+        /// </summary>
+        /// <param name="btm">The BTM.</param>
+        /// <returns>The color Infos</returns>
+        private async Task<string> _ComputeText(Bitmap btm)
+        {
+            var str = new StringBuilder();
+            str.Append(Environment.NewLine);
+
+            _ = await Task.Run(() =>
+            {
+                foreach (var (color, count) in _analysis.GetColors(btm))
+                {
+                    var cache = string.Concat(SlimViewerResources.InformationColor, color,
+                        SlimViewerResources.InformationCount, count, Environment.NewLine);
+                    str.Append(cache);
+                    Thread.Sleep(1);
+                }
+
+                return true;
+            });
+
+            return str.ToString();
         }
 
         /// <summary>
         ///     Opens the two action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void OpenTwoAction(object obj)
+        private async void OpenTwoAction(object obj)
         {
             var pathObj = OpenFile();
 
@@ -274,35 +301,22 @@ namespace SlimViews
             _btmTwo = btm;
             BmpTwo = btm.ToBitmapImage();
 
-            var str = SetInformation(pathObj.FilePath, pathObj.FileName, btm);
-
-            ColorInformation.Append(str);
-
             Compare();
+
+            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+
+            ColorInformation.Text += await _ComputeText(btm);
         }
 
         /// <summary>
-        ///     Sets the information.
+        ///     Sets the information
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="fileName">Name of the file.</param>
         /// <param name="btm">The BTM.</param>
-        private string SetInformation(string filePath, string fileName, Bitmap btm)
+        private void SetInformation(string filePath, string fileName, Bitmap btm)
         {
             Information.Append(SlimViewerResources.BuildImageInformation(filePath, fileName, btm.ToBitmapImage()));
-
-            var str = new StringBuilder();
-            str.Append(Environment.NewLine);
-
-            foreach (var (color, count) in _analysis.GetColors(btm))
-            {
-                var cache = string.Concat(SlimViewerResources.InformationColor, color,
-                    SlimViewerResources.InformationCount, count, Environment.NewLine);
-
-                str.Append(cache);
-            }
-
-            return str.ToString();
         }
 
         /// <summary>
