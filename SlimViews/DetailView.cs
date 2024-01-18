@@ -331,7 +331,8 @@ namespace SlimViews
 
             StatusImage = _redIcon;
 
-            ColorInformation.Text += await _ComputeText(btm);
+            var text = await _ComputeText(btm);
+            ColorInformation.AppendText(text);
         }
 
         /// <summary>
@@ -365,15 +366,24 @@ namespace SlimViews
 
             StatusImage = _redIcon;
 
-            ColorInformation.Text += await _ComputeText(btm);
+            var text = await _ComputeText(btm);
+            ColorInformation.AppendText(text);
         }
 
+        /// <summary>
+        /// Differences the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         private void DifferenceAction(object obj)
         {
+            if (_btmOne == null || _btmTwo == null) return;
+
             var color = Colors;
             if (string.IsNullOrEmpty(color)) return;
 
             var col = Color.FromName(color);
+
+
         }
 
 
@@ -396,6 +406,7 @@ namespace SlimViews
                     Thread.Sleep(1);
                 }
 
+                str.Append(Environment.NewLine);
                 StatusImage = _greenIcon;
                 return true;
             });
@@ -411,7 +422,7 @@ namespace SlimViews
         /// <param name="btm">The BTM.</param>
         private void SetInformation(string filePath, string fileName, Bitmap btm)
         {
-            Information.Append(SlimViewerResources.BuildImageInformationLine(filePath, fileName, btm.ToBitmapImage()));
+            Information.AppendText(SlimViewerResources.BuildImageInformationLine(filePath, fileName, btm.ToBitmapImage()));
         }
 
         /// <summary>
@@ -423,7 +434,7 @@ namespace SlimViews
 
             var data = _analysis.CompareImages(_btmOne, _btmTwo);
 
-            Information.Append(string.Concat(SlimViewerResources.Similarity, data.Similarity));
+            Information.AppendText(string.Concat(SlimViewerResources.Similarity, data.Similarity));
         }
 
         /// <summary>
