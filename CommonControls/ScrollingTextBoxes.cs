@@ -61,7 +61,10 @@ namespace CommonControls
         /// <param name="e">The text changed event arguments.</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (!AutoScrolling) return;
+            if (!AutoScrolling)
+            {
+                return;
+            }
 
             base.OnTextChanged(e);
             CaretIndex = Text.Length;
@@ -69,12 +72,15 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Appends the specified text. With line break;
+        ///     Appends the specified text. With line break;
         /// </summary>
         /// <param name="text">The text.</param>
         public void Append(string text)
         {
-            if (!Text.EndsWith(Environment.NewLine, StringComparison.Ordinal)) Text = string.Concat(Text, Environment.NewLine);
+            if (!Text.EndsWith(Environment.NewLine, StringComparison.Ordinal))
+            {
+                Text = string.Concat(Text, Environment.NewLine);
+            }
 
             Text = string.Concat(Text, text);
         }
@@ -124,7 +130,10 @@ namespace CommonControls
         /// <param name="e">The text changed event arguments.</param>
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            if (!AutoScrolling) return;
+            if (!AutoScrolling)
+            {
+                return;
+            }
 
             base.OnTextChanged(e);
             ScrollToEnd();
