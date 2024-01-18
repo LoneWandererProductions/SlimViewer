@@ -73,6 +73,11 @@ namespace SlimViews
         private ICommand _openTwoCommand;
 
         /// <summary>
+        /// The difference command
+        /// </summary>
+        private ICommand _differenceCommand;
+
+        /// <summary>
         ///     The path one
         /// </summary>
         private string _pathOne;
@@ -114,6 +119,11 @@ namespace SlimViews
         /// The red icon
         /// </summary>
         private readonly string _redIcon;
+
+        /// <summary>
+        /// The color
+        /// </summary>
+        private object _color;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -213,6 +223,24 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
+        /// <value>
+        /// The color.
+        /// </value>
+        public object Colors
+        {
+            get => _color;
+            set
+            {
+                if (_color == value) return;
+
+                _color = value;
+                OnPropertyChanged(nameof(Colors));
+            }
+        }
+
+        /// <summary>
         ///     Gets the open one command.
         /// </summary>
         /// <value>
@@ -229,6 +257,16 @@ namespace SlimViews
         /// </value>
         public ICommand OpenTwoCommand =>
             _openTwoCommand ??= new DelegateCommand<object>(OpenTwoAction, CanExecute);
+
+
+        /// <summary>
+        /// Gets the difference command.
+        /// </summary>
+        /// <value>
+        /// The difference command.
+        /// </value>
+        public ICommand DifferenceCommand =>
+            _differenceCommand ??= new DelegateCommand<object>(DifferenceAction, CanExecute);
 
         /// <inheritdoc />
         /// <summary>
@@ -297,32 +335,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Computes the text.
-        /// </summary>
-        /// <param name="btm">The BTM.</param>
-        /// <returns>The color Infos</returns>
-        private async Task<string> _ComputeText(Bitmap btm)
-        {
-            var str = new StringBuilder();
-
-            _ = await Task.Run(() =>
-            {
-                foreach (var (color, count) in _analysis.GetColors(btm))
-                {
-                    var cache = string.Concat(SlimViewerResources.InformationColor, color,
-                        SlimViewerResources.InformationCount, count, Environment.NewLine);
-                    str.Append(cache);
-                    Thread.Sleep(1);
-                }
-
-                StatusImage = _greenIcon;
-                return true;
-            });
-
-            return str.ToString();
-        }
-
-        /// <summary>
         ///     Opens the two action.
         /// </summary>
         /// <param name="obj">The object.</param>
@@ -354,6 +366,40 @@ namespace SlimViews
             StatusImage = _redIcon;
 
             ColorInformation.Text += await _ComputeText(btm);
+        }
+
+        private void DifferenceAction(object obj)
+        {
+            var color = Colors;
+
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Computes the text.
+        /// </summary>
+        /// <param name="btm">The BTM.</param>
+        /// <returns>The color Infos</returns>
+        private async Task<string> _ComputeText(Bitmap btm)
+        {
+            var str = new StringBuilder();
+
+            _ = await Task.Run(() =>
+            {
+                foreach (var (color, count) in _analysis.GetColors(btm))
+                {
+                    var cache = string.Concat(SlimViewerResources.InformationColor, color,
+                        SlimViewerResources.InformationCount, count, Environment.NewLine);
+                    str.Append(cache);
+                    Thread.Sleep(1);
+                }
+
+                StatusImage = _greenIcon;
+                return true;
+            });
+
+            return str.ToString();
         }
 
         /// <summary>

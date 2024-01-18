@@ -20,7 +20,7 @@ namespace SlimViews
     {
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:SlimViews.DetailCompare" /> class.
+        /// Initializes a new instance of the <see cref="DetailCompare" /> class.
         /// </summary>
         public DetailCompare()
         {

@@ -39,8 +39,8 @@ namespace CommonControls
         /// <summary>
         ///     The data collection (readonly). Value: DependencyProperty.Register DataCollection
         /// </summary>
-        public static DependencyProperty DataCollection =
-            DependencyProperty.Register(nameof(DataCollection), typeof(List<DataItem>), typeof(DataList), null);
+        public static readonly DependencyProperty DataCollection =
+            DependencyProperty.Register(nameof(Collection), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
         ///     The list title Dependency Property
@@ -62,15 +62,15 @@ namespace CommonControls
         ///     The unique elements
         /// </summary>
         public static readonly DependencyProperty SelectedItem = DependencyProperty.Register(
-            nameof(SelectedItem),
+            nameof(Selection),
             typeof(DataItem),
             typeof(DataList), null);
 
         /// <summary>
         ///     The selected items
         /// </summary>
-        public static DependencyProperty SelectedItems =
-            DependencyProperty.Register(nameof(SelectedItems), typeof(List<DataItem>), typeof(DataList), null);
+        public static readonly DependencyProperty SelectedItems =
+            DependencyProperty.Register(nameof(Selections), typeof(List<DataItem>), typeof(DataList), null);
 
         /// <summary>
         ///     The view

@@ -73,7 +73,7 @@
                 <RowDefinition />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-            <Button Content="Show Differences" Grid.Column="1" Grid.Row="1"/>
+            <Button Content="Show Differences" Grid.Column="1" Grid.Row="1"  Command="{Binding DifferenceCommand}" />
             <Image Grid.Row="1" Grid.Column="5" Source="{Binding StatusImage}"  />
             <TabControl Grid.Row="2" Grid.ColumnSpan="5" Grid.Column="1"  >
                 <TabItem Header="Information">
@@ -83,8 +83,7 @@
                     <commonControls:ScrollingTextBoxes Name="ColorInformation"/>
                 </TabItem>
             </TabControl>
-            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" />
-
+            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" Color="{Binding Colors}" />
         </Grid>
     </Grid>
 </Window>

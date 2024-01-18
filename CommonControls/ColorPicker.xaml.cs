@@ -33,21 +33,21 @@ namespace CommonControls
         /// <summary>
         ///     The h
         /// </summary>
-        public static readonly DependencyProperty H = DependencyProperty.Register(nameof(H),
+        public static readonly DependencyProperty H = DependencyProperty.Register(nameof(DepHue),
             typeof(string),
             typeof(ColorPicker), null);
 
         /// <summary>
         ///     The s
         /// </summary>
-        public static readonly DependencyProperty S = DependencyProperty.Register(nameof(S),
+        public static readonly DependencyProperty S = DependencyProperty.Register(nameof(DepSat),
             typeof(string),
             typeof(ColorPicker), null);
 
         /// <summary>
         ///     The v
         /// </summary>
-        public static readonly DependencyProperty V = DependencyProperty.Register(nameof(V),
+        public static readonly DependencyProperty V = DependencyProperty.Register(nameof(DepVal),
             typeof(string),
             typeof(ColorPicker), null);
 
