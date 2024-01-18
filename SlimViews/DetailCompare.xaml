@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Title="Detailed Image Comparer" Height="450" Width="1000">
     <Window.DataContext>
-        <local:DetailView x:Name ="View" />
+        <local:DetailView x:Name ="View"/>
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -83,7 +83,7 @@
                     <commonControls:ScrollingTextBoxes Name="ColorInformation"/>
                 </TabItem>
             </TabControl>
-            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" Color="{Binding Colors}" />
+            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" Color="{Binding Colors, Mode=TwoWay}" />
         </Grid>
     </Grid>
 </Window>

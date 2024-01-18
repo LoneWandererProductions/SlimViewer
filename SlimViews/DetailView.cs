@@ -123,7 +123,7 @@ namespace SlimViews
         /// <summary>
         /// The color
         /// </summary>
-        private object _color;
+        private string _color;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -228,7 +228,7 @@ namespace SlimViews
         /// <value>
         /// The color.
         /// </value>
-        public object Colors
+        public string Colors
         {
             get => _color;
             set
@@ -371,8 +371,6 @@ namespace SlimViews
         private void DifferenceAction(object obj)
         {
             var color = Colors;
-
-            throw new NotImplementedException();
         }
 
 
