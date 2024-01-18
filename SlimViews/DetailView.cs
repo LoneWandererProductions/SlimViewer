@@ -373,8 +373,7 @@ namespace SlimViews
             var color = Colors;
             if (string.IsNullOrEmpty(color)) return;
 
-            //TODO convert
-
+            var col = Color.FromName(color);
         }
 
 
