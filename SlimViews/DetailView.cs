@@ -83,6 +83,11 @@ namespace SlimViews
         private string _pathTwo;
 
         /// <summary>
+        /// The status image
+        /// </summary>
+        private string _statusImage;
+
+        /// <summary>
         ///     Gets or sets the root.
         /// </summary>
         /// <value>
@@ -188,6 +193,25 @@ namespace SlimViews
             }
         }
 
+
+        /// <summary>
+        /// Gets or sets the status image.
+        /// </summary>
+        /// <value>
+        /// The status image.
+        /// </value>
+        public string StatusImage
+        {
+            get => _statusImage;
+            set
+            {
+                if (_statusImage == value) return;
+
+                _statusImage = value;
+                OnPropertyChanged(nameof(StatusImage));
+            }
+        }
+
         /// <summary>
         ///     Gets the open one command.
         /// </summary>
@@ -267,6 +291,8 @@ namespace SlimViews
 
             SetInformation(pathObj.FilePath, pathObj.FileName, btm);
 
+            StatusImage = _redIcon;
+
             ColorInformation.Text += await _ComputeText(btm);
         }
 
@@ -278,7 +304,6 @@ namespace SlimViews
         private async Task<string> _ComputeText(Bitmap btm)
         {
             var str = new StringBuilder();
-            str.Append(Environment.NewLine);
 
             _ = await Task.Run(() =>
             {
@@ -290,6 +315,7 @@ namespace SlimViews
                     Thread.Sleep(1);
                 }
 
+                StatusImage = _greenIcon;
                 return true;
             });
 
@@ -325,6 +351,8 @@ namespace SlimViews
 
             SetInformation(pathObj.FilePath, pathObj.FileName, btm);
 
+            StatusImage = _redIcon;
+
             ColorInformation.Text += await _ComputeText(btm);
         }
 
@@ -336,7 +364,7 @@ namespace SlimViews
         /// <param name="btm">The BTM.</param>
         private void SetInformation(string filePath, string fileName, Bitmap btm)
         {
-            Information.Append(SlimViewerResources.BuildImageInformation(filePath, fileName, btm.ToBitmapImage()));
+            Information.Append(SlimViewerResources.BuildImageInformationLine(filePath, fileName, btm.ToBitmapImage()));
         }
 
         /// <summary>

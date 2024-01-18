@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Windows.Media.Imaging;
 using Imaging;
 
@@ -253,6 +254,22 @@ namespace SlimViews
                 fileName, ImageHeight, bmp.Height, ImageWidth,
                 bmp.Width,
                 ImageSize, bmp.Height * bmp.Width);
+        }
+
+        /// <summary>
+        /// Builds the image information with line breaks.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="bmp">The BMP.</param>
+        /// <returns>String of Image Information with line breaks.</returns>
+        public static string BuildImageInformationLine(string filePath, string fileName, BitmapImage bmp)
+        {
+            return string.Concat(ImagePath, filePath, Environment.NewLine,
+                ImageName, fileName, Environment.NewLine,
+                ImageHeight, bmp.Height, Environment.NewLine,
+                ImageWidth, bmp.Width, Environment.NewLine,
+                ImageSize, bmp.Height * bmp.Width, Environment.NewLine);
         }
     }
 }

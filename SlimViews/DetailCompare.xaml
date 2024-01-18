@@ -74,10 +74,10 @@
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
             <Button Content="Show Differences" Grid.Column="1" Grid.Row="1"/>
-            <Image x:Name="ImageStatus" Grid.Row="1" Grid.Column="5"  />
+            <Image Grid.Row="1" Grid.Column="5" Source="{Binding StatusImage}"  />
             <TabControl Grid.Row="2" Grid.ColumnSpan="5" Grid.Column="1"  >
                 <TabItem Header="Information">
-                    <commonControls:ScrollingTextBoxes Name="Information"/>
+                    <commonControls:ScrollingTextBoxes Name="Information" TextWrapping="NoWrap"/>
                 </TabItem>
                 <TabItem Header="Color Details">
                     <commonControls:ScrollingTextBoxes Name="ColorInformation"/>
