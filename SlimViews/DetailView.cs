@@ -371,6 +371,10 @@ namespace SlimViews
         private void DifferenceAction(object obj)
         {
             var color = Colors;
+            if (string.IsNullOrEmpty(color)) return;
+
+            //TODO convert
+
         }
 
 

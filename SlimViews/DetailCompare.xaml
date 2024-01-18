@@ -83,7 +83,7 @@
                     <commonControls:ScrollingTextBoxes Name="ColorInformation"/>
                 </TabItem>
             </TabControl>
-            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" StartColor="{Binding Colors, Mode=TwoWay}" />
+            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" StartColor="{Binding Colors,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /> 
         </Grid>
     </Grid>
 </Window>
