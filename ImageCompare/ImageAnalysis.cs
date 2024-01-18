@@ -116,7 +116,7 @@ namespace ImageCompare
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Color Dictionary</returns>
@@ -133,7 +133,7 @@ namespace ImageCompare
 
         /// <inheritdoc />
         /// <summary>
-        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
+        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Color Dictionary</returns>

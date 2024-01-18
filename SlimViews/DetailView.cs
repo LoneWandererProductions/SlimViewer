@@ -43,6 +43,24 @@ namespace SlimViews
         private readonly ImageAnalysis _analysis;
 
         /// <summary>
+        ///     The green icon
+        /// </summary>
+        private readonly string _greenIcon;
+
+        /// <summary>
+        ///     The red icon
+        /// </summary>
+        private readonly string _redIcon;
+
+        /// <summary>
+        ///     Gets or sets the root.
+        /// </summary>
+        /// <value>
+        ///     The root.
+        /// </value>
+        private readonly string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
         ///     The first BitmapImage
         /// </summary>
         private BitmapImage _bmpOne;
@@ -63,6 +81,16 @@ namespace SlimViews
         private Bitmap _btmTwo;
 
         /// <summary>
+        ///     The color
+        /// </summary>
+        private string _color;
+
+        /// <summary>
+        ///     The difference command
+        /// </summary>
+        private ICommand _differenceCommand;
+
+        /// <summary>
         ///     The open one command
         /// </summary>
         private ICommand _openOneCommand;
@@ -71,11 +99,6 @@ namespace SlimViews
         ///     The open two command
         /// </summary>
         private ICommand _openTwoCommand;
-
-        /// <summary>
-        /// The difference command
-        /// </summary>
-        private ICommand _differenceCommand;
 
         /// <summary>
         ///     The path one
@@ -88,42 +111,19 @@ namespace SlimViews
         private string _pathTwo;
 
         /// <summary>
-        /// The status image
+        ///     The status image
         /// </summary>
         private string _statusImage;
 
         /// <summary>
-        ///     Gets or sets the root.
+        ///     The color information
         /// </summary>
-        /// <value>
-        ///     The root.
-        /// </value>
-        private readonly string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public ScrollingTextBoxes ColorInformation;
 
         /// <summary>
         ///     The information
         /// </summary>
         public ScrollingTextBoxes Information;
-
-        /// <summary>
-        /// The color information
-        /// </summary>
-        public ScrollingTextBoxes ColorInformation;
-
-        /// <summary>
-        /// The green icon
-        /// </summary>
-        private readonly string _greenIcon;
-
-        /// <summary>
-        /// The red icon
-        /// </summary>
-        private readonly string _redIcon;
-
-        /// <summary>
-        /// The color
-        /// </summary>
-        private string _color;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -205,10 +205,10 @@ namespace SlimViews
 
 
         /// <summary>
-        /// Gets or sets the status image.
+        ///     Gets or sets the status image.
         /// </summary>
         /// <value>
-        /// The status image.
+        ///     The status image.
         /// </value>
         public string StatusImage
         {
@@ -223,10 +223,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the color.
+        ///     Gets or sets the color.
         /// </summary>
         /// <value>
-        /// The color.
+        ///     The color.
         /// </value>
         public string Colors
         {
@@ -260,10 +260,10 @@ namespace SlimViews
 
 
         /// <summary>
-        /// Gets the difference command.
+        ///     Gets the difference command.
         /// </summary>
         /// <value>
-        /// The difference command.
+        ///     The difference command.
         /// </value>
         public ICommand DifferenceCommand =>
             _differenceCommand ??= new DelegateCommand<object>(DifferenceAction, CanExecute);
@@ -371,7 +371,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Differences the action.
+        ///     Differences the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void DifferenceAction(object obj)
@@ -382,13 +382,11 @@ namespace SlimViews
             if (string.IsNullOrEmpty(color)) return;
 
             var col = Color.FromName(color);
-
-
         }
 
 
         /// <summary>
-        /// Computes the text.
+        ///     Computes the text.
         /// </summary>
         /// <param name="btm">The BTM.</param>
         /// <returns>The color Infos</returns>
@@ -422,7 +420,8 @@ namespace SlimViews
         /// <param name="btm">The BTM.</param>
         private void SetInformation(string filePath, string fileName, Bitmap btm)
         {
-            Information.AppendText(SlimViewerResources.BuildImageInformationLine(filePath, fileName, btm.ToBitmapImage()));
+            Information.AppendText(
+                SlimViewerResources.BuildImageInformationLine(filePath, fileName, btm.ToBitmapImage()));
         }
 
         /// <summary>

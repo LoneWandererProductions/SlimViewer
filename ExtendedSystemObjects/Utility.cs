@@ -42,10 +42,7 @@ namespace ExtendedSystemObjects
         /// <returns>Next Element</returns>
         public static int GetNextElement(int position, List<int> lst)
         {
-            if (position == lst.Max())
-            {
-                return lst.Min();
-            }
+            if (position == lst.Max()) return lst.Min();
 
             var index = lst.IndexOf(position);
 
@@ -60,10 +57,7 @@ namespace ExtendedSystemObjects
         /// <returns>Previous Element</returns>
         public static int GetPreviousElement(int position, List<int> lst)
         {
-            if (position == lst.Min())
-            {
-                return lst.Max();
-            }
+            if (position == lst.Min()) return lst.Max();
 
             var index = lst.IndexOf(position);
 
@@ -81,10 +75,8 @@ namespace ExtendedSystemObjects
         public static List<int> GetAvailableIndexes(List<int> lst, int count)
         {
             if (count < 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(count),
                     ExtendedSystemObjectsResources.ErrorValueNotAllowed);
-            }
 
             var keys = new List<int>();
             for (var i = 0; i < count; i++)
@@ -116,19 +108,13 @@ namespace ExtendedSystemObjects
                 if (Math.Abs(lst[i - 1] + 1) == cache)
                 {
                     //should be only the first case
-                    if (!other.Contains(i - 1))
-                    {
-                        other.Add(i - 1);
-                    }
+                    if (!other.Contains(i - 1)) other.Add(i - 1);
 
                     other.Add(i);
                 }
                 else
                 {
-                    if (other.Count == 0)
-                    {
-                        continue;
-                    }
+                    if (other.Count == 0) continue;
 
                     box.Add(other);
                     other = new List<int>();
@@ -167,31 +153,19 @@ namespace ExtendedSystemObjects
 
                 do
                 {
-                    if (other.Contains(cache))
-                    {
-                        break;
-                    }
+                    if (other.Contains(cache)) break;
 
                     count += width;
 
-                    if (observer.Contains(count))
-                    {
-                        continue;
-                    }
+                    if (observer.Contains(count)) continue;
 
-                    if (!lst.Contains(count))
-                    {
-                        break;
-                    }
+                    if (!lst.Contains(count)) break;
 
                     other.Add(count);
                     observer.Add(count);
                 } while (count < max);
 
-                if (other.Count == 0)
-                {
-                    continue;
-                }
+                if (other.Count == 0) continue;
 
                 other.AddFirst(cache);
                 box.Add(other);

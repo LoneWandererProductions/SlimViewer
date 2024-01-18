@@ -398,7 +398,8 @@ namespace SlimViews
         {
             var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, null);
 
-            if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, SlimViewerResources.CbzExt, StringComparison.OrdinalIgnoreCase)) return;
+            if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, SlimViewerResources.CbzExt,
+                    StringComparison.OrdinalIgnoreCase)) return;
 
             Initiate(OutputPath);
 
