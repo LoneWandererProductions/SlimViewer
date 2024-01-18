@@ -27,7 +27,6 @@ using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
 using ViewModel;
-using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
 
 // TODO Save and Export Settings
@@ -312,6 +311,21 @@ namespace SlimViews
         private bool _thumbs = true;
 
         /// <summary>
+        /// The status image
+        /// </summary>
+        private string _statusImage;
+
+        /// <summary>
+        /// The green icon
+        /// </summary>
+        private readonly string _greenIcon;
+
+        /// <summary>
+        /// The red icon
+        /// </summary>
+        private readonly string _redIcon;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
         ///     Initiates all necessary Collections as well
         /// </summary>
@@ -319,6 +333,9 @@ namespace SlimViews
         {
             _cif = new CustomImageFormat();
             Observer = new Dictionary<int, string>();
+
+            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
+            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
         }
 
         /// <summary>
@@ -344,14 +361,6 @@ namespace SlimViews
         ///     The status.
         /// </value>
         public ColorPickerMenu Picker { get; set; }
-
-        /// <summary>
-        ///     Sets the status Image.
-        /// </summary>
-        /// <value>
-        ///     The status Image.
-        /// </value>
-        public Image Status { private get; set; }
 
         /// <summary>
         ///     Gets or sets the selected tool.
@@ -579,6 +588,24 @@ namespace SlimViews
 
                 _bmp = value;
                 OnPropertyChanged(nameof(Bmp));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the status image.
+        /// </summary>
+        /// <value>
+        /// The status image.
+        /// </value>
+        public string StatusImage
+        {
+            get => _statusImage;
+            set
+            {
+                if (_statusImage == value) return;
+
+                _statusImage = value;
+                OnPropertyChanged(nameof(StatusImage));
             }
         }
 
@@ -1971,7 +1998,6 @@ namespace SlimViews
                     //set Infos
                     Information = SlimViewerResources.BuildGifInformation(filePath, info);
                 }
-
                 else
                 {
                     _btm = Helper.Render.GetOriginalBitmap(filePath);
@@ -2045,9 +2071,8 @@ namespace SlimViews
         {
             //initiate Basic values
             _currentFolder = folder;
-            Status.Source = null;
-            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
-                SlimViewerResources.IconPathRed));
+            StatusImage = string.Empty;
+            StatusImage = _redIcon;
 
             _fileList = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _subFolders);
 
@@ -2082,8 +2107,7 @@ namespace SlimViews
 
             if (string.IsNullOrEmpty(_root)) return;
 
-            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
-                SlimViewerResources.IconPathRed));
+            StatusImage = _redIcon;
 
             //load Thumbnails
             _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
@@ -2100,13 +2124,10 @@ namespace SlimViews
         /// </returns>
         internal bool SaveImage(string path, string extension, Bitmap btm)
         {
-            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
-                SlimViewerResources.IconPathRed));
+            StatusImage = _redIcon;
 
             var check = Helper.SaveImage(path, extension, btm);
-
-            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
-                SlimViewerResources.IconPathGreen));
+            StatusImage = _greenIcon;
 
             return check;
         }
@@ -2116,11 +2137,10 @@ namespace SlimViews
         /// </summary>
         public void Loaded()
         {
-            if (Status == null)
-                return;
+            //if (Status == null) return;
+            if(string.IsNullOrEmpty(StatusImage)) return;
 
-            Status.Source = Helper.Render.GetBitmapImageFileStream(Path.Combine(_root,
-                SlimViewerResources.IconPathGreen));
+            StatusImage = _greenIcon;
         }
     }
 }

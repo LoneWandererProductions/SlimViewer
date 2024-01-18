@@ -31,7 +31,6 @@ namespace SlimViewer
             InitializeComponent();
             View.Main = this;
             View.Thumb = Thumbnail;
-            View.Status = ImageStatus;
             View.Picker = ColorPick;
             View.ImageZoom = ImageZoom;
         }

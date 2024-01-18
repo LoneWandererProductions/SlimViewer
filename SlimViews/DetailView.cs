@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +41,6 @@ namespace SlimViews
         ///     The analysis
         /// </summary>
         private readonly ImageAnalysis _analysis;
-
 
         /// <summary>
         ///     The first BitmapImage
@@ -83,6 +83,14 @@ namespace SlimViews
         private string _pathTwo;
 
         /// <summary>
+        ///     Gets or sets the root.
+        /// </summary>
+        /// <value>
+        ///     The root.
+        /// </value>
+        private readonly string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
         ///     The information
         /// </summary>
         public ScrollingTextBoxes Information;
@@ -93,11 +101,23 @@ namespace SlimViews
         public ScrollingTextBoxes ColorInformation;
 
         /// <summary>
+        /// The green icon
+        /// </summary>
+        private readonly string _greenIcon;
+
+        /// <summary>
+        /// The red icon
+        /// </summary>
+        private readonly string _redIcon;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
         /// </summary>
         public DetailView()
         {
             _analysis = new ImageAnalysis();
+            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
+            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
         }
 
         /// <summary>
