@@ -73,7 +73,7 @@ namespace ImageCompare
         ImageCompareData CompareImages(string first, string second);
 
         /// <summary>
-        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Color Dictionary</returns>
@@ -81,11 +81,23 @@ namespace ImageCompare
         Dictionary<Color, int> GetColors(string path);
 
         /// <summary>
-        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Color Dictionary</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
         Dictionary<Color, int> GetColors(Bitmap image);
+
+        /// <summary>
+        /// Generates a differences bitmap.
+        /// </summary>
+        /// <param name="first">The first bitmap.</param>
+        /// <param name="second">The second bitmap.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>
+        /// The difference Bitmap
+        /// </returns>
+        /// <exception cref="System.ArgumentException"></exception>
+        Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color);
     }
 }

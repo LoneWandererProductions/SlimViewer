@@ -45,21 +45,6 @@ namespace SlimViews
         private readonly CustomImageFormat _cif;
 
         /// <summary>
-        ///     The green icon
-        /// </summary>
-        private readonly string _greenIcon;
-
-        /// <summary>
-        ///     The red icon
-        /// </summary>
-        private readonly string _redIcon;
-
-        /// <summary>
-        ///     The analyzer window command
-        /// </summary>
-        private ICommand _analyzerWindowCommand;
-
-        /// <summary>
         ///     The automatic clean
         /// </summary>
         private bool _autoClean = SlimViewerRegister.MainAutoClean;
@@ -175,6 +160,11 @@ namespace SlimViews
         ///     The GIF window command
         /// </summary>
         private ICommand _gifWindowCommand;
+
+        /// <summary>
+        /// The analyzer window command
+        /// </summary>
+        private ICommand _analyzerWindowCommand;
 
         /// <summary>
         ///     The gray scale command
@@ -311,11 +301,6 @@ namespace SlimViews
         private int _similarity = SlimViewerRegister.MainSimilarity;
 
         /// <summary>
-        ///     The status image
-        /// </summary>
-        private string _statusImage;
-
-        /// <summary>
         ///     Check if Subfolders should be used too
         /// </summary>
         private bool _subFolders = SlimViewerRegister.MainSubFolders;
@@ -324,6 +309,21 @@ namespace SlimViews
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
+
+        /// <summary>
+        /// The status image
+        /// </summary>
+        private string _statusImage;
+
+        /// <summary>
+        /// The green icon
+        /// </summary>
+        private readonly string _greenIcon;
+
+        /// <summary>
+        /// The red icon
+        /// </summary>
+        private readonly string _redIcon;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -592,10 +592,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the status image.
+        /// Gets or sets the status image.
         /// </summary>
         /// <value>
-        ///     The status image.
+        /// The status image.
         /// </value>
         public string StatusImage
         {
@@ -908,10 +908,10 @@ namespace SlimViews
             _gifWindowCommand ??= new DelegateCommand<object>(GifWindowAction, CanExecute);
 
         /// <summary>
-        ///     Gets the analyzer window command.
+        /// Gets the analyzer window command.
         /// </summary>
         /// <value>
-        ///     The analyzer window command.
+        /// The analyzer window command.
         /// </value>
         public ICommand AnalyzerWindowCommand =>
             _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerAction, CanExecute);
@@ -925,10 +925,10 @@ namespace SlimViews
         public Window Main { get; set; }
 
         /// <summary>
-        ///     Gets or sets the image zoom.
+        /// Gets or sets the image zoom.
         /// </summary>
         /// <value>
-        ///     The image zoom.
+        /// The image zoom.
         /// </value>
         public ImageZoom ImageZoom { get; set; }
 
@@ -1642,12 +1642,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Analyzer Window
+        /// Analyzer Window
         /// </summary>
         /// <param name="obj">The object.</param>
         private void AnalyzerAction(object obj)
         {
-            var detailWindow = new DetailCompare
+            var detailWindow = new DetailCompare()
             {
                 Topmost = true,
                 Owner = Main
@@ -2138,7 +2138,7 @@ namespace SlimViews
         public void Loaded()
         {
             //if (Status == null) return;
-            if (string.IsNullOrEmpty(StatusImage)) return;
+            if(string.IsNullOrEmpty(StatusImage)) return;
 
             StatusImage = _greenIcon;
         }

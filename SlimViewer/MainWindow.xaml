@@ -146,7 +146,7 @@
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="10" />
                 <ColumnDefinition Width="80" />
-                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width ="5"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -185,7 +185,7 @@
                     Command="{Binding MoveCommand}" IsEnabled="{Binding Path =IsActive}" />
             <Button Content="Move All" Grid.Row="3" Grid.Column="5"
                     Command="{Binding MoveAllCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Image Grid.Row="3" Grid.Column="0" Source="{Binding StatusImage}" />
+            <Image Grid.Row="3" Grid.Column="0" Source="{Binding StatusImage}"  />
             <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Row="4"
                           Focusable="False" Grid.ColumnSpan="6" Grid.Column="0">
                 <!--Well not really that clean, but it works for now, events can't be transmitted without some hassle-->

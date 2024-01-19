@@ -37,14 +37,23 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static List<float> GetSimilarity(List<string> imagePaths)
         {
-            if (imagePaths.IsNullOrEmpty()) return null;
+            if (imagePaths.IsNullOrEmpty())
+            {
+                return null;
+            }
 
-            if (imagePaths.Count == 1) return null;
+            if (imagePaths.Count == 1)
+            {
+                return null;
+            }
 
             var paths = new List<string>(imagePaths);
 
             var path = imagePaths[0];
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path))
+            {
+                return null;
+            }
 
             var lst = new List<float>(paths.Count - 1);
 
@@ -56,6 +65,7 @@ namespace ImageCompare
 
                 //with sanity check in Case one file went missing, we won't have to stop everything
                 foreach (var element in paths.Where(File.Exists))
+                {
                     try
                     {
                         using var btm = new Bitmap(element);
@@ -70,6 +80,7 @@ namespace ImageCompare
                         Trace.WriteLine(ex);
                         throw new InvalidOperationException(ex.ToString());
                     }
+                }
             }
             catch (InvalidOperationException ex)
             {
@@ -79,7 +90,10 @@ namespace ImageCompare
             }
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count - 1) return null;
+            if (lst.Count != imagePaths.Count - 1)
+            {
+                return null;
+            }
 
             lst.AddFirst(100);
             return lst;
@@ -155,6 +169,7 @@ namespace ImageCompare
 
             var dbm = DirectBitmap.GetInstance(image);
             foreach (var color in dbm.GetColors())
+            {
                 //get our new Image format
                 if (imageFormat.ContainsKey(color))
                 {
@@ -165,6 +180,7 @@ namespace ImageCompare
                 {
                     imageFormat.Add(color, 1);
                 }
+            }
 
             return imageFormat;
         }
@@ -177,7 +193,10 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static ImageData GetImageDetails(string imagePath)
         {
-            if (!File.Exists(imagePath)) return null;
+            if (!File.Exists(imagePath))
+            {
+                return null;
+            }
 
             using var btm = new Bitmap(imagePath);
             var color = GenerateData(btm, string.Empty);
@@ -216,6 +235,35 @@ namespace ImageCompare
                 B = color.B,
                 Similarity = 100
             };
+        }
+
+        /// <summary>
+        /// Generates a differences bitmap.
+        /// </summary>
+        /// <param name="first">The first bitmap.</param>
+        /// <param name="second">The second bitmap.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>The difference Bitmap</returns>
+        internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
+        {
+            var width = first.Width <= second.Width ? first.Width : second.Width;
+            var height = first.Height <= second.Height ? first.Height : second.Height;
+
+            var canvas = Render.CutBitmap(first, 0, 0, height, width);
+
+            var dbmCanvas = new DirectBitmap(canvas);
+            var dbmCompare = new DirectBitmap(second);
+
+            for (var x = 0; x < width; x++)
+            {
+                for (var y = 0; y < height; y++)
+                {
+                    if (dbmCanvas.GetPixel(x, y) != dbmCompare.GetPixel(x, y))
+                        dbmCanvas.SetPixel(x, y, color);
+                }
+            }
+
+            return dbmCanvas.Bitmap;
         }
     }
 }

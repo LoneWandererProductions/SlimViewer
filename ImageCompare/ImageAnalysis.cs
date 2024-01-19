@@ -116,7 +116,7 @@ namespace ImageCompare
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Color Dictionary</returns>
@@ -133,7 +133,7 @@ namespace ImageCompare
 
         /// <inheritdoc />
         /// <summary>
-        ///     Gets the colors of an Image and collects them with the amount in a Dictionary.
+        /// Gets the colors of an Image and collects them with the amount in a Dictionary.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Color Dictionary</returns>
@@ -144,6 +144,27 @@ namespace ImageCompare
                 throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(image)));
 
             return AnalysisProcessing.GetColors(image);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Generates a differences bitmap.
+        /// </summary>
+        /// <param name="first">The first bitmap.</param>
+        /// <param name="second">The second bitmap.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>
+        /// The difference Bitmap
+        /// </returns>
+        /// <exception cref="T:System.ArgumentException"></exception>
+        public Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
+        {
+            if (first == null)
+                throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(first)));
+            if (second == null)
+                throw new ArgumentException(string.Concat(ImageResources.ErrorImageEmpty, nameof(second)));
+
+            return AnalysisProcessing.DifferenceImage(first, second, color);
         }
     }
 }
