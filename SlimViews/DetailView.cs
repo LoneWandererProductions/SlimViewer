@@ -78,6 +78,11 @@ namespace SlimViews
         private ICommand _differenceCommand;
 
         /// <summary>
+        /// The export command
+        /// </summary>
+        private ICommand _exportCommand;
+
+        /// <summary>
         ///     The path one
         /// </summary>
         private string _pathOne;
@@ -124,6 +129,26 @@ namespace SlimViews
         /// The color
         /// </summary>
         private string _color;
+
+        /// <summary>
+        /// The difference
+        /// </summary>
+        private Bitmap _difference;
+
+        /// <summary>
+        /// The information one
+        /// </summary>
+        private string _informationOne;
+
+        /// <summary>
+        /// The information two
+        /// </summary>
+        private string _informationTwo;
+
+        /// <summary>
+        /// The similarity
+        /// </summary>
+        private string _similarity;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -203,7 +228,6 @@ namespace SlimViews
             }
         }
 
-
         /// <summary>
         /// Gets or sets the status image.
         /// </summary>
@@ -258,7 +282,6 @@ namespace SlimViews
         public ICommand OpenTwoCommand =>
             _openTwoCommand ??= new DelegateCommand<object>(OpenTwoAction, CanExecute);
 
-
         /// <summary>
         /// Gets the difference command.
         /// </summary>
@@ -267,6 +290,15 @@ namespace SlimViews
         /// </value>
         public ICommand DifferenceCommand =>
             _differenceCommand ??= new DelegateCommand<object>(DifferenceAction, CanExecute);
+
+        /// <summary>
+        /// Gets the difference command.
+        /// </summary>
+        /// <value>
+        /// The difference command.
+        /// </value>
+        public ICommand ExportCommand =>
+            _exportCommand ??= new DelegateCommand<object>(ExportAction, CanExecute);
 
         /// <inheritdoc />
         /// <summary>
@@ -309,6 +341,9 @@ namespace SlimViews
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
+            _similarity = null;
+            _difference = null;
+
             //check if file extension is supported
             if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
             {
@@ -325,9 +360,10 @@ namespace SlimViews
             _btmOne = btm;
             BmpOne = btm.ToBitmapImage();
 
-            Compare();
+            _informationOne =
+                SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, btm.ToBitmapImage());
 
-            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+            Compare();
 
             StatusImage = _redIcon;
 
@@ -342,6 +378,9 @@ namespace SlimViews
         private async void OpenTwoAction(object obj)
         {
             var pathObj = OpenFile();
+
+            _similarity = null;
+            _difference = null;
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
@@ -360,9 +399,11 @@ namespace SlimViews
             _btmTwo = btm;
             BmpTwo = btm.ToBitmapImage();
 
-            Compare();
+            _informationTwo =
+                SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, btm.ToBitmapImage());
+            Information.AppendText(_informationTwo);
 
-            SetInformation(pathObj.FilePath, pathObj.FileName, btm);
+            Compare();
 
             StatusImage = _redIcon;
 
@@ -383,11 +424,21 @@ namespace SlimViews
 
             var col = Color.FromName(color);
 
-            var data = _analysis.DifferenceImage(_btmOne, _btmTwo, col);
+            _difference = _analysis.DifferenceImage(_btmOne, _btmTwo, col);
 
-            BmpOne = data.ToBitmapImage();
+            BmpOne = _difference.ToBitmapImage();
         }
 
+        /// <summary>
+        /// Exports the Information.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ExportAction(object obj)
+        {
+            if (string.IsNullOrEmpty(_informationOne) && string.IsNullOrEmpty(_informationTwo)) return;
+
+            Helper.GenerateExportAsync(_informationOne, _informationTwo, _similarity, _difference);
+        }
 
         /// <summary>
         /// Computes the text.
@@ -417,17 +468,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Sets the information
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="fileName">Name of the file.</param>
-        /// <param name="btm">The BTM.</param>
-        private void SetInformation(string filePath, string fileName, Bitmap btm)
-        {
-            Information.AppendText(SlimViewerResources.BuildImageInformationLine(filePath, fileName, btm.ToBitmapImage()));
-        }
-
-        /// <summary>
         ///     Compares this instance.
         /// </summary>
         private void Compare()
@@ -436,7 +476,8 @@ namespace SlimViews
 
             var data = _analysis.CompareImages(_btmOne, _btmTwo);
 
-            Information.AppendText(string.Concat(SlimViewerResources.Similarity, data.Similarity));
+            _similarity = string.Concat(SlimViewerResources.Similarity, data.Similarity, Environment.NewLine);
+            Information.AppendText(_similarity);
         }
 
         /// <summary>

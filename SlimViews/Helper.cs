@@ -14,7 +14,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
+using CommonControls;
 using Imaging;
 
 namespace SlimViews
@@ -118,6 +120,45 @@ namespace SlimViews
         internal static void ConvertGifAction(List<string> images, string filePath)
         {
             Render.CreateGif(images, filePath);
+        }
+
+        /// <summary>
+        /// Generates the export asynchronous.
+        /// </summary>
+        /// <param name="informationOne">The information one.</param>
+        /// <param name="informationTwo">The information two.</param>
+        /// <param name="similarity">The similarity.</param>
+        /// <param name="difference">The difference.</param>
+        /// <exception cref="System.IO.IOException"></exception>
+        /// <exception cref="System.ArgumentException"></exception>
+        internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string similarity, Bitmap difference)
+        {
+            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null);
+
+            var content = new List<string>();
+
+            if (string.IsNullOrEmpty(informationOne)) content.Add(informationOne);
+            if (string.IsNullOrEmpty(informationTwo)) content.Add(informationTwo);
+            if (string.IsNullOrEmpty(similarity)) content.Add(similarity);
+
+            try
+            {
+                await File.WriteAllLinesAsync(pathObj.FilePath, content).ConfigureAwait(false);
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine(ex.ToString());
+                throw new IOException(string.Empty, ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex.ToString());
+                throw new ArgumentException(string.Empty, ex);
+            }
+
+            if(difference == null) return;
+
+            _ = SaveImage(pathObj.FilePath, ImagingResources.PngExt, difference);
         }
     }
 }

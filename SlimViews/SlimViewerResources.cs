@@ -31,6 +31,12 @@ namespace SlimViews
             "Comic Book File (*.cbz)|*.cbz";
 
         /// <summary>
+        ///     The file open txt (const). Value: "Text File (*.txt)|*.txt".
+        /// </summary>
+        internal const string FileOpenTxt =
+            "Text File (*.txt)|*.txt";
+
+        /// <summary>
         ///     The file open gif (const). Value: "Gif File (*.cbz)|*.cbz".
         /// </summary>
         internal const string FileOpenGif =

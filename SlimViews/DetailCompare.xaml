@@ -28,7 +28,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="5" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
                 <RowDefinition Height="5" />
                 <RowDefinition />
                 <RowDefinition Height="5" />
@@ -47,7 +47,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="5" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
                 <RowDefinition Height="5" />
                 <RowDefinition />
                 <RowDefinition Height="5" />
@@ -60,22 +60,25 @@
         <Grid Grid.Column="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="90" />
-                <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="50" />
                 <ColumnDefinition />
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="5" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
                 <RowDefinition />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-            <Button Content="Show Differences" Grid.Column="1" Grid.Row="1"  Command="{Binding DifferenceCommand}" />
+            <Button Content="Show Differences" Grid.Column="1" Grid.Row="1"  Command="{Binding DifferenceCommand}" ToolTip="Create Difference Image"/>
+            <Button Content="Export" Grid.Column="5" Grid.Row="1"  Command="{Binding ExportCommand}" ToolTip="Export Information as Text file and diff Image if available."/>
             <Image Grid.Row="1" Grid.Column="5" Source="{Binding StatusImage}"  />
-            <TabControl Grid.Row="2" Grid.ColumnSpan="5" Grid.Column="1"  >
+            <TabControl Grid.Row="2" Grid.ColumnSpan="7" Grid.Column="1" >
                 <TabItem Header="Information">
                     <commonControls:ScrollingTextBoxes Name="Information" TextWrapping="NoWrap"/>
                 </TabItem>
@@ -83,7 +86,7 @@
                     <commonControls:ScrollingTextBoxes Name="ColorInformation"/>
                 </TabItem>
             </TabControl>
-            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" StartColor="{Binding Colors,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /> 
+            <commonControls:ColorSelection Grid.Column="3"  Grid.Row="1" StartColor="{Binding Colors,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
     </Grid>
 </Window>
