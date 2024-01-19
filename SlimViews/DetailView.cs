@@ -331,7 +331,7 @@ namespace SlimViews
 
             StatusImage = _redIcon;
 
-            var text = await _ComputeText(btm);
+            var text = await ComputeText(btm);
             ColorInformation.AppendText(text);
         }
 
@@ -366,7 +366,7 @@ namespace SlimViews
 
             StatusImage = _redIcon;
 
-            var text = await _ComputeText(btm);
+            var text = await ComputeText(btm);
             ColorInformation.AppendText(text);
         }
 
@@ -394,7 +394,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="btm">The BTM.</param>
         /// <returns>The color Infos</returns>
-        private async Task<string> _ComputeText(Bitmap btm)
+        private async Task<string> ComputeText(Bitmap btm)
         {
             var str = new StringBuilder();
 

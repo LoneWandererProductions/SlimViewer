@@ -32,7 +32,7 @@ namespace Imaging
         /// <value>
         ///     The bits.
         /// </value>
-        private readonly int[] _bits;
+        private int[] _bits;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.
@@ -47,9 +47,38 @@ namespace Imaging
         {
             Width = width;
             Height = height;
-            _bits = new int[width * height];
+
+            Initiate();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DirectBitmap"/> class.
+        ///     Bitmap which references pixel data directly
+        ///     PixelFormat, Specifies the format of the color data for each pixel in the image.
+        ///     AddrOfPinnedObject, reference to address of pinned object
+        ///     GCHandleType, Retrieves the address of object data in a Pinned handle.
+        /// </summary>
+        /// <param name="btm">The in question.</param>
+        public DirectBitmap(Image btm)
+        {
+            Width = btm.Width;
+            Height = btm.Height;
+
+            Initiate();
+
+            using var graph = Graphics.FromImage(Bitmap);
+            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
+                GraphicsUnit.Pixel);
+        }
+
+        /// <summary>
+        /// Initiates this instance and sets all Helper Variables.
+        /// </summary>
+        private void Initiate()
+        {
+            _bits = new int[Width * Height];
             BitsHandle = GCHandle.Alloc(_bits, GCHandleType.Pinned);
-            Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb,
+            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
                 BitsHandle.AddrOfPinnedObject());
         }
 
@@ -59,7 +88,7 @@ namespace Imaging
         /// <value>
         ///     The bitmap.
         /// </value>
-        public Bitmap Bitmap { get; }
+        public Bitmap Bitmap { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
@@ -91,7 +120,7 @@ namespace Imaging
         /// <value>
         ///     The bits handle.
         /// </value>
-        private GCHandle BitsHandle { get; }
+        private GCHandle BitsHandle { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -130,7 +159,10 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
-            for (var i = y; i < height; i++) SetPixel(x, i, color);
+            for (var i = y; i < height; i++)
+            {
+                SetPixel(x, i, color);
+            }
         }
 
         /// <summary>
@@ -144,7 +176,10 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            for (var i = x; i < length; i++) SetPixel(i, y, color);
+            for (var i = x; i < length; i++)
+            {
+                SetPixel(i, y, color);
+            }
         }
 
         /// <summary>
@@ -159,11 +194,15 @@ namespace Imaging
         public void DrawRectangle(int x, int y, int width, int height, Color color)
         {
             if (width > height)
+            {
                 Parallel.For(x, height,
                     index => DrawVerticalLine(index, y, width, color));
+            }
             else
+            {
                 Parallel.For(y, width,
                     index => DrawHorizontalLine(x, index, height, color));
+            }
         }
 
         /// <summary>
@@ -174,7 +213,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetPixel(int x, int y, Color color)
         {
-            var index = x + y * Width;
+            var index = x + (y * Width);
             _bits[index] = color.ToArgb();
         }
 
@@ -186,7 +225,7 @@ namespace Imaging
         /// <returns>Color of the Pixel</returns>
         public Color GetPixel(int x, int y)
         {
-            var index = x + y * Width;
+            var index = x + (y * Width);
             var col = _bits[index];
             return Color.FromArgb(col);
         }
@@ -198,7 +237,10 @@ namespace Imaging
         /// <returns>The Image as a list of Colors</returns>
         public Span<Color> GetColors()
         {
-            if (_bits == null) return null;
+            if (_bits == null)
+            {
+                return null;
+            }
 
             var length = Height * Width;
 
@@ -224,7 +266,10 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (Disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
