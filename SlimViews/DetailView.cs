@@ -151,6 +151,16 @@ namespace SlimViews
         private string _similarity;
 
         /// <summary>
+        /// The colore one
+        /// </summary>
+        private string _colorOne;
+
+        /// <summary>
+        /// The color two
+        /// </summary>
+        private string _colorTwo;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
         /// </summary>
         public DetailView()
@@ -343,6 +353,7 @@ namespace SlimViews
 
             _similarity = null;
             _difference = null;
+            _colorOne = null;
 
             //check if file extension is supported
             if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
@@ -369,6 +380,8 @@ namespace SlimViews
 
             var text = await ComputeText(btm);
             ColorInformation.AppendText(text);
+
+            _colorOne = text;
         }
 
         /// <summary>
@@ -381,6 +394,7 @@ namespace SlimViews
 
             _similarity = null;
             _difference = null;
+            _colorTwo = null;
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
@@ -409,6 +423,8 @@ namespace SlimViews
 
             var text = await ComputeText(btm);
             ColorInformation.AppendText(text);
+
+            _colorTwo = text;
         }
 
         /// <summary>
@@ -437,7 +453,7 @@ namespace SlimViews
         {
             if (string.IsNullOrEmpty(_informationOne) && string.IsNullOrEmpty(_informationTwo)) return;
 
-            Helper.GenerateExportAsync(_informationOne, _informationTwo, _similarity, _difference);
+            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity, _difference);
         }
 
         /// <summary>

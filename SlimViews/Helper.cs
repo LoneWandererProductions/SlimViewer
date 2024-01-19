@@ -127,18 +127,22 @@ namespace SlimViews
         /// </summary>
         /// <param name="informationOne">The information one.</param>
         /// <param name="informationTwo">The information two.</param>
+        /// <param name="colorOne">The color one.</param>
+        /// <param name="colorTwo">The color two.</param>
         /// <param name="similarity">The similarity.</param>
         /// <param name="difference">The difference.</param>
-        /// <exception cref="System.IO.IOException"></exception>
-        /// <exception cref="System.ArgumentException"></exception>
-        internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string similarity, Bitmap difference)
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne, string colorTwo, string similarity, Bitmap difference)
         {
             var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null);
 
             var content = new List<string>();
 
             if (string.IsNullOrEmpty(informationOne)) content.Add(informationOne);
+            if (string.IsNullOrEmpty(informationOne)) content.Add(colorOne);
             if (string.IsNullOrEmpty(informationTwo)) content.Add(informationTwo);
+            if (string.IsNullOrEmpty(informationTwo)) content.Add(colorTwo);
             if (string.IsNullOrEmpty(similarity)) content.Add(similarity);
 
             try
@@ -148,15 +152,15 @@ namespace SlimViews
             catch (IOException ex)
             {
                 Trace.WriteLine(ex.ToString());
-                throw new IOException(string.Empty, ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
             }
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex.ToString());
-                throw new ArgumentException(string.Empty, ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
             }
 
-            if(difference == null) return;
+            if (difference == null) return;
 
             _ = SaveImage(pathObj.FilePath, ImagingResources.PngExt, difference);
         }
