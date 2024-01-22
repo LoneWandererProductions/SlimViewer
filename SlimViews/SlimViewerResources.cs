@@ -204,6 +204,16 @@ namespace SlimViews
         internal const string Similarity = "Similarity: ";
 
         /// <summary>
+        ///     The Information Warning Message (const). Value: " Warning: "
+        /// </summary>
+        internal const string MessageInformation = " Warning";
+
+        /// <summary>
+        ///     The Message for the 200 Image limit (const). Value: " Right now we set a limit of 200 Images."
+        /// </summary>
+        internal const string MessageFiles = "Right now we set a limit of 200 Images.";
+
+        /// <summary>
         ///     The Image Name (const). Value: "Name: "
         /// </summary>
         private const string ImageName = ", Name: ";

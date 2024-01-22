@@ -441,8 +441,10 @@ namespace SlimViews
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
 
             if (fileList is not { Count: < 200 })
-                //TODO MessageBox
+            {
+                _ = MessageBox.Show(SlimViewerResources.MessageFiles, SlimViewerResources.MessageInformation);
                 return;
+            }
 
             _ = GenerateThumbView(fileList);
 
