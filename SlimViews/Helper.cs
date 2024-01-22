@@ -37,8 +37,6 @@ namespace SlimViews
         /// <returns>success Status</returns>
         internal static bool SaveImage(string path, string extension, Bitmap btm)
         {
-            if (File.Exists(path)) return false;
-
             if (string.Equals(extension, SlimViewerResources.JpgExtAlt, StringComparison.CurrentCultureIgnoreCase))
                 extension = ImagingResources.JpgExt;
 
@@ -139,11 +137,11 @@ namespace SlimViews
 
             var content = new List<string>();
 
-            if (string.IsNullOrEmpty(informationOne)) content.Add(informationOne);
-            if (string.IsNullOrEmpty(informationOne)) content.Add(colorOne);
-            if (string.IsNullOrEmpty(informationTwo)) content.Add(informationTwo);
-            if (string.IsNullOrEmpty(informationTwo)) content.Add(colorTwo);
-            if (string.IsNullOrEmpty(similarity)) content.Add(similarity);
+            if (!string.IsNullOrEmpty(informationOne)) content.Add(informationOne);
+            if (!string.IsNullOrEmpty(informationOne)) content.Add(colorOne);
+            if (!string.IsNullOrEmpty(informationTwo)) content.Add(informationTwo);
+            if (!string.IsNullOrEmpty(informationTwo)) content.Add(colorTwo);
+            if (!string.IsNullOrEmpty(similarity)) content.Add(similarity);
 
             try
             {
@@ -162,7 +160,8 @@ namespace SlimViews
 
             if (difference == null) return;
 
-            _ = SaveImage(pathObj.FilePath, ImagingResources.PngExt, difference);
+            var path = Path.ChangeExtension(pathObj.FilePath, ImagingResources.PngExt);
+            _ = SaveImage(path, ImagingResources.PngExt, difference);
         }
     }
 }
