@@ -10,6 +10,8 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Drawing;
@@ -52,7 +54,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DirectBitmap"/> class.
+        ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.
         ///     Bitmap which references pixel data directly
         ///     PixelFormat, Specifies the format of the color data for each pixel in the image.
         ///     AddrOfPinnedObject, reference to address of pinned object
@@ -69,17 +71,6 @@ namespace Imaging
             using var graph = Graphics.FromImage(Bitmap);
             graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
                 GraphicsUnit.Pixel);
-        }
-
-        /// <summary>
-        /// Initiates this instance and sets all Helper Variables.
-        /// </summary>
-        private void Initiate()
-        {
-            _bits = new int[Width * Height];
-            BitsHandle = GCHandle.Alloc(_bits, GCHandleType.Pinned);
-            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
-                BitsHandle.AddrOfPinnedObject());
         }
 
         /// <summary>
@@ -132,6 +123,17 @@ namespace Imaging
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Initiates this instance and sets all Helper Variables.
+        /// </summary>
+        private void Initiate()
+        {
+            _bits = new int[Width * Height];
+            BitsHandle = GCHandle.Alloc(_bits, GCHandleType.Pinned);
+            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
+                BitsHandle.AddrOfPinnedObject());
         }
 
         /// <summary>
@@ -254,6 +256,35 @@ namespace Imaging
             }
 
             return span;
+        }
+
+        /// <summary>
+        ///     Converts to string.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            var info = string.Empty;
+
+            for (var i = 0; i < _bits.Length - 1; i++)
+            {
+                info = string.Concat(info, _bits[i], ImagingResources.Indexer);
+            }
+
+            return string.Concat(info, _bits[_bits.Length]);
+        }
+
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Height, Width);
         }
 
         /// <summary>

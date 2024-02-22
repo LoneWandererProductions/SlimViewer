@@ -29,7 +29,10 @@ namespace ExtendedSystemObjects
         /// <returns>Empty or not</returns>
         public static bool IsNullOrEmpty<TValue>(this List<TValue> lst)
         {
-            if (lst == null) return true;
+            if (lst == null)
+            {
+                return true;
+            }
 
             return lst.Count == 0;
         }
@@ -42,7 +45,10 @@ namespace ExtendedSystemObjects
         /// <param name="item">item we will replace or add</param>
         public static void AddFirst<TValue>(this List<TValue> lst, TValue item)
         {
-            if (lst == null) throw new ArgumentNullException(nameof(lst));
+            if (lst == null)
+            {
+                throw new ArgumentNullException(nameof(lst));
+            }
 
             lst.Insert(0, item);
         }
@@ -56,7 +62,10 @@ namespace ExtendedSystemObjects
         /// <returns>if [true] item was added, else [false]</returns>
         public static bool AddDistinct<TValue>(this List<TValue> lst, TValue item)
         {
-            if (lst.Contains(item)) return false;
+            if (lst.Contains(item))
+            {
+                return false;
+            }
 
             lst.Add(item);
             return true;
@@ -82,7 +91,10 @@ namespace ExtendedSystemObjects
         /// <param name="range">List with elements we want to remove</param>
         public static void RemoveListRange<TValue>(this List<TValue> lst, IEnumerable<TValue> range)
         {
-            foreach (var element in range.Where(lst.Contains)) _ = lst.Remove(element);
+            foreach (var element in range.Where(lst.Contains))
+            {
+                _ = lst.Remove(element);
+            }
         }
 
         /// <summary>
@@ -130,7 +142,10 @@ namespace ExtendedSystemObjects
                 case EnumerableCompare.IgnoreOrder:
                     return lst.Count == compare.Count && lst.Equal(compare);
                 case EnumerableCompare.AllEqual:
-                    if (lst.Count != compare.Count) return false;
+                    if (lst.Count != compare.Count)
+                    {
+                        return false;
+                    }
 
                     return !lst.Where((t, i) => !t.Equals(compare[i])).Any();
                 default:
