@@ -68,8 +68,8 @@ namespace SlimViews
         /// <summary>
         ///     Converts the gif to images action.
         /// </summary>
-        /// <param name="gifPath"></param>
-        /// <param name="imageExport"></param>
+        /// <param name="gifPath">path of the gif.</param>
+        /// <param name="imageExport">target path for the converted Image</param>
         internal static void ConvertGifAction(string gifPath, string imageExport)
         {
             foreach (var image in Render.SplitGif(gifPath))

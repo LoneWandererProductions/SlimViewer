@@ -1669,14 +1669,18 @@ namespace SlimViews
             detailWindow.Show();
         }
 
+        /// <summary>
+        /// Resizer Window.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         private void ResizerAction(object obj)
         {
-            //var detailWindow = new DetailCompare()
-            //{
-            //    Topmost = true,
-            //    Owner = Main
-            //};
-            //detailWindow.Show();
+            var resizer = new Resizer()
+            {
+                Topmost = true,
+                Owner = Main
+            };
+            resizer.Show();
         }
 
         /// <summary>
