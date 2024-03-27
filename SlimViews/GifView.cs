@@ -141,7 +141,6 @@ namespace SlimViews
         public ICommand ClearCommand =>
             _clearCommand ??= new DelegateCommand<object>(ClearAction, CanExecute);
 
-
         /// <summary>
         ///     Gets the save GIF command.
         /// </summary>
@@ -493,7 +492,7 @@ namespace SlimViews
 
             if (pathObj == null) return;
 
-            var lst = Thumbnail.Selection.Select(id => Observer[id]).ToList();
+            var lst = Thumbnail.Selection.ConvertAll(id => Observer[id]);
             lst = lst.PathSort();
 
             Helper.ConvertGifAction(lst, pathObj.FilePath);
@@ -510,7 +509,7 @@ namespace SlimViews
 
             if (string.IsNullOrEmpty(path)) return;
 
-            var lst = Thumbnail.Selection.Select(id => Observer[id]).ToList();
+            var lst = Thumbnail.Selection.ConvertAll(id => Observer[id]);
 
             _ = FileHandleCopy.CopyFiles(lst, path, false);
         }

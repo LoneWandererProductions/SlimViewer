@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-
 // ReSharper disable MemberCanBeInternal
 
 using Imaging;

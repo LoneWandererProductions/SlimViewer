@@ -169,7 +169,6 @@ namespace SlimViews
         public ICommand ReplaceCommand =>
             _replaceCommand ??= new DelegateCommand<object>(ReplaceCommandAction, CanExecute);
 
-
         /// <summary>
         ///     Gets the appendages at command.
         /// </summary>

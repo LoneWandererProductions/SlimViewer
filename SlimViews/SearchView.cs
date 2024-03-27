@@ -172,7 +172,6 @@ namespace SlimViews
             }
         }
 
-
         /// <summary>
         ///     Gets the search string command.
         /// </summary>
