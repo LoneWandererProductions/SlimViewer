@@ -167,6 +167,11 @@ namespace SlimViews
         private ICommand _analyzerWindowCommand;
 
         /// <summary>
+        /// The resizer window command
+        /// </summary>
+        private ICommand _resizerWindowCommand;
+
+        /// <summary>
         ///     The gray scale command
         /// </summary>
         private ICommand _grayScaleCommand;
@@ -917,6 +922,15 @@ namespace SlimViews
             _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerAction, CanExecute);
 
         /// <summary>
+        /// Gets the resizer window command.
+        /// </summary>
+        /// <value>
+        /// The resizer window command.
+        /// </value>
+        public ICommand ResizerWindowCommand =>
+            _resizerWindowCommand ??= new DelegateCommand<object>(ResizerAction, CanExecute);
+
+        /// <summary>
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
@@ -1653,6 +1667,16 @@ namespace SlimViews
                 Owner = Main
             };
             detailWindow.Show();
+        }
+
+        private void ResizerAction(object obj)
+        {
+            //var detailWindow = new DetailCompare()
+            //{
+            //    Topmost = true,
+            //    Owner = Main
+            //};
+            //detailWindow.Show();
         }
 
         /// <summary>

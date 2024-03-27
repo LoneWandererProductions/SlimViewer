@@ -114,6 +114,7 @@
             <MenuItem Header="Tool">
                 <MenuItem Header="Gif Generator" Command="{Binding GifWindowCommand}" />
                 <MenuItem Header="Image Analyzer" Command="{Binding AnalyzerWindowCommand}" />
+                <MenuItem Header="Image Resizer" Command="{Binding ResizerWindowCommand}" />
             </MenuItem>
             <MenuItem Header="Option">
                 <CheckBox IsChecked="{Binding Path =SubFolders}">Subfolders</CheckBox>
