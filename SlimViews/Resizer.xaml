@@ -11,6 +11,45 @@
         <local:ResizerView x:Name="View" />
     </Window.DataContext>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <RadioButton Grid.Column="1" Content="Percentages"  VerticalAlignment="Center" Grid.Row="1" Command="{Binding PercentageCommand}"/>
+        <RadioButton Grid.Column="3" Content="Relative Size" VerticalAlignment="Center"  Grid.Row="1" Command="{Binding RelativeCommand}"/>
+        <Label Grid.Column="5" Content="Filter:" VerticalAlignment="Center" Grid.Row="1"/>
+        <ComboBox Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3" ItemsSource="{Binding FilterOptions}"/>
+        <Label Grid.Column="1" Content="Height:" VerticalAlignment="Center" Grid.Row="3"/>
+        <Label Grid.Column="1" Content="Width:" VerticalAlignment="Center" Grid.Row="5"/>
+        <Label Grid.Column="1" Content="Input Path:" VerticalAlignment="Center" Grid.Row="7"/>
+        <Label Grid.Column="1" Content="Output Path:" VerticalAlignment="Center" Grid.Row="9"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding Path=Height, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding Path=Width, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="7" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding Path=Input, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding Path=Output, UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Grid.Column="5" Content="..." Grid.Row="7" HorizontalAlignment="Left" Width="30" Command="{Binding InputCommand}"/>
+        <Button Grid.Column="5" Content="..." Grid.Row="9" HorizontalAlignment="Left"  Width="30" Command="{Binding OutputCommand}"/>
+        <Button Grid.Column="1" Content="Process" Grid.Row="11" Command="{Binding ProcesslCommand}"/>
+        <Button Grid.Column="3" Content="Cancel" Grid.Row="11" Command="{Binding CancelCommand}" />
     </Grid>
 </Window>

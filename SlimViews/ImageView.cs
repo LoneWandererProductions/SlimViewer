@@ -650,6 +650,12 @@ namespace SlimViews
         public ICommand OpenCommand =>
             _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
 
+        /// <summary>
+        /// Gets the open CBZ command.
+        /// </summary>
+        /// <value>
+        /// The open CBZ command.
+        /// </value>
         public ICommand OpenCbzCommand =>
             _openCbzCommand ??= new DelegateCommand<object>(OpenCbzAction, CanExecute);
 
