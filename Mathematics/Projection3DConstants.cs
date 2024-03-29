@@ -21,26 +21,7 @@ namespace Mathematics
         /// <summary>
         ///     Convert Degree to radial
         /// </summary>
-        private const double Rad = Math.PI / 180.0d;
-
-        /// <summary>
-        ///     Camera Rotation Matrix.
-        /// </summary>
-        /// <param name="angleD">The angle d.</param>
-        /// <returns>Camera Rotation Matrix</returns>
-        internal static BaseMatrix RotateCamera(double angleD)
-        {
-            //convert to Rad
-            var angle = angleD * Rad;
-
-            double[,] rotation =
-            {
-                { Math.Cos(angle), 0, Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
-                { -Math.Sin(angle), 0, Math.Cos(angle), 0 }, { 0, 0, 0, 1 }
-            };
-
-            return new BaseMatrix { Matrix = rotation };
-        }
+        internal const double Rad = Math.PI / 180.0d;
 
         /// <summary>
         ///     Projections the to 3d matrix.
@@ -63,62 +44,34 @@ namespace Mathematics
         ///     Converts Coordinates based on the Camera.
         ///     https://ksimek.github.io/2012/08/22/extrinsic/
         ///     https://www.youtube.com/watch?v=HXSuNxpCzdM
+        ///     https://stackoverflow.com/questions/74233166/custom-lookat-and-whats-the-math-behind-it
+        ///     https://medium.com/@carmencincotti/lets-look-at-magic-lookat-matrices-c77e53ebdf78
         /// </summary>
         /// <param name="transform">The transform.</param>
+        /// <param name="target">Target Vector.</param>
         /// <returns>
         ///     matrix for Transforming the Coordinate
         /// </returns>
-        internal static BaseMatrix PointAt(Transform transform)
+        internal static BaseMatrix LookAt(Transform transform, Vector3D target)
         {
-            var newForward = (transform.Target - transform.Camera).Normalize();
-            //transform.Forward = (transform.Target - transform.Position).Normalize();
+            var forward = (target - transform.Position).Normalize(); // Z axis
 
-            var a = newForward * (transform.Up * newForward);
-            //var a = transform.Forward * (transform.Up * transform.Forward);
-            var newUp = (transform.Up - a).Normalize();
-            //transform.Up = (transform.Up - a).Normalize();
-            var newRight = newUp.CrossProduct(newForward);
-            //transform.Right  = transform.Up.CrossProduct(transform.Forward);
+            var right = transform.Up.CrossProduct(forward).Normalize(); // X axis
 
-            //return new BaseMatrix(4, 4)
-            //{
-            //    [0, 0] = transform.Right.X,
-            //    [0, 1] = transform.Right..Y,
-            //    [0, 2] = transform.Right..Z,
-            //    [0, 3] = 0.0d,
-            //    [1, 0] = transform.Up.X,
-            //    [1, 1] = transform.Up.Y,
-            //    [1, 2] = transform.Up.Z,
-            //    [1, 3] = 0.0d,
-            //    [2, 0] = transform.Forward.X,
-            //    [2, 1] = transform.Forward.Y,
-            //    [2, 2] = transform.Forward.Z,
-            //    [2, 3] = 0.0d,
-            //    [3, 0] = transform.Position.X,
-            //    [3, 1] = transform.Position.Y,
-            //    [3, 2] = transform.Position.Z,
-            //    [3, 3] = transform.Position.W
-            //};
+            var up = forward.CrossProduct(right); // Y axis
 
-            return new BaseMatrix(4, 4)
+            // The inverse camera's translation
+            var transl = new Vector3D(-(right * transform.Position),
+                -(up * transform.Position),
+                -(forward * transform.Position));
+
+            double[,] viewMatrix =
             {
-                [0, 0] = newRight.X,
-                [0, 1] = newRight.Y,
-                [0, 2] = newRight.Z,
-                [0, 3] = 0.0d,
-                [1, 0] = newUp.X,
-                [1, 1] = newUp.Y,
-                [1, 2] = newUp.Z,
-                [1, 3] = 0.0d,
-                [2, 0] = newForward.X,
-                [2, 1] = newForward.Y,
-                [2, 2] = newForward.Z,
-                [2, 3] = 0.0d,
-                [3, 0] = transform.Position.X,
-                [3, 1] = transform.Position.Y,
-                [3, 2] = transform.Position.Z,
-                [3, 3] = transform.Position.W
+                { right.X, up.X, forward.X, 0 }, { right.Y, up.Y, forward.Y, 0 }, { right.Z, up.Z, forward.Z, 0 },
+                { transl.X, transl.Y, transl.Z, 1 }
             };
+
+            return new BaseMatrix { Matrix = viewMatrix };
         }
 
         /// <summary>

@@ -16,10 +16,11 @@ using System;
 
 namespace Mathematics
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Coordinate 2d Helper Class
     /// </summary>
-    public sealed class Coordinate2D
+    public sealed class Coordinate2D : ICloneable
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
@@ -30,6 +31,17 @@ namespace Mathematics
         {
             X = x;
             Y = y;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Coordinate2D" /> class.
+        /// </summary>
+        /// <param name="x">The x in double.</param>
+        /// <param name="y">The yin double.</param>
+        public Coordinate2D(double x, double y)
+        {
+            X = (int)Math.Round(x, 1, MidpointRounding.AwayFromZero);
+            Y = (int)Math.Round(y, 1, MidpointRounding.AwayFromZero);
         }
 
         /// <summary>
@@ -192,7 +204,6 @@ namespace Mathematics
             return new Coordinate2D(first.RoundedX, first.RoundedY);
         }
 
-
         /// <summary>
         ///     Converts to string.
         /// </summary>
@@ -202,6 +213,19 @@ namespace Mathematics
         public override string ToString()
         {
             return string.Concat(MathResources.StrX, X, MathResources.StrY, Y, MathResources.StrId, Id);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            // Create a new instance of Coordinate2D and copy the properties
+            return new Coordinate2D(X, Y);
         }
     }
 }

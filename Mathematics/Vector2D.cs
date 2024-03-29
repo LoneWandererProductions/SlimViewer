@@ -17,10 +17,11 @@ using System;
 
 namespace Mathematics
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
-    public sealed class Vector2D
+    public sealed class Vector2D : ICloneable
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Vector2D" /> class.
@@ -125,6 +126,18 @@ namespace Mathematics
         public override string ToString()
         {
             return string.Concat(MathResources.StrX, X, MathResources.StrY, Y);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            return new Vector2D(X, Y);
         }
 
         /// <summary>
@@ -268,6 +281,18 @@ namespace Mathematics
         public static explicit operator Coordinate2D(Vector2D first)
         {
             return new Coordinate2D(first.RoundedX, first.RoundedY);
+        }
+
+        /// <summary>
+        ///     Performs an explicit conversion from <see cref="Vector3D" /> to <see cref="Vector2D" />.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <returns>
+        ///     The result of the conversion.
+        /// </returns>
+        public static explicit operator Vector2D(Vector3D first)
+        {
+            return new Vector2D(first.X, first.Y);
         }
 
         /// <summary>

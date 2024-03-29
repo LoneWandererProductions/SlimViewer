@@ -49,7 +49,7 @@
         <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="9" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding Path=Output, UpdateSourceTrigger=PropertyChanged}"/>
         <Button Grid.Column="5" Content="..." Grid.Row="7" HorizontalAlignment="Left" Width="30" Command="{Binding InputCommand}"/>
         <Button Grid.Column="5" Content="..." Grid.Row="9" HorizontalAlignment="Left"  Width="30" Command="{Binding OutputCommand}"/>
-        <Button Grid.Column="1" Content="Process" Grid.Row="11" Command="{Binding ProcesslCommand}"/>
+        <Button Grid.Column="1" Content="Process" Grid.Row="11" Command="{Binding ProcessCommand}"/>
         <Button Grid.Column="3" Content="Cancel" Grid.Row="11" Command="{Binding CancelCommand}" />
     </Grid>
 </Window>

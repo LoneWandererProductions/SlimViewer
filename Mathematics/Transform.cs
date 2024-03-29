@@ -6,6 +6,10 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+
+using System;
+
 namespace Mathematics
 {
     /// <summary>
@@ -14,23 +18,8 @@ namespace Mathematics
     public sealed class Transform
     {
         /// <summary>
-        ///     Gets or sets the angle of the camera.
-        /// </summary>
-        /// <value>
-        ///     The angle in rad.
-        /// </value>
-        public double Angle { get; set; }
-
-        /// <summary>
         ///     Gets or sets the camera Vector.
-        /// </summary>
-        /// <value>
-        ///     The camera.
-        /// </value>
-        public Vector3D Camera { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the camera Vector.
+        ///     Used in the Orbit and LookAt Camera
         /// </summary>
         /// <value>
         ///     The camera.
@@ -38,7 +27,17 @@ namespace Mathematics
         public Vector3D Position { get; set; }
 
         /// <summary>
+        ///     Gets or sets the target Camera.
+        ///     Used in the LookAt Camera
+        /// </summary>
+        /// <value>
+        ///     The target.
+        /// </value>
+        public Vector3D Target { get; private init; } = Vector3D.ZeroVector;
+
+        /// <summary>
         ///     Gets or sets up for the Camera.
+        ///     Used in the Orbit and LookAt Camera
         /// </summary>
         /// <value>
         ///     Up.
@@ -46,23 +45,43 @@ namespace Mathematics
         public Vector3D Up { get; set; }
 
         /// <summary>
-        ///     Gets or sets the target Camera.
+        ///     Gets or sets the right.
+        ///     Used in the Orbit Camera.
         /// </summary>
         /// <value>
-        ///     The target.
+        ///     The right.
         /// </value>
-        public Vector3D Target { get; set; }
+        public Vector3D Right { get; set; } = new();
 
         /// <summary>
-        ///     Gets or sets the look Vector direction.
+        ///     Gets or sets the forward.
+        ///     Used in the Orbit Camera.
         /// </summary>
         /// <value>
-        ///     The v look dir.
+        ///     The forward.
         /// </value>
-        public Vector3D VLookDir { get; set; }
+        public Vector3D Forward { get; set; } = new();
 
         /// <summary>
-        ///     Gets or sets the translation.
+        ///     Gets or sets the pitch.
+        ///     Used in the Orbit Camera.
+        /// </summary>
+        /// <value>
+        ///     The pitch.
+        /// </value>
+        public double Pitch { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the yaw.
+        ///     Used in the Orbit Camera.
+        /// </summary>
+        /// <value>
+        ///     The yaw.
+        /// </value>
+        public double Yaw { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the translation of the World.
         /// </summary>
         /// <value>
         ///     The translation.
@@ -70,7 +89,7 @@ namespace Mathematics
         public Vector3D Translation { get; set; }
 
         /// <summary>
-        ///     Gets or sets the rotation.
+        ///     Gets or sets the rotation of the World.
         /// </summary>
         /// <value>
         ///     The rotation.
@@ -78,20 +97,28 @@ namespace Mathematics
         public Vector3D Rotation { get; set; }
 
         /// <summary>
-        ///     Gets or sets the scale.
+        ///     Gets or sets the scale of the World.
         /// </summary>
         /// <value>
         ///     The scale.
         /// </value>
         public Vector3D Scale { get; set; }
 
-        public Vector3D Right { get; set; } = new();
+        /// <summary>
+        ///     Gets or sets a value indicating whether [camera type] is LookAt or Orbit Camera.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if Orbit Camera; otherwise, if <c>false</c> LookAt Camera.
+        /// </value>
+        public Cameras CameraType { get; set; } = Cameras.Orbit;
 
-        public Vector3D Forward { get; set; } = new();
-
-        public double Pitch { get; set; }
-
-        public double Yaw { get; set; }
+        /// <summary>
+        ///     Gets or sets the display type, way of converting 3d to 2d.
+        /// </summary>
+        /// <value>
+        ///     The display type.
+        /// </value>
+        public Display DisplayType { get; set; } = Display.Normal;
 
         /// <summary>
         ///     Gets the instance.
@@ -103,9 +130,6 @@ namespace Mathematics
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
-                VLookDir = new Vector3D(),
-                Angle = 0,
-                Camera = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = new Vector3D(),
                 Rotation = new Vector3D(),
@@ -126,9 +150,6 @@ namespace Mathematics
             {
                 Up = new Vector3D(0, 1, 0),
                 Target = new Vector3D(0, 0, 1),
-                VLookDir = new Vector3D(),
-                Angle = 0,
-                Camera = new Vector3D(),
                 Position = new Vector3D(),
                 Translation = translation,
                 Rotation = rotation,
@@ -137,72 +158,90 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Moves the world.
-        /// </summary>
-        /// <param name="translation">The translation.</param>
-        public void MoveWorld(Vector3D translation)
-        {
-            Translation += translation;
-        }
-
-        /// <summary>
-        ///     Rotates the world.
-        /// </summary>
-        /// <param name="rotation">The rotation.</param>
-        public void RotateWorld(Vector3D rotation)
-        {
-            Rotation += rotation;
-        }
-
-        /// <summary>
-        ///     Ups the camera.
+        ///     Ups the camera
         /// </summary>
         /// <param name="y">The y.</param>
-        public void UpCamera(double y)
+        public void UpCamera(double y = 0.05d)
         {
-            //Position.Y += y;
-            Position += Up * 0.05f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Position += Up * y;
+                    break;
+                case Cameras.PointAt:
+                    Position.Y += y;
+                    break;
+            }
         }
 
         /// <summary>
         ///     Downs the camera.
+        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="y">The y.</param>
-        public void DownCamera(double y)
+        public void DownCamera(double y = 0.05d)
         {
-            //Position.Y -= y;
-            Position -= Up * 0.05f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Position -= Up * y;
+                    break;
+                case Cameras.PointAt:
+                    Position.Y -= y;
+                    break;
+            }
         }
 
         /// <summary>
         ///     Lefts the camera.
         /// </summary>
         /// <param name="x">The x.</param>
-        public void LeftCamera(double x)
+        public void LeftCamera(double x = 0.05d)
         {
-            //Position.X += x;
-            Position -= Right * 0.05f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Position += Right * x;
+                    break;
+                case Cameras.PointAt:
+                    Position.X -= x;
+                    break;
+            }
         }
 
         /// <summary>
         ///     Rights the camera.
+        ///     Orbit and PointAt.
         /// </summary>
         /// <param name="x">The x.</param>
-        public void RightCamera(double x)
+        public void RightCamera(double x = 0.05d)
         {
-            //Position.X -= x;
-            Position += Right * 0.05f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Position -= Right * x;
+                    break;
+                case Cameras.PointAt:
+                    Position.X += x;
+                    break;
+            }
         }
 
         /// <summary>
         ///     Lefts the rotate camera.
         /// </summary>
         /// <param name="value">The value.</param>
-        public void LeftRotateCamera(double value)
+        public void LeftRotateCamera(double value = 2.0d)
         {
-            //var vForward = VLookDir * value;
-            //Position += vForward;
-            Yaw -= 2.0f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Yaw -= value;
+                    break;
+                case Cameras.PointAt:
+                    Yaw -= value;
+                    break;
+            }
         }
 
         /// <summary>
@@ -211,22 +250,75 @@ namespace Mathematics
         /// <param name="value">The value.</param>
         public void RightRotateCamera(double value)
         {
-            //var vForward = VLookDir * value;
-            //Position -= vForward;
-            Yaw += 2.0f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Yaw += value;
+                    break;
+                case Cameras.PointAt:
+                    Yaw += value;
+                    break;
+            }
         }
 
-        public void MoveForward(double z)
+        /// <summary>
+        ///     Moves the forward.
+        /// </summary>
+        /// <param name="z">The z.</param>
+        public void MoveForward(double z = 0.05d)
         {
-            //Position.Z += z;
-            Position += Forward * 0.05f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Position += Forward * z;
+                    break;
+                case Cameras.PointAt:
+                    Position += new Vector3D(0, 0, 1) * z;
+                    break;
+            }
         }
 
-        public void MoveBack(double z)
+        /// <summary>
+        ///     Moves the back.
+        /// </summary>
+        /// <param name="z">The z.</param>
+        public void MoveBack(double z = 0.05d)
         {
-            //Position.Z -= z;
-            //Position -= Forward * 0.05f;
-            Position -= Forward * 0.05f;
+            switch (CameraType)
+            {
+                case Cameras.Orbit:
+                    Position -= Forward * z;
+                    break;
+                case Cameras.PointAt:
+                    Position -= new Vector3D(0, 0, 1) * z;
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///     Converts to string.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            var str = string.Concat(MathResources.CameraPosition, Position.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Target, Target.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Target, Up.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Up, Up.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Right, Right.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Forward, Forward.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Pitch, Pitch, Environment.NewLine);
+            str = string.Concat(str, MathResources.Yaw, Yaw, Environment.NewLine);
+            str = string.Concat(str, MathResources.World, Environment.NewLine);
+            str = string.Concat(str, MathResources.Translation, Translation.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Rotation, Rotation.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.Scale, Scale.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.CameraType, CameraType.ToString(), Environment.NewLine);
+            str = string.Concat(str, MathResources.DisplayType, DisplayType.ToString(), Environment.NewLine);
+
+            return str;
         }
     }
 }

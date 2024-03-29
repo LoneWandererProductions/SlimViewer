@@ -123,25 +123,21 @@ namespace Mathematics
         ///     transform
         ///     View on the Object from the Camera perspective
         /// </returns>
-        internal static BaseMatrix ViewCamera(Transform transform)
+        internal static BaseMatrix PointAt(Transform transform)
         {
-            var matCameraRot = Projection3DConstants.RotateCamera(transform.Angle);
+            var matCameraRot = Projection3DConstants.RotateY(transform.Yaw);
 
-            //transform.VLookDir = transform.Pitch * matCameraRot;
-            transform.VLookDir = transform.Target * matCameraRot;
+            var vLookDir = transform.Target * matCameraRot;
+            var vTarget = transform.Position + vLookDir;
 
-            transform.Target = transform.Camera + transform.VLookDir;
-
-            var matCamera = Projection3DConstants.PointAt(transform);
-
-            return matCamera.Inverse();
+            return Projection3DConstants.LookAt(transform, vTarget);
         }
 
         /// <summary>
         ///     The Orbit camera.
         ///     M = T r t -> Inverse(M) = V, return value is V
         ///     t,  t translation, moves the camera away from the object
-        ///     r, rotation quaternion, rotates the the camera around the object
+        ///     r, rotation quaternion, rotates the camera around the object
         ///     T, to move the pivot point of the camera to center on the object, since the Object is always the center
         ///     t will be identy matrix
         ///     https://www.3dgep.com/understanding-the-view-matrix/#Arcball_Orbit_Camera
@@ -159,13 +155,11 @@ namespace Mathematics
             // Rotation in Z = Positive when 'tilting left'
 
             //r Matrix
-            var toRad = (float)(Math.PI / 180.0f);
+            var cosPitch = Math.Cos(transform.Pitch * Projection3DConstants.Rad);
+            var sinPitch = Math.Sin(transform.Pitch * Projection3DConstants.Rad);
 
-            var cosPitch = (float)Math.Cos(transform.Pitch * toRad);
-            var sinPitch = (float)Math.Sin(transform.Pitch * toRad);
-
-            var cosYaw = (float)Math.Cos(transform.Yaw * toRad);
-            var sinYaw = (float)Math.Sin(transform.Yaw * toRad);
+            var cosYaw = Math.Cos(transform.Yaw * Projection3DConstants.Rad);
+            var sinYaw = Math.Sin(transform.Yaw * Projection3DConstants.Rad);
 
             //converted r matrix
             transform.Right = new Vector3D(cosYaw, 0, -sinYaw);
@@ -185,8 +179,7 @@ namespace Mathematics
             {
                 { transform.Right.X, transform.Up.X, transform.Forward.X, 0 },
                 { transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0 },
-                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, 
-                { transl.X, transl.Y, transl.Z, 1 }
+                { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, { transl.X, transl.Y, transl.Z, 1 }
             };
 
             return new BaseMatrix { Matrix = viewMatrix };

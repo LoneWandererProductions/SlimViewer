@@ -6,6 +6,11 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable once UnusedMemberInSuper.Global
+// ReSharper disable UnusedMemberInSuper.Global
+
 using System.Collections.Generic;
 
 namespace Mathematics
@@ -21,10 +26,9 @@ namespace Mathematics
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="transform">The world transform.</param>
-        /// <param name="orthogonal">The orthogonal.</param>
         /// <returns>
         ///     Converted 3d View
         /// </returns>
-        List<Triangle> Generate(List<Triangle> triangles, Transform transform, bool? orthogonal);
+        List<PolyTriangle> Generate(List<PolyTriangle> triangles, Transform transform);
     }
 }
