@@ -12,12 +12,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
+using CommonControls;
 using Imaging;
 using ViewModel;
 
 namespace SlimViews
 {
+    /// <inheritdoc />
     /// <summary>
     ///     View for Resizer
     ///     TODO:
@@ -28,39 +31,44 @@ namespace SlimViews
     internal sealed class ResizerView : INotifyPropertyChanged
     {
         /// <summary>
-        /// The height
-        /// </summary>
-        private int _height;
-
-        /// <summary>
-        /// The width
-        /// </summary>
-        private int _width;
-
-        /// <summary>
-        /// The input
-        /// </summary>
-        private string _input;
-
-        /// <summary>
-        /// The output
-        /// </summary>
-        private string _output;
-
-        /// <summary>
-        /// The output command
-        /// </summary>
-        private ICommand _outputCommand;
-
-        /// <summary>
-        /// The cancel command
+        ///     The cancel command
         /// </summary>
         private ICommand _cancelCommand;
 
         /// <summary>
-        /// The input command
+        ///     The height
+        /// </summary>
+        private int _height;
+
+        /// <summary>
+        ///     The input
+        /// </summary>
+        private string _input;
+
+        /// <summary>
+        ///     The input command
         /// </summary>
         private ICommand _inputCommand;
+
+        /// <summary>
+        ///     The is percentages checked
+        /// </summary>
+        private bool _isPercentagesChecked = true;
+
+        /// <summary>
+        ///     The is relative size checked
+        /// </summary>
+        private bool _isRelativeSizeChecked;
+
+        /// <summary>
+        ///     The output
+        /// </summary>
+        private string _output;
+
+        /// <summary>
+        ///     The output command
+        /// </summary>
+        private ICommand _outputCommand;
 
         /// <summary>
         ///     The percentage command
@@ -68,20 +76,104 @@ namespace SlimViews
         private ICommand _percentageCommand;
 
         /// <summary>
-        /// The process command
+        ///     The process command
         /// </summary>
         private ICommand _processCommand;
 
         /// <summary>
-        /// The relative command
+        ///     The relative command
         /// </summary>
         private ICommand _relativeCommand;
 
         /// <summary>
-        /// Gets or sets the height.
+        ///     The selected extension
+        /// </summary>
+        private string _selectedExtension;
+
+        /// <summary>
+        ///     The selected filter option
+        /// </summary>
+        private ImageFilter _selectedFilterOption;
+
+        /// <summary>
+        ///     The width
+        /// </summary>
+        private int _width;
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is percentages checked.
         /// </summary>
         /// <value>
-        /// The height.
+        ///     <c>true</c> if this instance is percentages checked; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsPercentagesChecked
+        {
+            get => _isPercentagesChecked;
+            set
+            {
+                _isPercentagesChecked = value;
+                OnPropertyChanged(nameof(IsPercentagesChecked));
+            }
+        } 
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is relative size checked.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is relative size checked; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsRelativeSizeChecked
+        {
+            get => _isRelativeSizeChecked;
+            set
+            {
+                _isRelativeSizeChecked = value;
+                OnPropertyChanged(nameof(IsRelativeSizeChecked));
+            }
+        }
+
+
+        /// <summary>
+        ///     Gets or sets the selected filter option.
+        /// </summary>
+        /// <value>
+        ///     The selected filter option.
+        /// </value>
+        public ImageFilter SelectedFilterOption
+        {
+            get => _selectedFilterOption;
+            set
+            {
+                if (_selectedFilterOption == value) return;
+
+                _selectedFilterOption = value;
+                OnPropertyChanged(nameof(SelectedFilterOption));
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected extension.
+        /// </summary>
+        /// <value>
+        ///     The selected extension.
+        /// </value>
+        public string SelectedExtension
+        {
+            get => _selectedExtension;
+            set
+            {
+                if (_selectedExtension == value) return;
+
+                _selectedExtension = value;
+                OnPropertyChanged(nameof(SelectedExtension));
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the height.
+        /// </summary>
+        /// <value>
+        ///     The height.
         /// </value>
         public int Height
         {
@@ -96,10 +188,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the width.
+        ///     Gets or sets the width.
         /// </summary>
         /// <value>
-        /// The width.
+        ///     The width.
         /// </value>
         public int Width
         {
@@ -114,10 +206,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the output.
+        ///     Gets or sets the output.
         /// </summary>
         /// <value>
-        /// The output.
+        ///     The output.
         /// </value>
         public string Output
         {
@@ -132,10 +224,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the input.
+        ///     Gets or sets the input.
         /// </summary>
         /// <value>
-        /// The input.
+        ///     The input.
         /// </value>
         public string Input
         {
@@ -149,18 +241,48 @@ namespace SlimViews
             }
         }
 
+        /// <summary>
+        ///     Gets the process command.
+        /// </summary>
+        /// <value>
+        ///     The process command.
+        /// </value>
         public ICommand ProcessCommand =>
             _processCommand ??= new DelegateCommand<object>(ProcessAction, CanExecute);
 
+        /// <summary>
+        ///     Gets the cancel command.
+        /// </summary>
+        /// <value>
+        ///     The cancel command.
+        /// </value>
         public ICommand CancelCommand =>
-            _cancelCommand ??= new DelegateCommand<object>(CancelAction, CanExecute);
+            _cancelCommand ??= new DelegateCommand<Window>(CancelAction, CanExecute);
 
+        /// <summary>
+        ///     Gets the output command.
+        /// </summary>
+        /// <value>
+        ///     The output command.
+        /// </value>
         public ICommand OutputCommand =>
             _outputCommand ??= new DelegateCommand<object>(OutputAction, CanExecute);
 
+        /// <summary>
+        ///     Gets the input command.
+        /// </summary>
+        /// <value>
+        ///     The input command.
+        /// </value>
         public ICommand InputCommand =>
             _inputCommand ??= new DelegateCommand<object>(InputAction, CanExecute);
 
+        /// <summary>
+        ///     Gets the relative command.
+        /// </summary>
+        /// <value>
+        ///     The relative command.
+        /// </value>
         public ICommand RelativeCommand =>
             _relativeCommand ??= new DelegateCommand<object>(RelativeAction, CanExecute);
 
@@ -171,7 +293,7 @@ namespace SlimViews
         ///     The percentage command.
         /// </value>
         public ICommand PercentageCommand =>
-            _percentageCommand ??= new DelegateCommand<object>(Percentagection, CanExecute);
+            _percentageCommand ??= new DelegateCommand<object>(PercentageAction, CanExecute);
 
 
         /// <summary>
@@ -183,6 +305,14 @@ namespace SlimViews
         public IEnumerable<ImageFilter> FilterOptions =>
             Enum.GetValues(typeof(ImageFilter)) as IEnumerable<ImageFilter>;
 
+        /// <summary>
+        ///     Gets the file extensions.
+        /// </summary>
+        /// <value>
+        ///     The file extensions.
+        /// </value>
+        public IEnumerable<string> FileExtensions => ImagingResources.Appendix;
+
         /// <inheritdoc />
         /// <summary>
         ///     Triggers if an Attribute gets changed
@@ -190,39 +320,43 @@ namespace SlimViews
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Processes the action.
+        ///     Processes the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ProcessAction(object obj)
         {
         }
 
+
         /// <summary>
-        /// Cancels the action.
+        ///     Cancels the action and closes the window
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void CancelAction(object obj)
+        /// <param name="window">The window.</param>
+        private void CancelAction(Window window)
         {
+            window.Close();
         }
 
         /// <summary>
-        /// Outputs the action.
+        ///     Outputs the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void OutputAction(object obj)
         {
+            Output = FileIoHandler.ShowFolder();
         }
 
         /// <summary>
-        /// Inputs the action.
+        ///     Inputs the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void InputAction(object obj)
         {
+            Input = FileIoHandler.ShowFolder();
         }
 
         /// <summary>
-        /// Relatives the action.
+        ///     Relatives the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void RelativeAction(object obj)
@@ -230,10 +364,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Percentagections the specified object.
+        ///     Percentage Actions the specified object.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void Percentagection(object obj)
+        private void PercentageAction(object obj)
         {
         }
 
