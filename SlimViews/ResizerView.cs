@@ -114,7 +114,7 @@ namespace SlimViews
                 _isPercentagesChecked = value;
                 OnPropertyChanged(nameof(IsPercentagesChecked));
             }
-        } 
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is relative size checked.
@@ -131,7 +131,6 @@ namespace SlimViews
                 OnPropertyChanged(nameof(IsRelativeSizeChecked));
             }
         }
-
 
         /// <summary>
         ///     Gets or sets the selected filter option.
@@ -295,7 +294,6 @@ namespace SlimViews
         public ICommand PercentageCommand =>
             _percentageCommand ??= new DelegateCommand<object>(PercentageAction, CanExecute);
 
-
         /// <summary>
         ///     Gets the filter options.
         /// </summary>
@@ -326,7 +324,6 @@ namespace SlimViews
         private void ProcessAction(object obj)
         {
         }
-
 
         /// <summary>
         ///     Cancels the action and closes the window
@@ -386,7 +383,6 @@ namespace SlimViews
             // check if executing is allowed, not used right now
             return true;
         }
-
 
         /// <summary>
         ///     Called when [property changed].

@@ -29,17 +29,23 @@ namespace SlimViewer
         public MainWindow()
         {
             InitializeComponent();
-            View.Main = this;
-            View.Thumb = Thumbnail;
-            View.Picker = ColorPick;
-            View.ImageZoom = ImageZoom;
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the Window control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var obj = Config.GetConfig();
 
             SlimViewerRegister.SetRegister(obj);
+
+            View = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
+                obj.MainAutoClean) {Main = this, Thumb = Thumbnail, Picker = ColorPick, ImageZoom = ImageZoom};
+
+            DataContext = View;
 
             ImageZoom.AutoplayGifImage = obj.MainAutoPlayGif;
         }
@@ -81,7 +87,7 @@ namespace SlimViewer
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
 
             if (files == null || files.Length == 0) return;
 

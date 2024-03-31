@@ -47,7 +47,7 @@ namespace SlimViews
         /// <summary>
         ///     The automatic clean
         /// </summary>
-        private bool _autoClean = SlimViewerRegister.MainAutoClean;
+        private bool _autoClean;
 
         /// <summary>
         ///     The black and white command.
@@ -303,12 +303,12 @@ namespace SlimViews
         ///     The similarity in Percent for a Image, Start value is 90
         ///     Configured from Register
         /// </summary>
-        private int _similarity = SlimViewerRegister.MainSimilarity;
+        private int _similarity;
 
         /// <summary>
         ///     Check if Subfolders should be used too
         /// </summary>
-        private bool _subFolders = SlimViewerRegister.MainSubFolders;
+        private bool _subFolders;
 
         /// <summary>
         ///     Check if we show thumbnails.
@@ -336,6 +336,28 @@ namespace SlimViews
         /// </summary>
         public ImageView()
         {
+            _cif = new CustomImageFormat();
+            Observer = new Dictionary<int, string>();
+
+            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
+            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ImageView" /> class.
+        ///     Initiates all necessary Collections as well
+        /// </summary>
+        /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
+        /// <param name="compressCif">if set to <c>true</c> [compress cif].</param>
+        /// <param name="similarity">The similarity.</param>
+        /// <param name="autoClean">if set to <c>true</c> [automatic clean].</param>
+        public ImageView(bool subFolders, bool compressCif, int similarity, bool autoClean)
+        {
+            SubFolders = subFolders;
+            Compress =compressCif;
+            Similarity = similarity;
+            AutoClean = autoClean;
+
             _cif = new CustomImageFormat();
             Observer = new Dictionary<int, string>();
 
@@ -993,7 +1015,8 @@ namespace SlimViews
             config.MainAutoPlayGif = ImageZoom.AutoplayGifImage;
 
             Config.SetConfig(config);
-            if (AutoClean) CleanTempAction(null);
+            if (AutoClean) CleanTempAction(true);
+
             Application.Current.Shutdown();
         }
 
@@ -1695,6 +1718,13 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void CleanTempAction(object obj)
         {
+            bool check = false;
+
+            if (obj !=null)
+            {
+                check = (bool)obj;
+            }
+
             var root = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
 
             try
@@ -1708,7 +1738,7 @@ namespace SlimViews
                 return;
             }
 
-            _ = MessageBox.Show(SlimViewerResources.StatusDone, SlimViewerResources.CaptionDone, MessageBoxButton.OK,
+            if(!check) _ = MessageBox.Show(SlimViewerResources.StatusDone, SlimViewerResources.CaptionDone, MessageBoxButton.OK,
                 MessageBoxImage.Exclamation);
         }
 

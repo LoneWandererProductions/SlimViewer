@@ -93,6 +93,14 @@ namespace SlimViews
         internal static bool MainSubFolders { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [main compress cif].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [main compress cif]; otherwise, <c>false</c>.
+        /// </value>
+        internal static bool MainCompressCif { get; set; }
+
+        /// <summary>
         ///     Resets the scaling.
         /// </summary>
         internal static void ResetScaling()
@@ -129,6 +137,7 @@ namespace SlimViews
             MainAutoClean = obj.MainAutoClean;
             MainSimilarity = obj.MainSimilarity;
             MainSubFolders = obj.MainSubFolders;
+            MainCompressCif = MainCompressCif;
         }
 
         /// <summary>
@@ -143,7 +152,8 @@ namespace SlimViews
                 MainAutoPlayGif = MainAutoPlayGif,
                 MainAutoClean = MainAutoClean,
                 MainSimilarity = MainSimilarity,
-                MainSubFolders = MainSubFolders
+                MainSubFolders = MainSubFolders,
+                MainCompressCif = MainCompressCif
             };
         }
     }

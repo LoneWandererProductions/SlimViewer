@@ -1,3 +1,5 @@
 - Add a move feature in thumbview
 - Improve the Image Analysis and the handling of data especially transparancy
 - Add a mass size increase decrease feature
+- cheak why autoclena is called multible times
+- Add register

@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -37,7 +36,7 @@ namespace SlimViews
         ///     The automatic clear
         ///     Configured from Register
         /// </summary>
-        private bool _autoClear = SlimViewerRegister.GifCleanUp;
+        private bool _autoClear;
 
         /// <summary>
         ///     The BMP

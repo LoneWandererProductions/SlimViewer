@@ -67,8 +67,17 @@ namespace SlimViews
         public bool MainSubFolders { get; init; }
 
         /// <summary>
-        ///     Sets the configuration.
+        /// Gets or sets a value indicating whether [main compress cif].
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if [main compress cif]; otherwise, <c>false</c>.
+        /// </value>
+        public bool MainCompressCif { get; set; }
+
+        /// <summary>
+        /// Sets the configuration.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         internal static void SetConfig(Config obj)
         {
             try

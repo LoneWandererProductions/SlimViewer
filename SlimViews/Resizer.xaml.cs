@@ -25,6 +25,5 @@ namespace SlimViews
         {
             InitializeComponent();
         }
-
     }
 }
