@@ -60,7 +60,6 @@ namespace SlimViews
 
         /// <summary>
         ///     Gets or sets a value indicating whether [main clean up].
-        ///     TODO IMPLEMENT
         /// </summary>
         /// <value>
         ///     <c>true</c> if [main clean up]; otherwise, <c>false</c>.
@@ -77,12 +76,11 @@ namespace SlimViews
 
         /// <summary>
         ///     Gets or sets a value indicating whether [main automatic play GIF].
-        ///     TODO IMPLEMENT
         /// </summary>
         /// <value>
         ///     <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
         /// </value>
-        internal static bool MainAutoPlayGif { get; set; }
+        private static bool MainAutoPlayGif { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [main sub folders].

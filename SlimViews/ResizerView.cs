@@ -12,6 +12,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using CommonControls;
@@ -349,7 +351,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void InputAction(object obj)
         {
-            Input = FileIoHandler.ShowFolder();
+            Input = FileIoHandler.ShowFolder(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
         }
 
         /// <summary>
