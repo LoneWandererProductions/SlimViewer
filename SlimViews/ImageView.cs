@@ -95,11 +95,6 @@ namespace SlimViews
         private int _count;
 
         /// <summary>
-        ///     The current folder
-        /// </summary>
-        private string _currentFolder;
-
-        /// <summary>
         ///     The current identifier of the Image
         /// </summary>
         private int _currentId;
@@ -1026,11 +1021,11 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, _currentFolder);
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
-            _currentFolder = pathObj.Folder;
+            SlimViewerRegister.CurrentFolder = pathObj.Folder;
 
             //handle cbz files
             if (string.Equals(pathObj.Extension, SlimViewerResources.CbzExt, StringComparison.OrdinalIgnoreCase))
@@ -1060,7 +1055,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenCbzAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCbz, _currentFolder);
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1077,7 +1072,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenCifAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCif, _currentFolder);
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1103,7 +1098,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ConvertCifAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, _currentFolder);
+            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1121,7 +1116,7 @@ namespace SlimViews
 
             var btm = Bmp.ToBitmap();
 
-            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpen, _currentFolder);
+            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null) return;
 
@@ -1315,7 +1310,7 @@ namespace SlimViews
                         _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
                     }
 
-                LoadThumbs(_currentFolder);
+                LoadThumbs(SlimViewerRegister.CurrentFolder);
 
                 _ = MessageBox.Show(string.Concat(SlimViewerResources.MessageCount, count),
                     SlimViewerResources.MessageSuccess, MessageBoxButton.OK);
@@ -1397,13 +1392,13 @@ namespace SlimViews
             Bmp = null;
             GifPath = null;
 
-            if (!Directory.Exists(_currentFolder))
+            if (!Directory.Exists(SlimViewerRegister.CurrentFolder))
             {
                 Observer = null;
                 return;
             }
 
-            LoadThumbs(_currentFolder);
+            LoadThumbs(SlimViewerRegister.CurrentFolder);
         }
 
         /// <summary>
@@ -1471,7 +1466,7 @@ namespace SlimViews
         private void FolderAction(object obj)
         {
             //get target Folder
-            var path = FileIoHandler.ShowFolder(_currentFolder);
+            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
 
             if (!Directory.Exists(path)) return;
 
@@ -1512,10 +1507,10 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ExplorerAction(object obj)
         {
-            if (!Directory.Exists(_currentFolder)) return;
+            if (!Directory.Exists(SlimViewerRegister.CurrentFolder)) return;
 
             var argument = !File.Exists(_filePath)
-                ? _currentFolder
+                ? SlimViewerRegister.CurrentFolder
                 : string.Concat(SlimViewerResources.Select, _filePath, SlimViewerResources.Close);
             _ = Process.Start(SlimViewerResources.Explorer, argument);
         }
@@ -1648,7 +1643,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SimilarAction(object obj)
         {
-            var compareWindow = new Compare(SubFolders, _currentFolder, this, Similarity)
+            var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this, Similarity)
             {
                 Topmost = true,
                 Owner = Main
@@ -1662,7 +1657,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void DuplicateAction(object obj)
         {
-            var compareWindow = new Compare(SubFolders, _currentFolder, this)
+            var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this)
             {
                 Topmost = true,
                 Owner = Main
@@ -1748,7 +1743,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SearchAction(object obj)
         {
-            var searchWindow = new Search(SubFolders, _currentFolder, this, Color)
+            var searchWindow = new Search(SubFolders, SlimViewerRegister.CurrentFolder, this, Color)
             {
                 Topmost = true,
                 Owner = Main
@@ -1764,9 +1759,9 @@ namespace SlimViews
         {
             if (!File.Exists(FileName) && Thumb.Selection.IsNullOrEmpty()) return;
             //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Directory.GetCurrentDirectory();
             //get target Folder
-            var path = FileIoHandler.ShowFolder(_currentFolder);
+            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
 
             if (!Thumb.Selection.IsNullOrEmpty())
             {
@@ -1825,10 +1820,10 @@ namespace SlimViews
         private void MoveAllAction(object obj)
         {
             //Initiate Folder
-            if (string.IsNullOrEmpty(_currentFolder)) _currentFolder = Directory.GetCurrentDirectory();
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Directory.GetCurrentDirectory();
 
             //get target Folder
-            var path = FileIoHandler.ShowFolder(_currentFolder);
+            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
 
             if (!Directory.Exists(path)) return;
 
@@ -1880,7 +1875,7 @@ namespace SlimViews
 
             try
             {
-                _currentFolder = Path.GetDirectoryName(lst[0]);
+                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(lst[0]);
             }
             catch (ArgumentException ex)
             {
@@ -1921,7 +1916,7 @@ namespace SlimViews
 
             // load all other Pictures in the Folder
             var folder = Path.GetDirectoryName(filePath);
-            if (folder == _currentFolder) return;
+            if (folder == SlimViewerRegister.CurrentFolder) return;
 
             LoadThumbs(folder, filePath);
 
@@ -2012,7 +2007,7 @@ namespace SlimViews
         {
             _subFolders = true;
             var folder = SlimViewerHelper.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
-            if (!string.IsNullOrEmpty(folder)) _currentFolder = folder;
+            if (!string.IsNullOrEmpty(folder)) SlimViewerRegister.CurrentFolder = folder;
             var file = SlimViewerHelper.UnpackFile(folder);
 
             if (file == null) return;
@@ -2033,7 +2028,7 @@ namespace SlimViews
             {
                 Bmp = null;
                 GifPath = null;
-                LoadThumbs(_currentFolder);
+                LoadThumbs(SlimViewerRegister.CurrentFolder);
                 return;
             }
 
@@ -2134,7 +2129,7 @@ namespace SlimViews
         private void GenerateThumbView(string folder)
         {
             //initiate Basic values
-            _currentFolder = folder;
+            SlimViewerRegister.CurrentFolder = folder;
             StatusImage = string.Empty;
             StatusImage = _redIcon;
 

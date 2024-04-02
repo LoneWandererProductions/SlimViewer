@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{A87EE2C4-44A0-47EF-B5BE-5799F5A982F0}"
 EndProject
@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtendedSystemObjects", "Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imaging", "Imaging\Imaging.csproj", "{0F7349DF-0F92-4E3B-BC00-15DF481B6971}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimViews", "SlimViews\SlimViews.csproj", "{838A1F90-0DCA-4AD2-9D74-6F48B5F53D2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlimViews", "SlimViews\SlimViews.csproj", "{838A1F90-0DCA-4AD2-9D74-6F48B5F53D2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
