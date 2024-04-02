@@ -20,50 +20,15 @@ using Imaging;
 
 namespace SlimViews
 {
+    /// <summary>
+    /// Handle some repeating tasks or help to reduce the size of some classes
+    /// </summary>
     internal static class Helper
     {
         /// <summary>
         ///     The render
         /// </summary>
         internal static readonly ImageRender Render = new();
-
-        /// <summary>
-        ///     Saves the image.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="extension">The extension.</param>
-        /// <param name="btm">The BTM.</param>
-        /// <returns>success Status</returns>
-        internal static bool SaveImage(string path, string extension, Bitmap btm)
-        {
-            if (string.Equals(extension, SlimViewerResources.JpgExtAlt, StringComparison.CurrentCultureIgnoreCase))
-                extension = ImagingResources.JpgExt;
-
-            path = Path.ChangeExtension(path, extension);
-
-            switch (extension)
-            {
-                case ImagingResources.PngExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Png);
-                    break;
-                case ImagingResources.JpgExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Jpeg);
-                    break;
-                case ImagingResources.BmpExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Bmp);
-                    break;
-                case ImagingResources.GifExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Gif);
-                    break;
-                case ImagingResources.TifExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Tiff);
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
 
         /// <summary>
         ///     Converts the gif to images action.
@@ -161,6 +126,137 @@ namespace SlimViews
 
             var path = Path.ChangeExtension(pathObj.FilePath, ImagingResources.PngExt);
             _ = SaveImage(path, ImagingResources.PngExt, difference);
+        }
+
+        /// <summary>
+        /// Resizes the specified BTM.
+        /// </summary>
+        /// <param name="btm">The BTM.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="width">The width.</param>
+        /// <returns>Resized Image</returns>
+        internal static Bitmap Resize(Bitmap btm, int height, int width)
+        {
+            try
+            {
+                btm = Render.BitmapScaling(btm, width, height);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+            }
+            catch (InsufficientMemoryException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+            }
+
+            return btm;
+        }
+
+        /// <summary>
+        /// Filters the specified BTM.
+        /// </summary>
+        /// <param name="btm">The BTM.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns>The Image with an applied filter</returns>
+        internal static Bitmap Filter(Bitmap btm, ImageFilter filter)
+        {
+            try
+            {
+                switch (filter)
+                {
+                    case ImageFilter.None:
+                        return btm;
+                    case ImageFilter.Invert:
+                    case ImageFilter.Sepia:
+                    case ImageFilter.BlackAndWhite:
+                    case ImageFilter.Polaroid:
+                    case ImageFilter.GrayScale:
+                        return Render.FilterImage(btm, filter);
+                    default:
+                        return btm;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+            }
+            catch (OutOfMemoryException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+            }
+
+            return btm;
+        }
+
+        /// <summary>
+        ///     Saves the image.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="extension">The extension.</param>
+        /// <param name="btm">The BTM.</param>
+        /// <returns>success Status</returns>
+        internal static bool SaveImage(string path, string extension, Bitmap btm)
+        {
+            if (string.Equals(extension, SlimViewerResources.JpgExtAlt, StringComparison.CurrentCultureIgnoreCase))
+                extension = ImagingResources.JpgExt;
+
+            path = Path.ChangeExtension(path, extension);
+
+            switch (extension)
+            {
+                case ImagingResources.PngExt:
+                    Render.SaveBitmap(btm, path, ImageFormat.Png);
+                    break;
+                case ImagingResources.JpgExt:
+                    Render.SaveBitmap(btm, path, ImageFormat.Jpeg);
+                    break;
+                case ImagingResources.BmpExt:
+                    Render.SaveBitmap(btm, path, ImageFormat.Bmp);
+                    break;
+                case ImagingResources.GifExt:
+                    Render.SaveBitmap(btm, path, ImageFormat.Gif);
+                    break;
+                case ImagingResources.TifExt:
+                    Render.SaveBitmap(btm, path, ImageFormat.Tiff);
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Loads the images.
+        /// </summary>
+        /// <param name="paths">The paths.</param>
+        /// <returns>List of Bitmap Images</returns>
+        internal static List<Bitmap> LoadImages(List<string> paths)
+        {
+            var btmLst = new List<Bitmap>(paths.Count);
+
+            foreach (string path in paths)
+            {
+                if (!File.Exists(path)) continue;
+
+                try
+                {
+                    var btm = Render.GetBitmapFile(path);
+                    btmLst.Add(btm);
+                }
+                catch (IOException ex)
+                {
+                    Trace.WriteLine(ex);
+                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                }
+            }
+
+            return btmLst;
         }
     }
 }

@@ -1175,21 +1175,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void GrayScaleAction(object obj)
         {
-            try
-            {
-                var btm = Helper.Render.FilterImage(_btm, ImageFilter.GrayScale);
-                Bmp = btm.ToBitmapImage();
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
+            var btm = Helper.Filter(_btm, ImageFilter.GrayScale);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1198,21 +1185,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void BlackAndWhiteAction(object obj)
         {
-            try
-            {
-                var btm = Helper.Render.FilterImage(_btm, ImageFilter.BlackAndWhite);
-                Bmp = btm.ToBitmapImage();
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
+            var btm = Helper.Filter(_btm, ImageFilter.BlackAndWhite);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1221,21 +1195,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SepiaAction(object obj)
         {
-            try
-            {
-                var btm = Helper.Render.FilterImage(_btm, ImageFilter.Sepia);
-                Bmp = btm.ToBitmapImage();
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
+            var btm = Helper.Filter(_btm, ImageFilter.Sepia);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1244,21 +1205,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void InvertAction(object obj)
         {
-            try
-            {
-                var btm = Helper.Render.FilterImage(_btm, ImageFilter.Invert);
-                Bmp = btm.ToBitmapImage();
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
+            var btm = Helper.Filter(_btm, ImageFilter.Invert);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1267,21 +1215,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void PolaroidAction(object obj)
         {
-            try
-            {
-                var btm = Helper.Render.FilterImage(_btm, ImageFilter.Polaroid);
-                Bmp = btm.ToBitmapImage();
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
+            var btm = Helper.Filter(_btm, ImageFilter.Polaroid);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1759,7 +1694,7 @@ namespace SlimViews
         {
             if (!File.Exists(FileName) && Thumb.Selection.IsNullOrEmpty()) return;
             //Initiate Folder
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Directory.GetCurrentDirectory();
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             //get target Folder
             var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
 
@@ -1820,7 +1755,7 @@ namespace SlimViews
         private void MoveAllAction(object obj)
         {
             //Initiate Folder
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Directory.GetCurrentDirectory();
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             //get target Folder
             var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);

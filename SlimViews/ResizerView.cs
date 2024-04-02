@@ -12,13 +12,19 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
+using System.Windows.Shapes;
 using CommonControls;
+using ExtendedSystemObjects;
+using FileHandler;
 using Imaging;
 using ViewModel;
+using Path = System.IO.Path;
 
 namespace SlimViews
 {
@@ -73,19 +79,9 @@ namespace SlimViews
         private ICommand _outputCommand;
 
         /// <summary>
-        ///     The percentage command
-        /// </summary>
-        private ICommand _percentageCommand;
-
-        /// <summary>
         ///     The process command
         /// </summary>
         private ICommand _processCommand;
-
-        /// <summary>
-        ///     The relative command
-        /// </summary>
-        private ICommand _relativeCommand;
 
         /// <summary>
         ///     The selected extension
@@ -279,24 +275,6 @@ namespace SlimViews
             _inputCommand ??= new DelegateCommand<object>(InputAction, CanExecute);
 
         /// <summary>
-        ///     Gets the relative command.
-        /// </summary>
-        /// <value>
-        ///     The relative command.
-        /// </value>
-        public ICommand RelativeCommand =>
-            _relativeCommand ??= new DelegateCommand<object>(RelativeAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the percentage command.
-        /// </summary>
-        /// <value>
-        ///     The percentage command.
-        /// </value>
-        public ICommand PercentageCommand =>
-            _percentageCommand ??= new DelegateCommand<object>(PercentageAction, CanExecute);
-
-        /// <summary>
         ///     Gets the filter options.
         /// </summary>
         /// <value>
@@ -320,11 +298,19 @@ namespace SlimViews
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        ///     Processes the action.
+        ///     Gets a value indicating whether this instance can execute.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ProcessAction(object obj)
+        /// <returns>
+        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+        /// </returns>
+        /// <value>
+        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+        /// </value>
+        public bool CanExecute(object obj)
         {
+            // check if executing is allowed, not used right now
+            return true;
         }
 
         /// <summary>
@@ -342,7 +328,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OutputAction(object obj)
         {
-            Output = FileIoHandler.ShowFolder();
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Output = FileIoHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
         }
 
         /// <summary>
@@ -351,39 +338,60 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void InputAction(object obj)
         {
-            Input = FileIoHandler.ShowFolder(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Input = FileIoHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
         }
 
         /// <summary>
-        ///     Relatives the action.
+        ///     Processes the action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void RelativeAction(object obj)
+        private void ProcessAction(object obj)
         {
-        }
+            if (!Directory.Exists(_input) || !Directory.Exists(_output))
+            {
+                //TODO MessageBox
+                return;
+            }
 
-        /// <summary>
-        ///     Percentage Actions the specified object.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void PercentageAction(object obj)
-        {
-        }
+            var lst = FileHandleSearch.GetFilesByExtensionFullPath(_input, ImagingResources.Appendix, false);
 
-        /// <summary>
-        ///     Gets a value indicating whether this instance can execute.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-        /// </returns>
-        /// <value>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-        /// </value>
-        public bool CanExecute(object obj)
-        {
-            // check if executing is allowed, not used right now
-            return true;
+            if(lst.IsNullOrEmpty())
+            {
+                //TODO MessageBox
+                return;
+            }
+
+            var btmLst = Helper.LoadImages(lst);
+
+            foreach (var btm in btmLst)
+            {
+                if (_selectedFilterOption != ImageFilter.None)
+                {
+                    Helper.Filter(btm, _selectedFilterOption);
+                }
+
+                if (_isPercentagesChecked)
+                {
+                    var height = (double)btm.Height / _height * 100;
+                    var width = (double)btm.Width / _width * 100;
+
+                    Helper.Resize(btm, (int)height, (int)width);
+                }
+                else
+                {
+                    Helper.Resize(btm, _height, _width);
+                }
+
+                if (string.IsNullOrEmpty(SelectedExtension))
+                {
+                    //todo add a new function
+                }
+                else
+                {
+                    Helper.SaveImage(string.Empty, SelectedExtension, btm);
+                }
+            }
         }
 
         /// <summary>
