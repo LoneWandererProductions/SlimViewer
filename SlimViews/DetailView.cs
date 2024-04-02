@@ -43,6 +43,24 @@ namespace SlimViews
         private readonly ImageAnalysis _analysis;
 
         /// <summary>
+        ///     The green icon
+        /// </summary>
+        private readonly string _greenIcon;
+
+        /// <summary>
+        ///     The red icon
+        /// </summary>
+        private readonly string _redIcon;
+
+        /// <summary>
+        ///     Gets or sets the root.
+        /// </summary>
+        /// <value>
+        ///     The root.
+        /// </value>
+        private readonly string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
         ///     The first BitmapImage
         /// </summary>
         private BitmapImage _bmpOne;
@@ -63,6 +81,46 @@ namespace SlimViews
         private Bitmap _btmTwo;
 
         /// <summary>
+        ///     The color
+        /// </summary>
+        private string _color;
+
+        /// <summary>
+        ///     The colore one
+        /// </summary>
+        private string _colorOne;
+
+        /// <summary>
+        ///     The color two
+        /// </summary>
+        private string _colorTwo;
+
+        /// <summary>
+        ///     The difference
+        /// </summary>
+        private Bitmap _difference;
+
+        /// <summary>
+        ///     The difference command
+        /// </summary>
+        private ICommand _differenceCommand;
+
+        /// <summary>
+        ///     The export command
+        /// </summary>
+        private ICommand _exportCommand;
+
+        /// <summary>
+        ///     The information one
+        /// </summary>
+        private string _informationOne;
+
+        /// <summary>
+        ///     The information two
+        /// </summary>
+        private string _informationTwo;
+
+        /// <summary>
         ///     The open one command
         /// </summary>
         private ICommand _openOneCommand;
@@ -71,16 +129,6 @@ namespace SlimViews
         ///     The open two command
         /// </summary>
         private ICommand _openTwoCommand;
-
-        /// <summary>
-        /// The difference command
-        /// </summary>
-        private ICommand _differenceCommand;
-
-        /// <summary>
-        /// The export command
-        /// </summary>
-        private ICommand _exportCommand;
 
         /// <summary>
         ///     The path one
@@ -93,72 +141,24 @@ namespace SlimViews
         private string _pathTwo;
 
         /// <summary>
-        /// The status image
+        ///     The similarity
+        /// </summary>
+        private string _similarity;
+
+        /// <summary>
+        ///     The status image
         /// </summary>
         private string _statusImage;
 
         /// <summary>
-        ///     Gets or sets the root.
+        ///     The color information
         /// </summary>
-        /// <value>
-        ///     The root.
-        /// </value>
-        private readonly string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public ScrollingTextBoxes ColorInformation;
 
         /// <summary>
         ///     The information
         /// </summary>
         public ScrollingTextBoxes Information;
-
-        /// <summary>
-        /// The color information
-        /// </summary>
-        public ScrollingTextBoxes ColorInformation;
-
-        /// <summary>
-        /// The green icon
-        /// </summary>
-        private readonly string _greenIcon;
-
-        /// <summary>
-        /// The red icon
-        /// </summary>
-        private readonly string _redIcon;
-
-        /// <summary>
-        /// The color
-        /// </summary>
-        private string _color;
-
-        /// <summary>
-        /// The difference
-        /// </summary>
-        private Bitmap _difference;
-
-        /// <summary>
-        /// The information one
-        /// </summary>
-        private string _informationOne;
-
-        /// <summary>
-        /// The information two
-        /// </summary>
-        private string _informationTwo;
-
-        /// <summary>
-        /// The similarity
-        /// </summary>
-        private string _similarity;
-
-        /// <summary>
-        /// The colore one
-        /// </summary>
-        private string _colorOne;
-
-        /// <summary>
-        /// The color two
-        /// </summary>
-        private string _colorTwo;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -239,10 +239,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the status image.
+        ///     Gets or sets the status image.
         /// </summary>
         /// <value>
-        /// The status image.
+        ///     The status image.
         /// </value>
         public string StatusImage
         {
@@ -257,10 +257,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the color.
+        ///     Gets or sets the color.
         /// </summary>
         /// <value>
-        /// The color.
+        ///     The color.
         /// </value>
         public string Colors
         {
@@ -293,19 +293,19 @@ namespace SlimViews
             _openTwoCommand ??= new DelegateCommand<object>(OpenTwoAction, CanExecute);
 
         /// <summary>
-        /// Gets the difference command.
+        ///     Gets the difference command.
         /// </summary>
         /// <value>
-        /// The difference command.
+        ///     The difference command.
         /// </value>
         public ICommand DifferenceCommand =>
             _differenceCommand ??= new DelegateCommand<object>(DifferenceAction, CanExecute);
 
         /// <summary>
-        /// Gets the difference command.
+        ///     Gets the difference command.
         /// </summary>
         /// <value>
-        /// The difference command.
+        ///     The difference command.
         /// </value>
         public ICommand ExportCommand =>
             _exportCommand ??= new DelegateCommand<object>(ExportAction, CanExecute);
@@ -428,7 +428,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Differences the action.
+        ///     Differences the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void DifferenceAction(object obj)
@@ -446,18 +446,19 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Exports the Information.
+        ///     Exports the Information.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ExportAction(object obj)
         {
             if (string.IsNullOrEmpty(_informationOne) && string.IsNullOrEmpty(_informationTwo)) return;
 
-            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity, _difference);
+            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity,
+                _difference);
         }
 
         /// <summary>
-        /// Computes the text.
+        ///     Computes the text.
         /// </summary>
         /// <param name="btm">The BTM.</param>
         /// <returns>The color Infos</returns>

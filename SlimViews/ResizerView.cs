@@ -12,19 +12,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Media3D;
-using System.Windows.Shapes;
 using CommonControls;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
 using ViewModel;
-using Path = System.IO.Path;
 
 namespace SlimViews
 {
@@ -328,7 +324,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OutputAction(object obj)
         {
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
+                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Output = FileIoHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
         }
 
@@ -338,7 +335,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void InputAction(object obj)
         {
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
+                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Input = FileIoHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
         }
 
@@ -349,27 +347,20 @@ namespace SlimViews
         private void ProcessAction(object obj)
         {
             if (!Directory.Exists(_input) || !Directory.Exists(_output))
-            {
                 //TODO MessageBox
                 return;
-            }
 
             var lst = FileHandleSearch.GetFilesByExtensionFullPath(_input, ImagingResources.Appendix, false);
 
-            if(lst.IsNullOrEmpty())
-            {
+            if (lst.IsNullOrEmpty())
                 //TODO MessageBox
                 return;
-            }
 
             var btmLst = Helper.LoadImages(lst);
 
             foreach (var btm in btmLst)
             {
-                if (_selectedFilterOption != ImageFilter.None)
-                {
-                    Helper.Filter(btm, _selectedFilterOption);
-                }
+                if (_selectedFilterOption != ImageFilter.None) Helper.Filter(btm, _selectedFilterOption);
 
                 if (_isPercentagesChecked)
                 {

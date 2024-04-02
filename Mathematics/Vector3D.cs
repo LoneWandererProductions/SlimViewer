@@ -96,10 +96,7 @@ namespace Mathematics
         /// <value>
         ///     The zero Vector.
         /// </value>
-        public static Vector3D ZeroVector
-        {
-            get;
-        } = new(0d, 0d, 0d);
+        public static Vector3D ZeroVector { get; } = new(0d, 0d, 0d);
 
         /// <summary>
         ///     Gets the Unit vector.
@@ -107,10 +104,7 @@ namespace Mathematics
         /// <value>
         ///     The Unit vector.
         /// </value>
-        public static Vector3D UnitVector
-        {
-            get;
-        } = new(1d, 1d, 1d);
+        public static Vector3D UnitVector { get; } = new(1d, 1d, 1d);
 
         /// <summary>
         ///     Gets the rounded x.
@@ -135,6 +129,18 @@ namespace Mathematics
         ///     The rounded z.
         /// </value>
         public int RoundedZ => (int)Math.Round(Z, 0);
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        ///     A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone()
+        {
+            return new Vector3D(X, Y, Z);
+        }
 
         /// <summary>
         ///     Sets the w.
@@ -219,18 +225,6 @@ namespace Mathematics
             return string.Concat(MathResources.StrX, X, MathResources.StrY, Y, MathResources.StrZ, Z);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        /// A new object that is a copy of this instance.
-        /// </returns>
-        public object Clone()
-        {
-            return new Vector3D(X, Y, Z);
-        }
-
         /// <summary>
         ///     Implements the operator +.
         /// </summary>
@@ -280,7 +274,7 @@ namespace Mathematics
         /// </returns>
         public static double operator *(Vector3D first, Vector3D second)
         {
-            return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
+            return first.X * second.X + first.Y * second.Y + first.Z * second.Z;
         }
 
         /// <summary>
@@ -335,9 +329,9 @@ namespace Mathematics
         {
             return new Vector3D
             {
-                X = (Y * second.Z) - (Z * second.Y),
-                Y = (Z * second.X) - (X * second.Z),
-                Z = (X * second.Y) - (Y * second.X)
+                X = Y * second.Z - Z * second.Y,
+                Y = Z * second.X - X * second.Z,
+                Z = X * second.Y - Y * second.X
             };
         }
 

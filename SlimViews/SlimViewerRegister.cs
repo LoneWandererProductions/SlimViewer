@@ -9,15 +9,15 @@
 namespace SlimViews
 {
     /// <summary>
-    /// Register for the generic and commonly used Variables
+    ///     Register for the generic and commonly used Variables
     /// </summary>
     public static class SlimViewerRegister
     {
         /// <summary>
-        /// Gets or sets the current folder.
+        ///     Gets or sets the current folder.
         /// </summary>
         /// <value>
-        /// The current folder.
+        ///     The current folder.
         /// </value>
         internal static string CurrentFolder { get; set; }
 
@@ -102,10 +102,10 @@ namespace SlimViews
         internal static bool MainSubFolders { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [main compress cif].
+        ///     Gets or sets a value indicating whether [main compress cif].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [main compress cif]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [main compress cif]; otherwise, <c>false</c>.
         /// </value>
         internal static bool MainCompressCif { get; set; }
 

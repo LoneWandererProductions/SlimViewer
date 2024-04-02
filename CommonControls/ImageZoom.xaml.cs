@@ -94,10 +94,7 @@ namespace CommonControls
         public ImageZoom()
         {
             InitializeComponent();
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
@@ -220,10 +217,7 @@ namespace CommonControls
             BtmImage.StopAnimation();
             BtmImage.Source = ItemsSource;
 
-            if (BtmImage.Source == null)
-            {
-                return;
-            }
+            if (BtmImage.Source == null) return;
 
             //reset Scaling
             Scale.ScaleX = 1;
@@ -341,25 +335,13 @@ namespace CommonControls
                     }
                     //cleanups, In case we overstepped the boundaries
 
-                    if (frame.X < 0)
-                    {
-                        frame.X = 0;
-                    }
+                    if (frame.X < 0) frame.X = 0;
 
-                    if (frame.Y < 0)
-                    {
-                        frame.Y = 0;
-                    }
+                    if (frame.Y < 0) frame.Y = 0;
 
-                    if (frame.Width > ItemsSource.Width)
-                    {
-                        frame.Width = (int)ItemsSource.Width;
-                    }
+                    if (frame.Width > ItemsSource.Width) frame.Width = (int)ItemsSource.Width;
 
-                    if (frame.Height < 0)
-                    {
-                        frame.Height = (int)ItemsSource.Height;
-                    }
+                    if (frame.Height < 0) frame.Height = (int)ItemsSource.Height;
 
                     SelectedFrame?.Invoke(frame);
                 }
@@ -381,10 +363,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_mouseDown)
-            {
-                return;
-            }
+            if (!_mouseDown) return;
 
             switch (ZoomTool)
             {

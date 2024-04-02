@@ -89,10 +89,7 @@ namespace Mathematics
 
                 //Todo add a better algorithm!
 
-                if (normal * comparer > 0)
-                {
-                    continue;
-                }
+                if (normal * comparer > 0) continue;
 
                 //Todo here we would add some shading and textures
 
@@ -139,14 +136,14 @@ namespace Mathematics
         }
 
         /// <summary>
-        /// Moves the into view.
+        ///     Moves the into view.
         /// </summary>
         /// <param name="triangles">The triangles.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="displayType">Display type of the transform.</param>
         /// <returns>
-        /// Center on Screen
+        ///     Center on Screen
         /// </returns>
         internal static List<PolyTriangle> MoveIntoView(IEnumerable<PolyTriangle> triangles, int width, int height,
             Display displayType)

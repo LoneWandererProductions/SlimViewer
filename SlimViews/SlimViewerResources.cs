@@ -273,7 +273,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Builds the image information with line breaks.
+        ///     Builds the image information with line breaks.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="fileName">Name of the file.</param>

@@ -19,10 +19,10 @@ namespace Mathematics
     public sealed class Projection : IProjection
     {
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Projection"/> is debug.
+        ///     Gets or sets a value indicating whether this <see cref="Projection" /> is debug.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if debug; otherwise, <c>false</c>.
+        ///     <c>true</c> if debug; otherwise, <c>false</c>.
         /// </value>
         public bool Debug { get; set; } = true;
 
@@ -42,10 +42,7 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DWorld);
-                foreach (var triangle in cache)
-                {
-                    Trace.WriteLine(triangle.ToString());
-                }
+                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
             }
 
             switch (transform.CameraType)
@@ -64,10 +61,7 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DCamera);
-                foreach (var triangle in cache)
-                {
-                    Trace.WriteLine(triangle.ToString());
-                }
+                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
             }
 
             cache = ProjectionRaster.Clipping(cache, transform.Position);
@@ -75,10 +69,7 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DClipping);
-                foreach (var triangle in cache)
-                {
-                    Trace.WriteLine(triangle.ToString());
-                }
+                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
             }
 
             cache = transform.DisplayType switch
@@ -91,17 +82,15 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3D);
-                foreach (var triangle in cache)
-                {
-                    Trace.WriteLine(triangle.ToString());
-                }
+                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
             }
 
             Trace.WriteLine(MathResources.Debug3DTransformation);
 
             if (Debug) CreateDump(transform);
 
-            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height, transform.DisplayType);
+            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height,
+                transform.DisplayType);
         }
 
         /// <summary>

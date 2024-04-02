@@ -25,10 +25,7 @@ namespace Mathematics
         {
             Vertices = new Vector3D[array.Count];
 
-            for (var i = 0; i < array.Count; i++)
-            {
-                Vertices[i] = array[i];
-            }
+            for (var i = 0; i < array.Count; i++) Vertices[i] = array[i];
         }
 
         /// <summary>
@@ -124,9 +121,7 @@ namespace Mathematics
             var str = string.Empty;
 
             for (var i = 0; i < Vertices.Length; i++)
-            {
                 str = string.Concat(str, i, MathResources.Separator, Vertices[i].ToString(), Environment.NewLine);
-            }
 
             return str;
         }

@@ -12,14 +12,14 @@ using System.Windows.Markup;
 namespace SlimViews
 {
     /// <summary>
-    /// Window for mass converting Images in a Folder
+    ///     Window for mass converting Images in a Folder
     /// </summary>
     /// <seealso cref="Window" />
     /// <seealso cref="IComponentConnector" />
     internal sealed partial class Resizer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Resizer"/> class.
+        ///     Initializes a new instance of the <see cref="Resizer" /> class.
         /// </summary>
         public Resizer()
         {

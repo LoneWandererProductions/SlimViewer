@@ -45,6 +45,21 @@ namespace SlimViews
         private readonly CustomImageFormat _cif;
 
         /// <summary>
+        ///     The green icon
+        /// </summary>
+        private readonly string _greenIcon;
+
+        /// <summary>
+        ///     The red icon
+        /// </summary>
+        private readonly string _redIcon;
+
+        /// <summary>
+        ///     The analyzer window command
+        /// </summary>
+        private ICommand _analyzerWindowCommand;
+
+        /// <summary>
         ///     The automatic clean
         /// </summary>
         private bool _autoClean;
@@ -157,16 +172,6 @@ namespace SlimViews
         private ICommand _gifWindowCommand;
 
         /// <summary>
-        /// The analyzer window command
-        /// </summary>
-        private ICommand _analyzerWindowCommand;
-
-        /// <summary>
-        /// The resizer window command
-        /// </summary>
-        private ICommand _resizerWindowCommand;
-
-        /// <summary>
         ///     The gray scale command
         /// </summary>
         private ICommand _grayScaleCommand;
@@ -247,6 +252,11 @@ namespace SlimViews
         private ICommand _renameCommand;
 
         /// <summary>
+        ///     The resizer window command
+        /// </summary>
+        private ICommand _resizerWindowCommand;
+
+        /// <summary>
         ///     Gets or sets the root.
         /// </summary>
         /// <value>
@@ -301,6 +311,11 @@ namespace SlimViews
         private int _similarity;
 
         /// <summary>
+        ///     The status image
+        /// </summary>
+        private string _statusImage;
+
+        /// <summary>
         ///     Check if Subfolders should be used too
         /// </summary>
         private bool _subFolders;
@@ -309,21 +324,6 @@ namespace SlimViews
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
-
-        /// <summary>
-        /// The status image
-        /// </summary>
-        private string _statusImage;
-
-        /// <summary>
-        /// The green icon
-        /// </summary>
-        private readonly string _greenIcon;
-
-        /// <summary>
-        /// The red icon
-        /// </summary>
-        private readonly string _redIcon;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -349,7 +349,7 @@ namespace SlimViews
         public ImageView(bool subFolders, bool compressCif, int similarity, bool autoClean)
         {
             SubFolders = subFolders;
-            Compress =compressCif;
+            Compress = compressCif;
             Similarity = similarity;
             AutoClean = autoClean;
 
@@ -614,10 +614,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the status image.
+        ///     Gets or sets the status image.
         /// </summary>
         /// <value>
-        /// The status image.
+        ///     The status image.
         /// </value>
         public string StatusImage
         {
@@ -668,10 +668,10 @@ namespace SlimViews
             _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
 
         /// <summary>
-        /// Gets the open CBZ command.
+        ///     Gets the open CBZ command.
         /// </summary>
         /// <value>
-        /// The open CBZ command.
+        ///     The open CBZ command.
         /// </value>
         public ICommand OpenCbzCommand =>
             _openCbzCommand ??= new DelegateCommand<object>(OpenCbzAction, CanExecute);
@@ -936,19 +936,19 @@ namespace SlimViews
             _gifWindowCommand ??= new DelegateCommand<object>(GifWindowAction, CanExecute);
 
         /// <summary>
-        /// Gets the analyzer window command.
+        ///     Gets the analyzer window command.
         /// </summary>
         /// <value>
-        /// The analyzer window command.
+        ///     The analyzer window command.
         /// </value>
         public ICommand AnalyzerWindowCommand =>
             _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerAction, CanExecute);
 
         /// <summary>
-        /// Gets the resizer window command.
+        ///     Gets the resizer window command.
         /// </summary>
         /// <value>
-        /// The resizer window command.
+        ///     The resizer window command.
         /// </value>
         public ICommand ResizerWindowCommand =>
             _resizerWindowCommand ??= new DelegateCommand<object>(ResizerAction, CanExecute);
@@ -962,10 +962,10 @@ namespace SlimViews
         public Window Main { get; set; }
 
         /// <summary>
-        /// Gets or sets the image zoom.
+        ///     Gets or sets the image zoom.
         /// </summary>
         /// <value>
-        /// The image zoom.
+        ///     The image zoom.
         /// </value>
         public ImageZoom ImageZoom { get; set; }
 
@@ -1055,7 +1055,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenCbzAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
+            var pathObj =
+                FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1072,7 +1073,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenCifAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
+            var pathObj =
+                FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1615,12 +1617,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Analyzer Window
+        ///     Analyzer Window
         /// </summary>
         /// <param name="obj">The object.</param>
         private void AnalyzerAction(object obj)
         {
-            var detailWindow = new DetailCompare()
+            var detailWindow = new DetailCompare
             {
                 Topmost = true,
                 Owner = Main
@@ -1629,12 +1631,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Resizer Window.
+        ///     Resizer Window.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ResizerAction(object obj)
         {
-            var resizer = new Resizer()
+            var resizer = new Resizer
             {
                 Topmost = true,
                 Owner = Main
@@ -1648,12 +1650,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void CleanTempAction(object obj)
         {
-            bool check = false;
+            var check = false;
 
-            if (obj !=null)
-            {
-                check = (bool)obj;
-            }
+            if (obj != null) check = (bool)obj;
 
             var root = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
 
@@ -1668,8 +1667,10 @@ namespace SlimViews
                 return;
             }
 
-            if(!check) _ = MessageBox.Show(SlimViewerResources.StatusDone, SlimViewerResources.CaptionDone, MessageBoxButton.OK,
-                MessageBoxImage.Exclamation);
+            if (!check)
+                _ = MessageBox.Show(SlimViewerResources.StatusDone, SlimViewerResources.CaptionDone,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
         }
 
         /// <summary>
@@ -1694,7 +1695,8 @@ namespace SlimViews
         {
             if (!File.Exists(FileName) && Thumb.Selection.IsNullOrEmpty()) return;
             //Initiate Folder
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
+                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             //get target Folder
             var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
 
@@ -1755,7 +1757,8 @@ namespace SlimViews
         private void MoveAllAction(object obj)
         {
             //Initiate Folder
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder)) SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
+                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             //get target Folder
             var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
@@ -2132,7 +2135,7 @@ namespace SlimViews
         public void Loaded()
         {
             //if (Status == null) return;
-            if(string.IsNullOrEmpty(StatusImage)) return;
+            if (string.IsNullOrEmpty(StatusImage)) return;
 
             StatusImage = _greenIcon;
         }

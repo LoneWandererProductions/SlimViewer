@@ -21,7 +21,7 @@ using Imaging;
 namespace SlimViews
 {
     /// <summary>
-    /// Handle some repeating tasks or help to reduce the size of some classes
+    ///     Handle some repeating tasks or help to reduce the size of some classes
     /// </summary>
     internal static class Helper
     {
@@ -85,7 +85,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Generates the export asynchronous.
+        ///     Generates the export asynchronous.
         /// </summary>
         /// <param name="informationOne">The information one.</param>
         /// <param name="informationTwo">The information two.</param>
@@ -95,7 +95,8 @@ namespace SlimViews
         /// <param name="difference">The difference.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne, string colorTwo, string similarity, Bitmap difference)
+        internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne,
+            string colorTwo, string similarity, Bitmap difference)
         {
             var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null);
 
@@ -129,7 +130,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Resizes the specified BTM.
+        ///     Resizes the specified BTM.
         /// </summary>
         /// <param name="btm">The BTM.</param>
         /// <param name="height">The height.</param>
@@ -156,7 +157,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Filters the specified BTM.
+        ///     Filters the specified BTM.
         /// </summary>
         /// <param name="btm">The BTM.</param>
         /// <param name="filter">The filter.</param>
@@ -232,7 +233,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Loads the images.
+        ///     Loads the images.
         /// </summary>
         /// <param name="paths">The paths.</param>
         /// <returns>List of Bitmap Images</returns>
@@ -240,7 +241,7 @@ namespace SlimViews
         {
             var btmLst = new List<Bitmap>(paths.Count);
 
-            foreach (string path in paths)
+            foreach (var path in paths)
             {
                 if (!File.Exists(path)) continue;
 
