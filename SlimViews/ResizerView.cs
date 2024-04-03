@@ -346,42 +346,56 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ProcessAction(object obj)
         {
+            double height = _height;
+            double width = _width;
+
             if (!Directory.Exists(_input) || !Directory.Exists(_output))
-                //TODO MessageBox
-                return;
-
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(_input, ImagingResources.Appendix, false);
-
-            if (lst.IsNullOrEmpty())
-                //TODO MessageBox
-                return;
-
-            var btmLst = Helper.LoadImages(lst);
-
-            foreach (var btm in btmLst)
             {
-                if (_selectedFilterOption != ImageFilter.None) Helper.Filter(btm, _selectedFilterOption);
+                // TODO: Show a message box indicating directories are missing
+                return;
+            }
 
+            var files = FileHandleSearch.GetFilesByExtensionFullPath(_input, ImagingResources.Appendix, false);
+
+            if (files.IsNullOrEmpty())
+            {
+                // TODO: Show a message box indicating no files found
+                return;
+            }
+
+            foreach (var filePath in files)
+            {
+                if (!File.Exists(filePath)) continue;
+
+                var bitmap = Helper.LoadImage(filePath);
+
+                if (bitmap == null) continue;
+
+                // Apply selected filter option
+                if (_selectedFilterOption != ImageFilter.None)
+                {
+                    Helper.Filter(bitmap, _selectedFilterOption);
+                }
+
+                // Resize the image based on percentage or absolute dimensions
                 if (_isPercentagesChecked)
                 {
-                    var height = (double)btm.Height / _height * 100;
-                    var width = (double)btm.Width / _width * 100;
-
-                    Helper.Resize(btm, (int)height, (int)width);
-                }
-                else
-                {
-                    Helper.Resize(btm, _height, _width);
+                    height = bitmap.Height * height / 100;
+                    width =bitmap.Width * width / 100;
                 }
 
+                Helper.Resize(bitmap, (int)height, (int)width);
+
+                // Determine the file extension is set, if not use the current one
                 if (string.IsNullOrEmpty(SelectedExtension))
                 {
-                    //todo add a new function
+                    SelectedExtension = Path.GetExtension(filePath);
+
+                    if (string.IsNullOrEmpty(SelectedExtension)) continue;
                 }
-                else
-                {
-                    Helper.SaveImage(string.Empty, SelectedExtension, btm);
-                }
+
+                // Save the modified image with the determined file extension
+                Helper.SaveImage(string.Empty, SelectedExtension, bitmap);
             }
         }
 

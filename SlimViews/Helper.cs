@@ -276,29 +276,22 @@ namespace SlimViews
         /// <summary>
         ///     Loads the images.
         /// </summary>
-        /// <param name="paths">The paths.</param>
+        /// <param name="path">The path to the image.</param>
         /// <returns>List of Bitmap Images</returns>
-        internal static List<Bitmap> LoadImages(List<string> paths)
+        internal static Bitmap LoadImage(string path)
         {
-            var btmLst = new List<Bitmap>(paths.Count);
-
-            foreach (var path in paths)
+            try
             {
-                if (!File.Exists(path)) continue;
-
-                try
-                {
-                    var btm = Render.GetBitmapFile(path);
-                    btmLst.Add(btm);
-                }
-                catch (IOException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-                }
+                var btm = Render.GetBitmapFile(path);
+                return btm;
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
             }
 
-            return btmLst;
+            return null;
         }
     }
 }
