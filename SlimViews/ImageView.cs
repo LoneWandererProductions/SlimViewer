@@ -1943,10 +1943,12 @@ namespace SlimViews
         /// <param name="pathObj">The path object.</param>
         private void GenerateCbrView(PathObject pathObj)
         {
+            if (pathObj == null) return;
+
             _subFolders = true;
-            var folder = SlimViewerHelper.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
+            var folder = Helper.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
             if (!string.IsNullOrEmpty(folder)) SlimViewerRegister.CurrentFolder = folder;
-            var file = SlimViewerHelper.UnpackFile(folder);
+            var file = Helper.UnpackFile(folder);
 
             if (file == null) return;
 

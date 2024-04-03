@@ -16,6 +16,8 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using CommonControls;
+using ExtendedSystemObjects;
+using FileHandler;
 using Imaging;
 
 namespace SlimViews
@@ -29,6 +31,45 @@ namespace SlimViews
         ///     The render
         /// </summary>
         internal static readonly ImageRender Render = new();
+
+        /// <summary>
+        ///     Unpacks the folder.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="fileNameWithoutExt">The file name without extension.</param>
+        /// <returns>Target Folder</returns>
+        internal static string UnpackFolder(string path, string fileNameWithoutExt)
+        {
+            //create Temp Folder
+            var root = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
+            if (!Directory.Exists(root)) _ = Directory.CreateDirectory(root);
+
+            root = Path.Combine(root, fileNameWithoutExt);
+            if (!Directory.Exists(root))
+            {
+                //if the folder exists which should not happen, we clear it out
+                _ = FileHandleDelete.DeleteAllContents(root, true);
+                _ = Directory.CreateDirectory(root);
+            }
+
+            _ = FileHandleCompress.OpenZip(path, root, false);
+
+            return root;
+        }
+
+        /// <summary>
+        ///     Unpacks the file.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>The first Image</returns>
+        internal static string UnpackFile(string path)
+        {
+            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
+            if (lst.IsNullOrEmpty()) return null;
+
+            // ReSharper disable once PossibleNullReferenceException. is checked
+            return lst.IsNullOrEmpty() ? null : lst[0];
+        }
 
         /// <summary>
         ///     Converts the gif to images action.
