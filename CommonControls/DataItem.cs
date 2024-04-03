@@ -66,7 +66,7 @@ namespace CommonControls
         /// </returns>
         public bool Equals(DataItem other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
             {
                 return false;
             }
