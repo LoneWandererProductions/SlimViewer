@@ -394,8 +394,11 @@ namespace SlimViews
                     if (string.IsNullOrEmpty(SelectedExtension)) continue;
                 }
 
+                var name = Path.GetFileName(filePath);
+                var target = Path.Combine(_output, name);
+
                 // Save the modified image with the determined file extension
-                Helper.SaveImage(string.Empty, SelectedExtension, bitmap);
+                Helper.SaveImage(target, SelectedExtension, bitmap);
             }
         }
 

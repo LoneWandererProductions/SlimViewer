@@ -244,10 +244,7 @@ namespace SlimViews
         /// <returns>success Status</returns>
         internal static bool SaveImage(string path, string extension, Bitmap btm)
         {
-            if (string.Equals(extension, SlimViewerResources.JpgExtAlt, StringComparison.CurrentCultureIgnoreCase))
-                extension = ImagingResources.JpgExt;
-
-            path = Path.ChangeExtension(path, extension);
+            if (Path.GetExtension(path) != extension) path = Path.ChangeExtension(path, extension);
 
             switch (extension)
             {
