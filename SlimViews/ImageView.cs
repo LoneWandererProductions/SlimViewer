@@ -1133,17 +1133,17 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(SaveAction)));
             }
             catch (IOException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(SaveAction)));
             }
             catch (ExternalException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(SaveAction)));
             }
         }
 
@@ -1244,7 +1244,7 @@ namespace SlimViews
                     catch (FileHandlerException ex)
                     {
                         Trace.WriteLine(ex);
-                        _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                        _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(DeleteAction)));
                     }
 
                 LoadThumbs(SlimViewerRegister.CurrentFolder);
@@ -1269,7 +1269,7 @@ namespace SlimViews
                 catch (FileHandlerException ex)
                 {
                     Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                    _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(DeleteAction)));
                 }
 
                 Thumb.RemoveSingleItem(_currentId);
@@ -1311,7 +1311,7 @@ namespace SlimViews
             catch (FileHandlerException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(RenameAction)));
             }
 
             Observer[_currentId] = filePath;
@@ -1352,12 +1352,11 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(RotateBackwardAction)));
             }
             catch (OverflowException ex)
             {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(RotateBackwardAction)));
             }
         }
 
@@ -1375,12 +1374,12 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(RotateForwardAction)));
             }
             catch (OverflowException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(RotateForwardAction)));
             }
         }
 
@@ -1508,12 +1507,12 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ScaleAction)));
             }
             catch (OverflowException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ScaleAction)));
             }
         }
 
@@ -1559,17 +1558,17 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertAction)));
             }
             catch (IOException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertAction)));
             }
             catch (ExternalException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertAction)));
             }
         }
 
@@ -1663,7 +1662,7 @@ namespace SlimViews
             catch (FileHandlerException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(CleanTempAction)));
                 return;
             }
 
@@ -1824,7 +1823,7 @@ namespace SlimViews
             catch (PathTooLongException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ChangeImage)));
                 return;
             }
 
@@ -1904,7 +1903,7 @@ namespace SlimViews
             catch (ArgumentNullException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(CutImage)));
             }
         }
 
@@ -1922,7 +1921,7 @@ namespace SlimViews
             catch (ArgumentNullException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(EraseImage)));
             }
         }
 
@@ -2016,22 +2015,22 @@ namespace SlimViews
             catch (IOException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
             catch (NotSupportedException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
             catch (InvalidOperationException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
         }
 

@@ -520,22 +520,22 @@ namespace SlimViews
             catch (IOException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
             catch (NotSupportedException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
             catch (InvalidOperationException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
             }
 
             return null;

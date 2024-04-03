@@ -146,7 +146,7 @@ namespace SlimViews
         /// <summary>
         ///     The MessageBox caption Error (const). Value: "Error"
         /// </summary>
-        internal const string MessageError = "Error";
+        internal const string MessageError = "Error: ";
 
         /// <summary>
         ///     The MessageBox caption Success (const). Value: "Success"

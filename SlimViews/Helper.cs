@@ -87,17 +87,17 @@ namespace SlimViews
                 catch (ArgumentException ex)
                 {
                     Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                    _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
                 }
                 catch (IOException ex)
                 {
                     Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                    _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
                 }
                 catch (ExternalException ex)
                 {
                     Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                    _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
                 }
         }
 
@@ -156,12 +156,12 @@ namespace SlimViews
             catch (IOException ex)
             {
                 Trace.WriteLine(ex.ToString());
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
             }
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex.ToString());
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
             }
 
             if (difference == null) return;
@@ -186,12 +186,12 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(Resize)));
             }
             catch (InsufficientMemoryException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(Resize)));
             }
 
             return btm;
@@ -279,13 +279,12 @@ namespace SlimViews
         {
             try
             {
-                var btm = Render.GetBitmapFile(path);
-                return btm;
+                return Render.GetBitmapFile(path);
             }
             catch (IOException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(LoadImage)));
             }
 
             return null;
