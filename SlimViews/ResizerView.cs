@@ -350,18 +350,14 @@ namespace SlimViews
             double width = _width;
 
             if (!Directory.Exists(_input) || !Directory.Exists(_output))
-            {
                 // TODO: Show a message box indicating directories are missing
                 return;
-            }
 
             var files = FileHandleSearch.GetFilesByExtensionFullPath(_input, ImagingResources.Appendix, false);
 
             if (files.IsNullOrEmpty())
-            {
                 // TODO: Show a message box indicating no files found
                 return;
-            }
 
             foreach (var filePath in files)
             {
@@ -372,19 +368,16 @@ namespace SlimViews
                 if (bitmap == null) continue;
 
                 // Apply selected filter option
-                if (_selectedFilterOption != ImageFilter.None)
-                {
-                    bitmap = Helper.Filter(bitmap, _selectedFilterOption);
-                }
+                if (_selectedFilterOption != ImageFilter.None) bitmap = Helper.Filter(bitmap, _selectedFilterOption);
 
                 // Resize the image based on percentage or absolute dimensions
                 if (_isPercentagesChecked)
                 {
                     height = bitmap.Height * height / 100;
-                    width =bitmap.Width * width / 100;
+                    width = bitmap.Width * width / 100;
                 }
 
-                var iHeight= (int) height;
+                var iHeight = (int)height;
                 var iWidth = (int)width;
 
                 if (iHeight == 0 || iWidth == 0) continue;

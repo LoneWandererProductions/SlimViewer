@@ -135,6 +135,7 @@ namespace SlimViews
 
         /// <summary>
         ///     The jpg Extension Alt (const). Value:".jpeg"
+        ///     TODO use
         /// </summary>
         internal const string JpgExtAlt = ".jpeg";
 

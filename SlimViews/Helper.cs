@@ -87,17 +87,20 @@ namespace SlimViews
                 catch (ArgumentException ex)
                 {
                     Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
+                    _ = MessageBox.Show(ex.ToString(),
+                        string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
                 }
                 catch (IOException ex)
                 {
                     Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
+                    _ = MessageBox.Show(ex.ToString(),
+                        string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
                 }
                 catch (ExternalException ex)
                 {
                     Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
+                    _ = MessageBox.Show(ex.ToString(),
+                        string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
                 }
         }
 
@@ -156,12 +159,14 @@ namespace SlimViews
             catch (IOException ex)
             {
                 Trace.WriteLine(ex.ToString());
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
             }
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex.ToString());
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
             }
 
             if (difference == null) return;
