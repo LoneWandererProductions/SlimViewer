@@ -389,7 +389,7 @@ namespace SlimViews
 
                 if (iHeight == 0 || iWidth == 0) continue;
 
-                bitmap = Helper.Resize(bitmap, iHeight, iWidth);
+                bitmap = Helper.Resize(bitmap, iWidth, iHeight);
 
                 // Determine the file extension is set, if not use the current one
                 if (string.IsNullOrEmpty(SelectedExtension))

@@ -527,7 +527,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(nameof(CutBitmap));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -567,7 +567,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(nameof(CutBitmaps));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -598,7 +598,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(nameof(EraseRectangle));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -630,7 +630,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(nameof(FilterImage));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 

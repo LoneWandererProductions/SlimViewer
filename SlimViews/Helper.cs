@@ -177,7 +177,7 @@ namespace SlimViews
         /// <param name="height">The height.</param>
         /// <param name="width">The width.</param>
         /// <returns>Resized Image</returns>
-        internal static Bitmap Resize(Bitmap btm, int height, int width)
+        internal static Bitmap Resize(Bitmap btm, int width, int height)
         {
             try
             {
