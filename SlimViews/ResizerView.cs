@@ -42,7 +42,7 @@ namespace SlimViews
         /// <summary>
         ///     The height
         /// </summary>
-        private int _height;
+        private int _height = 100;
 
         /// <summary>
         ///     The input
@@ -92,7 +92,7 @@ namespace SlimViews
         /// <summary>
         ///     The width
         /// </summary>
-        private int _width;
+        private int _width = 100;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is percentages checked.
