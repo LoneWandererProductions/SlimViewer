@@ -146,7 +146,7 @@ namespace Imaging
         None = 0,
 
         /// <summary>
-        ///     The gray scale
+        ///     The gray scale filter
         /// </summary>
         GrayScale = 1,
 

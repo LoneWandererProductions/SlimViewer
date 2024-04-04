@@ -82,13 +82,22 @@ namespace Imaging
             var coordinate = new Coordinate2D(x, y, Width);
             var id = coordinate.Id;
 
-            if (id > CheckSum) return false;
+            if (id > CheckSum)
+            {
+                return false;
+            }
 
             foreach (var (key, value) in cifImage)
             {
-                if (!value.Contains(id)) continue;
+                if (!value.Contains(id))
+                {
+                    continue;
+                }
 
-                if (key == color) return false;
+                if (key == color)
+                {
+                    return false;
+                }
 
                 cifImage[key].Remove(id);
 
@@ -116,15 +125,22 @@ namespace Imaging
         /// <returns>Success Status</returns>
         public bool ChangeColor(Color oldColor, Color newColor)
         {
-            if (!cifImage.ContainsKey(oldColor)) return false;
+            if (!cifImage.ContainsKey(oldColor))
+            {
+                return false;
+            }
 
             var cache = cifImage[oldColor];
             cifImage.Remove(oldColor);
 
             if (cifImage.ContainsKey(newColor))
+            {
                 cifImage[newColor].AddRange(cache);
+            }
             else
+            {
                 cifImage.Add(newColor, cache);
+            }
 
             return true;
         }
@@ -136,14 +152,19 @@ namespace Imaging
         [return: MaybeNull]
         public Image GetImage()
         {
-            if (cifImage == null) return null;
+            if (cifImage == null)
+            {
+                return null;
+            }
 
             var image = new Bitmap(Height, Width);
             var dbm = DirectBitmap.GetInstance(image);
 
             foreach (var (key, value) in cifImage)
             foreach (var coordinate in value.Select(id => Coordinate2D.GetInstance(id, Width)))
+            {
                 dbm.SetPixel(coordinate.X, coordinate.Y, key);
+            }
 
             return null;
         }
@@ -163,7 +184,9 @@ namespace Imaging
                 info = string.Concat(info, ImagingResources.Color, color, ImagingResources.Spacing);
 
                 for (var i = 0; i < value.Count - 1; i++)
+                {
                     info = string.Concat(info, value[i], ImagingResources.Indexer);
+                }
 
                 info = string.Concat(info, value[value.Count], Environment.NewLine);
             }

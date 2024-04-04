@@ -251,7 +251,10 @@ namespace Imaging
         /// <exception cref="IOException">File not Found</exception>
         internal static Bitmap GetBitmapFile(string path)
         {
-            if (!string.IsNullOrEmpty(path) && File.Exists(path)) return new Bitmap(path, true);
+            if (!string.IsNullOrEmpty(path) && File.Exists(path))
+            {
+                return new Bitmap(path, true);
+            }
 
             var innerException = path != null
                 ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
@@ -338,7 +341,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(BitmapScaling), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -388,7 +391,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(BitmapScaling), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -433,7 +436,7 @@ namespace Imaging
         {
             if (files.IsNullOrEmpty())
             {
-                var innerException = new ArgumentNullException(nameof(files));
+                var innerException = new ArgumentNullException(string.Concat(nameof(CombineBitmap), ImagingResources.Spacing, nameof(files)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -471,11 +474,16 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
+                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
+                }
             }
 
-            foreach (var image in images) image.Dispose();
+            foreach (var image in images)
+            {
+                image.Dispose();
+            }
 
             //before return please Convert
             return btm;
@@ -494,13 +502,13 @@ namespace Imaging
         {
             if (original == null)
             {
-                var innerException = new ArgumentNullException(nameof(original));
+                var innerException = new ArgumentNullException(string.Concat(nameof(CombineBitmap), ImagingResources.Spacing, nameof(original)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
             if (overlay == null)
             {
-                var innerException = new ArgumentNullException(nameof(overlay));
+                var innerException = new ArgumentNullException(string.Concat(nameof(CombineBitmap), ImagingResources.Spacing, nameof(overlay)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -527,13 +535,13 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(CutBitmap));
+                var innerException = new ArgumentNullException(string.Concat(nameof(CutBitmaps), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
             if (height == 0 || width == 0)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(nameof(CutBitmap));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -567,7 +575,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(CutBitmaps));
+                var innerException = new ArgumentNullException(string.Concat(nameof(CutBitmaps), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -598,7 +606,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(EraseRectangle));
+                var innerException = new ArgumentNullException(string.Concat(nameof(EraseRectangle), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -630,7 +638,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(FilterImage));
+                var innerException = new ArgumentNullException(string.Concat(nameof(FilterImage), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -694,7 +702,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(BitmapImageToBitmap), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -720,7 +728,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(BitmapToBitmapImage), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -751,11 +759,14 @@ namespace Imaging
         internal static Bitmap RotateImage(Bitmap image, int degree)
         {
             //no need to do anything
-            if (degree is 360 or 0) return image;
+            if (degree is 360 or 0)
+            {
+                return image;
+            }
 
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(RotateImage), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -778,8 +789,8 @@ namespace Imaging
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
-                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
+                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
+                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
             }
 
             // Find the min and max x and y coordinates.
@@ -825,7 +836,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(CropImage), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -846,14 +857,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     top = x;
                     break;
                 }
 
-                if (top != -1) break;
+                if (top != -1)
+                {
+                    break;
+                }
             }
 
             //Get the Bottom
@@ -862,14 +879,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     bottom = x;
                     break;
                 }
 
-                if (bottom != -1) break;
+                if (bottom != -1)
+                {
+                    break;
+                }
             }
 
             //Get the left
@@ -878,14 +901,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     left = x;
                     break;
                 }
 
-                if (left != -1) break;
+                if (left != -1)
+                {
+                    break;
+                }
             }
 
             //Get the right
@@ -894,14 +923,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     right = x;
                     break;
                 }
 
-                if (right != -1) break;
+                if (right != -1)
+                {
+                    break;
+                }
             }
 
             first.X = left;
@@ -945,19 +980,19 @@ namespace Imaging
         {
             if (format == null)
             {
-                var innerException = new ArgumentNullException(nameof(format));
+                var innerException = new ArgumentNullException(string.Concat(nameof(SaveBitmap), ImagingResources.Spacing, nameof(format)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(SaveBitmap), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
             if (string.IsNullOrEmpty(path))
             {
-                var innerException = new ArgumentNullException(nameof(path));
+                var innerException = new ArgumentNullException(string.Concat(nameof(SaveBitmap), ImagingResources.Spacing, nameof(path)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -968,7 +1003,10 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory)) return;
+                if (!Directory.Exists(directory))
+                {
+                    return;
+                }
 
                 var newPath = path;
 
@@ -1003,7 +1041,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(ConvertWhiteToTransparent), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -1019,7 +1057,10 @@ namespace Imaging
                 var color = dbm.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
+                {
+                    continue;
+                }
 
                 //replace Value under the threshold with pure White
                 dbm.SetPixel(x, y, replacementColor);
@@ -1047,7 +1088,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(GetPixel), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -1070,13 +1111,16 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(GetPixel), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0) return GetPixel(image, point);
+            if (points.Count == 0)
+            {
+                return GetPixel(image, point);
+            }
 
             var r = 0;
             var g = 0;
@@ -1110,7 +1154,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(SetPixel), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -1134,7 +1178,7 @@ namespace Imaging
         {
             if (image == null)
             {
-                var innerException = new ArgumentNullException(nameof(image));
+                var innerException = new ArgumentNullException(string.Concat(nameof(SetPixel), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
             }
 
@@ -1167,16 +1211,28 @@ namespace Imaging
             var lst = new List<Point>();
 
             var minX = point.X - radius;
-            if (minX < 0) minX = 0;
+            if (minX < 0)
+            {
+                minX = 0;
+            }
 
             var maxX = point.X + radius;
-            if (maxX > width) maxX = width;
+            if (maxX > width)
+            {
+                maxX = width;
+            }
 
             var minY = point.Y - radius;
-            if (minY < 0) minY = 0;
+            if (minY < 0)
+            {
+                minY = 0;
+            }
 
             var maxY = point.Y + radius;
-            if (maxY > width) maxY = length;
+            if (maxY > width)
+            {
+                maxY = length;
+            }
 
             for (var x = minX; x <= maxX; x++)
             for (var y = minY; y <= maxY; y++)
@@ -1185,7 +1241,10 @@ namespace Imaging
 
                 var dist = Math.Sqrt(Math.Pow(calcPoint.X - point.X, 2) + Math.Pow(calcPoint.Y - point.Y, 2));
 
-                if (dist <= radius) lst.Add(calcPoint);
+                if (dist <= radius)
+                {
+                    lst.Add(calcPoint);
+                }
             }
 
             return lst;

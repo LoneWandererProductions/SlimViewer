@@ -22,6 +22,7 @@ namespace Mathematics
         internal static List<PolyTriangle> WorldMatrix(List<PolyTriangle> triangles, Transform transform)
         {
             var lst = new List<PolyTriangle>(triangles.Count);
+
             lst.AddRange(triangles.Select(triangle => new[]
             {
                 triangle[0] * Projection3DCamera.ModelMatrix(transform),
@@ -89,7 +90,10 @@ namespace Mathematics
 
                 //Todo add a better algorithm!
 
-                if (normal * comparer > 0) continue;
+                if (normal * comparer > 0)
+                {
+                    continue;
+                }
 
                 //Todo here we would add some shading and textures
 
