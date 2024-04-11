@@ -134,12 +134,6 @@ namespace SlimViews
         internal const string IconPathRed = @"System\red.png";
 
         /// <summary>
-        ///     The jpg Extension Alt (const). Value:".jpeg"
-        ///     TODO use
-        /// </summary>
-        internal const string JpgExtAlt = ".jpeg";
-
-        /// <summary>
         ///     The Cbz Extension (const). Value: ".cbz"
         /// </summary>
         internal const string CbzExt = ".cbz";
