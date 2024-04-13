@@ -62,12 +62,17 @@ namespace ExtendedSystemObjects
         /// <returns>if [true] item was added, else [false]</returns>
         public static bool AddDistinct<TValue>(this List<TValue> lst, TValue item)
         {
-            if (lst.Contains(item))
+            var hashSet = new HashSet<TValue>(lst);
+
+            // Check if the item already exists in the HashSet
+            if (hashSet.Contains(item))
             {
-                return false;
+                return false; // Item already exists, no need to add
             }
 
+            // Add the item to the list since it doesn't already exist
             lst.Add(item);
+
             return true;
         }
 
@@ -84,7 +89,7 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
-        ///     Remove Contents of a List from another
+        ///     Remove Contents of a List from ancurrentSequence
         /// </summary>
         /// <typeparam name="TValue">Generic Object Type</typeparam>
         /// <param name="lst">Base list we remove from</param>
@@ -181,6 +186,29 @@ namespace ExtendedSystemObjects
                 var index = RandomNumberGenerator.GetInt32(i, lst.Count);
                 (lst[index], lst[i]) = (lst[i], lst[index]);
             }
+        }
+
+        /// <summary>
+        ///     Converts a list to dictionary.
+        ///     but only if it implements the IIdHandling Interface
+        /// </summary>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <typeparam name="TId">The type of the identifier.</typeparam>
+        /// <param name="lst">List of generic Objects.</param>
+        /// <returns>
+        ///     Dicitionary with an conversion from the attribute Id as Key
+        /// </returns>
+        public static Dictionary<TId, TValue> ToDictionaryId<TValue, TId>(this IList<TValue> lst)
+            where TValue : IIdHandling<TId>
+        {
+            var dct = new Dictionary<TId, TValue>();
+
+            foreach (var item in lst)
+            {
+                dct.Add(item.Id, item);
+            }
+
+            return dct;
         }
     }
 }
