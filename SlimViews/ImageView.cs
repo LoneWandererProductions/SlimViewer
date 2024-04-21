@@ -1078,7 +1078,7 @@ namespace SlimViews
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            _btm = _cif.GetCifFile(pathObj.FilePath);
+            _btm = _cif.GetImageFromCif(pathObj.FilePath);
 
             if (_btm == null) return;
 
@@ -1104,8 +1104,8 @@ namespace SlimViews
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            if (Compress) _cif.CompressedToCifFile(_btm, pathObj.FilePath);
-            else _cif.SaveToCifFile(_btm, pathObj.FilePath);
+            if (Compress) _cif.GenerateCompressedCifFromBitmap(_btm, pathObj.FilePath);
+            else _cif.SaveBitmapToCifFile(_btm, pathObj.FilePath);
         }
 
         /// <summary>

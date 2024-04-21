@@ -43,25 +43,91 @@ namespace Imaging
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
-        /// <param name="image">The image.</param>
-        public Cif(Bitmap image)
+        /// <param name="path">The path.</param>
+        /// <param name="imageFormat">The image format.</param>
+        /// <exception cref="ArgumentNullException">Interface was null. - ICustomImageFormat</exception>
+        /// <exception cref="ArgumentException">Path was empty. - path</exception>
+        public Cif(string path, ICustomImageFormat imageFormat)
         {
-            var format = CifProcessing.ConvertToCif(image);
+            if (imageFormat == null)
+            {
+                throw new ArgumentNullException(nameof(imageFormat), ImagingResources.ErrorInterface);
+            }
 
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException(ImagingResources.ErrorPath, nameof(path));
+            }
+
+            var cif = imageFormat.LoadCif(path);
+
+            Height = cif.Height;
+            Width = cif.Width;
             Compressed = false;
-            Height = image.Height;
-            Width = image.Width;
-            CifImage = format;
-            NumberOfColors = format.Count;
+
+
+            CifImage = cif.CifImage;
+            NumberOfColors = cif.NumberOfColors;
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
-        public Cif()
+        /// <param name="image">The image.</param>
+        /// <param name="imageFormat">The custom image format.</param>
+        /// <exception cref="ArgumentNullException">Image was null. - image</exception>
+        public Cif(Bitmap image, ICustomImageFormat imageFormat = null)
         {
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorImage);
+            }
+
+            if (imageFormat != null)
+            {
+                ImageFormat = imageFormat;
+            }
+
+            Height = image.Height;
+            Width = image.Width;
+            Compressed = false;
+
+            Dictionary<Color, SortedSet<int>> cif;
+
+            if (imageFormat == null)
+            {
+                cif = CifProcessing.ConvertToCifFromBitmap(image);
+                CifImage = cif;
+                NumberOfColors = cif.Count;
+                return;
+            }
+
+            cif = imageFormat.GenerateCifFromBitmap(image).CifImage;
+            CifImage = cif;
+            NumberOfColors = cif.Count;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Cif" /> class.
+        /// </summary>
+        /// <param name="imageFormat">The custom image format.</param>
+        public Cif(ICustomImageFormat imageFormat = null)
+        {
+            if (imageFormat != null)
+            {
+                ImageFormat = imageFormat;
+            }
+
             Compressed = false;
         }
+
+        /// <summary>
+        ///     Gets or sets the image format.
+        /// </summary>
+        /// <value>
+        ///     The image format.
+        /// </value>
+        public ICustomImageFormat ImageFormat { get; }
 
         /// <summary>
         ///     The cif image
@@ -115,6 +181,14 @@ namespace Imaging
         ///     The number of colors.
         /// </value>
         public int NumberOfColors { get; init; }
+
+        /// <summary>
+        ///     Gets all the colors of an Image.
+        /// </summary>
+        /// <value>
+        ///     A list of colors.
+        /// </value>
+        public List<Color> Colors => _cifImage.Keys.ToList();
 
         /// <summary>
         ///     Changes the color.
@@ -195,12 +269,15 @@ namespace Imaging
         ///     Gets the color, it is quite a fast way, if the image is big and the color count is low!
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>Color at this point or null, if id was completely wrong.</returns>
-        public Color? GetColor(int id)
+        /// <returns>
+        ///     Color at this point or throw an exception, if id was completely wrong.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">Interface was null. - id</exception>
+        public Color GetColor(int id)
         {
             if (id < 0 || id > Height * Width)
             {
-                return null;
+                throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
             }
 
             // Check if sorting is required and perform lazy loading
@@ -218,7 +295,7 @@ namespace Imaging
                 }
             }
 
-            return null;
+            throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
         }
 
         /// <summary>
