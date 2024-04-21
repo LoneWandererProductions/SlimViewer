@@ -42,7 +42,10 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DWorld);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
 
             //TODO something goes wrong here!
@@ -63,7 +66,10 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DCamera);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
 
             cache = ProjectionRaster.Clipping(cache, transform.Position);
@@ -71,7 +77,10 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DClipping);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
 
             cache = transform.DisplayType switch
@@ -84,12 +93,18 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3D);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
 
             Trace.WriteLine(MathResources.Debug3DTransformation);
 
-            if (Debug) CreateDump(transform);
+            if (Debug)
+            {
+                CreateDump(transform);
+            }
 
             return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height,
                 transform.DisplayType);

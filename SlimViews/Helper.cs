@@ -221,6 +221,7 @@ namespace SlimViews
                     case ImageFilter.BlackAndWhite:
                     case ImageFilter.Polaroid:
                     case ImageFilter.GrayScale:
+                    case ImageFilter.Contour:
                         return Render.FilterImage(btm, filter);
                     default:
                         return btm;
@@ -249,8 +250,7 @@ namespace SlimViews
         /// <returns>success Status</returns>
         internal static bool SaveImage(string path, string extension, Bitmap btm)
         {
-            if (Path.GetExtension(path) == ImagingResources.JpegExt)
-                path = Path.ChangeExtension(path, ImagingResources.JpgExt);
+            if (Path.GetExtension(path) == ImagingResources.JpegExt) path = Path.ChangeExtension(path, ImagingResources.JpgExt);
             if (Path.GetExtension(path) != extension) path = Path.ChangeExtension(path, extension);
 
             switch (extension)

@@ -237,6 +237,11 @@ namespace SlimViews
         private ICommand _polaroidCommand;
 
         /// <summary>
+        /// The contour command
+        /// </summary>
+        private ICommand _contourCommand;
+
+        /// <summary>
         ///     The previous command
         /// </summary>
         private ICommand _previousCommand;
@@ -687,28 +692,28 @@ namespace SlimViews
             _saveCommand ??= new DelegateCommand<object>(SaveAction, CanExecute);
 
         /// <summary>
-        ///     Gets the sepia command.
+        ///     Gets the sepia Filter.
         /// </summary>
         /// <value>
-        ///     The sepia command.
+        ///     The sepia Filter.
         /// </value>
         public ICommand SepiaCommand =>
             _sepiaCommand ??= new DelegateCommand<object>(SepiaAction, CanExecute);
 
         /// <summary>
-        ///     Gets the gray scale command.
+        ///     Gets the gray scale Filter.
         /// </summary>
         /// <value>
-        ///     The gray scale command.
+        ///     The gray scale Filter.
         /// </value>
         public ICommand GrayScaleCommand =>
             _grayScaleCommand ??= new DelegateCommand<object>(GrayScaleAction, CanExecute);
 
         /// <summary>
-        ///     Gets the gray scale command.
+        ///     Gets the gray scale Filter.
         /// </summary>
         /// <value>
-        ///     The gray scale command.
+        ///     The gray scale Filter.
         /// </value>
         public ICommand BlackAndWhite =>
             _blackAndWhite ??= new DelegateCommand<object>(BlackAndWhiteAction, CanExecute);
@@ -723,13 +728,22 @@ namespace SlimViews
             _invertCommand ??= new DelegateCommand<object>(InvertAction, CanExecute);
 
         /// <summary>
-        ///     Gets the polaroid command.
+        ///     Gets the polaroid Filter.
         /// </summary>
         /// <value>
-        ///     The polaroid command.
+        ///     The polaroid Filter.
         /// </value>
         public ICommand PolaroidCommand =>
             _polaroidCommand ??= new DelegateCommand<object>(PolaroidAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the Contour Filter.
+        /// </summary>
+        /// <value>
+        ///     The Contour Filter.
+        /// </value>
+        public ICommand ContourCommand =>
+            _contourCommand ??= new DelegateCommand<object>(ContourAction, CanExecute);
 
         /// <summary>
         ///     Gets the compare command.
@@ -1104,8 +1118,8 @@ namespace SlimViews
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            if (Compress) _cif.GenerateCompressedCifFromBitmap(_btm, pathObj.FilePath);
-            else _cif.SaveBitmapToCifFile(_btm, pathObj.FilePath);
+            if (Compress) _cif.GenerateCifCompressedFromBitmap(_btm, pathObj.FilePath);
+            else _cif.GenerateBitmapToCifFile(_btm, pathObj.FilePath);
         }
 
         /// <summary>
@@ -1218,6 +1232,16 @@ namespace SlimViews
         private void PolaroidAction(object obj)
         {
             var btm = Helper.Filter(_btm, ImageFilter.Polaroid);
+            Bmp = btm.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Contours the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ContourAction(object obj)
+        {
+            var btm = Helper.Filter(_btm, ImageFilter.Contour);
             Bmp = btm.ToBitmapImage();
         }
 
