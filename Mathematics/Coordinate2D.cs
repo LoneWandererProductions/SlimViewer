@@ -180,7 +180,7 @@ namespace Mathematics
         /// <returns>The id of the coordinate</returns>
         private static int CalculateId(int x, int y, int width)
         {
-            return (y * width) + x;
+            return y * width + x;
         }
 
         /// <summary>
