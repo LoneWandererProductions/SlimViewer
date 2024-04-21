@@ -100,6 +100,11 @@ namespace SlimViews
         private bool _compress;
 
         /// <summary>
+        ///     The contour command
+        /// </summary>
+        private ICommand _contourCommand;
+
+        /// <summary>
         ///     The convert cif command.
         /// </summary>
         private ICommand _convertCommandCif;
@@ -235,11 +240,6 @@ namespace SlimViews
         ///     The polaroid command
         /// </summary>
         private ICommand _polaroidCommand;
-
-        /// <summary>
-        /// The contour command
-        /// </summary>
-        private ICommand _contourCommand;
 
         /// <summary>
         ///     The previous command
@@ -1236,7 +1236,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Contours the action.
+        ///     Contours the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ContourAction(object obj)

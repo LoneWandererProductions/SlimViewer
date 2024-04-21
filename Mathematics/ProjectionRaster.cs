@@ -90,10 +90,7 @@ namespace Mathematics
 
                 //Todo add a better algorithm!
 
-                if (normal * comparer > 0)
-                {
-                    continue;
-                }
+                if (normal * comparer > 0) continue;
 
                 //Todo here we would add some shading and textures
 
