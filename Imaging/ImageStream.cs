@@ -251,7 +251,10 @@ namespace Imaging
         /// <exception cref="IOException">File not Found</exception>
         internal static Bitmap GetBitmapFile(string path)
         {
-            if (!string.IsNullOrEmpty(path) && File.Exists(path)) return new Bitmap(path, true);
+            if (!string.IsNullOrEmpty(path) && File.Exists(path))
+            {
+                return new Bitmap(path, true);
+            }
 
             var innerException = path != null
                 ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
@@ -477,11 +480,16 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
+                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
+                }
             }
 
-            foreach (var image in images) image.Dispose();
+            foreach (var image in images)
+            {
+                image.Dispose();
+            }
 
             //before return please Convert
             return btm;
@@ -679,7 +687,6 @@ namespace Imaging
                     break;
                 case ImageFilter.Contour:
                     return ApplySobel(image);
-                    break;
                 default:
                     return null;
             }
@@ -772,7 +779,10 @@ namespace Imaging
         internal static Bitmap RotateImage(Bitmap image, int degree)
         {
             //no need to do anything
-            if (degree is 360 or 0) return image;
+            if (degree is 360 or 0)
+            {
+                return image;
+            }
 
             if (image == null)
             {
@@ -801,8 +811,8 @@ namespace Imaging
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
-                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
+                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
+                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
             }
 
             // Find the min and max x and y coordinates.
@@ -871,14 +881,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     top = x;
                     break;
                 }
 
-                if (top != -1) break;
+                if (top != -1)
+                {
+                    break;
+                }
             }
 
             //Get the Bottom
@@ -887,14 +903,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     bottom = x;
                     break;
                 }
 
-                if (bottom != -1) break;
+                if (bottom != -1)
+                {
+                    break;
+                }
             }
 
             //Get the left
@@ -903,14 +925,20 @@ namespace Imaging
                 for (var y = image.Height - 1; y >= 0; --y)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     left = x;
                     break;
                 }
 
-                if (left != -1) break;
+                if (left != -1)
+                {
+                    break;
+                }
             }
 
             //Get the right
@@ -919,14 +947,20 @@ namespace Imaging
                 for (var y = 0; y < image.Height; y++)
                 {
                     var color = dbm.GetPixel(x, y);
-                    if (CheckTransparent(color)) continue;
+                    if (CheckTransparent(color))
+                    {
+                        continue;
+                    }
 
                     // this pixel is either not white or not fully transparent
                     right = x;
                     break;
                 }
 
-                if (right != -1) break;
+                if (right != -1)
+                {
+                    break;
+                }
             }
 
             first.X = left;
@@ -999,7 +1033,10 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory)) return;
+                if (!Directory.Exists(directory))
+                {
+                    return;
+                }
 
                 var newPath = path;
 
@@ -1051,7 +1088,10 @@ namespace Imaging
                 var color = dbm.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
+                {
+                    continue;
+                }
 
                 //replace Value under the threshold with pure White
                 dbm.SetPixel(x, y, replacementColor);
@@ -1074,7 +1114,8 @@ namespace Imaging
         /// <returns>
         ///     The Color at the point
         /// </returns>
-        /// <exception cref="ArgumentNullException">nameof(image)</exception>
+        /// <exception cref="System.ArgumentNullException">Image was null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Point was out of bound.</exception>
         internal static Color GetPixel(Bitmap image, Point point)
         {
             if (image == null)
@@ -1082,6 +1123,11 @@ namespace Imaging
                 var innerException =
                     new ArgumentNullException(string.Concat(nameof(GetPixel), ImagingResources.Spacing, nameof(image)));
                 throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+            }
+
+            if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
+                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
             }
 
             //use our new Format
@@ -1098,36 +1144,44 @@ namespace Imaging
         /// <returns>
         ///     The Color at the Point
         /// </returns>
-        /// <exception cref="ArgumentNullException">nameof(image)</exception>
+        /// <exception cref="System.ArgumentNullException">image was null.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     radius or point is out of bounds.
+        /// </exception>
         internal static Color GetPixel(Bitmap image, Point point, int radius)
         {
             if (image == null)
             {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(GetPixel), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorWrongParameters);
+            }
+
+            if (radius < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
+            }
+
+            if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
+                throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutofBounds);
             }
 
             var points = GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0) return GetPixel(image, point);
+            if (points.Count == 0)
+            {
+                return GetPixel(image, point);
+            }
 
-            var r = 0;
-            var g = 0;
-            var b = 0;
+            int redSum = 0, greenSum = 0, blueSum = 0;
 
             foreach (var color in points.Select(pointSingle => GetPixel(image, pointSingle)))
             {
-                r += color.R;
-                g += color.G;
-                b += color.B;
+                redSum += color.R;
+                greenSum += color.G;
+                blueSum += color.B;
             }
 
-            r /= points.Count;
-            g /= points.Count;
-            b /= points.Count;
-
-            return Color.FromArgb(r, g, b);
+            return Color.FromArgb(redSum / points.Count, greenSum / points.Count, blueSum / points.Count);
         }
 
         /// <summary>
@@ -1180,7 +1234,31 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Applies the sobel.
+        /// Pixelates the specified image.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="blockSize">Size of the block.</param>
+        /// <returns>Pixelated Image</returns>
+        internal static Bitmap Pixelate(Bitmap image, int blockSize)
+        {
+            // Iterate over each block of pixels
+            for (var y = 0; y < image.Height; y += blockSize)
+            {
+                for (var x = 0; x < image.Width; x += blockSize)
+                {
+                    var point = new Point(x, y);
+
+                    var color = GetPixel(image, point, blockSize);
+
+                    SetPixel(image, point, color);
+                }
+            }
+
+            return image;
+        }
+
+        /// <summary>
+        ///     Applies the Sobel.
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Contour of an Image</returns>
@@ -1201,31 +1279,37 @@ namespace Imaging
 
             // Apply Sobel operator to each pixel in the image
             for (var x = 1; x < greyscaleImage.Width - 1; x++)
-            for (var y = 1; y < greyscaleImage.Height - 1; y++)
             {
-                var gx = 0;
-                var gy = 0;
-
-                // Convolve the image with the Sobel masks
-                for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+                for (var y = 1; y < greyscaleImage.Height - 1; y++)
                 {
-                    var pixel = dbmBase.GetPixel(x + i, y + j);
-                    int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
-                    gx += sobelX[i + 1, j + 1] * grayValue;
-                    gy += sobelY[i + 1, j + 1] * grayValue;
+                    var gx = 0;
+                    var gy = 0;
+
+                    // Convolve the image with the Sobel masks
+                    for (var i = -1; i <= 1; i++)
+                    {
+                        for (var j = -1; j <= 1; j++)
+                        {
+                            var pixel = dbmBase.GetPixel(x + i, y + j);
+                            int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
+                            gx += sobelX[i + 1, j + 1] * grayValue;
+                            gy += sobelY[i + 1, j + 1] * grayValue;
+                        }
+                    }
+
+                    // Calculate gradient magnitude
+                    var magnitude = (int)Math.Sqrt((gx * gx) + (gy * gy));
+
+                    // Normalize the magnitude to fit within the range of 0-255
+                    magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
+                    magnitude = Math.Min(255, Math.Max(0, magnitude));
+
+                    // Set the result pixel color
+                    dbmResult.SetPixel(x, y, Color.FromArgb(magnitude, magnitude, magnitude));
                 }
-
-                // Calculate gradient magnitude
-                var magnitude = (int)Math.Sqrt(gx * gx + gy * gy);
-
-                // Normalize the magnitude to fit within the range of 0-255
-                magnitude = (int)(magnitude / Math.Sqrt(2)); // Divide by sqrt(2) for normalization
-                magnitude = Math.Min(255, Math.Max(0, magnitude));
-
-                // Set the result pixel color
-                dbmResult.SetPixel(x, y, Color.FromArgb(magnitude, magnitude, magnitude));
             }
+
+            dbmBase.Dispose();
 
             return dbmResult.Bitmap;
         }
@@ -1243,39 +1327,30 @@ namespace Imaging
 
         /// <summary>
         ///     Gets all points in a Circle.
+        ///     Uses the  Bresenham's circle drawing algorithm.
+        ///     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
         /// </summary>
-        /// <param name="point">The point.</param>
+        /// <param name="center">The center point.</param>
         /// <param name="radius">The radius.</param>
         /// <param name="length">The length.</param>
         /// <param name="width">The height.</param>
         /// <returns>List of Points</returns>
-        private static List<Point> GetCirclePoints(Point point, int radius, int length, int width)
+        private static List<Point> GetCirclePoints(Point center, int radius, int length, int width)
         {
-            var lst = new List<Point>();
+            var points = new List<Point>();
 
-            var minX = point.X - radius;
-            if (minX < 0) minX = 0;
-
-            var maxX = point.X + radius;
-            if (maxX > width) maxX = width;
-
-            var minY = point.Y - radius;
-            if (minY < 0) minY = 0;
-
-            var maxY = point.Y + radius;
-            if (maxY > width) maxY = length;
-
-            for (var x = minX; x <= maxX; x++)
-            for (var y = minY; y <= maxY; y++)
+            for (var x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
             {
-                var calcPoint = new Point(x, y);
+                var dx = x - center.X;
+                var height = (int)Math.Sqrt((radius * radius) - (dx * dx));
 
-                var dist = Math.Sqrt(Math.Pow(calcPoint.X - point.X, 2) + Math.Pow(calcPoint.Y - point.Y, 2));
-
-                if (dist <= radius) lst.Add(calcPoint);
+                for (var y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
+                {
+                    points.Add(new Point(x, y));
+                }
             }
 
-            return lst;
+            return points;
         }
     }
 }

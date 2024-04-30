@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -163,7 +162,10 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
-            for (var i = y; i < height; i++) SetPixel(x, i, color);
+            for (var i = y; i < height; i++)
+            {
+                SetPixel(x, i, color);
+            }
         }
 
         /// <summary>
@@ -177,7 +179,10 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawHorizontalLine(int x, int y, int length, Color color)
         {
-            for (var i = x; i < length; i++) SetPixel(i, y, color);
+            for (var i = x; i < length; i++)
+            {
+                SetPixel(i, y, color);
+            }
         }
 
         /// <summary>
@@ -192,11 +197,15 @@ namespace Imaging
         public void DrawRectangle(int x, int y, int width, int height, Color color)
         {
             if (width > height)
+            {
                 Parallel.For(x, height,
                     index => DrawVerticalLine(index, y, width, color));
+            }
             else
+            {
                 Parallel.For(y, width,
                     index => DrawHorizontalLine(x, index, height, color));
+            }
         }
 
         /// <summary>
@@ -206,7 +215,10 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetArea(IEnumerable<int> idList, Color color)
         {
-            foreach (var index in idList) _bits[index] = color.ToArgb();
+            foreach (var index in idList)
+            {
+                _bits[index] = color.ToArgb();
+            }
         }
 
         /// <summary>
@@ -217,7 +229,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetPixel(int x, int y, Color color)
         {
-            var index = x + y * Width;
+            var index = x + (y * Width);
             _bits[index] = color.ToArgb();
         }
 
@@ -229,7 +241,7 @@ namespace Imaging
         /// <returns>Color of the Pixel</returns>
         public Color GetPixel(int x, int y)
         {
-            var index = x + y * Width;
+            var index = x + (y * Width);
             var col = _bits[index];
             return Color.FromArgb(col);
         }
@@ -238,10 +250,12 @@ namespace Imaging
         ///     Gets the color list.
         /// </summary>
         /// <returns>The Image as a list of Colors</returns>
-        [return: MaybeNull]
         public Span<Color> GetColors()
         {
-            if (_bits == null) return null;
+            if (_bits == null)
+            {
+                return null;
+            }
 
             var length = Height * Width;
 
@@ -268,7 +282,10 @@ namespace Imaging
         {
             var info = string.Empty;
 
-            for (var i = 0; i < _bits.Length - 1; i++) info = string.Concat(info, _bits[i], ImagingResources.Indexer);
+            for (var i = 0; i < _bits.Length - 1; i++)
+            {
+                info = string.Concat(info, _bits[i], ImagingResources.Indexer);
+            }
 
             return string.Concat(info, ImagingResources.Spacing, _bits[_bits.Length]);
         }
@@ -293,7 +310,10 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (Disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
