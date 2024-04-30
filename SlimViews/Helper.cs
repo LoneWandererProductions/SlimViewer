@@ -229,7 +229,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Pixelate the specified bitmap.
+        ///     Pixelate the specified bitmap.
         /// </summary>
         /// <param name="btm">The bitmap.</param>
         /// <param name="pixelWidth">Width of the pixel.</param>

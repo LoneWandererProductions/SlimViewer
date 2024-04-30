@@ -238,6 +238,16 @@ namespace SlimViews
         private ICommand _openCommandCif;
 
         /// <summary>
+        ///     The pixelate command
+        /// </summary>
+        private ICommand _pixelateCommand;
+
+        /// <summary>
+        ///     The pixel width
+        /// </summary>
+        private int _pixelWidth;
+
+        /// <summary>
         ///     The polaroid command
         /// </summary>
         private ICommand _polaroidCommand;
@@ -311,11 +321,6 @@ namespace SlimViews
         private ICommand _similarCommand;
 
         /// <summary>
-        /// The pixelate command
-        /// </summary>
-        private ICommand _pixelateCommand;
-
-        /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
         ///     Configured from Register
         /// </summary>
@@ -335,11 +340,6 @@ namespace SlimViews
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
-
-        /// <summary>
-        /// The pixel width
-        /// </summary>
-        private int _pixelWidth;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -466,10 +466,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the width of the pixel.
+        ///     Gets or sets the width of the pixel.
         /// </summary>
         /// <value>
-        /// The width of the pixel.
+        ///     The width of the pixel.
         /// </value>
         public int PixelWidth
         {
@@ -777,10 +777,10 @@ namespace SlimViews
             _contourCommand ??= new DelegateCommand<object>(ContourAction, CanExecute);
 
         /// <summary>
-        /// Gets the pixelate.
+        ///     Gets the pixelate.
         /// </summary>
         /// <value>
-        /// The pixelate.
+        ///     The pixelate.
         /// </value>
         public ICommand Pixelate =>
             _pixelateCommand ??= new DelegateCommand<object>(PixelateAction, CanExecute);
@@ -1286,7 +1286,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Pixelate action.
+        ///     Pixelate action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void PixelateAction(object obj)
