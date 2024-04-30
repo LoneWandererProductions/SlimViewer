@@ -213,20 +213,7 @@ namespace SlimViews
         {
             try
             {
-                switch (filter)
-                {
-                    case ImageFilter.None:
-                        return btm;
-                    case ImageFilter.Invert:
-                    case ImageFilter.Sepia:
-                    case ImageFilter.BlackAndWhite:
-                    case ImageFilter.Polaroid:
-                    case ImageFilter.GrayScale:
-                    case ImageFilter.Contour:
-                        return Render.FilterImage(btm, filter);
-                    default:
-                        return btm;
-                }
+                return filter == ImageFilter.None ? btm : Render.FilterImage(btm, filter);
             }
             catch (ArgumentException ex)
             {
