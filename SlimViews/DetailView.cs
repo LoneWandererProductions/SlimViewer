@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using CommonControls;
+using CommonDialogs;
 using ImageCompare;
 using Imaging;
 using ViewModel;

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/FileIoHandler.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/FileIoHandler.cs
  * PURPOSE:     Extension for File Dialogs, some smaller extras and Extensions like a Folder View
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -13,7 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Win32;
 
-namespace CommonControls
+namespace CommonDialogs
 {
     /// <summary>
     ///     Loads all the basic Files on StartUp
@@ -27,7 +27,10 @@ namespace CommonControls
         /// <returns>Selected Path</returns>
         public static string ShowFolder(string folder = "")
         {
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var browser = new FolderBrowser(folder);
             _ = browser.ShowDialog();
@@ -38,13 +41,32 @@ namespace CommonControls
         /// <summary>
         ///     Shows the login screen.
         /// </summary>
-        /// <returns>Connection String</returns>
-        public static string ShowLoginScreen()
+        /// <returns>Sql Connection String Builder</returns>
+        public static SqlConnect ShowLoginScreen()
         {
             var login = new SqlLogin();
             _ = login.ShowDialog();
 
-            return login.View.ConnectionString;
+            return login.View.Connection;
+        }
+
+        /// <summary>
+        ///     Shows the input box.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="description">The description.</param>
+        /// <returns>Input string</returns>
+        public static string ShowInputBox(string header, string description)
+        {
+            var input = new InputBox(header, description);
+            _ = input.ShowDialog();
+
+            if (string.IsNullOrEmpty(input.InputText))
+            {
+                return string.Empty;
+            }
+
+            return input.InputText;
         }
 
         /// <summary>
@@ -58,13 +80,22 @@ namespace CommonControls
         [return: MaybeNull]
         public static PathObject HandleFileOpen(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var openFile = new OpenFileDialog { Filter = appendage, InitialDirectory = folder };
 
-            if (openFile.ShowDialog() != true) return null;
+            if (openFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = openFile.FileName;
 
@@ -82,13 +113,22 @@ namespace CommonControls
         [return: MaybeNull]
         public static PathObject HandleFileSave(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var saveFile = new SaveFileDialog { Filter = appendage, InitialDirectory = folder, OverwritePrompt = true };
 
-            if (saveFile.ShowDialog() != true) return null;
+            if (saveFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = saveFile.FileName;
 

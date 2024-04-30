@@ -14,36 +14,6 @@ namespace CommonControls
     internal static class ComCtlResources
     {
         /// <summary>
-        ///     The path (const). Value: "\\".
-        /// </summary>
-        internal const string Path = "\\";
-
-        /// <summary>
-        ///     The path element (const). Value: @"\".
-        /// </summary>
-        internal const string PathElement = @"\";
-
-        /// <summary>
-        ///     The Explorer (const). Value: "Explorer.exe".
-        /// </summary>
-        internal const string Explorer = "Explorer.exe";
-
-        /// <summary>
-        ///     The Image for the drive (const). @"System\drive.png".
-        /// </summary>
-        internal const string DriveImage = @"System\drive.png";
-
-        /// <summary>
-        ///     The Image for the folder (const). Value: = @"System\folder.png".
-        /// </summary>
-        internal const string FolderImage = @"System\folder.png";
-
-        /// <summary>
-        ///     The error conversion (const). Value: "Could not convert back".
-        /// </summary>
-        internal const string ErrorConversion = "Could not convert back";
-
-        /// <summary>
         ///     Error, wrong parameters (const). Value: "Wrong Arguments provided".
         /// </summary>
         internal const string ErrorWrongParameters = "Wrong Arguments provided: ";
@@ -52,21 +22,6 @@ namespace CommonControls
         ///     Image add, needed for the Image Name (const). Value: "T".
         /// </summary>
         internal const string ImageAdd = "T";
-
-        /// <summary>
-        ///     File Extension. Value: ".*".
-        /// </summary>
-        internal const string Appendix = ".*";
-
-        /// <summary>
-        ///     The Header for the Directory (const). Value: "Directory Name?".
-        /// </summary>
-        internal const string HeaderDirectoryName = "Directory Name?";
-
-        /// <summary>
-        ///     The description Text (const). Value: "Name of the Folder:".
-        /// </summary>
-        internal const string TextNameFolder = "Name of the Folder:";
 
         /// <summary>
         ///     The unique Caption Text (const). Value: "Name was not unique".
@@ -84,9 +39,9 @@ namespace CommonControls
         internal const string UniqueMessageStart = "Start Entry was not empty but unique was set.";
 
         /// <summary>
-        ///     The Datalist Entry (const). Value: "Empty".
+        ///     The Data list Entry (const). Value: "Empty".
         /// </summary>
-        internal const string DatalistEntry = "Empty";
+        internal const string DataListEntry = "Empty";
 
         /// <summary>
         ///     The Context Menu Deselect (const). Value: "Deselect".

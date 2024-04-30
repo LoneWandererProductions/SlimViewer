@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/FolderBrowser.xaml.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/FolderBrowser.xaml.cs
  * PURPOSE:     Old FolderBrowser restored
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -13,7 +13,7 @@ using System.Windows;
 
 //TODO add basic Folder Infos
 
-namespace CommonControls
+namespace CommonDialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

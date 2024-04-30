@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonControls
- * FILE:        CommonControls/SqlConnect.cs
+ * FILE:        CommonDialogs/SqlConnect.cs
  * PURPOSE:     Class that will build a sql Connection string in the future
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCE:      https://stackoverflow.com/questions/55590869/how-to-protect-strings-without-securestring
@@ -14,12 +14,15 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-namespace CommonControls
+using System.Diagnostics;
+using System.Text;
+
+namespace CommonDialogs
 {
     /// <summary>
     ///     The Sql connection string class
     /// </summary>
-    internal sealed class SqlConnect
+    public sealed class SqlConnect
     {
         /// <summary>
         ///     The persist security information, for Security reasons always deactivated
@@ -30,8 +33,8 @@ namespace CommonControls
         /// <summary>
         ///     The persist information string configuration for the connection string.
         /// </summary>
-        private readonly string _persistInfo =
-            $"PersistSecurity Info= {PersistSecurityInfo};";
+        private readonly string _persistInfo = string.Concat(ComCtlResources.DbPersistSecurityInfo, PersistSecurityInfo,
+            ComCtlResources.DbFin);
 
         /// <summary>
         ///     The IntegratedSecurity string for the connection string
@@ -58,52 +61,71 @@ namespace CommonControls
 
         /// <summary>
         ///     Gets or sets the server.
+        ///     Set to be changed External
         /// </summary>
         /// <value>
         ///     The server.
         /// </value>
-        internal string Server { get; set; }
+        public string Server { get; set; }
 
         /// <summary>
         ///     Gets or sets the database.
+        ///     Set to be changed External
         /// </summary>
         /// <value>
         ///     The database.
         /// </value>
-        internal string Database { get; set; }
+        public string Database { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [trust server certificate].
+        ///     Set to be changed External, sometimes this can cause Problems, if it is not supported by the server.
         /// </summary>
         /// <value>
         ///     <c>true</c> if [trust server certificate]; otherwise, <c>false</c>.
         /// </value>
-        internal bool TrustServerCertificate { get; set; }
+        public bool TrustServerCertificate { get; set; }
 
         /// <summary>
-        ///     Gets the connection string to a SQL Server.
+        ///     Gets the connection string.
         /// </summary>
-        /// <returns>Complete Connection string based on chosen Connection Typ</returns>
-        internal string GetConnectionString()
+        /// <param name="includeDatabaseName">if set to <c>true</c> [include database name].</param>
+        /// <returns>Connection String</returns>
+        public string GetConnectionString(bool includeDatabaseName)
         {
-            //_security = IntegratedSecurity ? @"Integrated Security=True;" : @"Integrated Security=False;";
-            _security = "Integrated Security=True;";
-            _trust = TrustServerCertificate ? "TrustServerCertificate=True;" : "TrustServerCertificate=False;";
-            //return IntegratedSecurity ? SqlWindowsAuthentication() : SqlAuthentication();
-            return SqlWindowsAuthentication();
-        }
+            _security = ComCtlResources.DbIntegratedTrue;
+            _trust = TrustServerCertificate
+                ? ComCtlResources.DbTrustServerCertificateTrue
+                : ComCtlResources.DbTrustServerCertificateFalse;
 
-        /// <summary>
-        ///     Authentication with Windows Authentication.
-        /// </summary>
-        /// <returns>Connection string</returns>
-        private string SqlWindowsAuthentication()
-        {
-            if (string.IsNullOrEmpty(Server)) return "Error: Server Name";
+            if (string.IsNullOrEmpty(Server))
+            {
+                Trace.WriteLine(ComCtlResources.DbServerError);
+                return ComCtlResources.DbServerError;
+            }
 
-            if (string.IsNullOrEmpty(Database)) return "Error: Database Name";
+            if (includeDatabaseName && string.IsNullOrEmpty(Database))
+            {
+                Trace.WriteLine(ComCtlResources.DbNameError);
+                return ComCtlResources.DbServerError;
+            }
 
-            return $"{_persistInfo}{_trust}{_security}{Server};{Database}";
+            var connectionStringBuilder = new StringBuilder();
+            connectionStringBuilder.Append(_persistInfo);
+            connectionStringBuilder.Append(_trust);
+            connectionStringBuilder.Append(_security);
+            connectionStringBuilder.Append(ComCtlResources.DbServer);
+            connectionStringBuilder.Append(Server);
+            connectionStringBuilder.Append(ComCtlResources.DbFin);
+
+            if (includeDatabaseName)
+            {
+                connectionStringBuilder.Append(ComCtlResources.DbDatabase);
+                connectionStringBuilder.Append(Database);
+                connectionStringBuilder.Append(ComCtlResources.DbFin);
+            }
+
+            return connectionStringBuilder.ToString();
         }
 
         ///// <summary>

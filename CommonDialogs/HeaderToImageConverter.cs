@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/HeaderToImageConverter.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/HeaderToImageConverter.cs
  * PURPOSE:     Needed for the FolderView Control, and FolderBrowser, converts Image into the tree Control
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,7 +17,7 @@ using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using Imaging;
 
-namespace CommonControls
+namespace CommonDialogs
 {
     /// <inheritdoc />
     /// <summary>
@@ -46,22 +46,34 @@ namespace CommonControls
             var str = value as string;
 
             var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (root == null) return null;
+            if (root == null)
+            {
+                return null;
+            }
 
             var drive = Path.Combine(root, ComCtlResources.DriveImage);
             var folder = Path.Combine(root, ComCtlResources.FolderImage);
 
             var source = new BitmapImage();
 
-            if (string.IsNullOrEmpty(str)) return source;
+            if (string.IsNullOrEmpty(str))
+            {
+                return source;
+            }
 
             if (str.Contains(ComCtlResources.PathElement))
             {
-                if (File.Exists(drive)) return ImageStream.GetBitmapImageFileStream(drive);
+                if (File.Exists(drive))
+                {
+                    return ImageStream.GetBitmapImageFileStream(drive);
+                }
             }
             else
             {
-                if (File.Exists(folder)) return ImageStream.GetBitmapImageFileStream(folder);
+                if (File.Exists(folder))
+                {
+                    return ImageStream.GetBitmapImageFileStream(folder);
+                }
             }
 
             return source;

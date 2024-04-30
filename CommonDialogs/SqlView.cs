@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls
- * FILE:        CommonControls/SqlConnect.cs
+ * PROJECT:     CommonDialogs
+ * FILE:        CommonDialogs/SqlConnect.cs
  * PURPOSE:     View for Sql Connection dialog
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,12 +10,13 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using ViewModel;
 
-namespace CommonControls
+namespace CommonDialogs
 {
     /// <inheritdoc />
     /// <summary>
@@ -40,14 +41,14 @@ namespace CommonControls
         private string _dataBase;
 
         /// <summary>
-        ///     Is the Menu active
-        /// </summary>
-        private bool _isActive;
-
-        /// <summary>
         ///     The server
         /// </summary>
         private string _server;
+
+        /// <summary>
+        ///     Is Attribute set
+        /// </summary>
+        private bool _trustIsActive = true;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is active.
@@ -55,15 +56,18 @@ namespace CommonControls
         /// <value>
         ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsActive
+        public bool TrustIsActive
         {
-            get => _isActive;
+            get => _trustIsActive;
             set
             {
-                if (_isActive == value) return;
+                if (_trustIsActive == value)
+                {
+                    return;
+                }
 
-                _isActive = value;
-                OnPropertyChanged(nameof(IsActive));
+                _trustIsActive = value;
+                OnPropertyChanged(nameof(TrustIsActive));
             }
         }
 
@@ -78,7 +82,10 @@ namespace CommonControls
             get => _dataBase;
             set
             {
-                if (_dataBase == value) return;
+                if (_dataBase == value)
+                {
+                    return;
+                }
 
                 _dataBase = value;
                 OnPropertyChanged(nameof(Database));
@@ -96,7 +103,10 @@ namespace CommonControls
             get => _server;
             set
             {
-                if (_server == value) return;
+                if (_server == value)
+                {
+                    return;
+                }
 
                 _server = value;
                 OnPropertyChanged(nameof(Server));
@@ -114,7 +124,10 @@ namespace CommonControls
             get => AddLog;
             set
             {
-                if (AddLog == value) return;
+                if (AddLog == value)
+                {
+                    return;
+                }
 
                 AddLog = value;
                 OnPropertyChanged(nameof(Log));
@@ -140,12 +153,29 @@ namespace CommonControls
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
-        ///     Gets the connection string.
+        ///     Gets the connection string Class.
+        /// </summary>
+        /// <value>
+        ///     Builds the Connection String.
+        /// </value>
+        public SqlConnect Connection { get; private set; }
+
+        /// <summary>
+        ///     Gets the connection string for a Database.
+        ///     Transmitted to the external viewer
         /// </summary>
         /// <value>
         ///     The connection string.
         /// </value>
-        public string ConnectionString { get; private set; }
+        public string ConnectionStringDb { get; private set; }
+
+        /// <summary>
+        ///     Gets the connection string for server only.
+        /// </summary>
+        /// <value>
+        ///     The connection string server.
+        /// </value>
+        public string ConnectionStringServer { get; private set; }
 
         /// <summary>
         ///     Gets or sets the add log.
@@ -193,8 +223,34 @@ namespace CommonControls
         /// <param name="obj">The object.</param>
         private void ConnectAction(object obj)
         {
-            var connect = new SqlConnect(Database, Server, IsActive);
-            ConnectionString = connect.GetConnectionString();
+            var connect = new SqlConnect(Database, Server, TrustIsActive);
+            Connection = connect;
+            ConnectionStringServer = connect.GetConnectionString(false);
+            var check = true;
+
+            if (string.IsNullOrEmpty(Server))
+            {
+                check = false;
+                Log = string.Concat(Log, ConnectionStringServer, Environment.NewLine);
+            }
+
+            ConnectionStringDb = connect.GetConnectionString(true);
+
+            if (string.IsNullOrEmpty(Database))
+            {
+                check = false;
+                Log = string.Concat(Log, ConnectionStringDb, Environment.NewLine);
+            }
+
+            if (check)
+
+            {
+                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuild, Environment.NewLine);
+            }
+            else
+            {
+                Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuildError, Environment.NewLine);
+            }
         }
 
         /// <summary>

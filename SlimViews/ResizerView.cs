@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using CommonControls;
+using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
