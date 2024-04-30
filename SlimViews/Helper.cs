@@ -15,7 +15,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using CommonControls;
 using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
@@ -204,7 +203,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Filters the specified BTM.
+        ///     Filters the specified bitmap.
         /// </summary>
         /// <param name="btm">The BTM.</param>
         /// <param name="filter">The filter.</param>
@@ -227,6 +226,17 @@ namespace SlimViews
             }
 
             return btm;
+        }
+
+        /// <summary>
+        /// Pixelate the specified bitmap.
+        /// </summary>
+        /// <param name="btm">The bitmap.</param>
+        /// <param name="pixelWidth">Width of the pixel.</param>
+        /// <returns>Pixelated Image</returns>
+        public static Bitmap Pixelate(Bitmap btm, int pixelWidth)
+        {
+            return Render.Pixelate(btm, pixelWidth);
         }
 
         /// <summary>

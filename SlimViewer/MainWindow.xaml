@@ -72,6 +72,19 @@
                               IsEnabled="{Binding Path =IsActive}" />
                     <MenuItem Header="Contour" Command="{Binding ContourCommand}"
                               IsEnabled="{Binding Path =IsActive}" />
+                    <Separator />
+                    <MenuItem Header="Pixelate Image">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding Path=PixelWidth, Mode=TwoWay}" />
+                            <Button Content="Okay" Grid.Column="2" Command="{Binding Pixelate}"
+                                    IsEnabled="{Binding Path =IsActive}" />
+                        </Grid>
+                    </MenuItem>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path =IsActive}" />
