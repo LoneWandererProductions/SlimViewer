@@ -1076,18 +1076,23 @@ namespace Imaging
         {
             // Create a new bitmap to store the processed image
             var dbm = new DirectBitmap(inputImage);
+            // Create a new bitmap to store the processed image
+            var processedImage = new Bitmap(dbm.Width, dbm.Height);
+
 
             // Iterate over the image with the specified step width
             for (var y = 0; y < dbm.Height; y += stepWidth)
             for (var x = 0; x < dbm.Width; x += stepWidth)
             {
                 // Get the color of the current rectangle
-                var averageColor = GetAverageColor(dbm, x, y, stepWidth, stepWidth);
-                // Draw a rectangle with the average color
-                dbm.DrawRectangle(x, y, stepWidth, stepWidth, averageColor);
+                var averageColor = GetAverageColor(inputImage, x, y, stepWidth, stepWidth);
+
+                using var g = Graphics.FromImage(processedImage);
+                using var brush = new SolidBrush(averageColor);
+                g.FillRectangle(brush, x, y, stepWidth, stepWidth);
             }
 
-            return dbm.Bitmap;
+            return processedImage;
         }
 
         /// <summary>
@@ -1207,18 +1212,21 @@ namespace Imaging
         /// <summary>
         ///     Gets the average color.
         /// </summary>
-        /// <param name="dbm">The DBM.</param>
+        /// <param name="inputImage">The bitmap.</param>
         /// <param name="startX">The start x.</param>
         /// <param name="startY">The start y.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Average Color of the Area</returns>
-        private static Color GetAverageColor(DirectBitmap dbm, int startX, int startY, int width, int height)
+        private static Color GetAverageColor(Bitmap inputImage, int startX, int startY, int width, int height)
         {
             var totalRed = 0;
             var totalGreen = 0;
             var totalBlue = 0;
             var pixelCount = 0;
+
+            // Create a new bitmap to store the processed image
+            var dbm = new DirectBitmap(inputImage);
 
             // Iterate over the specified rectangle in the image
             for (var y = startY; y < startY + height && y < dbm.Height; y++)
@@ -1233,6 +1241,9 @@ namespace Imaging
                 totalBlue += pixelColor.B;
                 pixelCount++;
             }
+
+            //cleanup
+            dbm.Dispose();
 
             // Calculate the average color components
             var averageRed = totalRed / pixelCount;

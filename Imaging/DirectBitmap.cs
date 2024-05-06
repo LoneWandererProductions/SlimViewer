@@ -183,19 +183,22 @@ namespace Imaging
         ///     Draws the rectangle.
         ///     For now Microsoft's Rectangle Method is faster
         /// </summary>
-        /// <param name="x">The x Coordinate.</param>
-        /// <param name="y">The y Coordinate.</param>
+        /// <param name="x1">The x Coordinate.</param>
+        /// <param name="y2">The y Coordinate.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="color">The color.</param>
-        public void DrawRectangle(int x, int y, int width, int height, Color color)
+        public void DrawRectangle(int x1, int y2, int width, int height, Color color)
         {
-            if (width > height)
-                Parallel.For(x, height,
-                    index => DrawVerticalLine(index, y, width, color));
-            else
-                Parallel.For(y, width,
-                    index => DrawHorizontalLine(x, index, height, color));
+            // Iterate over the pixels within the rectangle
+            for (var y = y2; y < y2 + height && y < Height; y++)
+            {
+                for (var x = x1; x < x1 + width && x < Width; x++)
+                {
+                    // Set the color of each pixel
+                    SetPixel(x, y, color);
+                }
+            }
         }
 
         /// <summary>
