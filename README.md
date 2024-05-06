@@ -1,5 +1,5 @@
 # SlimViewer
-<p>A basic Image Viewer with some bells and whistles.</p>
+<p>A basic Image Viewer with some bells and whistles attached.</p>
 Optimized for mass image conversion and editing.<br>
 <br>
 Can Manage and edit a huge amount of images
