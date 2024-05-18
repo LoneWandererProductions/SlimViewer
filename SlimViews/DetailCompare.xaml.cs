@@ -25,8 +25,8 @@ namespace SlimViews
         public DetailCompare()
         {
             InitializeComponent();
-            View.Information = Information;
-            View.ColorInformation = ColorInformation;
+            View.RtBoxInformation = Information;
+            View.TxtBoxColorInformation = ColorInformation;
         }
     }
 }

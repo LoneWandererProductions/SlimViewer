@@ -295,5 +295,44 @@ namespace SlimViews
 
             return null;
         }
+
+        /// <summary>
+        ///     Generates the image.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>Bitmap from the Image in Question</returns>
+        internal static Bitmap GenerateImage(string filePath)
+        {
+            try
+            {
+                return Render.GetOriginalBitmap(filePath);
+            }
+            catch (IOException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
+            }
+            catch (NotSupportedException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
+            }
+            catch (InvalidOperationException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
+            }
+
+            return null;
+        }
     }
 }

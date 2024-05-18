@@ -13,6 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using Imaging;
 
@@ -213,18 +214,32 @@ namespace ImageCompare
         /// <returns>The difference Bitmap</returns>
         internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
         {
-            var width = first.Width <= second.Width ? first.Width : second.Width;
-            var height = first.Height <= second.Height ? first.Height : second.Height;
+            var width = Math.Min(first.Width, second.Width);
+            var height = Math.Min(first.Height, second.Height);
 
             var canvas = Render.CutBitmap(first, 0, 0, height, width);
 
-            var dbmCanvas = new DirectBitmap(canvas);
-            var dbmCompare = new DirectBitmap(second);
+            using var dbmCanvas = new DirectBitmap(canvas);
+            using var dbmCompare = new DirectBitmap(second);
 
-            for (var x = 0; x < width; x++)
-            for (var y = 0; y < height; y++)
-                if (dbmCanvas.GetPixel(x, y) != dbmCompare.GetPixel(x, y))
-                    dbmCanvas.SetPixel(x, y, color);
+            // Access the pixel arrays directly for comparison
+            var canvasPixels = dbmCanvas.Bits;
+            var comparePixels = dbmCompare.Bits;
+            var colorArgb = color.ToArgb();
+
+            // Process the pixels in parallel
+            _ = Parallel.For(0, height, y =>
+              {
+                  var offset = y * width;
+                  for (var x = 0; x < width; x++)
+                  {
+                      var index = offset + x;
+                      if (canvasPixels[index] != comparePixels[index])
+                      {
+                          canvasPixels[index] = colorArgb;
+                      }
+                  }
+              });
 
             return dbmCanvas.Bitmap;
         }

@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Imaging
 {
@@ -35,7 +34,7 @@ namespace Imaging
         /// <value>
         ///     The bits.
         /// </value>
-        private int[] _bits;
+        public int[] Bits { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DirectBitmap" /> class.
@@ -131,8 +130,8 @@ namespace Imaging
         /// </summary>
         private void Initiate()
         {
-            _bits = new int[Width * Height];
-            BitsHandle = GCHandle.Alloc(_bits, GCHandleType.Pinned);
+            Bits = new int[Width * Height];
+            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
             Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
                 BitsHandle.AddrOfPinnedObject());
         }
@@ -208,7 +207,7 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetArea(IEnumerable<int> idList, Color color)
         {
-            foreach (var index in idList) _bits[index] = color.ToArgb();
+            foreach (var index in idList) Bits[index] = color.ToArgb();
         }
 
         /// <summary>
@@ -220,7 +219,7 @@ namespace Imaging
         public void SetPixel(int x, int y, Color color)
         {
             var index = x + y * Width;
-            _bits[index] = color.ToArgb();
+            Bits[index] = color.ToArgb();
         }
 
         /// <summary>
@@ -232,7 +231,7 @@ namespace Imaging
         public Color GetPixel(int x, int y)
         {
             var index = x + y * Width;
-            var col = _bits[index];
+            var col = Bits[index];
             return Color.FromArgb(col);
         }
 
@@ -242,7 +241,7 @@ namespace Imaging
         /// <returns>The Image as a list of Colors</returns>
         public Span<Color> GetColors()
         {
-            if (_bits == null) return null;
+            if (Bits == null) return null;
 
             var length = Height * Width;
 
@@ -252,7 +251,7 @@ namespace Imaging
 
             for (var i = 0; i < length; i++)
             {
-                var col = _bits[i];
+                var col = Bits[i];
                 span[i] = Color.FromArgb(col);
             }
 
@@ -269,9 +268,9 @@ namespace Imaging
         {
             var info = string.Empty;
 
-            for (var i = 0; i < _bits.Length - 1; i++) info = string.Concat(info, _bits[i], ImagingResources.Indexer);
+            for (var i = 0; i < Bits.Length - 1; i++) info = string.Concat(info, Bits[i], ImagingResources.Indexer);
 
-            return string.Concat(info, ImagingResources.Spacing, _bits[_bits.Length]);
+            return string.Concat(info, ImagingResources.Spacing, Bits[Bits.Length]);
         }
 
         /// <summary>

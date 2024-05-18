@@ -13,17 +13,16 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using CommonControls;
 using CommonDialogs;
 using ImageCompare;
 using Imaging;
@@ -87,7 +86,7 @@ namespace SlimViews
         private string _color;
 
         /// <summary>
-        ///     The colore one
+        ///     The color one
         /// </summary>
         private string _colorOne;
 
@@ -154,12 +153,12 @@ namespace SlimViews
         /// <summary>
         ///     The color information
         /// </summary>
-        public ScrollingTextBoxes ColorInformation;
+        public TextBox TxtBoxColorInformation;
 
         /// <summary>
         ///     The information
         /// </summary>
-        public ScrollingTextBoxes Information;
+        public RichTextBox RtBoxInformation;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -364,7 +363,7 @@ namespace SlimViews
                 return;
             }
 
-            var btm = GenerateImage(pathObj.FilePath);
+            var btm = Helper.GenerateImage(pathObj.FilePath);
             if (btm == null) return;
 
             PathOne = pathObj.FilePath;
@@ -380,7 +379,7 @@ namespace SlimViews
             StatusImage = _redIcon;
 
             var text = await ComputeText(btm);
-            ColorInformation.AppendText(text);
+            await AppendTextAsync(TxtBoxColorInformation, text);
 
             _colorOne = text;
         }
@@ -407,7 +406,7 @@ namespace SlimViews
                 return;
             }
 
-            var btm = GenerateImage(pathObj.FilePath);
+            var btm = Helper.GenerateImage(pathObj.FilePath);
             if (btm == null) return;
 
             PathTwo = pathObj.FilePath;
@@ -416,17 +415,47 @@ namespace SlimViews
 
             _informationTwo =
                 SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, btm.ToBitmapImage());
-            Information.AppendText(_informationTwo);
+            RtBoxInformation.AppendText(_informationTwo);
+            // Scroll to the end of the RichTextBox
+            RtBoxInformation.ScrollToEnd();
 
             Compare();
 
             StatusImage = _redIcon;
 
             var text = await ComputeText(btm);
-            ColorInformation.AppendText(text);
+            await AppendTextAsync(TxtBoxColorInformation, text);
 
             _colorTwo = text;
         }
+
+        /// <summary>
+        /// Appends the text asynchronous.
+        /// </summary>
+        /// <param name="richTextBox">The rich text box.</param>
+        /// <param name="text">The text.</param>
+        private static async Task AppendTextAsync(TextBoxBase richTextBox, string text)
+        {
+            const int chunkSize = 1024; // Define a reasonable chunk size
+            var offset = 0;
+
+            while (offset < text.Length)
+            {
+                var length = Math.Min(chunkSize, text.Length - offset);
+                var chunk = text.Substring(offset, length);
+
+                await richTextBox.Dispatcher.InvokeAsync(() => richTextBox.AppendText(chunk));
+
+                offset += length;
+
+                // Optional: Yield control to the UI to keep it responsive
+                await Task.Yield();
+            }
+
+            // Scroll to the end of the RichTextBox
+            richTextBox.ScrollToEnd();
+        }
+
 
         /// <summary>
         ///     Differences the action.
@@ -467,19 +496,18 @@ namespace SlimViews
         {
             var str = new StringBuilder();
 
-            _ = await Task.Run(() =>
+            await Task.Run(() =>
             {
                 foreach (var (color, count) in _analysis.GetColors(btm))
                 {
                     var cache = string.Concat(SlimViewerResources.InformationColor, color,
                         SlimViewerResources.InformationCount, count, Environment.NewLine);
                     str.Append(cache);
-                    Thread.Sleep(1);
+                    Task.Delay(1).Wait(); // Simulate some delay for each line
                 }
 
                 str.Append(Environment.NewLine);
                 StatusImage = _greenIcon;
-                return true;
             });
 
             return str.ToString();
@@ -495,7 +523,10 @@ namespace SlimViews
             var data = _analysis.CompareImages(_btmOne, _btmTwo);
 
             _similarity = string.Concat(SlimViewerResources.Similarity, data.Similarity, Environment.NewLine);
-            Information.AppendText(_similarity);
+            RtBoxInformation.AppendText(_similarity);
+
+            // Scroll to the end of the RichTextBox
+            RtBoxInformation.ScrollToEnd();
         }
 
         /// <summary>
@@ -504,46 +535,7 @@ namespace SlimViews
         /// <returns>Path object with all needed file information</returns>
         private static PathObject OpenFile()
         {
-            return FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, null);
-        }
-
-        /// <summary>
-        ///     Generates the image.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <returns>Bitmap from the Image in Question</returns>
-        private static Bitmap GenerateImage(string filePath)
-        {
-            try
-            {
-                return Helper.Render.GetOriginalBitmap(filePath);
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (NotSupportedException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (InvalidOperationException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-
-            return null;
+            return FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen);
         }
     }
 }
