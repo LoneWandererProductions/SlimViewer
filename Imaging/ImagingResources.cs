@@ -121,7 +121,7 @@ namespace Imaging
         /// <summary>
         ///     The error, Rout of bounds (const). Value: "Error: Point is outside the bounds of the image.."
         /// </summary>
-        public const string ErrorOutofBounds = "Error: Point is outside the bounds of the image.";
+        public const string ErrorOutOfBounds = "Error: Point is outside the bounds of the image.";
 
         /// <summary>
         ///     The error, Path is null (const). Value: "Error: Path is Null."
