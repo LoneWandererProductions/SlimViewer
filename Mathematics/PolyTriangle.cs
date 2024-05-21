@@ -12,10 +12,11 @@ using DataFormatter;
 
 namespace Mathematics
 {
+    /// <inheritdoc />
     /// <summary>
     ///     In the future will be retooled to polygons.
     /// </summary>
-    public sealed class PolyTriangle
+    public sealed class PolyTriangle : IEquatable<PolyTriangle>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="PolyTriangle" /> class.
@@ -25,7 +26,10 @@ namespace Mathematics
         {
             Vertices = new Vector3D[array.Count];
 
-            for (var i = 0; i < array.Count; i++) Vertices[i] = array[i];
+            for (var i = 0; i < array.Count; i++)
+            {
+                Vertices[i] = array[i];
+            }
         }
 
         /// <summary>
@@ -76,6 +80,47 @@ namespace Mathematics
         }
 
         /// <summary>
+        ///     Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        ///     <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise,
+        ///     <see langword="false" />.
+        /// </returns>
+        public bool Equals(PolyTriangle other)
+        {
+            // If the other object is null, return false
+            if (other == null)
+            {
+                return false;
+            }
+
+            // If the other object is the same instance as this object, return true
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            // If the number of vertices is different, the triangles are not equal
+            if (VertexCount != other.VertexCount)
+            {
+                return false;
+            }
+
+            // Compare each vertex of the triangles
+            for (var i = 0; i < VertexCount; i++)
+            {
+                if (Vertices[i] != other.Vertices[i])
+                {
+                    return false;
+                }
+            }
+
+            // If all vertices are equal, the triangles are equal
+            return true;
+        }
+
+        /// <summary>
         ///     Creates the triangle set.
         ///     Triangles need to be supplied on a CLOCKWISE order
         /// </summary>
@@ -111,6 +156,17 @@ namespace Mathematics
         }
 
         /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return Vertices[0].GetHashCode();
+        }
+
+        /// <summary>
         ///     Converts to string.
         /// </summary>
         /// <returns>
@@ -121,9 +177,49 @@ namespace Mathematics
             var str = string.Empty;
 
             for (var i = 0; i < Vertices.Length; i++)
+            {
                 str = string.Concat(str, i, MathResources.Separator, Vertices[i].ToString(), Environment.NewLine);
+            }
 
             return str;
+        }
+
+        /// <summary>
+        ///     Determines whether the specified <see cref="Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///     <c>true</c> if the specified <see cref="Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return obj is PolyTriangle other && Equals(other);
+        }
+
+        /// <summary>
+        ///     Implements the operator ==.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        ///     The result of the operator.
+        /// </returns>
+        public static bool operator ==(PolyTriangle first, PolyTriangle second)
+        {
+            return second is not null && first is not null && first.Equals(second);
+        }
+
+        /// <summary>
+        ///     Implements the operator !=.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>
+        ///     The result of the operator.
+        /// </returns>
+        public static bool operator !=(PolyTriangle first, PolyTriangle second)
+        {
+            return second is not null && first is not null && first.Equals(second);
         }
     }
 }

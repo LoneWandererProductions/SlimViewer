@@ -42,36 +42,35 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DWorld);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
 
-            //TODO something goes wrong here!
-
-            switch (transform.CameraType)
+            cache = transform.CameraType switch
             {
-                case Cameras.Orbit:
-                    cache = ProjectionRaster.OrbitCamera(cache, transform);
-                    break;
-                case Cameras.PointAt:
-                    cache = ProjectionRaster.PointAt(cache, transform);
-                    break;
-                default:
-                    cache = ProjectionRaster.OrbitCamera(cache, transform);
-                    break;
-            }
+                Cameras.Orbit => ProjectionRaster.OrbitCamera(cache, transform),
+                Cameras.PointAt => ProjectionRaster.PointAt(cache, transform),
+                _ => ProjectionRaster.OrbitCamera(cache, transform)
+            };
 
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DCamera);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
-
-            cache = ProjectionRaster.Clipping(cache, transform.Position);
 
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3DClipping);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
 
             cache = transform.DisplayType switch
@@ -84,15 +83,28 @@ namespace Mathematics
             if (Debug)
             {
                 Trace.WriteLine(MathResources.Debug3D);
-                foreach (var triangle in cache) Trace.WriteLine(triangle.ToString());
+                foreach (var triangle in cache)
+                {
+                    Trace.WriteLine(triangle.ToString());
+                }
             }
+
+            cache = ProjectionRaster.Clipping(cache);
 
             Trace.WriteLine(MathResources.Debug3DTransformation);
 
-            if (Debug) CreateDump(transform);
+            if (Debug)
+            {
+                CreateDump(transform);
+            }
 
-            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height,
-                transform.DisplayType);
+            if (transform.DisplayType == Display.Orthographic)
+            {
+                return ProjectionRaster.MoveIntoViewOrthographic(cache, Projection3DRegister.Width,
+                    Projection3DRegister.Height);
+            }
+
+            return ProjectionRaster.MoveIntoView(cache, Projection3DRegister.Width, Projection3DRegister.Height);
         }
 
         /// <summary>

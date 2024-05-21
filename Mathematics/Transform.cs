@@ -236,8 +236,6 @@ namespace Mathematics
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Yaw -= value;
-                    break;
                 case Cameras.PointAt:
                     Yaw -= value;
                     break;
@@ -248,13 +246,11 @@ namespace Mathematics
         ///     Rights the rotate camera.
         /// </summary>
         /// <param name="value">The value.</param>
-        public void RightRotateCamera(double value)
+        public void RightRotateCamera(double value = 2.0d)
         {
             switch (CameraType)
             {
                 case Cameras.Orbit:
-                    Yaw += value;
-                    break;
                 case Cameras.PointAt:
                     Yaw += value;
                     break;

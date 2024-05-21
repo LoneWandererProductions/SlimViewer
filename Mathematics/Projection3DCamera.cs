@@ -42,7 +42,10 @@ namespace Mathematics
 
             var check = Math.Round(w, 2);
 
-            if (check == 0.0f) return new Vector3D(x, y, z);
+            if (check == 0.0f)
+            {
+                return new Vector3D(x, y, z);
+            }
 
             x /= w;
             y /= w;
@@ -169,6 +172,8 @@ namespace Mathematics
             var transl = new Vector3D(-(transform.Right * transform.Position),
                 -(transform.Up * transform.Position),
                 -(transform.Forward * transform.Position));
+
+            //{ 1 0 0 0  0 1 - 0 0 - 0 0 1 0 - 0 - 0 - 0 1  }
 
             // Join rotation and translation in a single matrix
             // instead of calculating their multiplication
