@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBeInternal, same as usual we can not make it internal because we bind it to the window
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -40,28 +39,39 @@ namespace CommonDialogs
         /// <param name="parameter">Parameter</param>
         /// <param name="culture">CultureInfo</param>
         /// <returns>Image</returns>
-        [return: MaybeNull]
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var str = value as string;
 
             var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (root == null) return null;
+            if (root == null)
+            {
+                return null;
+            }
 
             var drive = Path.Combine(root, ComCtlResources.DriveImage);
             var folder = Path.Combine(root, ComCtlResources.FolderImage);
 
             var source = new BitmapImage();
 
-            if (string.IsNullOrEmpty(str)) return source;
+            if (string.IsNullOrEmpty(str))
+            {
+                return source;
+            }
 
             if (str.Contains(ComCtlResources.PathElement))
             {
-                if (File.Exists(drive)) return ImageStream.GetBitmapImageFileStream(drive);
+                if (File.Exists(drive))
+                {
+                    return ImageStream.GetBitmapImageFileStream(drive);
+                }
             }
             else
             {
-                if (File.Exists(folder)) return ImageStream.GetBitmapImageFileStream(folder);
+                if (File.Exists(folder))
+                {
+                    return ImageStream.GetBitmapImageFileStream(folder);
+                }
             }
 
             return source;

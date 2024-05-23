@@ -57,7 +57,10 @@ namespace FileHandler
         /// <returns>string with replaced substring</returns>
         public static string ReplacePart(this string str, string targetStr, string update)
         {
-            if (string.IsNullOrEmpty(targetStr)) return str;
+            if (string.IsNullOrEmpty(targetStr))
+            {
+                return str;
+            }
 
             return !str.Contains(targetStr) ? str : str.Replace(targetStr, update);
         }
@@ -74,7 +77,8 @@ namespace FileHandler
 
             return string.Concat(
                 charsToRemove.Where(c => !string.IsNullOrEmpty(c))
-                    .Aggregate(str, (current, c) => current.Replace(c, string.Empty)), "_", numbers);
+                    .Aggregate(str, (current, c) => current.Replace(c, string.Empty)), FileHandlerResources.Append,
+                numbers);
         }
     }
 }

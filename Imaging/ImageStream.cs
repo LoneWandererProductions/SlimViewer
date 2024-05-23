@@ -108,7 +108,7 @@ namespace Imaging
                 bmp.EndInit();
                 return bmp;
             }
-			catch (UriFormatException ex)
+            catch (UriFormatException ex)
             {
                 throw new UriFormatException(path, ex);
             }

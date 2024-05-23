@@ -61,7 +61,10 @@ namespace CommonDialogs
             get => _trustIsActive;
             set
             {
-                if (_trustIsActive == value) return;
+                if (_trustIsActive == value)
+                {
+                    return;
+                }
 
                 _trustIsActive = value;
                 OnPropertyChanged(nameof(TrustIsActive));
@@ -79,7 +82,10 @@ namespace CommonDialogs
             get => _dataBase;
             set
             {
-                if (_dataBase == value) return;
+                if (_dataBase == value)
+                {
+                    return;
+                }
 
                 _dataBase = value;
                 OnPropertyChanged(nameof(Database));
@@ -97,7 +103,10 @@ namespace CommonDialogs
             get => _server;
             set
             {
-                if (_server == value) return;
+                if (_server == value)
+                {
+                    return;
+                }
 
                 _server = value;
                 OnPropertyChanged(nameof(Server));
@@ -115,7 +124,10 @@ namespace CommonDialogs
             get => AddLog;
             set
             {
-                if (AddLog == value) return;
+                if (AddLog == value)
+                {
+                    return;
+                }
 
                 AddLog = value;
                 OnPropertyChanged(nameof(Log));
@@ -129,7 +141,7 @@ namespace CommonDialogs
         ///     The connect command.
         /// </value>
         public ICommand ConnectCommand =>
-            _connectCommand ??= new DelegateCommand<object>(ConnectAction, CanExecute);
+            _connectCommand = new DelegateCommand<object>(ConnectAction, CanExecute);
 
         /// <summary>
         ///     Gets the close command.
@@ -138,7 +150,7 @@ namespace CommonDialogs
         ///     The close command.
         /// </value>
         public ICommand CloseCommand =>
-            _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
+            _closeCommand = new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
         ///     Gets the connection string Class.
@@ -186,7 +198,7 @@ namespace CommonDialogs
         /// <param name="propertyName">Name of the property.</param>
         private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -231,9 +243,14 @@ namespace CommonDialogs
             }
 
             if (check)
+
+            {
                 Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuild, Environment.NewLine);
+            }
             else
+            {
                 Log = string.Concat(Log, ComCtlResources.DbLogConnectionStringBuildError, Environment.NewLine);
+            }
         }
 
         /// <summary>
