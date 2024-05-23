@@ -1671,7 +1671,10 @@ namespace SlimViews
                 Owner = Main
             };
             compareWindow.Show();
-        }
+
+
+			SlimViewerRegister.CompareView = true;
+		}
 
         /// <summary>
         ///     Duplicates the action.
@@ -1685,7 +1688,10 @@ namespace SlimViews
                 Owner = Main
             };
             compareWindow.Show();
-        }
+
+            SlimViewerRegister.CompareView = true;
+
+		}
 
         /// <summary>
         ///     GIFs the window action.

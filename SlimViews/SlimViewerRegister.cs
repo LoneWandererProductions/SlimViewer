@@ -109,10 +109,19 @@ namespace SlimViews
         /// </value>
         internal static bool MainCompressCif { get; set; }
 
-        /// <summary>
-        ///     Resets the scaling.
-        /// </summary>
-        internal static void ResetScaling()
+		/// <summary>
+		/// Gets a value indicating whether [compare view] is in use.
+        /// Needed to deactivate some Features in the MainView
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if [compare view]; otherwise, <c>false</c>.
+		/// </value>
+		internal static bool CompareView { get; set; }
+
+		/// <summary>
+		///     Resets the scaling.
+		/// </summary>
+		internal static void ResetScaling()
         {
             Scaling = 1;
             Degree = 0;

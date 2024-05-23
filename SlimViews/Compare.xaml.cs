@@ -32,22 +32,22 @@ namespace SlimViews
         /// </summary>
         /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
         /// <param name="currentFolder">The current folder.</param>
-        /// <param name="imageView"></param>
+        /// <param name="imageView">Parent view</param>
         public Compare(bool subFolders, string currentFolder, ImageView imageView)
         {
             InitializeComponent();
             _ = View.AsyncInitiate(subFolders, currentFolder, imageView);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Compare" /> class.
-        /// </summary>
-        /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
-        /// <param name="currentFolder">The current folder.</param>
-        /// <param name="imageView"></param>
-        /// <param name="similarity">The similarity, in Percentages</param>
-        public Compare(bool subFolders, string currentFolder, ImageView imageView, int similarity)
+		/// <inheritdoc />
+		/// <summary>
+		///     Initializes a new instance of the <see cref="Compare" /> class.
+		/// </summary>
+		/// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
+		/// <param name="currentFolder">The current folder.</param>
+		/// <param name="imageView">Parent view</param>
+		/// <param name="similarity">The similarity, in Percentages</param>
+		public Compare(bool subFolders, string currentFolder, ImageView imageView, int similarity)
         {
             InitializeComponent();
             _ = View.AsyncInitiate(subFolders, currentFolder, imageView, similarity);
