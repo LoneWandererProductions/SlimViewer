@@ -36,7 +36,7 @@ namespace ExtendedSystemObjects
         ///     Gets a value indicating whether this <see cref="TransactionLogs" /> is changed.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if changed; currentSequencewise, <c>false</c>.
+        ///     <c>true</c> if changed; currentSequence-wise, <c>false</c>.
         /// </value>
         public bool Changed { get; private set; }
 
@@ -141,7 +141,7 @@ namespace ExtendedSystemObjects
         /// <param name="uniqueIdentifier">The unique identifier.</param>
         /// <param name="state">State of Item</param>
         /// <returns>ChangedItem</returns>
-        private int GetItem(int uniqueIdentifier, LogState state)
+        internal int GetItem(int uniqueIdentifier, LogState state)
         {
             if (Changelog == null || Changelog.Count == 0)
             {

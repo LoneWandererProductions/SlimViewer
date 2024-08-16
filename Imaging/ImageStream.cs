@@ -687,6 +687,38 @@ namespace Imaging
                     break;
                 case ImageFilter.Contour:
                     return ApplySobel(image);
+                case ImageFilter.Brightness:
+                    atr.SetColorMatrix(ImageRegister.Brightness);
+                    break;
+                case ImageFilter.Contrast:
+                    atr.SetColorMatrix(ImageRegister.Contrast);
+                    break;
+                case ImageFilter.HueShift:
+                    atr.SetColorMatrix(ImageRegister.HueShift);
+                    break;
+                case ImageFilter.ColorBalance:
+                    atr.SetColorMatrix(ImageRegister.ColorBalance);
+                    break;
+                case ImageFilter.Vintage:
+                    atr.SetColorMatrix(ImageRegister.Vintage);
+                    break;
+                // New convolution-based filters
+                case ImageFilter.Sharpen:
+                    return ApplyFilter(image, ImageRegister.SharpenFilter);
+                case ImageFilter.GaussianBlur:
+                    return ApplyFilter(image, ImageRegister.GaussianBlur, 1.0 / 16.0);
+                case ImageFilter.Emboss:
+                    return ApplyFilter(image, ImageRegister.EmbossFilter);
+                case ImageFilter.BoxBlur:
+                    return ApplyFilter(image, ImageRegister.BoxBlur, 1.0 / 9.0);
+                case ImageFilter.Laplacian:
+                    return ApplyFilter(image, ImageRegister.LaplacianFilter);
+                case ImageFilter.EdgeEnhance:
+                    return ApplyFilter(image, ImageRegister.EdgeEnhance);
+                case ImageFilter.MotionBlur:
+                    return ApplyFilter(image, ImageRegister.MotionBlur, 1.0 / 5.0);
+                case ImageFilter.UnsharpMask:
+                    return ApplyFilter(image, ImageRegister.UnsharpMask);
                 default:
                     return null;
             }
@@ -1110,13 +1142,20 @@ namespace Imaging
         /// <summary>
         ///     Pixelate the specified input image.
         /// </summary>
-        /// <param name="inputImage">The input image.</param>
+        /// <param name="image">The input image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Bitmap inputImage, int stepWidth)
+        internal static Bitmap Pixelate(Bitmap image, int stepWidth)
         {
+            if (image == null)
+            {
+                var innerException = new ArgumentNullException(string.Concat(nameof(ConvertWhiteToTransparent),
+                    ImagingResources.Spacing, nameof(image)));
+                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+            }
+
             // Create a new bitmap to store the processed image
-            var dbm = new DirectBitmap(inputImage);
+            var dbm = new DirectBitmap(image);
             // Create a new bitmap to store the processed image
             var processedImage = new Bitmap(dbm.Width, dbm.Height);
 
@@ -1126,7 +1165,7 @@ namespace Imaging
             for (var x = 0; x < dbm.Width; x += stepWidth)
             {
                 // Get the color of the current rectangle
-                var averageColor = GetAverageColor(inputImage, x, y, stepWidth, stepWidth);
+                var averageColor = GetAverageColor(image, x, y, stepWidth, stepWidth);
 
                 using var g = Graphics.FromImage(processedImage);
                 using var brush = new SolidBrush(averageColor);
@@ -1264,6 +1303,69 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Applies the filter.
+        /// </summary>
+        /// <param name="sourceBitmap">The source bitmap.</param>
+        /// <param name="filterMatrix">
+        ///     The filter matrix.
+        ///     Matrix Definition: The convolution matrix is typically a 2D array of numbers (weights) that defines how each pixel in the image should be altered based on its neighboring pixels. Common sizes are 3x3, 5x5, or 7x7.
+        ///     Placement: Place the center of the convolution matrix on the target pixel in the image.
+        ///     Neighborhood Calculation: Multiply the value of each pixel in the neighborhood by the corresponding value in the convolution matrix.
+        ///     Summation: Sum all these products.
+        ///     Normalization: Often, the result is normalized (e.g., dividing by the sum of the matrix values) to ensure that pixel values remain within a valid range.
+        ///     Pixel Update: The resulting value is assigned to the target pixel in the output image.
+        ///     Matrix Size: The size of the matrix affects the area of the image that influences each output pixel. For example:
+        ///     3x3 Matrix: Considers the pixel itself and its immediate 8 neighbors.
+        ///     5x5 Matrix: Considers a larger area, including 24 neighbors and the pixel itself.
+        /// </param>
+        /// <param name="factor">The factor.</param>
+        /// <param name="bias">The bias.</param>
+        /// <returns>Image with applied filter</returns>
+        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
+            double bias = 0.0)
+        {
+            // Use DirectBitmap for easier and faster pixel manipulation
+            using var source = new DirectBitmap(sourceBitmap);
+            using var result = new DirectBitmap(source.Width, source.Height);
+
+            var filterWidth = filterMatrix.GetLength(1);
+            var filterHeight = filterMatrix.GetLength(0);
+            var filterOffset = filterWidth / 2;
+
+            for (var y = filterOffset; y < source.Height - filterOffset; y++)
+            {
+                for (var x = filterOffset; x < source.Width - filterOffset; x++)
+                {
+                    double blue = 0.0, green = 0.0, red = 0.0;
+
+                    for (var filterY = 0; filterY < filterHeight; filterY++)
+                    {
+                        for (var filterX = 0; filterX < filterWidth; filterX++)
+                        {
+                            var imageX = x + (filterX - filterOffset);
+                            var imageY = y + (filterY - filterOffset);
+
+                            var pixelColor = source.GetPixel(imageX, imageY);
+
+                            blue += pixelColor.B * filterMatrix[filterY, filterX];
+                            green += pixelColor.G * filterMatrix[filterY, filterX];
+                            red += pixelColor.R * filterMatrix[filterY, filterX];
+                        }
+                    }
+
+                    var newBlue = Math.Min(Math.Max((int)((factor * blue) + bias), 0), 255);
+                    var newGreen = Math.Min(Math.Max((int)((factor * green) + bias), 0), 255);
+                    var newRed = Math.Min(Math.Max((int)((factor * red) + bias), 0), 255);
+
+                    result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                }
+            }
+
+            return result.Bitmap;
+        }
+
+
+        /// <summary>
         ///     Gets the average color.
         /// </summary>
         /// <param name="inputImage">The bitmap.</param>
@@ -1272,7 +1374,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Average Color of the Area</returns>
-        private static Color GetAverageColor(Bitmap inputImage, int startX, int startY, int width, int height)
+        private static Color GetAverageColor(Image inputImage, int startX, int startY, int width, int height)
         {
             var totalRed = 0;
             var totalGreen = 0;
@@ -1307,6 +1409,12 @@ namespace Imaging
             // Return the average color
             return Color.FromArgb(averageRed, averageGreen, averageBlue);
         }
+
+        // TODO add:
+        // Prewitt
+        // Roberts Cross
+        // Laplacian
+        // Laplacian of Gaussain
 
         /// <summary>
         ///     Applies the Sobel.

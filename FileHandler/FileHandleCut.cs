@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleCut.cs
- * PURPOSE:     Does all types of File Operations, Copy Files and deletes them afterwards.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     FileHandler
+* FILE:        FileHandler/FileHandleCut.cs
+* PURPOSE:     Does all types of File Operations, Copy Files and deletes them afterwards.
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
@@ -33,15 +33,7 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool CutFiles(string source, string target, bool overwrite)
         {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
-
-            if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-            }
+            FileHandlerProcessing.ValidatePaths(source, target);
 
             //if nothing exists we can return anyways
             if (!Directory.Exists(source))
@@ -83,29 +75,12 @@ namespace FileHandler
 
                         FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                     }
-                    catch (UnauthorizedAccessException ex)
+                    catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                                   or NotSupportedException)
                     {
-                        check = false;
-                        Trace.WriteLine(ex);
                         FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        check = false;
                         Trace.WriteLine(ex);
-                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
-                    }
-                    catch (IOException ex)
-                    {
                         check = false;
-                        Trace.WriteLine(ex);
-                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
-                    }
-                    catch (NotSupportedException ex)
-                    {
-                        check = false;
-                        Trace.WriteLine(ex);
-                        FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
                     }
                 }
             }
@@ -159,7 +134,7 @@ namespace FileHandler
 
             var check = true;
             //Do the work
-            var root = FileHandleCopy.SearchRoot(source);
+            var root = FileHandlerProcessing.SearchRoot(source);
             var file = new FileInfo(root);
             root = file.Directory.FullName;
 
@@ -190,29 +165,12 @@ namespace FileHandler
 
                     FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                 }
-                catch (UnauthorizedAccessException ex)
+                catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
+                                               or NotSupportedException)
                 {
-                    check = false;
-                    Trace.WriteLine(ex);
                     FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
-                }
-                catch (ArgumentException ex)
-                {
-                    check = false;
                     Trace.WriteLine(ex);
-                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
-                }
-                catch (IOException ex)
-                {
                     check = false;
-                    Trace.WriteLine(ex);
-                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
-                }
-                catch (NotSupportedException ex)
-                {
-                    check = false;
-                    Trace.WriteLine(ex);
-                    FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
                 }
             }
 
