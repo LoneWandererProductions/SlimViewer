@@ -66,11 +66,6 @@ namespace SlimViews
         private bool _autoClean;
 
         /// <summary>
-        ///     The black and white command.
-        /// </summary>
-        private ICommand _blackAndWhite;
-
-        /// <summary>
         ///     The BitmapImage
         /// </summary>
         private BitmapImage _bmp;
@@ -99,11 +94,6 @@ namespace SlimViews
         ///     Check if we compress cif files.
         /// </summary>
         private bool _compress;
-
-        /// <summary>
-        ///     The contour command
-        /// </summary>
-        private ICommand _contourCommand;
 
         /// <summary>
         ///     The convert cif command.
@@ -178,19 +168,9 @@ namespace SlimViews
         private ICommand _gifWindowCommand;
 
         /// <summary>
-        ///     The gray scale command
-        /// </summary>
-        private ICommand _grayScaleCommand;
-
-        /// <summary>
         ///     The information
         /// </summary>
         private string _information;
-
-        /// <summary>
-        ///     The invert command
-        /// </summary>
-        private ICommand _invertCommand;
 
         /// <summary>
         ///     Is the Menu active
@@ -246,11 +226,6 @@ namespace SlimViews
         ///     The pixel width
         /// </summary>
         private int _pixelWidth;
-
-        /// <summary>
-        ///     The polaroid command
-        /// </summary>
-        private ICommand _polaroidCommand;
 
         /// <summary>
         ///     The previous command
@@ -311,14 +286,15 @@ namespace SlimViews
         private SelectionTools _selectedTool;
 
         /// <summary>
-        ///     The sepia command
-        /// </summary>
-        private ICommand _sepiaCommand;
-
-        /// <summary>
         ///     The similar command
         /// </summary>
         private ICommand _similarCommand;
+
+        /// <summary>
+        /// The apply filter command
+        /// </summary>
+        private ICommand _applyFilterCommand;
+
 
         /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
@@ -723,60 +699,6 @@ namespace SlimViews
             _saveCommand ??= new DelegateCommand<object>(SaveAction, CanExecute);
 
         /// <summary>
-        ///     Gets the sepia Filter.
-        /// </summary>
-        /// <value>
-        ///     The sepia Filter.
-        /// </value>
-        public ICommand SepiaCommand =>
-            _sepiaCommand ??= new DelegateCommand<object>(SepiaAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the gray scale Filter.
-        /// </summary>
-        /// <value>
-        ///     The gray scale Filter.
-        /// </value>
-        public ICommand GrayScaleCommand =>
-            _grayScaleCommand ??= new DelegateCommand<object>(GrayScaleAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the gray scale Filter.
-        /// </summary>
-        /// <value>
-        ///     The gray scale Filter.
-        /// </value>
-        public ICommand BlackAndWhite =>
-            _blackAndWhite ??= new DelegateCommand<object>(BlackAndWhiteAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the invert command.
-        /// </summary>
-        /// <value>
-        ///     The invert command.
-        /// </value>
-        public ICommand InvertCommand =>
-            _invertCommand ??= new DelegateCommand<object>(InvertAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the polaroid Filter.
-        /// </summary>
-        /// <value>
-        ///     The polaroid Filter.
-        /// </value>
-        public ICommand PolaroidCommand =>
-            _polaroidCommand ??= new DelegateCommand<object>(PolaroidAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the Contour Filter.
-        /// </summary>
-        /// <value>
-        ///     The Contour Filter.
-        /// </value>
-        public ICommand ContourCommand =>
-            _contourCommand ??= new DelegateCommand<object>(ContourAction, CanExecute);
-
-        /// <summary>
         ///     Gets the pixelate.
         /// </summary>
         /// <value>
@@ -1007,6 +929,16 @@ namespace SlimViews
         public ICommand ResizerWindowCommand =>
             _resizerWindowCommand ??= new DelegateCommand<object>(ResizerAction, CanExecute);
 
+
+        /// <summary>
+        /// Gets the apply filter command.
+        /// </summary>
+        /// <value>
+        /// The apply filter command.
+        /// </value>
+        public ICommand ApplyFilterCommand =>
+            _applyFilterCommand ??= new DelegateCommand<ImageFilter>(ApplyFilter);
+
         /// <summary>
         ///     Gets or sets the main.
         /// </summary>
@@ -1226,62 +1158,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gray scales the Image.
+        /// Applies the filter.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void GrayScaleAction(object obj)
+        /// <param name="filter">The filter.</param>
+        private void ApplyFilter(ImageFilter filter)
         {
-            var btm = Helper.Filter(_btm, ImageFilter.GrayScale);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Black and White the Image.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void BlackAndWhiteAction(object obj)
-        {
-            var btm = Helper.Filter(_btm, ImageFilter.BlackAndWhite);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Sepia the Image.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void SepiaAction(object obj)
-        {
-            var btm = Helper.Filter(_btm, ImageFilter.Sepia);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Inverts the Image.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void InvertAction(object obj)
-        {
-            var btm = Helper.Filter(_btm, ImageFilter.Invert);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Polaroids the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void PolaroidAction(object obj)
-        {
-            var btm = Helper.Filter(_btm, ImageFilter.Polaroid);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Contours the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void ContourAction(object obj)
-        {
-            var btm = Helper.Filter(_btm, ImageFilter.Contour);
+            var btm = Helper.Filter(_btm, filter);
             Bmp = btm.ToBitmapImage();
         }
 
