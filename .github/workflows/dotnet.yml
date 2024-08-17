@@ -35,6 +35,9 @@ jobs:
     - name: Publish
       run: dotnet publish --configuration Release --output ./release
 
+    - name: List Release Files
+      run: dir ./release  # Use 'ls -la ./release' for Unix-based systems
+
     - name: Upload Release Binaries
       uses: actions/upload-artifact@v3
       with:
@@ -50,6 +53,9 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: my-release-binaries
+
+    - name: List Downloaded Files
+      run: ls -la ./release  # Verify that the binaries were downloaded
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
