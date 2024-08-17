@@ -295,7 +295,6 @@ namespace SlimViews
         /// </summary>
         private ICommand _applyFilterCommand;
 
-
         /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
         ///     Configured from Register
@@ -937,7 +936,7 @@ namespace SlimViews
         /// The apply filter command.
         /// </value>
         public ICommand ApplyFilterCommand =>
-            _applyFilterCommand ??= new DelegateCommand<ImageFilter>(ApplyFilter);
+            _applyFilterCommand ??= new DelegateCommand<string>(ApplyFilter);
 
         /// <summary>
         ///     Gets or sets the main.
@@ -1160,9 +1159,11 @@ namespace SlimViews
         /// <summary>
         /// Applies the filter.
         /// </summary>
-        /// <param name="filter">The filter.</param>
-        private void ApplyFilter(ImageFilter filter)
+        /// <param name="filterName">The filter name.</param>
+        private void ApplyFilter(string filterName)
         {
+            if (!Enum.TryParse(filterName, out ImageFilter filter)) return;
+
             var btm = Helper.Filter(_btm, filter);
             Bmp = btm.ToBitmapImage();
         }

@@ -1324,13 +1324,16 @@ namespace Imaging
         private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
             double bias = 0.0)
         {
-            // Use DirectBitmap for easier and faster pixel manipulation
-            using var source = new DirectBitmap(sourceBitmap);
-            using var result = new DirectBitmap(source.Width, source.Height);
+            // Initialize DirectBitmap instances
+            var source = new DirectBitmap(sourceBitmap);
+            var result = new DirectBitmap(source.Width, source.Height);
 
             var filterWidth = filterMatrix.GetLength(1);
             var filterHeight = filterMatrix.GetLength(0);
             var filterOffset = filterWidth / 2;
+
+            // Prepare a list to store the pixels to set in bulk using SIMD
+            var pixelsToSet = new List<(int x, int y, Color color)>();
 
             for (var y = filterOffset; y < source.Height - filterOffset; y++)
             {
@@ -1345,6 +1348,10 @@ namespace Imaging
                             var imageX = x + (filterX - filterOffset);
                             var imageY = y + (filterY - filterOffset);
 
+                            // Check bounds to prevent out-of-bounds access
+                            if (imageX < 0 || imageX >= source.Width || imageY < 0 || imageY >= source.Height)
+                                continue;
+
                             var pixelColor = source.GetPixel(imageX, imageY);
 
                             blue += pixelColor.B * filterMatrix[filterY, filterX];
@@ -1353,17 +1360,29 @@ namespace Imaging
                         }
                     }
 
-                    var newBlue = Math.Min(Math.Max((int)((factor * blue) + bias), 0), 255);
-                    var newGreen = Math.Min(Math.Max((int)((factor * green) + bias), 0), 255);
-                    var newRed = Math.Min(Math.Max((int)((factor * red) + bias), 0), 255);
+                    var newBlue = Math.Min(Math.Max((int) ((factor * blue) + bias), 0), 255);
+                    var newGreen = Math.Min(Math.Max((int) ((factor * green) + bias), 0), 255);
+                    var newRed = Math.Min(Math.Max((int) ((factor * red) + bias), 0), 255);
 
-                    result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                    // Instead of setting the pixel immediately, add it to the list
+                    pixelsToSet.Add((x, y, Color.FromArgb(newRed, newGreen, newBlue)));
                 }
             }
 
-            return result.Bitmap;
-        }
+            // Use SIMD to set all the pixels in bulk
+            try
+            {
+                result.SetPixelsSimd(pixelsToSet);
 
+                return result.Bitmap;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error setting pixels: {ex.Message}");
+            }
+
+            return null;
+        }
 
         /// <summary>
         ///     Gets the average color.
