@@ -16,10 +16,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 5.0.x
 
@@ -39,7 +39,7 @@ jobs:
       run: dir ./release  # Use 'ls -la ./release' for Unix-based systems
 
     - name: Upload Release Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: my-release-binaries
         path: ./release
@@ -51,16 +51,16 @@ jobs:
     steps:
 
     - name: Download Release Binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: my-release-binaries
 
     - name: List Downloaded Files
-      run: ls -la  # Check the base directory for the downloaded files
+      run: ls -la  # Verify the files downloaded correctly
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        files: my-release-binaries.zip  # Ensure this matches the actual file
+        files: ./release/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
