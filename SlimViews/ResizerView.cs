@@ -87,7 +87,7 @@ namespace SlimViews
         /// <summary>
         ///     The selected filter option
         /// </summary>
-        private ImageFilter _selectedFilterOption;
+        private ImageFilters _selectedFilterOption;
 
         /// <summary>
         ///     The width
@@ -132,7 +132,7 @@ namespace SlimViews
         /// <value>
         ///     The selected filter option.
         /// </value>
-        public ImageFilter SelectedFilterOption
+        public ImageFilters SelectedFilterOption
         {
             get => _selectedFilterOption;
             set
@@ -276,8 +276,8 @@ namespace SlimViews
         /// <value>
         ///     The filter options.
         /// </value>
-        public IEnumerable<ImageFilter> FilterOptions =>
-            Enum.GetValues(typeof(ImageFilter)) as IEnumerable<ImageFilter>;
+        public IEnumerable<ImageFilters> FilterOptions =>
+            Enum.GetValues(typeof(ImageFilters)) as IEnumerable<ImageFilters>;
 
         /// <summary>
         ///     Gets the file extensions.
@@ -368,7 +368,7 @@ namespace SlimViews
                 if (bitmap == null) continue;
 
                 // Apply selected filter option
-                if (_selectedFilterOption != ImageFilter.None) bitmap = Helper.Filter(bitmap, _selectedFilterOption);
+                if (_selectedFilterOption != ImageFilters.None) bitmap = Helper.Filter(bitmap, _selectedFilterOption);
 
                 // Resize the image based on percentage or absolute dimensions
                 if (_isPercentagesChecked)

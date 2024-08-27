@@ -61,11 +61,6 @@ namespace SlimViews
         private ICommand _analyzerWindowCommand;
 
         /// <summary>
-        ///     The apply filter command
-        /// </summary>
-        private ICommand _applyFilterCommand;
-
-        /// <summary>
         ///     The automatic clean
         /// </summary>
         private bool _autoClean;
@@ -294,6 +289,11 @@ namespace SlimViews
         ///     The similar command
         /// </summary>
         private ICommand _similarCommand;
+
+        /// <summary>
+        /// The apply filter command
+        /// </summary>
+        private ICommand _applyFilterCommand;
 
         /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
@@ -930,10 +930,10 @@ namespace SlimViews
 
 
         /// <summary>
-        ///     Gets the apply filter command.
+        /// Gets the apply filter command.
         /// </summary>
         /// <value>
-        ///     The apply filter command.
+        /// The apply filter command.
         /// </value>
         public ICommand ApplyFilterCommand =>
             _applyFilterCommand ??= new DelegateCommand<string>(ApplyFilter);
@@ -1157,12 +1157,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Applies the filter.
+        /// Applies the filter.
         /// </summary>
         /// <param name="filterName">The filter name.</param>
         private void ApplyFilter(string filterName)
         {
-            if (!Enum.TryParse(filterName, out ImageFilter filter)) return;
+            if (!Enum.TryParse(filterName, out ImageFilters filter)) return;
 
             var btm = Helper.Filter(_btm, filter);
             Bmp = btm.ToBitmapImage();
@@ -1556,8 +1556,8 @@ namespace SlimViews
             compareWindow.Show();
 
 
-            SlimViewerRegister.CompareView = true;
-        }
+			SlimViewerRegister.CompareView = true;
+		}
 
         /// <summary>
         ///     Duplicates the action.
@@ -1573,7 +1573,8 @@ namespace SlimViews
             compareWindow.Show();
 
             SlimViewerRegister.CompareView = true;
-        }
+
+		}
 
         /// <summary>
         ///     GIFs the window action.

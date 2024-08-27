@@ -126,9 +126,13 @@ namespace PluginLoader
             bool check;
 
             if (!string.IsNullOrEmpty(Extension))
+            {
                 check = PluginLoad.LoadAll(path, Extension);
+            }
             else
+            {
                 check = PluginLoad.LoadAll(path);
+            }
 
             if (!check || PluginLoad.PluginContainer == null || PluginLoad.PluginContainer.Count == 0)
             {
@@ -139,6 +143,7 @@ namespace PluginLoader
             var lst = new ObservableCollection<PluginItem>();
 
             foreach (var plugin in PluginLoad.PluginContainer)
+            {
                 lst.Add(new PluginItem
                 {
                     Command = plugin,
@@ -147,6 +152,7 @@ namespace PluginLoader
                     Type = plugin.Type,
                     Description = plugin.Description
                 });
+            }
 
             ObservablePlugin = lst;
             NotifyPropertyChanged(nameof(ObservablePlugin));

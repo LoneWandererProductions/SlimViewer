@@ -38,7 +38,10 @@ namespace Imaging
             {
                 var color = colorMap[i];
 
-                if (!imageFormat.ContainsKey(color)) imageFormat[color] = new SortedSet<int>();
+                if (!imageFormat.ContainsKey(color))
+                {
+                    imageFormat[color] = new SortedSet<int>();
+                }
 
                 imageFormat[color].Add(i);
             }
@@ -54,13 +57,19 @@ namespace Imaging
         internal static Bitmap? CifFileToImage(string path)
         {
             var cif = CifFromFile(path);
-            if (cif == null) return null;
+            if (cif == null)
+            {
+                return null;
+            }
 
             var image = new Bitmap(cif.Width, cif.Height);
 
             var dbm = DirectBitmap.GetInstance(image);
 
-            foreach (var (color, ids) in cif.CifImage) dbm.SetArea(ids, color);
+            foreach (var (color, ids) in cif.CifImage)
+            {
+                dbm.SetArea(ids, color);
+            }
 
             return dbm.Bitmap;
         }
@@ -76,13 +85,19 @@ namespace Imaging
         {
             var csv = CsvHandler.ReadCsv(path, ImagingResources.Separator);
 
-            if (csv == null) return null;
+            if (csv == null)
+            {
+                return null;
+            }
 
             int height = 0, width = 0;
 
             var compressed = GetInfo(csv[0], ref height, ref width);
 
-            if (compressed == null) return null;
+            if (compressed == null)
+            {
+                return null;
+            }
 
             //remove the Height, length csv
             csv.RemoveAt(0);
@@ -96,13 +111,17 @@ namespace Imaging
             };
 
             if (compressed == true)
+            {
                 foreach (var line in csv)
                 {
                     var hex = line[0];
 
                     var check = int.TryParse(line[1], out var a);
 
-                    if (!check) continue;
+                    if (!check)
+                    {
+                        continue;
+                    }
 
                     var converter = new ColorHsv(hex, a);
 
@@ -111,6 +130,7 @@ namespace Imaging
 
                     //get coordinates
                     for (var i = 2; i < line.Count; i++)
+                    {
                         if (line[i].Contains(ImagingResources.IntervalSplitter))
                         {
                             //split get start and end
@@ -118,29 +138,43 @@ namespace Imaging
 
                             var sequence = GetStartEndPoint(lst);
 
-                            if (sequence == null) continue;
+                            if (sequence == null)
+                            {
+                                continue;
+                            }
 
                             //paint area
                             for (var idMaster = sequence.Start; idMaster <= sequence.End; idMaster++)
+                            {
                                 cif.CifImage.Add(color, idMaster);
+                            }
                         }
                         else
                         {
                             check = int.TryParse(line[i], out var idMaster);
 
-                            if (!check) continue;
+                            if (!check)
+                            {
+                                continue;
+                            }
 
                             cif.CifImage.Add(color, idMaster);
                         }
+                    }
                 }
+            }
             else
+            {
                 foreach (var line in csv)
                 {
                     var hex = line[0];
 
                     var check = int.TryParse(line[1], out var a);
 
-                    if (!check) continue;
+                    if (!check)
+                    {
+                        continue;
+                    }
 
                     var converter = new ColorHsv(hex, a);
 
@@ -151,11 +185,15 @@ namespace Imaging
                     for (var i = 2; i < line.Count; i++)
                     {
                         check = int.TryParse(line[i], out var idMaster);
-                        if (!check) continue;
+                        if (!check)
+                        {
+                            continue;
+                        }
 
                         cif.CifImage.Add(color, idMaster);
                     }
                 }
+            }
 
             return cif;
         }
@@ -234,7 +272,10 @@ namespace Imaging
 
                 var compressed = new List<int>();
 
-                if (sequence == null) continue;
+                if (sequence == null)
+                {
+                    continue;
+                }
 
                 var sortedList = new List<int>(value);
 
@@ -274,12 +315,18 @@ namespace Imaging
         {
             //get image size
             var check = int.TryParse(csv[0], out var h);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             height = h;
 
             check = int.TryParse(csv[1], out var w);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             width = w;
 
@@ -294,7 +341,10 @@ namespace Imaging
         private static StartEndPoint? GetStartEndPoint(IReadOnlyList<string> lst)
         {
             var check = int.TryParse(lst[0], out var start);
-            if (!check) return null;
+            if (!check)
+            {
+                return null;
+            }
 
             check = int.TryParse(lst[1], out var end);
 

@@ -50,11 +50,15 @@ namespace PluginLoader
         {
             var pluginPaths = GetFilesByExtensionFullPath(path, extension);
 
-            if (pluginPaths == null) return false;
+            if (pluginPaths == null)
+            {
+                return false;
+            }
 
             PluginContainer = new List<IPlugin>();
 
             foreach (var pluginPath in pluginPaths)
+            {
                 try
                 {
                     var pluginAssembly = LoadPlugin(pluginPath);
@@ -68,6 +72,7 @@ namespace PluginLoader
                     Trace.WriteLine(ex);
                     loadErrorEvent?.Invoke(nameof(LoadAll), new LoaderErrorEventArgs(ex.ToString()));
                 }
+            }
 
             return PluginContainer.Count != 0;
         }
@@ -83,7 +88,10 @@ namespace PluginLoader
         /// <returns>Success Status</returns>
         public static bool SetEnvironmentVariables(Dictionary<int, object> store)
         {
-            if (store == null) return false;
+            if (store == null)
+            {
+                return false;
+            }
 
             // Key, here we define the accessible Environment for the plugins
             DataRegister.Store = store;
@@ -107,7 +115,9 @@ namespace PluginLoader
             }
 
             if (Directory.Exists(path))
+            {
                 return Directory.EnumerateFiles(path, $"*{extension}", SearchOption.TopDirectoryOnly).ToList();
+            }
 
             Trace.WriteLine(PluginLoaderResources.ErrorDirectory);
 
@@ -141,13 +151,19 @@ namespace PluginLoader
 
             foreach (var type in assembly.GetTypes().Where(type => typeof(IPlugin).IsAssignableFrom(type)))
             {
-                if (Activator.CreateInstance(type) is not IPlugin result) continue;
+                if (Activator.CreateInstance(type) is not IPlugin result)
+                {
+                    continue;
+                }
 
                 count++;
                 yield return result;
             }
 
-            if (count != 0) yield break;
+            if (count != 0)
+            {
+                yield break;
+            }
 
             var availableTypes =
                 string.Join(PluginLoaderResources.Separator, assembly.GetTypes().Select(t => t.FullName));

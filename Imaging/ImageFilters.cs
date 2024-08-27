@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageFilter.cs
+ * FILE:        Imaging/ImageFilters.cs
  * PURPOSE:     Enum that holds all possible Filter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
@@ -14,7 +14,7 @@ namespace Imaging
     /// <summary>
     ///     Enum of possible Filter
     /// </summary>
-    public enum ImageFilter
+    public enum ImageFilters
     {
         /// <summary>
         ///     No Filter
@@ -118,6 +118,37 @@ namespace Imaging
         /// <summary>
         ///     The unsharp mask filter
         /// </summary>
-        UnsharpMask = 19
+        UnsharpMask = 19,
+
+        /// <summary>
+        ///     The difference of gaussians
+        /// </summary>
+        DifferenceOfGaussians = 20,
+
+        /// <summary>
+        ///     The crosshatch
+        /// </summary>
+        Crosshatch = 21,
+
+        /// <summary>
+        ///     The floyd steinberg dithering
+        /// </summary>
+        FloydSteinbergDithering = 22,
+
+        /// <summary>
+        ///     The anisotropic kuwahara
+        /// </summary>
+        AnisotropicKuwahara = 23,
+
+
+        /// <summary>
+        ///     The supersampling antialiasing
+        /// </summary>
+        SupersamplingAntialiasing = 24,
+
+        /// <summary>
+        ///     The post processing antialiasing
+        /// </summary>
+        PostProcessingAntialiasing = 25
     }
 }

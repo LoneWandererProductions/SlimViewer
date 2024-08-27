@@ -208,11 +208,11 @@ namespace SlimViews
         /// <param name="btm">The BTM.</param>
         /// <param name="filter">The filter.</param>
         /// <returns>The Image with an applied filter</returns>
-        internal static Bitmap Filter(Bitmap btm, ImageFilter filter)
+        internal static Bitmap Filter(Bitmap btm, ImageFilters filter)
         {
             try
             {
-                return filter == ImageFilter.None ? btm : Render.FilterImage(btm, filter);
+                return filter == ImageFilters.None ? btm : Render.FilterImage(btm, filter);
             }
             catch (ArgumentException ex)
             {

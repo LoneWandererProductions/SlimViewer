@@ -42,7 +42,10 @@ namespace Mathematics
 
             var check = Math.Round(w, 2);
 
-            if (check == 0.0f) return new Vector3D(x, y, z);
+            if (check == 0.0f)
+            {
+                return new Vector3D(x, y, z);
+            }
 
             x /= w;
             y /= w;
