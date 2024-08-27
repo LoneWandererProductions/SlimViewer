@@ -296,6 +296,11 @@ namespace SlimViews
         private ICommand _applyFilterCommand;
 
         /// <summary>
+        /// The apply texture command
+        /// </summary>
+        private ICommand _applyTextureCommand;
+
+        /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
         ///     Configured from Register
         /// </summary>
@@ -938,6 +943,17 @@ namespace SlimViews
         public ICommand ApplyFilterCommand =>
             _applyFilterCommand ??= new DelegateCommand<string>(ApplyFilter);
 
+
+        /// <summary>
+        /// Gets the apply texture command.
+        /// </summary>
+        /// <value>
+        /// The apply texture command.
+        /// </value>
+        public ICommand ApplyTextureCommand =>
+            _applyTextureCommand ??= new DelegateCommand<string>(ApplyTexture);
+
+
         /// <summary>
         ///     Gets or sets the main.
         /// </summary>
@@ -1166,6 +1182,16 @@ namespace SlimViews
 
             var btm = Helper.Filter(_btm, filter);
             Bmp = btm.ToBitmapImage();
+        }
+
+
+        /// <summary>
+        /// Applies the texture.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ApplyTexture(string obj)
+        {
+            //TODO 
         }
 
         /// <summary>

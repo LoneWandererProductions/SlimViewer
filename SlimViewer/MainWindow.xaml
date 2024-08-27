@@ -81,6 +81,12 @@
                     <MenuItem Header="Edge Enhance" Command="{Binding ApplyFilterCommand}" CommandParameter="EdgeEnhance" IsEnabled="{Binding Path=IsActive}" />
                     <MenuItem Header="Motion Blur" Command="{Binding ApplyFilterCommand}" CommandParameter="MotionBlur" IsEnabled="{Binding Path=IsActive}" />
                     <MenuItem Header="Unsharp Mask" Command="{Binding ApplyFilterCommand}" CommandParameter="UnsharpMask" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Difference of Gaussians" Command="{Binding ApplyFilterCommand}" CommandParameter="DifferenceOfGaussians" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Crosshatch" Command="{Binding ApplyFilterCommand}" CommandParameter="Crosshatch" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Floyd Steinberg Dithering" Command="{Binding ApplyFilterCommand}" CommandParameter="FloydSteinbergDithering" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Anisotropic Kuwahara" Command="{Binding ApplyFilterCommand}" CommandParameter="AnisotropicKuwahara" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Supersampling Antialiasing" Command="{Binding ApplyFilterCommand}" CommandParameter="SupersamplingAntialiasing" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Post Processing Antialiasing" Command="{Binding ApplyFilterCommand}" CommandParameter="PostProcessingAntialiasing" IsEnabled="{Binding Path=IsActive}" />
                     <Separator />
                     <MenuItem Header="Pixelate Image">
                         <Grid>
@@ -93,6 +99,13 @@
                             <Button Content="Okay" Grid.Column="2" Command="{Binding Pixelate}" IsEnabled="{Binding Path=IsActive}" />
                         </Grid>
                     </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Texture">
+                    <MenuItem Header="Noise" Command="{Binding ApplyTextureCommand}" CommandParameter="Noise" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Clouds" Command="{Binding ApplyTextureCommand}" CommandParameter="Clouds" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Marble" Command="{Binding ApplyTextureCommand}" CommandParameter="Marble" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Wood" Command="{Binding ApplyTextureCommand}" CommandParameter="Wood" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Wave" Command="{Binding ApplyTextureCommand}" CommandParameter="Wave" IsEnabled="{Binding Path=IsActive}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path=IsActive}" />
