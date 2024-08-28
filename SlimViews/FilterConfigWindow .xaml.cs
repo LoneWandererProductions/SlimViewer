@@ -16,7 +16,7 @@ namespace SlimViews
     /// <seealso cref="Window" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     /// <inheritdoc cref="Window" />
-    internal sealed partial class FilterConfigWindow
+    public sealed partial class FilterConfigWindow
 	{
         /// <inheritdoc />
         /// <summary>

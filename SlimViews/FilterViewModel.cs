@@ -1,8 +1,5 @@
 ﻿using Imaging;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace SlimViews
 {
@@ -11,7 +8,6 @@ namespace SlimViews
 		private ImageFilters _selectedFilter;
 		private ImageFilterConfig _currentConfig;
 
-		public ObservableCollection<ImageFilters> Filters { get; set; }
 		public ImageFilters SelectedFilter
 		{
 			get => _selectedFilter;
@@ -20,9 +16,8 @@ namespace SlimViews
 				if (_selectedFilter != value)
 				{
 					_selectedFilter = value;
-					OnPropertyChanged();
-					CurrentConfig = ImageRegister.GetSettings(_selectedFilter);
-					UsedProperties = ImageRegister.GetUsedProperties(_selectedFilter);
+					OnPropertyChanged(nameof(SelectedFilter));
+					UpdateActiveProperties();
 				}
 			}
 		}
@@ -33,25 +28,40 @@ namespace SlimViews
 			set
 			{
 				_currentConfig = value;
-				OnPropertyChanged();
+				OnPropertyChanged(nameof(CurrentConfig));
 			}
 		}
 
-		public HashSet<string> UsedProperties { get; set; }
+		// Local properties to control UI element states
+		public bool IsFactorActive { get; set; }
+		public bool IsBiasActive { get; set; }
+		public bool IsSigmaActive { get; set; }
+		public bool IsBaseWindowSizeActive { get; set; }
+		public bool IsScaleActive { get; set; }
 
-		public bool IsPropertyUsed(string propertyName) => UsedProperties.Contains(propertyName);
+		private void UpdateActiveProperties()
+		{
+			var usedProperties = ImageRegister.GetUsedProperties(SelectedFilter);
+
+			IsFactorActive = usedProperties.Contains(nameof(ImageFilterConfig.Factor));
+			IsBiasActive = usedProperties.Contains(nameof(ImageFilterConfig.Bias));
+			IsSigmaActive = usedProperties.Contains(nameof(ImageFilterConfig.Sigma));
+			IsBaseWindowSizeActive = usedProperties.Contains(nameof(ImageFilterConfig.BaseWindowSize));
+			IsScaleActive = usedProperties.Contains(nameof(ImageFilterConfig.Scale));
+
+			// Notify UI about changes
+			OnPropertyChanged(nameof(IsFactorActive));
+			OnPropertyChanged(nameof(IsBiasActive));
+			OnPropertyChanged(nameof(IsSigmaActive));
+			OnPropertyChanged(nameof(IsBaseWindowSizeActive));
+			OnPropertyChanged(nameof(IsScaleActive));
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		protected void OnPropertyChanged([CallerMemberName] string name = null)
+		protected virtual void OnPropertyChanged(string propertyName)
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		}
-
-		public FilterViewModel()
-		{
-			Filters = new ObservableCollection<ImageFilters>(ImageRegister.GetAvailableFilters());
-			SelectedFilter = Filters[0]; // Set default filter
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
