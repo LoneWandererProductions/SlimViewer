@@ -14,6 +14,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -24,20 +25,20 @@ namespace Imaging
     /// </summary>
     public static class ImageRegister
     {
-        /// <summary>
-        ///     The settings for our Filter
-        /// </summary>
-        private static readonly ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings = new();
+		/// <summary>
+		///     The settings for our Filter
+		/// </summary>
+		public static ConcurrentDictionary<ImageFilters, ImageFilterConfig> FilterSettings { get; set; } = new();
 
         /// <summary>
         ///     The texture setting
         /// </summary>
-        private static readonly ConcurrentDictionary<TextureType, TextureConfig> TextureSetting = new();
+        public static ConcurrentDictionary<TextureType, TextureConfig> TextureSetting { get; set; } = new();
 
-        /// <summary>
-        ///     The sharpen filter
-        /// </summary>
-        internal static readonly double[,] SharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
+		/// <summary>
+		///     The sharpen filter
+		/// </summary>
+		internal static readonly double[,] SharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
 
         /// <summary>
         ///     The gaussian blur
@@ -239,12 +240,12 @@ namespace Imaging
         /// </value>
         internal static int Count { get; set; }
 
-        /// <summary>
-        ///     Gets the settings.
-        /// </summary>
-        /// <param name="filter">The filter.</param>
-        /// <returns>Return the current config</returns>
-        internal static ImageFilterConfig GetSettings(ImageFilters filter)
+		/// <summary>
+		///     Gets the settings.
+		/// </summary>
+		/// <param name="filter">The filter.</param>
+		/// <returns>Return the current config</returns>
+		public static ImageFilterConfig GetSettings(ImageFilters filter)
         {
             return FilterSettings.TryGetValue(filter, out var config) ? config : new ImageFilterConfig();
         }
@@ -259,12 +260,21 @@ namespace Imaging
             FilterSettings[filter] = config;
         }
 
-        /// <summary>
-        ///     Gets the settings.
-        /// </summary>
-        /// <param name="filter">The filter.</param>
-        /// <returns></returns>
-        public static TextureConfig GetSettings(TextureType filter)
+		/// <summary>
+		/// Gets the available filters.
+		/// </summary>
+		/// <returns>List of available Filters</returns>
+		public static IEnumerable<ImageFilters> GetAvailableFilters()
+		{
+			return FilterSettings.Keys;
+		}
+
+		/// <summary>
+		///     Gets the settings.
+		/// </summary>
+		/// <param name="filter">The filter.</param>
+		/// <returns></returns>
+		public static TextureConfig GetSettings(TextureType filter)
         {
             return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfig();
         }
