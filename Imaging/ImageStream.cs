@@ -335,16 +335,11 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
-                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
-                }
             }
 
-            foreach (var image in images)
-            {
-                image.Dispose();
-            }
+            foreach (var image in images) image.Dispose();
 
             //before return please Convert
             return btm;
@@ -529,10 +524,7 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(RotateImage), image);
 
             //no need to do anything
-            if (degree is 360 or 0)
-            {
-                return image;
-            }
+            if (degree is 360 or 0) return image;
 
             if (degree is > 360 or < -360)
             {
@@ -553,8 +545,8 @@ namespace Imaging
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
-                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
+                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
+                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
             }
 
             // Find the min and max x and y coordinates.
@@ -598,18 +590,13 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CropImage(Bitmap image)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image));
-            }
+            if (image == null) throw new ArgumentNullException(nameof(image));
 
             var bounds = ImageHelper.GetNonTransparentBounds(image);
 
             if (bounds.Width <= 0 || bounds.Height <= 0)
-            {
                 // Return an empty image or handle this case as needed
                 return new Bitmap(1, 1);
-            }
 
             var croppedBitmap = new Bitmap(bounds.Width, bounds.Height);
             using var graphics = Graphics.FromImage(croppedBitmap);
@@ -654,10 +641,7 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory))
-                {
-                    return;
-                }
+                if (!Directory.Exists(directory)) return;
 
                 var newPath = path;
 
@@ -704,10 +688,7 @@ namespace Imaging
                 var color = dbm.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
-                {
-                    continue;
-                }
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
 
                 //replace Value under the threshold with pure White
                 dbm.SetPixel(x, y, replacementColor);
@@ -737,9 +718,7 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
-            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
-            }
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
@@ -761,27 +740,16 @@ namespace Imaging
         /// </exception>
         internal static Color GetPixel(Bitmap image, Point point, int radius)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorWrongParameters);
-            }
+            ImageHelper.ValidateImage(nameof(GetPixel), image);
 
-            if (radius < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
-            }
+            if (radius < 0) throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
-            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
-            }
 
             var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0)
-            {
-                return GetPixel(image, point);
-            }
+            if (points.Count == 0) return GetPixel(image, point);
 
             int redSum = 0, greenSum = 0, blueSum = 0;
 
@@ -807,18 +775,44 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
         internal static Bitmap SetPixel(Bitmap image, Point point, Color color)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(SetPixel), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ImageHelper.ValidateImage(nameof(SetPixel), image);
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
             dbm.SetPixel(point.X, point.Y, color);
 
             return dbm.Bitmap;
+        }
+
+        /// <summary>
+        ///     Adjusts the brightness.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="brightnessFactor">The brightness factor.</param>
+        /// <returns>
+        ///     The changed image as Bitmap
+        /// </returns>
+        internal static Bitmap AdjustBrightness(Bitmap image, float brightnessFactor)
+        {
+            ImageHelper.ValidateImage(nameof(GetPixel), image);
+
+            var source = new DirectBitmap(image);
+            var result = new DirectBitmap(source.Width, source.Height);
+
+            for (var y = 0; y < source.Height; y++)
+            for (var x = 0; x < source.Width; x++)
+            {
+                var pixelColor = source.GetPixel(x, y);
+
+                // Adjust brightness by multiplying each color component by the brightness factor
+                var newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
+                var newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
+                var newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
+
+                result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+            }
+
+            return result.Bitmap;
         }
 
         /// <summary>
@@ -832,12 +826,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
         internal static Bitmap SetPixel(Bitmap image, Point point, Color color, int radius)
         {
-            if (image == null)
-            {
-                var innerException =
-                    new ArgumentNullException(string.Concat(nameof(SetPixel), ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
+            ImageHelper.ValidateImage(nameof(SetPixel), image);
 
             var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 

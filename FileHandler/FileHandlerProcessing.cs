@@ -27,9 +27,7 @@ namespace FileHandler
         internal static List<string> CleanUpExtensionList(IEnumerable<string> fileExtList)
         {
             if (fileExtList == null)
-            {
                 throw new ArgumentNullException(nameof(fileExtList), FileHandlerResources.ErrorFileExtension);
-            }
 
             return fileExtList.Select(ext => ext.Replace(FileHandlerResources.Dot, string.Empty)).ToList();
         }
@@ -50,9 +48,7 @@ namespace FileHandler
                           throw new ArgumentException(FileHandlerResources.ErrorInvalidPath, nameof(root));
 
             if (!elementDir.StartsWith(rootDir, StringComparison.OrdinalIgnoreCase))
-            {
                 throw new ArgumentException(FileHandlerResources.ErrorInvalidPath);
-            }
 
             var relativePath = elementDir.Substring(rootDir.Length)
                 .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
@@ -71,20 +67,11 @@ namespace FileHandler
         [return: MaybeNull]
         internal static List<string> GetFilesByExtension(string path, string appendix, bool subdirectories)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
+            if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
-            if (!Directory.Exists(path))
-            {
-                return null;
-            }
+            if (!Directory.Exists(path)) return null;
 
-            if (string.IsNullOrEmpty(appendix))
-            {
-                appendix = FileHandlerResources.Star;
-            }
+            if (string.IsNullOrEmpty(appendix)) appendix = FileHandlerResources.Star;
 
             appendix = appendix.Replace(FileHandlerResources.Dot, string.Empty);
 
@@ -104,12 +91,8 @@ namespace FileHandler
 
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             foreach (var path in source)
-            {
                 if (path.Length < shortest.Length)
-                {
                     shortest = path;
-                }
-            }
 
             return shortest;
         }
@@ -122,14 +105,10 @@ namespace FileHandler
         internal static void ValidatePaths(string source, string target)
         {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
-            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
-            }
 
             if (source.Equals(target, StringComparison.OrdinalIgnoreCase))
-            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEqualPath);
-            }
         }
     }
 }

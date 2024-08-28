@@ -433,6 +433,20 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
+        ///     Adjusts the brightness.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="brightnessFactor">The brightness factor.</param>
+        /// <returns>
+        ///     The changed image as Bitmap
+        /// </returns>
+        public Bitmap AdjustBrightness(Bitmap image, float brightnessFactor)
+        {
+            return ImageStream.AdjustBrightness(image, brightnessFactor);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Splits the GIF.
         /// </summary>
         /// <param name="path">The path.</param>

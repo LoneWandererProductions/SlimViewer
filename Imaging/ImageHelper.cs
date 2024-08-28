@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
  * FILE:        Imaging/ImageHelper.cs
- * PURPOSE:     Here I try to minimise the footprint of my class and pool all shared methods
+ * PURPOSE:     Here I try to minimize the footprint of my class and pool all shared methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -34,18 +34,16 @@ namespace Imaging
             using (var dbmTwo = new DirectBitmap(imgTwo))
             {
                 for (var y = 0; y < dbmOne.Height; y++)
+                for (var x = 0; x < dbmOne.Width; x++)
                 {
-                    for (var x = 0; x < dbmOne.Width; x++)
-                    {
-                        var color1 = dbmOne.GetPixel(x, y);
-                        var color2 = dbmTwo.GetPixel(x, y);
+                    var color1 = dbmOne.GetPixel(x, y);
+                    var color2 = dbmTwo.GetPixel(x, y);
 
-                        var r = Math.Min(255, color1.R + color2.R);
-                        var g = Math.Min(255, color1.G + color2.G);
-                        var b = Math.Min(255, color1.B + color2.B);
+                    var r = Clamp(color1.R + color2.R);
+                    var g = Clamp(color1.G + color2.G);
+                    var b = Clamp(color1.B + color2.B);
 
-                        pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
-                    }
+                    pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
                 }
             }
 
@@ -59,17 +57,6 @@ namespace Imaging
                 Trace.WriteLine($"Error setting pixels: {ex.Message}");
                 return null;
             }
-        }
-
-        /// <summary>
-        ///     Checks if the Color is  transparent.
-        /// </summary>
-        /// <param name="color">The color.</param>
-        /// <returns>True if conditions are met</returns>
-        internal static bool CheckTransparent(Color color)
-        {
-            //0,0,0 is Black or Transparent
-            return color.R == 0 && color.G == 0 && color.B == 0;
         }
 
         /// <summary>
@@ -89,12 +76,10 @@ namespace Imaging
             for (var x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
             {
                 var dx = x - center.X;
-                var height = (int)Math.Sqrt((radius * radius) - (dx * dx));
+                var height = (int)Math.Sqrt(radius * radius - dx * dx);
 
                 for (var y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
-                {
                     points.Add(new Point(x, y));
-                }
             }
 
             return points;
@@ -113,24 +98,18 @@ namespace Imaging
             var sum = 0.0;
 
             for (var y = 0; y < size; y++)
+            for (var x = 0; x < size; x++)
             {
-                for (var x = 0; x < size; x++)
-                {
-                    kernel[y, x] =
-                        Math.Exp(-0.5 * (Math.Pow((x - mean) / sigma, 2.0) + Math.Pow((y - mean) / sigma, 2.0)))
-                        / (2 * Math.PI * sigma * sigma);
-                    sum += kernel[y, x];
-                }
+                kernel[y, x] =
+                    Math.Exp(-0.5 * (Math.Pow((x - mean) / sigma, 2.0) + Math.Pow((y - mean) / sigma, 2.0)))
+                    / (2 * Math.PI * sigma * sigma);
+                sum += kernel[y, x];
             }
 
             // Normalize the kernel
             for (var y = 0; y < size; y++)
-            {
-                for (var x = 0; x < size; x++)
-                {
-                    kernel[y, x] /= sum;
-                }
-            }
+            for (var x = 0; x < size; x++)
+                kernel[y, x] /= sum;
 
             return kernel;
         }
@@ -174,41 +153,25 @@ namespace Imaging
             var hasNonTransparentPixel = false;
 
             for (var y = 0; y < image.Height; y++)
+            for (var x = 0; x < image.Width; x++)
             {
-                for (var x = 0; x < image.Width; x++)
+                var pixel = image.GetPixel(x, y);
+                if (pixel.A != 0) // Not fully transparent
                 {
-                    var pixel = image.GetPixel(x, y);
-                    if (pixel.A != 0) // Not fully transparent
-                    {
-                        hasNonTransparentPixel = true;
-                        if (x < minX)
-                        {
-                            minX = x;
-                        }
+                    hasNonTransparentPixel = true;
+                    if (x < minX) minX = x;
 
-                        if (x > maxX)
-                        {
-                            maxX = x;
-                        }
+                    if (x > maxX) maxX = x;
 
-                        if (y < minY)
-                        {
-                            minY = y;
-                        }
+                    if (y < minY) minY = y;
 
-                        if (y > maxY)
-                        {
-                            maxY = y;
-                        }
-                    }
+                    if (y > maxY) maxY = y;
                 }
             }
 
             if (!hasNonTransparentPixel)
-            {
                 // If all pixels are transparent, return a zero-sized rectangle
                 return new Rectangle(0, 0, 0, 0);
-            }
 
             return new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
         }
@@ -228,9 +191,7 @@ namespace Imaging
             // Optionally, rethrow or handle further
             if (ex is ArgumentException || ex is InvalidOperationException || ex is NotSupportedException ||
                 ex is UriFormatException || ex is IOException)
-            {
                 throw new ApplicationException("An error occurred while processing the image.", ex);
-            }
         }
 
         /// <summary>
@@ -264,28 +225,34 @@ namespace Imaging
             var count = 0;
 
             for (var y = region.Top; y < region.Bottom; y++)
+            for (var x = region.Left; x < region.Right; x++)
             {
-                for (var x = region.Left; x < region.Right; x++)
-                {
-                    var pixel = dbmBase.GetPixel(x, y);
-                    pixels.Add(pixel);
-                    rSum += pixel.R;
-                    gSum += pixel.G;
-                    bSum += pixel.B;
-                    count++;
-                }
+                var pixel = dbmBase.GetPixel(x, y);
+                pixels.Add(pixel);
+                rSum += pixel.R;
+                gSum += pixel.G;
+                bSum += pixel.B;
+                count++;
             }
 
-            Color? meanColor = null;
-            if (calculateMeanColor && count > 0)
-            {
-                var averageRed = rSum / count;
-                var averageGreen = gSum / count;
-                var averageBlue = bSum / count;
-                meanColor = Color.FromArgb(averageRed, averageGreen, averageBlue);
-            }
+            if (!calculateMeanColor || count <= 0) return (pixels, null);
+
+            var averageRed = rSum / count;
+            var averageGreen = gSum / count;
+            var averageBlue = bSum / count;
+            Color? meanColor = Color.FromArgb(averageRed, averageGreen, averageBlue);
 
             return (pixels, meanColor);
+        }
+
+        /// <summary>
+        ///     Clamps the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Value that is within the color range</returns>
+        public static int Clamp(double value)
+        {
+            return (int)Math.Max(0, Math.Min(value, 255));
         }
     }
 }

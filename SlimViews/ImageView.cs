@@ -61,6 +61,16 @@ namespace SlimViews
         private ICommand _analyzerWindowCommand;
 
         /// <summary>
+        ///     The apply filter command
+        /// </summary>
+        private ICommand _applyFilterCommand;
+
+        /// <summary>
+        ///     The apply texture command
+        /// </summary>
+        private ICommand _applyTextureCommand;
+
+        /// <summary>
         ///     The automatic clean
         /// </summary>
         private bool _autoClean;
@@ -289,16 +299,6 @@ namespace SlimViews
         ///     The similar command
         /// </summary>
         private ICommand _similarCommand;
-
-        /// <summary>
-        /// The apply filter command
-        /// </summary>
-        private ICommand _applyFilterCommand;
-
-        /// <summary>
-        /// The apply texture command
-        /// </summary>
-        private ICommand _applyTextureCommand;
 
         /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
@@ -935,20 +935,20 @@ namespace SlimViews
 
 
         /// <summary>
-        /// Gets the apply filter command.
+        ///     Gets the apply filter command.
         /// </summary>
         /// <value>
-        /// The apply filter command.
+        ///     The apply filter command.
         /// </value>
         public ICommand ApplyFilterCommand =>
             _applyFilterCommand ??= new DelegateCommand<string>(ApplyFilter);
 
 
         /// <summary>
-        /// Gets the apply texture command.
+        ///     Gets the apply texture command.
         /// </summary>
         /// <value>
-        /// The apply texture command.
+        ///     The apply texture command.
         /// </value>
         public ICommand ApplyTextureCommand =>
             _applyTextureCommand ??= new DelegateCommand<string>(ApplyTexture);
@@ -1173,7 +1173,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Applies the filter.
+        ///     Applies the filter.
         /// </summary>
         /// <param name="filterName">The filter name.</param>
         private void ApplyFilter(string filterName)
@@ -1186,12 +1186,12 @@ namespace SlimViews
 
 
         /// <summary>
-        /// Applies the texture.
+        ///     Applies the texture.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ApplyTexture(string obj)
         {
-            //TODO 
+            //TODO
         }
 
         /// <summary>
@@ -1582,8 +1582,8 @@ namespace SlimViews
             compareWindow.Show();
 
 
-			SlimViewerRegister.CompareView = true;
-		}
+            SlimViewerRegister.CompareView = true;
+        }
 
         /// <summary>
         ///     Duplicates the action.
@@ -1599,8 +1599,7 @@ namespace SlimViews
             compareWindow.Show();
 
             SlimViewerRegister.CompareView = true;
-
-		}
+        }
 
         /// <summary>
         ///     GIFs the window action.

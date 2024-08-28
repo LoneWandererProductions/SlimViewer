@@ -11,12 +11,12 @@
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ComboBox ItemsSource="{Binding Filters}"
                   SelectedItem="{Binding SelectedFilter}"
-                  Width="200" Grid.Row="0"/>
+                  Width="200" Grid.Row="0" />
 
         <StackPanel DataContext="{Binding CurrentConfig}" Grid.Row="1">
             <Label Content="Factor" />

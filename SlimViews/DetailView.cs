@@ -151,14 +151,14 @@ namespace SlimViews
         private string _statusImage;
 
         /// <summary>
-        ///     The color information
-        /// </summary>
-        public TextBox TxtBoxColorInformation;
-
-        /// <summary>
         ///     The information
         /// </summary>
         public RichTextBox RtBoxInformation;
+
+        /// <summary>
+        ///     The color information
+        /// </summary>
+        public TextBox TxtBoxColorInformation;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailView" /> class.
@@ -430,7 +430,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Appends the text asynchronous.
+        ///     Appends the text asynchronous.
         /// </summary>
         /// <param name="richTextBox">The rich text box.</param>
         /// <param name="text">The text.</param>
