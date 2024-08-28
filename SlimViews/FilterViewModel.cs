@@ -1,4 +1,5 @@
 ﻿using Imaging;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -11,7 +12,6 @@ namespace SlimViews
 		private ImageFilterConfig _currentConfig;
 
 		public ObservableCollection<ImageFilters> Filters { get; set; }
-
 		public ImageFilters SelectedFilter
 		{
 			get => _selectedFilter;
@@ -19,11 +19,10 @@ namespace SlimViews
 			{
 				if (_selectedFilter != value)
 				{
-					// Save the current config before switching
-					ImageRegister.FilterSettings[_selectedFilter] = _currentConfig;
 					_selectedFilter = value;
 					OnPropertyChanged();
 					CurrentConfig = ImageRegister.GetSettings(_selectedFilter);
+					UsedProperties = ImageRegister.GetUsedProperties(_selectedFilter);
 				}
 			}
 		}
@@ -37,6 +36,10 @@ namespace SlimViews
 				OnPropertyChanged();
 			}
 		}
+
+		public HashSet<string> UsedProperties { get; set; }
+
+		public bool IsPropertyUsed(string propertyName) => UsedProperties.Contains(propertyName);
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

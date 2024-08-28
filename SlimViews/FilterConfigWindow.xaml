@@ -11,83 +11,33 @@
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="18*"/>
-            <RowDefinition Height="149*"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ComboBox ItemsSource="{Binding Filters}"
                   SelectedItem="{Binding SelectedFilter}"
-                  Margin="162,10,163,10" Width="200"/>
+                  Width="200" Grid.Row="0"/>
 
-        <StackPanel DataContext="{Binding CurrentConfig}" Grid.Row="1">
-            <!-- Factor Field -->
+        <StackPanel DataContext="{Binding CurrentConfig}"  Grid.Row="1">
             <Label Content="Factor" />
-            <TextBox Text="{Binding Factor, Mode=TwoWay}" Margin="0,5,0,0">
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Factor, FallbackValue=False}" Value="0">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+            <TextBox Text="{Binding Factor, Mode=TwoWay}" Margin="0,5,0,0" 
+                     IsEnabled="{Binding DataContext.IsPropertyUsed('Factor'), RelativeSource={RelativeSource AncestorType=Window}}" />
 
-            <!-- Bias Field -->
             <Label Content="Bias" />
-            <TextBox Text="{Binding Bias, Mode=TwoWay}" Margin="0,5,0,0">
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Bias, FallbackValue=False}" Value="0">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+            <TextBox Text="{Binding Bias, Mode=TwoWay}" Margin="0,5,0,0" 
+                     IsEnabled="{Binding DataContext.IsPropertyUsed('Bias'), RelativeSource={RelativeSource AncestorType=Window}}" />
 
-            <!-- Sigma Field -->
             <Label Content="Sigma" />
-            <TextBox Text="{Binding Sigma, Mode=TwoWay}" Margin="0,5,0,0">
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Sigma, FallbackValue=False}" Value="0">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+            <TextBox Text="{Binding Sigma, Mode=TwoWay}" Margin="0,5,0,0" 
+                     IsEnabled="{Binding DataContext.IsPropertyUsed('Sigma'), RelativeSource={RelativeSource AncestorType=Window}}" />
 
-            <!-- BaseWindowSize Field -->
             <Label Content="BaseWindowSize" />
-            <TextBox Text="{Binding BaseWindowSize, Mode=TwoWay}" Margin="0,5,0,0">
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=BaseWindowSize, FallbackValue=False}" Value="0">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+            <TextBox Text="{Binding BaseWindowSize, Mode=TwoWay}" Margin="0,5,0,0" 
+                     IsEnabled="{Binding DataContext.IsPropertyUsed('BaseWindowSize'), RelativeSource={RelativeSource AncestorType=Window}}" />
 
-            <!-- Scale Field -->
             <Label Content="Scale" />
-            <TextBox Text="{Binding Scale, Mode=TwoWay}" Margin="0,5,0,0">
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Scale, FallbackValue=False}" Value="0">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+            <TextBox Text="{Binding Scale, Mode=TwoWay}" Margin="0,5,0,0" 
+                     IsEnabled="{Binding DataContext.IsPropertyUsed('Scale'), RelativeSource={RelativeSource AncestorType=Window}}" />
         </StackPanel>
     </Grid>
 </Window>
