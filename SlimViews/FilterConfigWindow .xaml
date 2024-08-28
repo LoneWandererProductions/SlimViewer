@@ -1,0 +1,49 @@
+﻿<Window x:Class="SlimViews.FilterConfigWindow "
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SlimViews"
+        mc:Ignorable="d"
+        x:ClassModifier="internal"
+        Title="Converter" Height="300" Width="300">
+    <Window.DataContext>
+        <local:FilterViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ComboBox to select filters -->
+        <ComboBox ItemsSource="{Binding Filters}"
+                  SelectedItem="{Binding SelectedFilter}"
+                  Width="200"
+                  Margin="10"
+                  Grid.Row="0"/>
+
+        <!-- StackPanel for filter properties -->
+        <StackPanel DataContext="{Binding CurrentConfig}" Grid.Row="1" Margin="10">
+            <!-- Factor Field -->
+            <Label Content="Factor" />
+            <TextBox Text="{Binding Factor, Mode=TwoWay}" Margin="0,5,0,0"/>
+
+            <!-- Bias Field -->
+            <Label Content="Bias" />
+            <TextBox Text="{Binding Bias, Mode=TwoWay}" Margin="0,5,0,0"/>
+
+            <!-- Sigma Field -->
+            <Label Content="Sigma" />
+            <TextBox Text="{Binding Sigma, Mode=TwoWay}" Margin="0,5,0,0"/>
+
+            <!-- BaseWindowSize Field -->
+            <Label Content="BaseWindowSize" />
+            <TextBox Text="{Binding BaseWindowSize, Mode=TwoWay}" Margin="0,5,0,0"/>
+
+            <!-- Scale Field -->
+            <Label Content="Scale" />
+            <TextBox Text="{Binding Scale, Mode=TwoWay}" Margin="0,5,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>
