@@ -300,26 +300,26 @@ namespace SlimViews
         /// </summary>
         private ICommand _similarCommand;
 
-		/// <summary>
-		/// The filter configuration comman
-		/// </summary>
-		private ICommand _filterConfigCommand;
+        /// <summary>
+        /// The filter configuration comman
+        /// </summary>
+        private ICommand _filterConfigCommand;
 
-		/// <summary>
-		/// The brighten command
-		/// </summary>
-		private ICommand _brightenCommand;
+        /// <summary>
+        /// The brighten command
+        /// </summary>
+        private ICommand _brightenCommand;
 
-		/// <summary>
-		/// The darken command
-		/// </summary>
-		private ICommand _darkenCommand;
+        /// <summary>
+        /// The darken command
+        /// </summary>
+        private ICommand _darkenCommand;
 
-		/// <summary>
-		///     The similarity in Percent for a Image, Start value is 90
-		///     Configured from Register
-		/// </summary>
-		private int _similarity;
+        /// <summary>
+        ///     The similarity in Percent for a Image, Start value is 90
+        ///     Configured from Register
+        /// </summary>
+        private int _similarity;
 
         /// <summary>
         ///     The status image
@@ -959,51 +959,51 @@ namespace SlimViews
             _applyFilterCommand ??= new DelegateCommand<string>(ApplyFilterAction, CanExecute);
 
 
-		/// <summary>
-		///     Gets the apply texture command.
-		/// </summary>
-		/// <value>
-		///     The apply texture command.
-		/// </value>
-		public ICommand ApplyTextureCommand =>
+        /// <summary>
+        ///     Gets the apply texture command.
+        /// </summary>
+        /// <value>
+        ///     The apply texture command.
+        /// </value>
+        public ICommand ApplyTextureCommand =>
             _applyTextureCommand ??= new DelegateCommand<string>(ApplyTextureAction, CanExecute);
 
 
-		/// <summary>
-		/// Gets the filter configuration command.
-		/// </summary>
-		/// <value>
-		/// The filter configuration command.
-		/// </value>
-		public ICommand FilterConfigCommand =>
-			_filterConfigCommand ??= new DelegateCommand<string>(FilterConfigAction, CanExecute);
+        /// <summary>
+        /// Gets the filter configuration command.
+        /// </summary>
+        /// <value>
+        /// The filter configuration command.
+        /// </value>
+        public ICommand FilterConfigCommand =>
+            _filterConfigCommand ??= new DelegateCommand<string>(FilterConfigAction, CanExecute);
 
 
-		/// <summary>
-		/// Gets the brighten command.
-		/// </summary>
-		/// <value>
-		/// The brighten command.
-		/// </value>
-		public ICommand BrightenCommand =>
-			_brightenCommand ??= new DelegateCommand<string>(BrightenAction, CanExecute);
+        /// <summary>
+        /// Gets the brighten command.
+        /// </summary>
+        /// <value>
+        /// The brighten command.
+        /// </value>
+        public ICommand BrightenCommand =>
+            _brightenCommand ??= new DelegateCommand<string>(BrightenAction, CanExecute);
 
-		/// <summary>
-		/// Gets the darken command.
-		/// </summary>
-		/// <value>
-		/// The darken command.
-		/// </value>
-		public ICommand DarkenCommand =>
-	        _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
+        /// <summary>
+        /// Gets the darken command.
+        /// </summary>
+        /// <value>
+        /// The darken command.
+        /// </value>
+        public ICommand DarkenCommand =>
+            _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
 
-		/// <summary>
-		///     Gets or sets the main.
-		/// </summary>
-		/// <value>
-		///     The main.
-		/// </value>
-		public Window Main { get; init; }
+        /// <summary>
+        ///     Gets or sets the main.
+        /// </summary>
+        /// <value>
+        ///     The main.
+        /// </value>
+        public Window Main { get; init; }
 
         /// <summary>
         ///     Gets or sets the image zoom.
@@ -1231,50 +1231,49 @@ namespace SlimViews
         /// <summary>
         ///     Applies the texture.
         /// </summary>
-        /// <param name="obj">The object.</param>
+        /// <param name="textureName">The name of the texture.</param>
         private void ApplyTextureAction(string textureName)
         {
             //TODO
         }
 
-		/// <summary>
-		/// Filter configuration.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void FilterConfigAction(string obj)
-		{
+        /// <summary>
+        /// Filter configuration.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void FilterConfigAction(string obj)
+        {
+            var filterConfig = new FilterConfigWindow()
+            {
+                Topmost = true,
+                Owner = Main
+            };
+            filterConfig.Show();
+        }
 
-			var filterConfig = new FilterConfigWindow()
-			{
-				Topmost = true,
-				Owner = Main
-			};
-			filterConfig.Show();
-		}
+        /// <summary>
+        /// Brightens the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void BrightenAction(object obj)
+        {
+            //TODO
+        }
 
-		/// <summary>
-		/// Brightens the action.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void BrightenAction(object obj)
-		{
-			//TODO
-		}
+        /// <summary>
+        /// Darkens the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void DarkenAction(object obj)
+        {
+            //TODO
+        }
 
-		/// <summary>
-		/// Darkens the action.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void DarkenAction(object obj)
-		{
-			//TODO
-		}
-
-		/// <summary>
-		///     Pixelate action.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void PixelateAction(object obj)
+        /// <summary>
+        ///     Pixelate action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void PixelateAction(object obj)
         {
             var btm = Helper.Pixelate(_btm, PixelWidth);
             Bmp = btm.ToBitmapImage();
