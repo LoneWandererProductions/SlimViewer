@@ -183,23 +183,41 @@ namespace Imaging
             { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 }
         };
 
-        /// <summary>
-        ///     the color matrix needed to GrayScale an image
-        ///     Source:
-        ///     https://archive.ph/hzR2W
-        ///     ColorMatrix:
-        ///     | m11 m12 m13 m14 m15 |
-        ///     | m21 m22 m23 m24 m25 |
-        ///     | m31 m32 m33 m34 m35 |
-        ///     | m41 m42 m43 m44 m45 |
-        ///     | m51 m52 m53 m54 m55 |
-        ///     translates to:
-        ///     NewR = (m11 * R + m12 * G + m13 * B + m14 * A + m15)
-        ///     NewG = (m21* R + m22* G + m23* B + m24* A + m25)
-        ///     NewB = (m31* R + m32* G + m33* B + m34* A + m35)
-        ///     NewA = (m41* R + m42* G + m43* B + m44* A + m45)
-        /// </summary>
-        internal static readonly ColorMatrix GrayScale = new(new[]
+		/// <summary>
+		/// The kernel 45 degrees
+		/// Defines directional edge detection kernel for crosshatching
+		/// </summary>
+		internal static readonly double[,] Kernel45Degrees =
+        {
+			 { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 }
+	    };
+
+		/// <summary>
+		/// The kernel 135 degrees
+		/// Defines directional edge detection kernel for crosshatching
+		/// </summary>
+		internal static readonly double[,] Kernel135Degrees =
+{
+			{ 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 }
+		};
+
+		/// <summary>
+		///     the color matrix needed to GrayScale an image
+		///     Source:
+		///     https://archive.ph/hzR2W
+		///     ColorMatrix:
+		///     | m11 m12 m13 m14 m15 |
+		///     | m21 m22 m23 m24 m25 |
+		///     | m31 m32 m33 m34 m35 |
+		///     | m41 m42 m43 m44 m45 |
+		///     | m51 m52 m53 m54 m55 |
+		///     translates to:
+		///     NewR = (m11 * R + m12 * G + m13 * B + m14 * A + m15)
+		///     NewG = (m21* R + m22* G + m23* B + m24* A + m25)
+		///     NewB = (m31* R + m32* G + m33* B + m34* A + m35)
+		///     NewA = (m41* R + m42* G + m43* B + m44* A + m45)
+		/// </summary>
+		internal static readonly ColorMatrix GrayScale = new(new[]
         {
             new[] { .3f, .3f, .3f, 0, 0 }, new[] { .59f, .59f, .59f, 0, 0 }, new[] { .11f, .11f, .11f, 0, 0 },
             new float[] { 0, 0, 0, 1, 0 }, new float[] { 0, 0, 0, 0, 1 }

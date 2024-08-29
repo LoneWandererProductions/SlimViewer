@@ -127,8 +127,6 @@ namespace Imaging
                     return ApplyCrosshatch(image);
                 case ImageFilters.FloydSteinbergDithering:
                     return ApplyFloydSteinbergDithering(image);
-                case ImageFilters.None:
-                    break;
                 case ImageFilters.AnisotropicKuwahara:
                     settings = ImageRegister.GetSettings(ImageFilters.AnisotropicKuwahara);
                     return ApplyAnisotropicKuwahara(image, settings.BaseWindowSize);
@@ -141,7 +139,9 @@ namespace Imaging
                 case ImageFilters.PencilSketchEffect:
                     settings = ImageRegister.GetSettings(ImageFilters.PencilSketchEffect);
                     return ApplyPostProcessingAntialiasing(image, settings.Sigma);
-                default:
+				case ImageFilters.None:
+					break;
+				default:
                     return null;
             }
 
@@ -373,14 +373,9 @@ namespace Imaging
         /// <returns>Filtered Image</returns>
         private static Bitmap ApplyCrosshatch(Image image)
         {
-            // Define directional edge detection kernels for crosshatching
-            double[,] kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
-
-            double[,] kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
-
             // Apply the 45-degree and 135-degree filters
-            var hatch45 = ApplyFilter(image, kernel45Degrees);
-            var hatch135 = ApplyFilter(image, kernel135Degrees);
+            var hatch45 = ApplyFilter(image, ImageRegister.Kernel45Degrees);
+            var hatch135 = ApplyFilter(image, ImageRegister.Kernel135Degrees);
 
             // Combine the two hatching directions
             return ImageHelper.CombineImages(hatch45, hatch135);
