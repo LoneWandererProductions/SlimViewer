@@ -62,6 +62,8 @@
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Filter">
+                    <MenuItem Header="Configure Filter" Command="{Binding FilterConfigCommand}" />
+                    <Separator />
                     <MenuItem Header="Sepia" Command="{Binding ApplyFilterCommand}" CommandParameter="Sepia"
                               IsEnabled="{Binding Path=IsActive}" />
                     <MenuItem Header="Gray scale" Command="{Binding ApplyFilterCommand}" CommandParameter="GrayScale"
@@ -112,6 +114,8 @@
                               CommandParameter="SupersamplingAntialiasing" IsEnabled="{Binding Path=IsActive}" />
                     <MenuItem Header="Post Processing Antialiasing" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="PostProcessingAntialiasing" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Pencil Sketch Effect" Command="{Binding ApplyFilterCommand}"
+                              CommandParameter="PencilSketchEffect" IsEnabled="{Binding Path=IsActive}" />
                     <Separator />
                     <MenuItem Header="Pixelate Image">
                         <Grid>
@@ -144,6 +148,9 @@
                           IsEnabled="{Binding Path=IsActive}" />
                 <MenuItem Header="Rotate -90°" Command="{Binding RotateBackwardCommand}"
                           IsEnabled="{Binding Path=IsActive}" />
+                <Separator />
+                <MenuItem Header="Brighten" Command="{Binding BrightenCommand}" IsEnabled="{Binding Path=IsActive}" />
+                <MenuItem Header="Darken" Command="{Binding DarkenCommand}" IsEnabled="{Binding Path=IsActive}" />
                 <Separator />
                 <MenuItem Header="Scale Image" Command="{Binding ScaleCommand}" IsEnabled="{Binding Path=IsActive}" />
             </MenuItem>
