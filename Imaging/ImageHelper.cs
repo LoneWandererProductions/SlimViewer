@@ -245,12 +245,25 @@ namespace Imaging
             return (pixels, meanColor);
         }
 
-        /// <summary>
-        ///     Clamps the specified value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>Value that is within the color range</returns>
-        public static int Clamp(double value)
+
+		/// <summary>
+		///     Interpolates the specified a.
+		/// </summary>
+		/// <param name="a">a.</param>
+		/// <param name="b">The b.</param>
+		/// <param name="t">The t.</param>
+		/// <returns>Interpolation</returns>
+		internal static double Interpolate(double a, double b, double t)
+		{
+			return a * (1 - t) + b * t;
+		}
+
+		/// <summary>
+		///     Clamps the specified value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>Value that is within the color range</returns>
+		public static int Clamp(double value)
         {
             return (int)Math.Max(0, Math.Min(value, 255));
         }
