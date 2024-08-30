@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System;
+using System.ComponentModel;
 using Imaging;
 
 namespace SlimViews
@@ -22,7 +24,16 @@ namespace SlimViews
             }
         }
 
-        public ImageFilterConfig CurrentConfig
+		/// <summary>
+		///     Gets the filter options.
+		/// </summary>
+		/// <value>
+		///     The filter options.
+		/// </value>
+		public IEnumerable<ImageFilters> FilterOptions =>
+			Enum.GetValues(typeof(ImageFilters)) as IEnumerable<ImageFilters>;
+
+		public ImageFilterConfig CurrentConfig
         {
             get => _currentConfig;
             set
