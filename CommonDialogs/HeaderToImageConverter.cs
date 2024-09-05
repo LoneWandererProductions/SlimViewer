@@ -59,7 +59,7 @@ namespace CommonDialogs
                     : null;
 
             // Return the image if it exists
-            return imagePath != null ? ImageStream.GetBitmapImageFileStream(imagePath) : null;
+            return imagePath != null ? ImageStreamMedia.GetBitmapImageFileStream(imagePath) : null;
         }
 
         /// <inheritdoc />

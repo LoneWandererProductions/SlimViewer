@@ -4,6 +4,7 @@
  * FILE:        Imaging/ImageHelper.cs
  * PURPOSE:     Here I try to minimize the footprint of my class and pool all shared methods
  * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCES:     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
  */
 
 using System;
@@ -11,6 +12,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Windows.Media.Imaging;
 
 namespace Imaging
 {
@@ -19,46 +22,6 @@ namespace Imaging
     /// </summary>
     internal static class ImageHelper
     {
-        /// <summary>
-        ///     Combines two images by adding their pixel values.
-        /// </summary>
-        /// <param name="imgOne">The first image.</param>
-        /// <param name="imgTwo">The second image.</param>
-        /// <returns>A bitmap resulting from the combination of the two images, or null if an error occurs.</returns>
-        internal static Bitmap CombineImages(Image imgOne, Image imgTwo)
-        {
-            var result = new DirectBitmap(imgOne.Width, imgOne.Height);
-            var pixelsToSet = new List<(int x, int y, Color color)>();
-
-            using (var dbmOne = new DirectBitmap(imgOne))
-            using (var dbmTwo = new DirectBitmap(imgTwo))
-            {
-                for (var y = 0; y < dbmOne.Height; y++)
-                for (var x = 0; x < dbmOne.Width; x++)
-                {
-                    var color1 = dbmOne.GetPixel(x, y);
-                    var color2 = dbmTwo.GetPixel(x, y);
-
-                    var r = Clamp(color1.R + color2.R);
-                    var g = Clamp(color1.G + color2.G);
-                    var b = Clamp(color1.B + color2.B);
-
-                    pixelsToSet.Add((x, y, Color.FromArgb(r, g, b)));
-                }
-            }
-
-            try
-            {
-                result.SetPixelsSimd(pixelsToSet);
-                return result.Bitmap;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"Error setting pixels: {ex.Message}");
-                return null;
-            }
-        }
-
         /// <summary>
         ///     Gets all points in a Circle.
         ///     Uses the  Bresenham's circle drawing algorithm.
@@ -76,10 +39,12 @@ namespace Imaging
             for (var x = Math.Max(0, center.X - radius); x <= Math.Min(width - 1, center.X + radius); x++)
             {
                 var dx = x - center.X;
-                var height = (int)Math.Sqrt(radius * radius - dx * dx);
+                var height = (int)Math.Sqrt((radius * radius) - (dx * dx));
 
                 for (var y = Math.Max(0, center.Y - height); y <= Math.Min(length - 1, center.Y + height); y++)
+                {
                     points.Add(new Point(x, y));
+                }
             }
 
             return points;
@@ -98,18 +63,24 @@ namespace Imaging
             var sum = 0.0;
 
             for (var y = 0; y < size; y++)
-            for (var x = 0; x < size; x++)
             {
-                kernel[y, x] =
-                    Math.Exp(-0.5 * (Math.Pow((x - mean) / sigma, 2.0) + Math.Pow((y - mean) / sigma, 2.0)))
-                    / (2 * Math.PI * sigma * sigma);
-                sum += kernel[y, x];
+                for (var x = 0; x < size; x++)
+                {
+                    kernel[y, x] =
+                        Math.Exp(-0.5 * (Math.Pow((x - mean) / sigma, 2.0) + Math.Pow((y - mean) / sigma, 2.0)))
+                        / (2 * Math.PI * sigma * sigma);
+                    sum += kernel[y, x];
+                }
             }
 
             // Normalize the kernel
             for (var y = 0; y < size; y++)
-            for (var x = 0; x < size; x++)
-                kernel[y, x] /= sum;
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    kernel[y, x] /= sum;
+                }
+            }
 
             return kernel;
         }
@@ -153,27 +124,40 @@ namespace Imaging
             var hasNonTransparentPixel = false;
 
             for (var y = 0; y < image.Height; y++)
-            for (var x = 0; x < image.Width; x++)
             {
-                var pixel = image.GetPixel(x, y);
-                if (pixel.A != 0) // Not fully transparent
+                for (var x = 0; x < image.Width; x++)
                 {
-                    hasNonTransparentPixel = true;
-                    if (x < minX) minX = x;
+                    var pixel = image.GetPixel(x, y);
+                    if (pixel.A != 0) // Not fully transparent
+                    {
+                        hasNonTransparentPixel = true;
+                        if (x < minX)
+                        {
+                            minX = x;
+                        }
 
-                    if (x > maxX) maxX = x;
+                        if (x > maxX)
+                        {
+                            maxX = x;
+                        }
 
-                    if (y < minY) minY = y;
+                        if (y < minY)
+                        {
+                            minY = y;
+                        }
 
-                    if (y > maxY) maxY = y;
+                        if (y > maxY)
+                        {
+                            maxY = y;
+                        }
+                    }
                 }
             }
 
-            if (!hasNonTransparentPixel)
-                // If all pixels are transparent, return a zero-sized rectangle
-                return new Rectangle(0, 0, 0, 0);
-
-            return new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
+            // If all pixels are transparent, return a zero-sized rectangle
+            return !hasNonTransparentPixel
+                ? new Rectangle(0, 0, 0, 0)
+                : new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
         }
 
         /// <summary>
@@ -181,6 +165,7 @@ namespace Imaging
         /// </summary>
         /// <param name="ex">The ex.</param>
         /// <exception cref="System.ApplicationException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void HandleException(Exception ex)
         {
             // Log the exception details (implementation may vary)
@@ -189,9 +174,11 @@ namespace Imaging
             Trace.WriteLine($"Stack Trace: {ex.StackTrace}");
 
             // Optionally, rethrow or handle further
-            if (ex is ArgumentException || ex is InvalidOperationException || ex is NotSupportedException ||
-                ex is UriFormatException || ex is IOException)
+            if (ex is ArgumentException or InvalidOperationException or NotSupportedException or UriFormatException
+                or IOException)
+            {
                 throw new ApplicationException("An error occurred while processing the image.", ex);
+            }
         }
 
         /// <summary>
@@ -200,14 +187,36 @@ namespace Imaging
         /// <param name="method">The method.</param>
         /// <param name="image">The image.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, Bitmap image)
         {
-            if (image == null)
+            if (image != null)
             {
-                var innerException =
-                    new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+                return;
             }
+
+            var innerException =
+                new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
+            throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
+        }
+
+        /// <summary>
+        ///     Validates the BitmapImage.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="image">The BitmapImage.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ValidateImage(string method, BitmapImage image)
+        {
+            if (image != null)
+            {
+                return;
+            }
+
+            var innerException =
+                new ArgumentNullException(string.Concat(method, ImagingResources.Spacing, nameof(image)));
+            throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
         }
 
         /// <summary>
@@ -225,17 +234,22 @@ namespace Imaging
             var count = 0;
 
             for (var y = region.Top; y < region.Bottom; y++)
-            for (var x = region.Left; x < region.Right; x++)
             {
-                var pixel = dbmBase.GetPixel(x, y);
-                pixels.Add(pixel);
-                rSum += pixel.R;
-                gSum += pixel.G;
-                bSum += pixel.B;
-                count++;
+                for (var x = region.Left; x < region.Right; x++)
+                {
+                    var pixel = dbmBase.GetPixel(x, y);
+                    pixels.Add(pixel);
+                    rSum += pixel.R;
+                    gSum += pixel.G;
+                    bSum += pixel.B;
+                    count++;
+                }
             }
 
-            if (!calculateMeanColor || count <= 0) return (pixels, null);
+            if (!calculateMeanColor || count <= 0)
+            {
+                return (pixels, null);
+            }
 
             var averageRed = rSum / count;
             var averageGreen = gSum / count;
@@ -245,27 +259,73 @@ namespace Imaging
             return (pixels, meanColor);
         }
 
-
-		/// <summary>
-		///     Interpolates the specified a.
-		/// </summary>
-		/// <param name="a">a.</param>
-		/// <param name="b">The b.</param>
-		/// <param name="t">The t.</param>
-		/// <returns>Interpolation</returns>
-		internal static double Interpolate(double a, double b, double t)
-		{
-			return a * (1 - t) + b * t;
-		}
-
-		/// <summary>
-		///     Clamps the specified value.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <returns>Value that is within the color range</returns>
-		public static int Clamp(double value)
+        /// <summary>
+        ///     Interpolates the specified a.
+        /// </summary>
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="t">The t.</param>
+        /// <returns>Interpolation</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static double Interpolate(double a, double b, double t)
         {
-            return (int)Math.Max(0, Math.Min(value, 255));
+            return (a * (1 - t)) + (b * t);
+        }
+
+        /// <summary>
+        /// Clamps the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The minimum.</param>
+        /// <param name="max">The maximum.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int Clamp(double value, double min = 0, double max = 255)
+        {
+            return (int)Math.Max(min, Math.Min(max, value));
+        }
+
+        /// <summary>
+        ///     Validates the file path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <exception cref="System.IO.IOException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ValidateFilePath(string path)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                var innerException = path != null
+                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
+                    : new IOException(nameof(path));
+                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
+            }
+        }
+
+        /// <summary>
+        ///     Validates the parameters.
+        /// </summary>
+        /// <param name="minValue">The minimum value.</param>
+        /// <param name="maxValue">The maximum value.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <exception cref="ArgumentException">
+        ///     minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.
+        ///     or
+        ///     Alpha must be between 0 and 255.
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ValidateParameters(int minValue, int maxValue, int alpha)
+        {
+            if (minValue is < 0 or > 255 || maxValue is < 0 or > 255 || minValue > maxValue)
+            {
+                throw new ArgumentException(
+                    ImagingResources.ErrorColorRange);
+            }
+
+            if (alpha is < 0 or > 255)
+            {
+                throw new ArgumentException(ImagingResources.ErrorColorRange);
+            }
         }
     }
 }

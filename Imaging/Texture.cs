@@ -58,7 +58,7 @@ namespace Imaging
             double turbulenceSize = 64)
         {
             // Validate parameters
-            ValidateParameters(minValue, maxValue, alpha);
+            ImageHelper.ValidateParameters(minValue, maxValue, alpha);
 
             // Generate base noise
             GenerateBaseNoise();
@@ -70,22 +70,30 @@ namespace Imaging
             var pixelData = new List<(int x, int y, Color color)>();
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
             {
-                double value;
+                for (var x = 0; x < width; x++)
+                {
+                    double value;
 
-                if (useTurbulence)
-                    value = Turbulence(x, y, turbulenceSize);
-                else if (useSmoothNoise)
-                    value = SmoothNoise(x, y);
-                else
-                    value = Noise[y % NoiseHeight, x % NoiseWidth];
+                    if (useTurbulence)
+                    {
+                        value = Turbulence(x, y, turbulenceSize);
+                    }
+                    else if (useSmoothNoise)
+                    {
+                        value = SmoothNoise(x, y);
+                    }
+                    else
+                    {
+                        value = Noise[y % NoiseHeight, x % NoiseWidth];
+                    }
 
-                var colorValue = minValue + (int)((maxValue - minValue) * value);
-                colorValue = Math.Max(minValue, Math.Min(maxValue, colorValue));
-                var color = Color.FromArgb(alpha, colorValue, colorValue, colorValue);
+                    var colorValue = minValue + (int)((maxValue - minValue) * value);
+                    colorValue = Math.Max(minValue, Math.Min(maxValue, colorValue));
+                    var color = Color.FromArgb(alpha, colorValue, colorValue, colorValue);
 
-                pixelData.Add((x, y, color));
+                    pixelData.Add((x, y, color));
+                }
             }
 
             // Set pixels using SIMD
@@ -112,24 +120,27 @@ namespace Imaging
             int alpha = 255,
             double turbulenceSize = 64)
         {
-            ValidateParameters(minValue, maxValue, alpha);
+            ImageHelper.ValidateParameters(minValue, maxValue, alpha);
             GenerateBaseNoise();
 
             var cloudsBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
             {
-                var value = Turbulence(x, y, turbulenceSize);
-                var l = Math.Clamp(minValue + (int)(value / 4.0), minValue, maxValue);
-                var color = Color.FromArgb(alpha, l, l, l);
-                pixelData.Add((x, y, color));
+                for (var x = 0; x < width; x++)
+                {
+                    var value = Turbulence(x, y, turbulenceSize);
+                    var l = Math.Clamp(minValue + (int)(value / 4.0), minValue, maxValue);
+                    var color = Color.FromArgb(alpha, l, l, l);
+                    pixelData.Add((x, y, color));
+                }
             }
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             cloudsBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return cloudsBitmap.Bitmap;
         }
@@ -165,22 +176,25 @@ namespace Imaging
             var pixelData = new List<(int x, int y, Color color)>();
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
             {
-                var xyValue = x * xPeriod / NoiseWidth + y * yPeriod / NoiseHeight +
-                              turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0;
-                var sineValue = 226 * Math.Abs(Math.Sin(xyValue * Math.PI));
-                var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
-                var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
-                var b = Math.Clamp(baseColor.B + (int)sineValue, 0, 255);
+                for (var x = 0; x < width; x++)
+                {
+                    var xyValue = (x * xPeriod / NoiseWidth) + (y * yPeriod / NoiseHeight) +
+                                  (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
+                    var sineValue = 226 * Math.Abs(Math.Sin(xyValue * Math.PI));
+                    var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
+                    var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
+                    var b = Math.Clamp(baseColor.B + (int)sineValue, 0, 255);
 
-                var color = Color.FromArgb(alpha, r, g, b);
-                pixelData.Add((x, y, color));
+                    var color = Color.FromArgb(alpha, r, g, b);
+                    pixelData.Add((x, y, color));
+                }
             }
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             marbleBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return marbleBitmap.Bitmap;
         }
@@ -214,25 +228,28 @@ namespace Imaging
             var pixelData = new List<(int x, int y, Color color)>();
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
             {
-                var xValue = (x - width / 2.0) / width;
-                var yValue = (y - height / 2.0) / height;
-                var distValue = Math.Sqrt(xValue * xValue + yValue * yValue) +
-                                turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0;
-                var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
+                for (var x = 0; x < width; x++)
+                {
+                    var xValue = (x - (width / 2.0)) / width;
+                    var yValue = (y - (height / 2.0)) / height;
+                    var distValue = Math.Sqrt((xValue * xValue) + (yValue * yValue)) +
+                                    (turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0);
+                    var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
 
-                var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
-                var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
-                var b = Math.Clamp((int)baseColor.B, 0, 255);
+                    var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
+                    var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
+                    var b = Math.Clamp((int)baseColor.B, 0, 255);
 
-                var color = Color.FromArgb(alpha, r, g, b);
-                pixelData.Add((x, y, color));
+                    var color = Color.FromArgb(alpha, r, g, b);
+                    pixelData.Add((x, y, color));
+                }
             }
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             woodBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return woodBitmap.Bitmap;
         }
@@ -263,24 +280,27 @@ namespace Imaging
             var pixelData = new List<(int x, int y, Color color)>();
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
             {
-                var xValue = (x - width / 2.0) / width +
-                             turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0;
-                var yValue = (y - height / 2.0) / height +
-                             turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0;
+                for (var x = 0; x < width; x++)
+                {
+                    var turbulenceValue = Turbulence(x, y, turbulenceSize);
+                    var xValue = ((x - (width / 2.0)) / width) + (turbulencePower * turbulenceValue / 256.0);
+                    var yValue = ((y - (height / 2.0)) / height) +
+                                 (turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0);
 
-                var sineValue = 22.0 *
-                                Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
-                                         Math.Sin(xyPeriod * yValue * Math.PI));
-                var hsvColor = new ColorHsv(sineValue, 1.0, 1.0, alpha);
+                    var sineValue = 22.0 *
+                                    Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
+                                             Math.Sin(xyPeriod * yValue * Math.PI));
+                    var hsvColor = new ColorHsv(sineValue, 1.0, 1.0, alpha);
 
-                pixelData.Add((x, y, hsvColor.GetDrawingColor()));
+                    pixelData.Add((x, y, hsvColor.GetDrawingColor()));
+                }
             }
 
             // Convert list to array for SIMD processing
             var pixelArray = pixelData.ToArray();
             waveBitmap.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
 
             return waveBitmap.Bitmap;
         }
@@ -310,75 +330,59 @@ namespace Imaging
             lineColor = lineColor == default ? Color.Black : lineColor;
 
             var crosshatchBitmap = new Bitmap(width, height);
-            using (var graphics = Graphics.FromImage(crosshatchBitmap))
+            using var graphics = Graphics.FromImage(crosshatchBitmap);
+            graphics.Clear(Color.White); // Background color
+
+            using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
+            // Convert angles from degrees to radians
+            var radAngle1 = angle1 * Math.PI / 180.0;
+            var radAngle2 = angle2 * Math.PI / 180.0;
+
+            // Calculate the line direction vectors
+            var dx1 = Math.Cos(radAngle1);
+            var dy1 = Math.Sin(radAngle1);
+            var dx2 = Math.Cos(radAngle2);
+            var dy2 = Math.Sin(radAngle2);
+
+            // Draw first set of lines
+            for (var y = 0; y < height; y += lineSpacing)
             {
-                graphics.Clear(Color.White); // Background color
+                graphics.DrawLine(
+                    pen,
+                    0, y,
+                    (int)((width * dx1) + (width * dy1)),
+                    (int)((y * dx1) + (width * dy1)));
+            }
 
-                using (var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness))
-                {
-                    // Convert angles from degrees to radians
-                    var radAngle1 = angle1 * Math.PI / 180.0;
-                    var radAngle2 = angle2 * Math.PI / 180.0;
+            for (var x = 0; x < width; x += lineSpacing)
+            {
+                graphics.DrawLine(
+                    pen,
+                    x, 0,
+                    (int)((x * dx1) + (height * dx1)),
+                    (int)((height * dx1) + (height * dy1)));
+            }
 
-                    // Calculate the line direction vectors
-                    var dx1 = Math.Cos(radAngle1);
-                    var dy1 = Math.Sin(radAngle1);
-                    var dx2 = Math.Cos(radAngle2);
-                    var dy2 = Math.Sin(radAngle2);
+            // Draw second set of lines
+            for (var y = 0; y < height; y += lineSpacing)
+            {
+                graphics.DrawLine(
+                    pen,
+                    0, y,
+                    (int)((width * dx2) + (height * dy2)),
+                    (int)((y * dx2) + (height * dy2)));
+            }
 
-                    // Draw first set of lines
-                    for (var y = 0; y < height; y += lineSpacing)
-                        graphics.DrawLine(
-                            pen,
-                            0, y,
-                            (int)(width * dx1 + width * dy1),
-                            (int)(y * dx1 + width * dy1));
-
-                    for (var x = 0; x < width; x += lineSpacing)
-                        graphics.DrawLine(
-                            pen,
-                            x, 0,
-                            (int)(x * dx1 + height * dx1),
-                            (int)(height * dx1 + height * dy1));
-
-                    // Draw second set of lines
-                    for (var y = 0; y < height; y += lineSpacing)
-                        graphics.DrawLine(
-                            pen,
-                            0, y,
-                            (int)(width * dx2 + height * dy2),
-                            (int)(y * dx2 + height * dy2));
-
-                    for (var x = 0; x < width; x += lineSpacing)
-                        graphics.DrawLine(
-                            pen,
-                            x, 0,
-                            (int)(x * dx2 + width * dx2),
-                            (int)(width * dx2 + height * dy2));
-                }
+            for (var x = 0; x < width; x += lineSpacing)
+            {
+                graphics.DrawLine(
+                    pen,
+                    x, 0,
+                    (int)((x * dx2) + (width * dx2)),
+                    (int)((width * dx2) + (height * dy2)));
             }
 
             return crosshatchBitmap;
-        }
-
-        /// <summary>
-        ///     Validates the parameters.
-        /// </summary>
-        /// <param name="minValue">The minimum value.</param>
-        /// <param name="maxValue">The maximum value.</param>
-        /// <param name="alpha">The alpha.</param>
-        /// <exception cref="ArgumentException">
-        ///     minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.
-        ///     or
-        ///     Alpha must be between 0 and 255.
-        /// </exception>
-        private static void ValidateParameters(int minValue, int maxValue, int alpha)
-        {
-            if (minValue is < 0 or > 255 || maxValue is < 0 or > 255 || minValue > maxValue)
-                throw new ArgumentException(
-                    "minValue and maxValue must be between 0 and 255, and minValue must not be greater than maxValue.");
-
-            if (alpha is < 0 or > 255) throw new ArgumentException("Alpha must be between 0 and 255.");
         }
 
         /// <summary>
@@ -388,8 +392,12 @@ namespace Imaging
         {
             var random = new Random();
             for (var y = 0; y < NoiseHeight; y++)
-            for (var x = 0; x < NoiseWidth; x++)
-                Noise[y, x] = random.NextDouble(); // Random value between 0.0 and 1.0
+            {
+                for (var x = 0; x < NoiseWidth; x++)
+                {
+                    Noise[y, x] = random.NextDouble(); // Random value between 0.0 and 1.0
+                }
+            }
         }
 
         /// <summary>

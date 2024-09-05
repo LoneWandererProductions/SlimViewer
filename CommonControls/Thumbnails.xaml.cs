@@ -421,7 +421,7 @@ namespace CommonControls
 
                 try
                 {
-                    myBitmapCell = ImageStream.GetBitmapImageFileStream(name, ThumbCellSize, ThumbCellSize);
+                    myBitmapCell = ImageStreamMedia.GetBitmapImageFileStream(name, ThumbCellSize, ThumbCellSize);
                 }
                 catch (ArgumentException ex)
                 {

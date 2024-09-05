@@ -4,6 +4,8 @@
  * FILE:        Imaging/ImageStream.cs
  * PURPOSE:     Does all the leg work for the Image operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCE:      https://lodev.org/cgtutor/floodfill.html
+ *              https://www.csharphelper.com/howtos/howto_colorize2.html
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -18,7 +20,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
 using Mathematics;
 
@@ -31,103 +32,6 @@ namespace Imaging
     public static class ImageStream
     {
         /// <summary>
-        ///     Loads File one Time
-        ///     Can only used to load an Image Once
-        ///     Use this for huge amounts of image that will be resized, else we will break memory limits
-        /// </summary>
-        /// <param name="path">path to the File</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <returns>
-        ///     An Image as <see cref="BitmapImage" />.
-        /// </returns>
-        /// <exception cref="IOException">Could not find the File</exception>
-        /// <exception cref="UriFormatException"></exception>
-        /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-        /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
-        {
-            ValidateFilePath(path);
-            try
-            {
-                var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.UriSource = new Uri(path);
-                if (width > 0 && height > 0)
-                {
-                    bmp.DecodePixelWidth = width;
-                    bmp.DecodePixelHeight = height;
-                }
-
-                bmp.EndInit();
-                return bmp;
-            }
-            catch (Exception ex)
-            {
-                ImageHelper.HandleException(ex);
-                // Optionally, rethrow or handle further as needed
-                throw; // This will preserve the original stack trace and exception details
-            }
-        }
-
-        /// <summary>
-        ///     Loads File in a Stream
-        ///     takes longer but can be changed on Runtime
-        /// </summary>
-        /// <param name="path">path to the File</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <returns>
-        ///     An Image as <see cref="BitmapImage" />.
-        /// </returns>
-        /// <exception cref="IOException">
-        /// </exception>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="IOException">Error while we try to access the File</exception>
-        /// <exception cref="ArgumentException">No Correct Argument were provided</exception>
-        /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-        /// <exception cref="IOException">Error while we try to access the File</exception>
-        public static BitmapImage GetBitmapImageFileStream(string path, int width = 0, int height = 0)
-        {
-            ValidateFilePath(path);
-
-            var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
-
-            try
-            {
-                using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;
-
-                if (width > 0 && height > 0)
-                {
-                    bmp.DecodePixelWidth = width;
-                    bmp.DecodePixelHeight = height;
-                }
-
-                bmp.StreamSource = flStream;
-                bmp.EndInit();
-
-                return bmp;
-            }
-            catch (FileFormatException ex)
-            {
-                Trace.Write(ex.ToString());
-                return null;
-            }
-            catch (Exception ex)
-            {
-                ImageHelper.HandleException(ex);
-                // Optionally, rethrow or handle further as needed
-                throw; // This will preserve the original stack trace and exception details
-            }
-        }
-
-        /// <summary>
         ///     Get the bitmap file.
         ///     Will  leak like crazy. Only use it if we load Icons or something.
         /// </summary>
@@ -136,10 +40,13 @@ namespace Imaging
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException">File not Found</exception>
-        internal static Bitmap GetBitmapFile(string path)
+        internal static Bitmap LoadBitmapFromFile(string path)
         {
-            ValidateFilePath(path);
+            ImageHelper.ValidateFilePath(path);
 
+            // Load the bitmap from the file
+            using var originalBitmap = new Bitmap(path);
+            // Return a defensive copy
             return new Bitmap(path, true);
         }
 
@@ -158,7 +65,7 @@ namespace Imaging
         /// <exception cref="InvalidOperationException"></exception>
         internal static Bitmap GetOriginalBitmap(string path)
         {
-            ValidateFilePath(path);
+            ImageHelper.ValidateFilePath(path);
 
             try
             {
@@ -335,11 +242,16 @@ namespace Imaging
             {
                 //go through each image and draw it on the final image
                 foreach (var image in images)
+                {
                     graph.DrawImage(image,
                         new Rectangle(0, 0, image.Width, image.Height));
+                }
             }
 
-            foreach (var image in images) image.Dispose();
+            foreach (var image in images)
+            {
+                image.Dispose();
+            }
 
             //before return please Convert
             return btm;
@@ -457,59 +369,6 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Bitmaps the image2 bitmap.
-        /// </summary>
-        /// <param name="image">The bitmap image.</param>
-        /// <returns>
-        ///     The Image as <see cref="Bitmap" />.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">if Image is null</exception>
-        internal static Bitmap BitmapImageToBitmap(BitmapImage image)
-        {
-            if (image == null)
-            {
-                var innerException = new ArgumentNullException(string.Concat(nameof(BitmapImageToBitmap),
-                    ImagingResources.Spacing, nameof(image)));
-                throw new ArgumentNullException(ImagingResources.ErrorWrongParameters, innerException);
-            }
-
-            using var outStream = new MemoryStream();
-            var enc = new BmpBitmapEncoder();
-            enc.Frames.Add(BitmapFrame.Create(image));
-            enc.Save(outStream);
-            var bitmap = new Bitmap(outStream);
-
-            return new Bitmap(bitmap);
-        }
-
-        /// <summary>
-        ///     Converts to bitmap image.
-        ///     https://stackoverflow.com/questions/5199205/how-do-i-rotate-image-then-move-to-the-top-left-0-0-without-cutting-off-the-imag/5200280#5200280
-        /// </summary>
-        /// <param name="image">The bitmap.</param>
-        /// The Image as
-        /// <see cref="BitmapImage" />
-        /// .
-        /// <exception cref="ArgumentNullException">if Image is null</exception>
-        internal static BitmapImage BitmapToBitmapImage(Bitmap image)
-        {
-            ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
-
-            using var memory = new MemoryStream();
-            image.Save(memory, ImageFormat.Png);
-            memory.Position = 0;
-
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memory;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
-
-            return bitmapImage;
-        }
-
-        /// <summary>
         ///     Rotates the image.
         /// </summary>
         /// <param name="image">The image.</param>
@@ -524,7 +383,10 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(RotateImage), image);
 
             //no need to do anything
-            if (degree is 360 or 0) return image;
+            if (degree is 360 or 0)
+            {
+                return image;
+            }
 
             if (degree is > 360 or < -360)
             {
@@ -545,8 +407,8 @@ namespace Imaging
                 var point = corners[i];
                 corners[i] =
                     new PointF(
-                        (float)(point.X * ExtendedMath.CalcCos(degree) - point.Y * ExtendedMath.CalcSin(degree)),
-                        (float)(point.X * ExtendedMath.CalcSin(degree) + point.Y * ExtendedMath.CalcCos(degree)));
+                        (float)((point.X * ExtendedMath.CalcCos(degree)) - (point.Y * ExtendedMath.CalcSin(degree))),
+                        (float)((point.X * ExtendedMath.CalcSin(degree)) + (point.Y * ExtendedMath.CalcCos(degree))));
             }
 
             // Find the min and max x and y coordinates.
@@ -590,13 +452,18 @@ namespace Imaging
         /// <exception cref="ArgumentNullException"></exception>
         internal static Bitmap CropImage(Bitmap image)
         {
-            if (image == null) throw new ArgumentNullException(nameof(image));
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
 
             var bounds = ImageHelper.GetNonTransparentBounds(image);
 
             if (bounds.Width <= 0 || bounds.Height <= 0)
+            {
                 // Return an empty image or handle this case as needed
                 return new Bitmap(1, 1);
+            }
 
             var croppedBitmap = new Bitmap(bounds.Width, bounds.Height);
             using var graphics = Graphics.FromImage(croppedBitmap);
@@ -641,7 +508,10 @@ namespace Imaging
                 var fileNameOnly = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory)) return;
+                if (!Directory.Exists(directory))
+                {
+                    return;
+                }
 
                 var newPath = path;
 
@@ -677,30 +547,44 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(ConvertWhiteToTransparent), image);
 
             //use our new Format
-            var dbm = DirectBitmap.GetInstance(image);
+            var result = DirectBitmap.GetInstance(image);
 
             //255,255,255 is White
             var replacementColor = Color.FromArgb(255, 255, 255);
+            var pixelsToSet = new List<(int x, int y, Color color)>();
 
-            for (var x = 0; x < dbm.Width; x++)
-            for (var y = 0; y < dbm.Height; y++)
+            for (var x = 0; x < result.Width; x++)
+            for (var y = 0; y < result.Height; y++)
             {
-                var color = dbm.GetPixel(x, y);
+                var color = result.GetPixel(x, y);
 
                 //not in the area? continue, 255 is White
-                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold) continue;
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
+                {
+                    continue;
+                }
 
                 //replace Value under the threshold with pure White
-                dbm.SetPixel(x, y, replacementColor);
+                pixelsToSet.Add((x, y, replacementColor));
             }
 
-            //get the Bitmap
-            var btm = new Bitmap(dbm.Bitmap);
-            //make Transparent
-            btm.MakeTransparent(replacementColor);
-            //cleanup
-            dbm.Dispose();
-            return btm;
+            try
+            {
+                result.SetPixelsSimd(pixelsToSet);
+
+                //get the Bitmap
+                var btm = new Bitmap(result.Bitmap);
+                //make Transparent
+                btm.MakeTransparent(replacementColor);
+                //cleanup
+                result.Dispose();
+                return btm;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
+                return null;
+            }
         }
 
         /// <summary>
@@ -718,7 +602,9 @@ namespace Imaging
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
+            }
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(image);
@@ -742,14 +628,22 @@ namespace Imaging
         {
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
-            if (radius < 0) throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
+            if (radius < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
+            }
 
             if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
+            }
 
             var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
 
-            if (points.Count == 0) return GetPixel(image, point);
+            if (points.Count == 0)
+            {
+                return GetPixel(image, point);
+            }
 
             int redSum = 0, greenSum = 0, blueSum = 0;
 
@@ -800,16 +694,18 @@ namespace Imaging
             var result = new DirectBitmap(source.Width, source.Height);
 
             for (var y = 0; y < source.Height; y++)
-            for (var x = 0; x < source.Width; x++)
             {
-                var pixelColor = source.GetPixel(x, y);
+                for (var x = 0; x < source.Width; x++)
+                {
+                    var pixelColor = source.GetPixel(x, y);
 
-                // Adjust brightness by multiplying each color component by the brightness factor
-                var newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
-                var newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
-                var newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
+                    // Adjust brightness by multiplying each color component by the brightness factor
+                    var newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
+                    var newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
+                    var newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
 
-                result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                    result.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+                }
             }
 
             return result.Bitmap;
@@ -834,19 +730,131 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Validates the file path.
+        ///     Floods the fill scan line stack.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <exception cref="System.IO.IOException"></exception>
-        private static void ValidateFilePath(string path)
+        /// <param name="image">The image.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="newColor">The new color.</param>
+        /// <returns>Bitmap with filled area</returns>
+        internal static Bitmap FloodFillScanLineStack(Bitmap image, int x, int y, Color newColor)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            // Create a new bitmap to store the processed image
+            var dbm = new DirectBitmap(image);
+            var result = new DirectBitmap(image);
+
+            var oldColor = dbm.GetPixel(x, y);
+            if (oldColor == newColor)
             {
-                var innerException = path != null
-                    ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
-                    : new IOException(nameof(path));
-                throw new IOException(ImagingResources.ErrorMissingFile, innerException);
+                return image; // Return original image if the color is the same
             }
+
+            var pixelData = new List<(int x, int y, Color color)>();
+
+            var stack = new Stack<(int, int)>();
+            stack.Push((x, y));
+
+            while (stack.Count > 0)
+            {
+                (x, y) = stack.Pop();
+                var x1 = x;
+
+                // Move to the left boundary
+                while (x1 >= 0 && dbm.GetPixel(x1, y) == oldColor)
+                {
+                    x1--;
+                }
+
+                x1++;
+                bool spanBelow;
+                var spanAbove = spanBelow = false;
+
+                // Move to the right boundary
+                while (x1 < dbm.Width && dbm.GetPixel(x1, y) == oldColor)
+                {
+                    pixelData.Add((x1, y, newColor));
+
+                    // Check above
+                    if (!spanAbove && y > 0 && dbm.GetPixel(x1, y - 1) == oldColor)
+                    {
+                        stack.Push((x1, y - 1));
+                        spanAbove = true;
+                    }
+                    else if (spanAbove && y > 0 && dbm.GetPixel(x1, y - 1) != oldColor)
+                    {
+                        spanAbove = false;
+                    }
+
+                    // Check below
+                    if (!spanBelow && y < dbm.Height - 1 && dbm.GetPixel(x1, y + 1) == oldColor)
+                    {
+                        stack.Push((x1, y + 1));
+                        spanBelow = true;
+                    }
+                    else if (spanBelow && y < dbm.Height - 1 && dbm.GetPixel(x1, y + 1) != oldColor)
+                    {
+                        spanBelow = false;
+                    }
+
+                    x1++;
+                }
+            }
+
+            // Convert list to array for SIMD processing
+            var pixelArray = pixelData.ToArray();
+            result.SetPixelsSimd(pixelArray);
+            pixelData.Clear();
+
+            // Return the modified image as a Bitmap
+            return result.Bitmap;
         }
+
+        /// <summary>
+        /// Adjusts the color.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="sourceColor">Color of the source.</param>
+        /// <param name="targetColor">Color of the target.</param>
+        /// <returns>Color Adjusted Bitmap</returns>
+        internal static Bitmap AdjustColor(Bitmap image, Color sourceColor, Color targetColor)
+        {
+            // Create a ColorMatrix that transforms sourceColor into targetColor
+            ColorMatrix cm = CreateColorMatrix(sourceColor, targetColor);
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(cm);
+
+            // Create a new image to hold the adjusted image.
+            Bitmap result = new Bitmap(image.Width, image.Height);
+            using Graphics g = Graphics.FromImage(result);
+            // Draw the original image on the new image using the color matrix.
+            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+            g.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates the color matrix.
+        /// </summary>
+        /// <param name="sourceColor">Color of the source.</param>
+        /// <param name="targetColor">Color of the target.</param>
+        /// <returns>The color matrix</returns>
+        private static ColorMatrix CreateColorMatrix(Color sourceColor, Color targetColor)
+        {
+            // Calculate the difference between source and target colors for each channel
+            float rRatio = targetColor.R / 255f - sourceColor.R / 255f;
+            float gRatio = targetColor.G / 255f - sourceColor.G / 255f;
+            float bRatio = targetColor.B / 255f - sourceColor.B / 255f;
+
+            return new ColorMatrix(new float[][]
+            {
+                new float[] {1 + rRatio, gRatio, bRatio, 0, 0},  // Red
+                new float[] {rRatio, 1 + gRatio, bRatio, 0, 0},  // Green
+                new float[] {rRatio, gRatio, 1 + bRatio, 0, 0},  // Blue
+                new float[] {0, 0, 0, 1, 0}, // Alpha
+                new float[] {0, 0, 0, 0, 1} // Translation
+            });
+        }
+
     }
 }
