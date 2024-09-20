@@ -1,71 +1,109 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using DataFormatter;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Imaging
 {
-    internal static class LifProcessing
+    public static class LifProcessing
     {
-        // Load LIF layers from a file
-        internal static List<Dictionary<Color, SortedSet<int>>> LoadLif(string path)
+        //TODO use for delta!
+
+        /// <summary>
+        ///     Ares the color counts similar.
+        ///     A Color Histogram needed for delta calculation if it is even useful
+        /// </summary>
+        /// <param name="colorCount1">The color count1.</param>
+        /// <param name="colorCount2">The color count2.</param>
+        /// <param name="threshold">The threshold.</param>
+        /// <returns>Similarity</returns>
+        public static bool AreColorCountsSimilar(Dictionary<Color, int> colorCount1, Dictionary<Color, int> colorCount2,
+            double threshold = 0.95)
         {
-            var cifLayers = new List<Dictionary<Color, SortedSet<int>>>();
-            var lines = File.ReadAllLines(path);
+            var totalPixels1 = colorCount1.Values.Sum();
+            var totalPixels2 = colorCount2.Values.Sum();
 
-            int currentLine = 0;
+            var similarPixels = 0;
 
-            while (currentLine < lines.Length)
+            foreach (var color in colorCount1.Keys)
             {
-                var layerPath = lines[currentLine++];
-                var cif = CifProcessing.CifFromFile(layerPath);
-
-                if (cif != null && cif.CifImage != null)
+                if (colorCount2.ContainsKey(color))
                 {
-                    cifLayers.Add(cif.CifImage);
+                    similarPixels += Math.Min(colorCount1[color], colorCount2[color]);
                 }
             }
 
-            return cifLayers;
+            var similarity = (double)similarPixels / Math.Min(totalPixels1, totalPixels2);
+            return similarity >= threshold;
         }
 
-        // Save an image as a LIF file
-        internal static void SaveImageAsLif(Bitmap image, string path)
+
+        // Save the Lif object (layers and settings) to a binary file
+        public static void SaveLif(Lif lif, string path)
         {
-            var cifLayers = new List<string>();
-            var baseCifPath = Path.GetTempFileName();
-            cifLayers.Add(baseCifPath);
-
-            // Convert and save base CIF layer
-            var baseCif = CifProcessing.ConvertToCifFromBitmap(image);
-            var width = image.Width;
-            var height = image.Height;
-            SaveCifToFile(baseCif, baseCifPath, width, height);
-
-            // Delta Layer: Example implementation
-            var deltaCifPath = Path.GetTempFileName();
-            cifLayers.Add(deltaCifPath);
-            // Here you should create and save delta CIF file (not implemented in this example)
-            // var deltaCif = GenerateDeltaCif(baseCif, ...);
-            // SaveCifToFile(deltaCif, deltaCifPath);
-
-            // Write LIF file with layer paths
-            File.WriteAllLines(path, cifLayers);
+            using (var fs = new FileStream(path, FileMode.Create))
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(fs, lif);
+            }
         }
 
-        // Save CIF data to a file
-        private static void SaveCifToFile(Dictionary<Color, SortedSet<int>> cifData, string path, int width, int height)
+        // Load the Lif object (layers and settings) from a binary file
+        public static Lif LoadLif(string path)
         {
-            var csvData = CifProcessing.GenerateCsv(height, width, cifData);
-            CsvHandler.WriteCsv(path, csvData);
+            using (var fs = new FileStream(path, FileMode.Open))
+            {
+                var formatter = new BinaryFormatter();
+                return (Lif)formatter.Deserialize(fs);
+            }
         }
 
-        // Generate a delta CIF file (stub method)
-        private static Dictionary<Color, SortedSet<int>> GenerateDeltaCif(Dictionary<Color, SortedSet<int>> baseCif, Bitmap image)
+        // Convert a Bitmap to a CIF (Compressed Image Format) dictionary
+        public static Dictionary<Color, List<int>> ConvertToCifFromBitmap(Bitmap bitmap)
         {
-            // Implement delta calculation logic here
-            return new Dictionary<Color, SortedSet<int>>();
+            var cif = new Dictionary<Color, List<int>>();
+
+            for (var y = 0; y < bitmap.Height; y++)
+            {
+                for (var x = 0; x < bitmap.Width; x++)
+                {
+                    var pixelColor = bitmap.GetPixel(x, y);
+                    var pixelIndex = (y * bitmap.Width) + x;
+
+                    // Group pixels by color
+                    if (!cif.ContainsKey(pixelColor))
+                    {
+                        cif[pixelColor] = new List<int>();
+                    }
+
+                    cif[pixelColor].Add(pixelIndex);
+                }
+            }
+
+            return cif;
+        }
+
+        // Convert a CIF dictionary back into a Bitmap object
+        public static Bitmap ConvertToBitmapFromCif(Dictionary<Color, List<int>> cif, int width, int height)
+        {
+            var bitmap = new Bitmap(width, height);
+
+            foreach (var entry in cif)
+            {
+                var color = entry.Key;
+                var pixels = entry.Value;
+
+                foreach (var pixel in pixels)
+                {
+                    var x = pixel % width;
+                    var y = pixel / width;
+                    bitmap.SetPixel(x, y, color);
+                }
+            }
+
+            return bitmap;
         }
     }
 }

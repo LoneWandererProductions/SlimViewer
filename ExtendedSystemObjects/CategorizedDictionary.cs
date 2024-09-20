@@ -1,14 +1,15 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/CategorizedDictionary.cs
- * PURPOSE:     Extended Dictionary with an Category.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     ExtendedSystemObjects
+* FILE:        ExtendedSystemObjects/CategorizedDictionary.cs
+* PURPOSE:     Extended Dictionary with an Category.
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections;
@@ -17,13 +18,13 @@ using System.Linq;
 
 namespace ExtendedSystemObjects
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IEnumerable" />
     /// <summary>
-    ///     Dictionary with an category
+    ///     Dictionary with a category.
     /// </summary>
-    /// <typeparam name="TK">Key Value</typeparam>
-    /// <typeparam name="TV">Value with Category</typeparam>
-    public sealed class CategorizedDictionary<TK, TV> : IEnumerable<KeyValuePair<TK, TV>>
+    /// <typeparam name="TK">Key Type</typeparam>
+    /// <typeparam name="TV">Value Type</typeparam>
+    public sealed class CategorizedDictionary<TK, TV> : IEnumerable, IEquatable<CategorizedDictionary<TK, TV>>
     {
         /// <summary>
         ///     The internal data of our custom Dictionary
@@ -35,15 +36,6 @@ namespace ExtendedSystemObjects
         /// </summary>
         public int Count => _data.Count;
 
-        /// <summary>
-        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
-        /// </summary>
-        /// <returns>An enumerator for the dictionary.</returns>
-        public IEnumerator<KeyValuePair<TK, TV>> GetEnumerator()
-        {
-            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).GetEnumerator();
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
@@ -52,6 +44,38 @@ namespace ExtendedSystemObjects
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Checks for equality between two CategorizedDictionary instances.
+        /// </summary>
+        /// <param name="other">The other CategorizedDictionary to compare.</param>
+        /// <returns>True if equal, otherwise false.</returns>
+        public bool Equals(CategorizedDictionary<TK, TV> other)
+        {
+            if (other == null || Count != other.Count)
+            {
+                return false;
+            }
+
+            foreach (var (key, category, value) in this)
+            {
+                if (!other.TryGetValue(key, out var otherValue))
+                {
+                    return false;
+                }
+
+                var otherCategory = other.GetCategoryAndValue(key)?.Category ?? string.Empty;
+
+                if (!string.Equals(category, otherCategory, StringComparison.OrdinalIgnoreCase) ||
+                    !EqualityComparer<TV>.Default.Equals(value, otherValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -71,6 +95,11 @@ namespace ExtendedSystemObjects
         /// <param name="value">The value to add.</param>
         public void Add(string category, TK key, TV value)
         {
+            if (_data.ContainsKey(key))
+            {
+                throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
+            }
+
             _data[key] = (category, value);
         }
 
@@ -135,7 +164,10 @@ namespace ExtendedSystemObjects
         /// <returns>True if the entry was updated, false if the key does not exist.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            if (!_data.TryGetValue(key, out var entry)) return false;
+            if (!_data.TryGetValue(key, out var entry))
+            {
+                return false;
+            }
 
             _data[key] = (newCategory, entry.Value);
             return true;
@@ -178,15 +210,100 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        ///     Converts to key value list.
+        /// </summary>
+        /// <returns>A list of Keys and Values</returns>
+        public List<KeyValuePair<TK, TV>> ToKeyValueList()
+        {
+            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).ToList();
+        }
+
+        /// <summary>
+        ///     Checks if two CategorizedDictionary instances are equal and provides a message.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="expected">The expected dictionary.</param>
+        /// <param name="actual">The actual dictionary.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>True if dictionaries are equal, otherwise false.</returns>
+        public static bool AreEqual<TKey, TValue>(CategorizedDictionary<TKey, TValue> expected,
+            CategorizedDictionary<TKey, TValue> actual, out string message)
+        {
+            if (expected == null || actual == null)
+            {
+                message = ExtendedSystemObjectsResources.NullDictionaries;
+                return false;
+            }
+
+            if (expected.Equals(actual))
+            {
+                message = ExtendedSystemObjectsResources.DictionariesEqual;
+                return true;
+            }
+
+            message = ExtendedSystemObjectsResources.DictionaryComparisonFailed;
+            return false;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Returns a string representation of the dictionary's contents.
         /// </summary>
         /// <returns>A string representing the dictionary's contents.</returns>
         public override string ToString()
         {
             var entries = _data.Select(entry =>
-                $"Key: {entry.Key}, Category: {entry.Value.Category}, Value: {entry.Value.Value}");
+                string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key, entry.Value.Category,
+                    entry.Value.Value));
 
             return string.Join(Environment.NewLine, entries);
+        }
+
+        /// <summary>
+        ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
+        /// </summary>
+        /// <returns>An enumerator for the dictionary.</returns>
+        public IEnumerator<(TK Key, string Category, TV Value)> GetEnumerator()
+        {
+            return _data.Select(entry => (entry.Key, entry.Value.Category, entry.Value.Value)).GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CategorizedDictionary<TK, TV>);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 17;
+
+                foreach (var (key, category, value) in this)
+                {
+                    hashCode = (hashCode * 23) + EqualityComparer<TK>.Default.GetHashCode(key);
+                    hashCode = (hashCode * 23) + (category?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 23) + EqualityComparer<TV>.Default.GetHashCode(value);
+                }
+
+                return hashCode;
+            }
         }
     }
 }

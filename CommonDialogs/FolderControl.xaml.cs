@@ -31,9 +31,11 @@ namespace CommonDialogs
     public sealed partial class FolderControl : INotifyPropertyChanged
     {
         /// <summary>
-        ///     Option to show files
+        ///     The dependency property for showing files
         /// </summary>
-        private readonly bool _showFiles;
+        public static readonly DependencyProperty ShowFilesProperty =
+            DependencyProperty.Register(nameof(ShowFiles), typeof(bool), typeof(FolderControl),
+                new PropertyMetadata(false, OnShowFilesChanged));
 
         /// <summary>
         ///     The look up
@@ -47,6 +49,15 @@ namespace CommonDialogs
         public FolderControl()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        ///     Gets or sets the ShowFiles dependency property.
+        /// </summary>
+        public bool ShowFiles
+        {
+            get => (bool)GetValue(ShowFilesProperty);
+            set => SetValue(ShowFilesProperty, value);
         }
 
         /// <summary>
@@ -68,7 +79,10 @@ namespace CommonDialogs
             get => Root;
             set
             {
-                if (value == Root) return;
+                if (value == Root)
+                {
+                    return;
+                }
 
                 Root = value;
                 OnPropertyChanged(nameof(Paths));
@@ -86,7 +100,10 @@ namespace CommonDialogs
             get => _lookUp;
             set
             {
-                if (value == _lookUp) return;
+                if (value == _lookUp)
+                {
+                    return;
+                }
 
                 _lookUp = value;
                 OnPropertyChanged(nameof(LookUp));
@@ -98,6 +115,19 @@ namespace CommonDialogs
         ///     Occurs when a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        ///     Called when [show files changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
+        private static void OnShowFilesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FolderControl folderControl)
+            {
+                folderControl.SetItems(folderControl.Paths);
+            }
+        }
 
         /// <inheritdoc cref="PropertyChangedEventArgs" />
         /// <summary>
@@ -135,7 +165,10 @@ namespace CommonDialogs
                 directories = Directory.GetDirectories(path);
 
                 // Optionally, get all files in the current path
-                if (_showFiles) files = Directory.GetFiles(path);
+                if (ShowFiles)
+                {
+                    files = Directory.GetFiles(path);
+                }
             }
             else
             {
@@ -154,10 +187,16 @@ namespace CommonDialogs
             }
 
             // Optionally add files to the TreeView
-            if (_showFiles)
+            if (ShowFiles)
+            {
                 foreach (var item in files.Select(file => new TreeViewItem
-                             { Header = Path.GetFileName(file), Tag = file }))
+                         {
+                             Header = Path.GetFileName(file), Tag = file
+                         }))
+                {
                     FoldersItem.Items.Add(item);
+                }
+            }
 
             // Update Paths property with the current path
             Paths = path;
@@ -173,9 +212,7 @@ namespace CommonDialogs
         {
             var item = new TreeViewItem
             {
-                Header = Path.GetFileName(path),
-                Tag = path,
-                FontWeight = FontWeights.Normal
+                Header = Path.GetFileName(path), Tag = path, FontWeight = FontWeights.Normal
             };
 
             // Placeholder for lazy loading of subdirectories
@@ -192,7 +229,10 @@ namespace CommonDialogs
         private void FolderExpanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
-            if (item.Items.Count != 1 || item.Items[0] != null) return;
+            if (item.Items.Count != 1 || item.Items[0] != null)
+            {
+                return;
+            }
 
             item.Items.Clear();
 
@@ -200,14 +240,22 @@ namespace CommonDialogs
             {
                 // Load subdirectories
                 foreach (var subItem in Directory.GetDirectories(item.Tag.ToString()!)
-                             .Select(dir => CreateTreeViewItem(dir))) item.Items.Add(subItem);
+                             .Select(CreateTreeViewItem))
+                {
+                    item.Items.Add(subItem);
+                }
 
                 // Optionally load files
-                if (!_showFiles) return;
+                if (!ShowFiles)
+                {
+                    return;
+                }
 
                 foreach (var fileItem in Directory.GetFiles(item.Tag.ToString()!).Select(file =>
                              new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                {
                     item.Items.Add(fileItem);
+                }
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
@@ -220,11 +268,14 @@ namespace CommonDialogs
         ///     Handles the SelectedItemChanged event of the FoldersItem control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedPropertyChangedEventArgs{System.Object}" /> instance containing the event data.</param>
-        private void FoldersItem_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        /// <param name="e">The <see cref="RoutedPropertyChangedEventArgs{Object}" /> instance containing the event data.</param>
+        private void FoldersItemSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var tree = sender as TreeView;
-            if (tree?.SelectedItem is TreeViewItem selection) Paths = selection.Tag.ToString();
+            if (tree?.SelectedItem is TreeViewItem selection)
+            {
+                Paths = selection.Tag.ToString();
+            }
         }
 
         /// <summary>
@@ -236,7 +287,10 @@ namespace CommonDialogs
         private void BtnUpClick(object sender, RoutedEventArgs e)
         {
             var path = Directory.GetParent(Paths);
-            if (path != null) SetItems(path.ToString());
+            if (path != null)
+            {
+                SetItems(path.ToString());
+            }
         }
 
         /// <summary>
@@ -247,7 +301,10 @@ namespace CommonDialogs
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void BtnGoClick(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(LookUp)) return;
+            if (!Directory.Exists(LookUp))
+            {
+                return;
+            }
 
             SetItems(LookUp);
             LookUp = string.Empty;
@@ -326,7 +383,10 @@ namespace CommonDialogs
             var i = 1;
 
             // Ensure the new folder name is unique
-            while (Directory.Exists(dirName)) dirName = $"{newDirPath} ({i++})";
+            while (Directory.Exists(dirName))
+            {
+                dirName = $"{newDirPath} ({i++})";
+            }
 
             // Create the new directory and refresh the TreeView
             _ = Directory.CreateDirectory(dirName);
@@ -342,11 +402,9 @@ namespace CommonDialogs
         private void BtnExplorerClick(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(Paths) && Directory.Exists(Paths))
-                _ = Process.Start(new ProcessStartInfo
-                {
-                    FileName = Paths,
-                    UseShellExecute = true
-                });
+            {
+                _ = Process.Start(new ProcessStartInfo { FileName = Paths, UseShellExecute = true });
+            }
         }
     }
 }
