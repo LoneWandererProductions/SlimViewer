@@ -69,64 +69,59 @@ namespace ImageCompare
         /// <returns>Image Object to compare</returns>
         internal static ImageSimilar GenerateData(Bitmap bitmap, int id)
         {
-            //resize
+            // Resize
             bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
-            //use our new Format
+            // Use our new Format
             var dbm = DirectBitmap.GetInstance(bitmap);
 
-            //get the average Color Value
-            var r = 0;
-            var b = 0;
-            var g = 0;
+            // Initialize variables for average color value
+            var r = 0.0; // Use double for precision
+            var g = 0.0;
+            var b = 0.0;
 
-            for (var y = 0; y < ImageResources.DuplicateSize; y++)
-            for (var x = 0; x < ImageResources.DuplicateSize; x++)
-            {
-                r += dbm.GetPixel(x, y).R;
-                b += dbm.GetPixel(x, y).B;
-                g += dbm.GetPixel(x, y).G;
-            }
-
-            r /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
-            b /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
-            g /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
-
+            // Create arrays for image and hash
             var image = new byte[ImageResources.DuplicateSize, ImageResources.DuplicateSize];
             var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
-            //get greyscale
-            bitmap = Render.FilterImage(bitmap, ImageFilters.GrayScale);
+            // Get total pixels
+            var totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
 
-            //Get array Map for comparison
-            dbm = DirectBitmap.GetInstance(bitmap);
-
-            try
+            for (var y = 0; y < ImageResources.DuplicateSize; y++)
             {
-                var i = -1;
-                for (var y = 0; y < ImageResources.DuplicateSize; y++)
                 for (var x = 0; x < ImageResources.DuplicateSize; x++)
                 {
-                    i++;
-                    var cache = dbm.GetPixel(x, y).R;
-                    image[x, y] = cache;
-                    hash[i] = cache;
+                    var pixel = dbm.GetPixel(x, y);
+
+                    // Calculate grayscale value
+                    var grayValue = (byte)(pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114);
+                    image[x, y] = grayValue; // Store grayscale value
+                    hash[y * ImageResources.DuplicateSize + x] = grayValue; // Store grayscale value for hash
+
+                    // Accumulate RGB values based on grayscale contribution
+                    r += pixel.R * 0.299;
+                    g += pixel.G * 0.587;
+                    b += pixel.B * 0.114;
                 }
             }
-            catch (InvalidOperationException ex)
-            {
-                Trace.WriteLine(ex);
-            }
 
+            // Calculate average color values
+            r /= totalPixels;
+            g /= totalPixels;
+            b /= totalPixels;
+
+            // Return the ImageSimilar object
             return new ImageSimilar
             {
-                R = r,
-                G = g,
-                B = b,
+                R = (byte)r, // Cast back to byte
+                G = (byte)g,
+                B = (byte)b,
                 Id = id,
-                Image = image
+                Image = image,
+                Hash = hash // Add the hash to the return value if needed
             };
         }
+
 
         /// <summary>
         ///     Gets the percentage difference.
