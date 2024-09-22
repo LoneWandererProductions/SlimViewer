@@ -448,7 +448,7 @@ namespace SlimViews
             if (_index < _rows - 1)
                 _index++;
             else
-                _index = 0;
+                return;
 
             GenerateView();
         }
@@ -461,7 +461,7 @@ namespace SlimViews
             if (_index > 0)
                 _index--;
             else
-                _index = _rows - 1;
+                return;
 
             GenerateView();
         }
@@ -476,27 +476,22 @@ namespace SlimViews
             var index = _index * 10;
             int i;
 
-            ObserverFirst = null;
-            ObserverSecond = null;
-            ObserverThird = null;
-            ObserverFourth = null;
-            ObserverFifth = null;
-            ObserverSixth = null;
-            ObserverSeventh = null;
-            ObserverEight = null;
-            ObserverNinth = null;
-            ObserverTenth = null;
+            ObserverArray[0] = _observerFirst;
+            ObserverArray[1] = _observerSecond;
+            ObserverArray[2] = _observerThird;
+            ObserverArray[3] = _observerFourth;
+            ObserverArray[4] = _observerFifth;
+            ObserverArray[5] = _observerSixth;
+            ObserverArray[6] = _observerSeventh;
+            ObserverArray[7] = _observerEight;
+            ObserverArray[8] = _observerNinth;
+            ObserverArray[9] = _observerTenth;
 
-            ObserverArray[0] = ObserverFirst;
-            ObserverArray[1] = ObserverSecond;
-            ObserverArray[2] = ObserverThird;
-            ObserverArray[3] = ObserverFourth;
-            ObserverArray[4] = ObserverFifth;
-            ObserverArray[5] = ObserverSixth;
-            ObserverArray[6] = ObserverSeventh;
-            ObserverArray[7] = ObserverEight;
-            ObserverArray[8] = ObserverNinth;
-            ObserverArray[9] = ObserverTenth;
+            for (var j = 0; j <= 9; j++)
+            {
+                ObserverArray[j] = null;
+            }
+
 
             if (Duplicates.ElementAtOrDefault(index) != null)
             {

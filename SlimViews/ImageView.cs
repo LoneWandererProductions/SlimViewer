@@ -301,7 +301,7 @@ namespace SlimViews
         private ICommand _similarCommand;
 
         /// <summary>
-        /// The filter configuration comman
+        /// The filter configuration command
         /// </summary>
         private ICommand _filterConfigCommand;
 

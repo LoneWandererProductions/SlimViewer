@@ -72,7 +72,7 @@ namespace CommonControls
             typeof(Thumbnails), null);
 
         /// <summary>
-        ///     The Thumb Cell Size
+        /// The dependency thumb grid
         /// </summary>
         public static readonly DependencyProperty DependencyThumbGrid = DependencyProperty.Register(
             nameof(DependencyThumbGrid),
@@ -80,21 +80,23 @@ namespace CommonControls
             typeof(Thumbnails), null);
 
         /// <summary>
-        ///     The Thumb Cell Size
+        /// The selection box
         /// </summary>
         public static readonly DependencyProperty SelectionBox = DependencyProperty.Register(nameof(SelectionBox),
             typeof(bool),
             typeof(Thumbnails), null);
 
+
         /// <summary>
-        ///     The Thumb Cell Size
+        /// The is selected
         /// </summary>
         public static readonly DependencyProperty IsSelected = DependencyProperty.Register(nameof(IsSelected),
             typeof(bool),
             typeof(Thumbnails), null);
 
+
         /// <summary>
-        ///     The Thumb Cell Size
+        /// The items source property
         /// </summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
             typeof(Dictionary<int, string>),
@@ -211,8 +213,8 @@ namespace CommonControls
         ///     <c>true</c> if [thumb grid]; otherwise, <c>false</c>.
         /// </value>
         public Dictionary<int, string> ItemsSource
-
         {
+            //todo add an new reload
             get => (Dictionary<int, string>)GetValue(ItemsSourceProperty);
             set => SetValue(ItemsSourceProperty, value);
         }
@@ -268,6 +270,7 @@ namespace CommonControls
         {
             var control = sender as Thumbnails;
             // add an Can Execute
+
             if (!_refresh)
             {
                 return;
@@ -412,7 +415,14 @@ namespace CommonControls
             ImageLoaded?.Invoke();
         }
 
-        private async Task LoadImageAsync(int key, string name, Grid exGrid)
+        /// <summary>
+        /// Loads the image asynchronous.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="exGrid">The ex grid.</param>
+        /// <returns>Load all images async</returns>
+        private async Task LoadImageAsync(int key, string name, Panel exGrid)
         {
             BitmapImage myBitmapCell = null;
 
