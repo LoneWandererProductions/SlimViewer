@@ -68,7 +68,8 @@ namespace ImageCompare
             var duplicateGroups = GetDuplicateGroups(images);
             localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
-
+            Trace.WriteLine(nameof(duplicateGroups));
+            Trace.WriteLine(nameof(duplicateGroups.Count));
             //Let's compare all result sets, oif empty well tough luck
 
             if (duplicateGroups.IsNullOrEmpty())
@@ -148,6 +149,7 @@ namespace ImageCompare
             }
 
             Trace.WriteLine(nameof(GetSortedGrayScaleValues));
+            Trace.WriteLine(imagePathsAndGrayValues.Count);
             return imagePathsAndGrayValues;
         }
 
@@ -181,6 +183,7 @@ namespace ImageCompare
             }
 
             Trace.WriteLine(nameof(GetDuplicateGroups));
+            Trace.WriteLine(duplicateGroups.Count);
             return duplicateGroups;
         }
 

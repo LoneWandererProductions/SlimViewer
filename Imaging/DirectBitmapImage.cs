@@ -96,7 +96,7 @@ namespace Imaging
         /// <summary>
         ///     Gets the bitmap image.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A Converted BitmapImage</returns>
         public BitmapImage GetBitmapImage()
         {
             // Convert WriteableBitmap to BitmapImage

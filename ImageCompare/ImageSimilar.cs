@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageSimilar.cs
- * PURPOSE:     Struct to Compare if Images are Similar
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     ImageCompare
+* FILE:        ImageCompare/ImageSimilar.cs
+* PURPOSE:     Struct to Compare if Images are Similar
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 using System;
 using ExtendedSystemObjects;
@@ -93,10 +93,10 @@ namespace ImageCompare
         /// </returns>
         public bool Equals(ImageSimilar other)
         {
-            if (Image == null || other.Image == null)
-            {
-                return false;
-            }
+            //if (Hash == null || other.Hash == null)
+            //{
+            //    return false;
+            //}
 
             return other.R.Interval(R, ImageResources.ColorThreshold) &&
                    other.G.Interval(G, ImageResources.ColorThreshold) &&
