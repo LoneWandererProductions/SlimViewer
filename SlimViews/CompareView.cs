@@ -27,6 +27,9 @@ namespace SlimViews
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class CompareView : INotifyPropertyChanged
     {
+        private Dictionary<int, string>[] ObserverArray { get; } = new Dictionary<int, string>[10];
+
+
         /// <summary>
         ///     The analysis
         /// </summary>
@@ -484,6 +487,17 @@ namespace SlimViews
             ObserverNinth = null;
             ObserverTenth = null;
 
+            ObserverArray[0] = ObserverFirst;
+            ObserverArray[1] = ObserverSecond;
+            ObserverArray[2] = ObserverThird;
+            ObserverArray[3] = ObserverFourth;
+            ObserverArray[4] = ObserverFifth;
+            ObserverArray[5] = ObserverSixth;
+            ObserverArray[6] = ObserverSeventh;
+            ObserverArray[7] = ObserverEight;
+            ObserverArray[8] = ObserverNinth;
+            ObserverArray[9] = ObserverTenth;
+
             if (Duplicates.ElementAtOrDefault(index) != null)
             {
                 var lst = Duplicates[index];
@@ -563,120 +577,17 @@ namespace SlimViews
         /// <param name="id">The image identifier.</param>
         public void ChangeImage(int itemId, int id)
         {
-            switch (id)
-            {
-                case 0:
-                {
-                    var files = _observerFirst.Values.ToList();
-                    if (!_observerFirst.ContainsKey(itemId)) return;
+            if (id < 0 || id >= ObserverArray.Length || ObserverArray[id] == null) return;
 
-                    var path = _observerFirst[itemId];
+            var observer = ObserverArray[id];
+            if (!observer.ContainsKey(itemId)) return;
 
-                    LoadImages(path, itemId, files);
+            var files = observer.Values.ToList();
+            var path = observer[itemId];
 
-                    break;
-                }
-                case 1:
-                {
-                    var files = _observerSecond.Values.ToList();
-                    if (!_observerSecond.ContainsKey(itemId)) return;
-
-                    var path = _observerSecond[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 2:
-                {
-                    var files = _observerThird.Values.ToList();
-                    if (!_observerThird.ContainsKey(itemId)) return;
-
-                    var path = _observerThird[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 3:
-                {
-                    var files = _observerFourth.Values.ToList();
-                    if (!_observerFourth.ContainsKey(itemId)) return;
-
-                    var path = _observerFourth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 4:
-                {
-                    var files = _observerFifth.Values.ToList();
-                    if (!_observerFifth.ContainsKey(itemId)) return;
-
-                    var path = _observerFifth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 5:
-                {
-                    var files = _observerSixth.Values.ToList();
-                    if (!_observerSixth.ContainsKey(itemId)) return;
-
-                    var path = _observerSixth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 6:
-                {
-                    var files = ObserverSeventh.Values.ToList();
-                    if (!_observerSeventh.ContainsKey(itemId)) return;
-
-                    var path = ObserverSeventh[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 7:
-                {
-                    var files = _observerEight.Values.ToList();
-                    if (!_observerEight.ContainsKey(itemId)) return;
-
-                    var path = _observerEight[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 8:
-                {
-                    var files = _observerNinth.Values.ToList();
-                    if (!_observerNinth.ContainsKey(itemId)) return;
-
-                    var path = _observerNinth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 9:
-                {
-                    var files = _observerTenth.Values.ToList();
-                    if (!_observerTenth.ContainsKey(itemId)) return;
-
-                    var path = _observerTenth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-            }
+            LoadImages(path, itemId, files);
         }
+
 
         /// <summary>
         ///     Loads the images.

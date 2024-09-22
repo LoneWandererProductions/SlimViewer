@@ -21,7 +21,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
-        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="3">
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Grid.ColumnSpan="3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100" />
@@ -38,44 +38,54 @@
                 </Grid.RowDefinitions>
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
                                            ItemsSource="{Binding ObserverFirst}"
-                                           ImageClicked="ObserverFirst_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           Tag="1" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"
                                            ItemsSource="{Binding ObserverSecond}"
-                                           ImageClicked="ObserverSecond_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           Tag="2" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2"
                                            ItemsSource="{Binding ObserverThird}"
-                                           ImageClicked="ObserverThird_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1"
+                                           Tag="3" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"
                                            ItemsSource="{Binding ObserverFourth}"
-                                           ImageClicked="ObserverFourth_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           Tag="4" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4"
                                            ItemsSource="{Binding ObserverFifth}"
-                                           ImageClicked="ObserverFifth_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           Tag="5" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="5"
                                            ItemsSource="{Binding ObserverSixth}"
-                                           ImageClicked="ObserverSixth_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           Tag="6" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="6"
                                            ItemsSource="{Binding ObserverSeventh}"
-                                           ImageClicked="ObserverSeventh_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           Tag="6" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="7"
                                            ItemsSource="{Binding ObserverEight}"
-                                           ImageClicked="ObserverEight_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1"
+                                           Tag="7" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="8"
                                            ItemsSource="{Binding ObserverNinth}"
-                                           ImageClicked="ObserverNinth_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           Tag="8" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="9"
                                            ItemsSource="{Binding ObserverTenth}"
-                                           ImageClicked="ObserverTenth_ImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" />
+                                           ImageClicked="OnImageClicked"
+                                           ThumbCellSize="100" ThumbHeight="1"
+                                           Tag="9" />
             </Grid>
         </ScrollViewer>
         <Button Content="Next" HorizontalAlignment="Stretch" Grid.Row="1"

@@ -27,10 +27,11 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Thumbs the image clicked.
+        /// Thumbs the image clicked.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
         /// <param name="itemId">The <see cref="ImageEventArgs" /> instance containing the event data.</param>
-        private void Thumb_ImageClicked(ImageEventArgs itemId)
+        private void Thumb_ImageClicked(object sender, ImageEventArgs itemId)
         {
             View.ChangeImage(itemId.Id);
         }

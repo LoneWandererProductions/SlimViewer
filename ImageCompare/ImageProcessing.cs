@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -74,49 +73,32 @@ namespace ImageCompare
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(bitmap);
+            var totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
 
             //get the average Color Value
             var r = 0;
             var b = 0;
             var g = 0;
 
+            var hash = new byte[totalPixels];
+
+            //TODO replace with custom dbm Method
+
             for (var y = 0; y < ImageResources.DuplicateSize; y++)
             for (var x = 0; x < ImageResources.DuplicateSize; x++)
             {
-                r += dbm.GetPixel(x, y).R;
-                b += dbm.GetPixel(x, y).B;
-                g += dbm.GetPixel(x, y).G;
+                var pixel = dbm.GetPixel(x, y);
+                r += pixel.R;
+                g += pixel.G;
+                b += pixel.B;
+
+                // Calculate grayscale value directly from the current pixel
+                hash[y * ImageResources.DuplicateSize + x] = (byte)(pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114);
             }
 
-            r /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
-            b /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
-            g /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
-
-            var image = new byte[ImageResources.DuplicateSize, ImageResources.DuplicateSize];
-            var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
-
-            //get greyscale
-            bitmap = Render.FilterImage(bitmap, ImageFilters.GrayScale);
-
-            //Get array Map for comparison
-            dbm = DirectBitmap.GetInstance(bitmap);
-
-            try
-            {
-                var i = -1;
-                for (var y = 0; y < ImageResources.DuplicateSize; y++)
-                for (var x = 0; x < ImageResources.DuplicateSize; x++)
-                {
-                    i++;
-                    var cache = dbm.GetPixel(x, y).R;
-                    image[x, y] = cache;
-                    hash[i] = cache;
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                Trace.WriteLine(ex);
-            }
+            r /= totalPixels;
+            b /= totalPixels;
+            g /= totalPixels;
 
             return new ImageSimilar
             {
@@ -124,7 +106,7 @@ namespace ImageCompare
                 G = g,
                 B = b,
                 Id = id,
-                Image = image
+                Hash = hash
             };
         }
 
@@ -137,12 +119,13 @@ namespace ImageCompare
         internal static float GetPercentageDifference(ImageSimilar imageToCompareTo, ImageSimilar targetBitmap)
         {
             var diff = 0;
+            var totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
 
-            for (var y = 0; y < ImageResources.SimilarSize; y++)
-            for (var x = 0; x < ImageResources.SimilarSize; x++)
+            // Compare grayscale hashes instead of 2D image array
+            for (var i = 0; i < totalPixels; i++)
             {
-                int one = imageToCompareTo.Image[x, y];
-                int two = targetBitmap.Image[x, y];
+                int one = imageToCompareTo.Hash[i];
+                int two = targetBitmap.Hash[i];
 
                 if (one.Interval(two, ImageResources.ColorThreshold))
                 {
@@ -150,15 +133,17 @@ namespace ImageCompare
                 }
             }
 
-            var pixel = (float)diff / ImageResources.MaxPixel * 100;
+            // Calculate the pixel similarity percentage
+            var pixelSimilarity = (float)diff / totalPixels * 100;
 
-            var color = (float)
+            // Calculate color similarity based on RGB differences
+            var colorSimilarity = (float)
                 (((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor) +
                  ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor) +
-                 ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
-                  ImageResources.MaxColor)) / 3 * 100;
+                 ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) / ImageResources.MaxColor)) / 3 * 100;
 
-            return (pixel + color) / 2;
+            // Return the average of pixel similarity and color similarity
+            return (pixelSimilarity + colorSimilarity) / 2;
         }
     }
 }

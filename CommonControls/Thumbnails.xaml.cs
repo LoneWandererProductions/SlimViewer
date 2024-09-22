@@ -36,10 +36,11 @@ namespace CommonControls
     public sealed partial class Thumbnails
     {
         /// <summary>
-        ///     The selection change delegate.
+        /// The selection change delegate.
         /// </summary>
+        /// <param name="sender">The sender.</param>
         /// <param name="itemId">The itemId.</param>
-        public delegate void DelegateImage(ImageEventArgs itemId);
+        public delegate void DelegateImage(object sender, ImageEventArgs itemId);
 
         /// <summary>
         ///     The selection change delegate.
@@ -98,14 +99,6 @@ namespace CommonControls
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
             typeof(Dictionary<int, string>),
             typeof(Thumbnails), new PropertyMetadata(OnItemsSourcePropertyChanged));
-
-        /// <summary>
-        /// Gets the image items.
-        /// </summary>
-        /// <value>
-        /// The image items.
-        /// </value>
-        public ObservableCollection<ThumbImageData> ImageItems { get; } = new ObservableCollection<ThumbImageData>();
 
         /// <summary>
         ///     The refresh
@@ -342,7 +335,6 @@ namespace CommonControls
         {
             if (ItemsSource?.Any() != true)
             {
-                ImageItems.Clear();
                 return;
             }
 
@@ -679,7 +671,7 @@ namespace CommonControls
         /// <param name="args">Custom Events</param>
         private void OnImageThumbClicked(ImageEventArgs args)
         {
-            ImageClicked?.Invoke(args);
+            ImageClicked?.Invoke(this, args);
         }
     }
 
