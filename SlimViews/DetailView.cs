@@ -12,6 +12,7 @@
 // ReSharper disable MemberCanBeMadeStatic.Global
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -37,10 +38,17 @@ namespace SlimViews
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class DetailView : INotifyPropertyChanged
     {
-        /// <summary>
-        ///     The analysis
-        /// </summary>
-        private readonly ImageAnalysis _analysis;
+
+		/// <summary>
+		/// The chunk size
+		/// Define a reasonable chunk size for text appending
+		/// </summary>
+		private const int _chunkSize = 1024;
+
+		/// <summary>
+		///     The analysis
+		/// </summary>
+		private readonly ImageAnalysis _analysis;
 
         /// <summary>
         ///     The green icon
@@ -179,14 +187,8 @@ namespace SlimViews
         public BitmapImage BmpOne
         {
             get => _bmpOne;
-            set
-            {
-                if (_bmpOne == value) return;
-
-                _bmpOne = value;
-                OnPropertyChanged(nameof(BmpOne));
-            }
-        }
+			set => SetProperty(ref _bmpOne, value, nameof(BmpOne));
+		}
 
         /// <summary>
         ///     Gets or sets the BMP two.
@@ -197,14 +199,8 @@ namespace SlimViews
         public BitmapImage BmpTwo
         {
             get => _bmpTwo;
-            set
-            {
-                if (_bmpTwo == value) return;
-
-                _bmpTwo = value;
-                OnPropertyChanged(nameof(BmpTwo));
-            }
-        }
+			set => SetProperty(ref _bmpTwo, value, nameof(BmpTwo));
+		}
 
         /// <summary>
         ///     Gets or sets the path one.
@@ -215,12 +211,8 @@ namespace SlimViews
         public string PathOne
         {
             get => _pathOne;
-            set
-            {
-                _pathOne = value;
-                OnPropertyChanged(nameof(PathOne));
-            }
-        }
+			set => SetProperty(ref _pathOne, value, nameof(PathOne));
+		}
 
         /// <summary>
         ///     Gets or sets the path two.
@@ -231,12 +223,8 @@ namespace SlimViews
         public string PathTwo
         {
             get => _pathTwo;
-            set
-            {
-                _pathTwo = value;
-                OnPropertyChanged(nameof(PathTwo));
-            }
-        }
+			set => SetProperty(ref _pathTwo, value, nameof(PathTwo));
+		}
 
         /// <summary>
         ///     Gets or sets the status image.
@@ -247,96 +235,105 @@ namespace SlimViews
         public string StatusImage
         {
             get => _statusImage;
-            set
-            {
-                if (_statusImage == value) return;
+			set => SetProperty(ref _statusImage, value, nameof(StatusImage));
+		}
 
-                _statusImage = value;
-                OnPropertyChanged(nameof(StatusImage));
-            }
-        }
+		/// <summary>
+		///     Gets or sets the color.
+		/// </summary>
+		/// <value>
+		///     The color.
+		/// </value>
+		public string Colors
+		{
+			get => _color;
+			set => SetProperty(ref _color, value, nameof(Colors));
+		}
 
-        /// <summary>
-        ///     Gets or sets the color.
-        /// </summary>
-        /// <value>
-        ///     The color.
-        /// </value>
-        public string Colors
-        {
-            get => _color;
-            set
-            {
-                if (_color == value) return;
+		/// <summary>
+		/// Sets the property.
+		/// </summary>
+		/// <typeparam name="T">Generic Parameter</typeparam>
+		/// <param name="field">The field.</param>
+		/// <param name="value">The value.</param>
+		/// <param name="propertyName">Name of the property.</param>
+		private void SetProperty<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value)) return;
+			field = value;
+			OnPropertyChanged(propertyName);
+		}
 
-                _color = value;
-                OnPropertyChanged(nameof(Colors));
-            }
-        }
+		/// <summary>
+		///     Gets the open one command.
+		/// </summary>
+		/// <value>
+		///     The open one command.
+		/// </value>
+		public ICommand OpenOneCommand => GetCommand(ref _openOneCommand, OpenOneAction);
 
-        /// <summary>
-        ///     Gets the open one command.
-        /// </summary>
-        /// <value>
-        ///     The open one command.
-        /// </value>
-        public ICommand OpenOneCommand =>
-            _openOneCommand ??= new DelegateCommand<object>(OpenOneAction, CanExecute);
+		/// <summary>
+		///     Gets the open two command.
+		/// </summary>
+		/// <value>
+		///     The open two command.
+		/// </value>
+		public ICommand OpenTwoCommand => GetCommand(ref _openTwoCommand, OpenTwoAction);
 
-        /// <summary>
-        ///     Gets the open two command.
-        /// </summary>
-        /// <value>
-        ///     The open two command.
-        /// </value>
-        public ICommand OpenTwoCommand =>
-            _openTwoCommand ??= new DelegateCommand<object>(OpenTwoAction, CanExecute);
+		/// <summary>
+		///     Gets the difference command.
+		/// </summary>
+		/// <value>
+		///     The difference command.
+		/// </value>
+		public ICommand DifferenceCommand => GetCommand(ref _differenceCommand, DifferenceAction);
 
-        /// <summary>
-        ///     Gets the difference command.
-        /// </summary>
-        /// <value>
-        ///     The difference command.
-        /// </value>
-        public ICommand DifferenceCommand =>
-            _differenceCommand ??= new DelegateCommand<object>(DifferenceAction, CanExecute);
+		/// <summary>
+		///     Gets the difference command.
+		/// </summary>
+		/// <value>
+		///     The difference command.
+		/// </value>
+		public ICommand ExportCommand => GetCommand(ref _exportCommand, ExportAction);
 
-        /// <summary>
-        ///     Gets the difference command.
-        /// </summary>
-        /// <value>
-        ///     The difference command.
-        /// </value>
-        public ICommand ExportCommand =>
-            _exportCommand ??= new DelegateCommand<object>(ExportAction, CanExecute);
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+		/// <summary>
+		/// Gets the command.
+		/// </summary>
+		/// <param name="command">The command.</param>
+		/// <param name="execute">The execute.</param>
+		/// <returns></returns>
+		private ICommand GetCommand(ref ICommand command, Action<object> execute)
+		{
+			return command ??= new DelegateCommand<object>(execute, CanExecute);
+		}
 
-        /// <summary>
-        ///     Gets a value indicating whether this instance can execute.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-        /// </returns>
-        /// <value>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-        /// </value>
-        public bool CanExecute(object obj)
-        {
-            // check if executing is allowed, not used right now
-            return true;
-        }
+		/// <inheritdoc />
+		/// <summary>
+		///     Triggers if an Attribute gets changed
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
+		/// <summary>
+		///     Gets a value indicating whether this instance can execute.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		/// <returns>
+		///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+		/// </returns>
+		/// <value>
+		///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+		/// </value>
+		public bool CanExecute(object obj)
+		{
+			return _btmOne != null && _btmTwo != null;
+		}
+
+		/// <summary>
+		///     Called when [property changed].
+		/// </summary>
+		/// <param name="propertyName">Name of the property.</param>
+		private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -435,33 +432,29 @@ namespace SlimViews
         /// <param name="richTextBox">The rich text box.</param>
         /// <param name="text">The text.</param>
         private static async Task AppendTextAsync(TextBoxBase richTextBox, string text)
-        {
-            const int chunkSize = 1024; // Define a reasonable chunk size
-            var offset = 0;
+		{
+			var offset = 0;
+			while (offset < text.Length)
+			{
+				var length = Math.Min(_chunkSize, text.Length - offset);
+				var chunk = text.Substring(offset, length);
 
-            while (offset < text.Length)
-            {
-                var length = Math.Min(chunkSize, text.Length - offset);
-                var chunk = text.Substring(offset, length);
+				await richTextBox.Dispatcher.InvokeAsync(() => richTextBox.AppendText(chunk));
 
-                await richTextBox.Dispatcher.InvokeAsync(() => richTextBox.AppendText(chunk));
+				offset += length;
 
-                offset += length;
+				// Optionally yield control to the UI thread occasionally
+				await Task.Yield();
+			}
 
-                // Optional: Yield control to the UI to keep it responsive
-                await Task.Yield();
-            }
+			richTextBox.ScrollToEnd(); // Scroll after all chunks are appended
+		}
 
-            // Scroll to the end of the RichTextBox
-            richTextBox.ScrollToEnd();
-        }
-
-
-        /// <summary>
-        ///     Differences the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void DifferenceAction(object obj)
+		/// <summary>
+		///     Differences the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void DifferenceAction(object obj)
         {
             if (_btmOne == null || _btmTwo == null) return;
 
@@ -487,43 +480,36 @@ namespace SlimViews
                 _difference);
         }
 
-        /// <summary>
-        ///     Computes the text.
-        /// </summary>
-        /// <param name="btm">The BTM.</param>
-        /// <returns>The color Infos</returns>
-        private async Task<string> ComputeText(Bitmap btm)
-        {
-            var str = new StringBuilder();
+		/// <summary>
+		///     Computes the text.
+		/// </summary>
+		/// <param name="btm">The bitmap.</param>
+		/// <returns>The color Infos</returns>
+		private async Task<string> ComputeText(Bitmap btm)
+		{
+			var str = new StringBuilder();
+			await Task.Run(() =>
+			{
+				foreach (var (color, count) in _analysis.GetColors(btm))
+				{
+					str.AppendLine($"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
+				}
+			});
+			StatusImage = _greenIcon;
+			return str.ToString();
+		}
 
-            await Task.Run(() =>
-            {
-                foreach (var (color, count) in _analysis.GetColors(btm))
-                {
-                    var cache = string.Concat(SlimViewerResources.InformationColor, color,
-                        SlimViewerResources.InformationCount, count, Environment.NewLine);
-                    str.Append(cache);
-                    Task.Delay(1).Wait(); // Simulate some delay for each line
-                }
-
-                str.Append(Environment.NewLine);
-                StatusImage = _greenIcon;
-            });
-
-            return str.ToString();
-        }
-
-        /// <summary>
-        ///     Compares this instance.
-        /// </summary>
-        private void Compare()
+		/// <summary>
+		///     Compares this instance.
+		/// </summary>
+		private void Compare()
         {
             if (_btmOne == null || _btmTwo == null) return;
 
             var data = _analysis.CompareImages(_btmOne, _btmTwo);
 
-            _similarity = string.Concat(SlimViewerResources.Similarity, data.Similarity, Environment.NewLine);
-            RtBoxInformation.AppendText(_similarity);
+			_similarity = $"{SlimViewerResources.Similarity}{data.Similarity}{Environment.NewLine}";
+			RtBoxInformation.AppendText(_similarity);
 
             // Scroll to the end of the RichTextBox
             RtBoxInformation.ScrollToEnd();

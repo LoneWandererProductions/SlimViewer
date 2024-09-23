@@ -25,6 +25,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using ExtendedSystemObjects;
 using Mathematics;
 
 namespace CommonControls
@@ -312,7 +313,10 @@ namespace CommonControls
             ThumbWidth = _originalWidth;
             ThumbHeight = _originalHeight;
 
-            LoadImages();
+			// Clear existing images from the grid
+            Thb.Children.Clear();
+
+			LoadImages();
 
             //All Images Loaded
             ImageLoaded?.Invoke();
@@ -389,7 +393,7 @@ namespace CommonControls
 
             // Setup the grid layout
             var exGrid = ExtendedGrid.ExtendGrid(ThumbWidth, ThumbHeight, ThumbGrid);
-            Thb.Children.Clear();
+
             _ = Thb.Children.Add(exGrid);
 
             var tasks = new List<Task>();

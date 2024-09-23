@@ -142,22 +142,16 @@ namespace SlimViews
         public string Status
         {
             get => _status;
-            set
-            {
-                if (value == _status) return;
+			set => SetProperty(ref _status, value, nameof(Status));
+		}
 
-                _status = value;
-                OnPropertyChanged(nameof(Status));
-            }
-        }
-
-        /// <summary>
-        ///     Gets the previous Image.
-        /// </summary>
-        /// <value>
-        ///     The previous Image.
-        /// </value>
-        public ICommand PreviousCommand => _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
+		/// <summary>
+		///     Gets the previous Image.
+		/// </summary>
+		/// <value>
+		///     The previous Image.
+		/// </value>
+		public ICommand PreviousCommand => _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
 
         /// <summary>
         ///     Gets the next Image.
@@ -177,14 +171,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverFirst
         {
             get => _observerFirst;
-            set
-            {
-                if (_observerFirst == value) return;
-
-                _observerFirst = value;
-                OnPropertyChanged(nameof(ObserverFirst));
-            }
-        }
+			set => SetProperty(ref _observerFirst, value, nameof(ObserverFirst));
+		}
 
         /// <summary>
         ///     Gets or sets the observer second.
@@ -195,14 +183,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverSecond
         {
             get => _observerSecond;
-            set
-            {
-                if (_observerSecond == value) return;
-
-                _observerSecond = value;
-                OnPropertyChanged(nameof(ObserverSecond));
-            }
-        }
+			set => SetProperty(ref _observerSecond, value, nameof(ObserverSecond));
+		}
 
         /// <summary>
         ///     Gets or sets the observer third.
@@ -213,14 +195,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverThird
         {
             get => _observerThird;
-            set
-            {
-                if (_observerThird == value) return;
-
-                _observerThird = value;
-                OnPropertyChanged(nameof(ObserverThird));
-            }
-        }
+			set => SetProperty(ref _observerThird, value, nameof(ObserverThird));
+		}
 
         /// <summary>
         ///     Gets or sets the observer fourth.
@@ -231,14 +207,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverFourth
         {
             get => _observerFourth;
-            set
-            {
-                if (_observerFourth == value) return;
-
-                _observerFourth = value;
-                OnPropertyChanged(nameof(ObserverFourth));
-            }
-        }
+			set => SetProperty(ref _observerFourth, value, nameof(ObserverFourth));
+		}
 
         /// <summary>
         ///     Gets or sets the observer fifth.
@@ -249,14 +219,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverFifth
         {
             get => _observerFifth;
-            set
-            {
-                if (_observerFifth == value) return;
-
-                _observerFifth = value;
-                OnPropertyChanged(nameof(ObserverFifth));
-            }
-        }
+			set => SetProperty(ref _observerFifth, value, nameof(ObserverFifth));
+		}
 
         /// <summary>
         ///     Gets or sets the observer sixth.
@@ -267,14 +231,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverSixth
         {
             get => _observerSixth;
-            set
-            {
-                if (_observerSixth == value) return;
-
-                _observerSixth = value;
-                OnPropertyChanged(nameof(ObserverSixth));
-            }
-        }
+			set => SetProperty(ref _observerSixth, value, nameof(ObserverSixth));
+		}
 
         /// <summary>
         ///     Gets or sets the observer seventh.
@@ -285,14 +243,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverSeventh
         {
             get => _observerSeventh;
-            set
-            {
-                if (_observerSeventh == value) return;
-
-                _observerSeventh = value;
-                OnPropertyChanged(nameof(ObserverSeventh));
-            }
-        }
+			set => SetProperty(ref _observerSeventh, value, nameof(ObserverSeventh));
+		}
 
         /// <summary>
         ///     Gets or sets the observer eight.
@@ -303,14 +255,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverEight
         {
             get => _observerEight;
-            set
-            {
-                if (_observerEight == value) return;
-
-                _observerEight = value;
-                OnPropertyChanged(nameof(ObserverEight));
-            }
-        }
+			set => SetProperty(ref _observerEight, value, nameof(ObserverEight));
+		}
 
         /// <summary>
         ///     Gets or sets the observer ninth.
@@ -321,14 +267,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverNinth
         {
             get => _observerNinth;
-            set
-            {
-                if (_observerNinth == value) return;
-
-                _observerNinth = value;
-                OnPropertyChanged(nameof(ObserverNinth));
-            }
-        }
+			set => SetProperty(ref _observerNinth, value, nameof(ObserverNinth));
+		}
 
         /// <summary>
         ///     Gets or sets the observer tenth.
@@ -339,20 +279,28 @@ namespace SlimViews
         public Dictionary<int, string> ObserverTenth
         {
             get => _observerTenth;
-            set
-            {
-                if (_observerTenth == value) return;
+			set => SetProperty(ref _observerTenth, value, nameof(ObserverTenth));
+		}
 
-                _observerTenth = value;
-                OnPropertyChanged(nameof(ObserverTenth));
-            }
-        }
+		/// <summary>
+		/// Sets the property.
+		/// </summary>
+		/// <typeparam name="T">Generic Parameter</typeparam>
+		/// <param name="field">The field.</param>
+		/// <param name="value">The value.</param>
+		/// <param name="propertyName">Name of the property.</param>
+		private void SetProperty<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value)) return;
+			field = value;
+			OnPropertyChanged(propertyName);
+		}
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+		/// <inheritdoc />
+		/// <summary>
+		///     Triggers if an Attribute gets changed
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Called when [property changed].
@@ -385,43 +333,28 @@ namespace SlimViews
         /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
         /// <param name="currentFolder">The current folder.</param>
         /// <param name="imageView">The image view.</param>
-        internal async Task AsyncInitiate(bool subFolders, string currentFolder, ImageView imageView)
-        {
-            _imageView = imageView;
-
-            Status = SlimViewerResources.StatusCompareStart;
-
-            _ = await Task.Run(() =>
-                Duplicates = _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
-            ).ConfigureAwait(false);
-
-            _rows = Duplicates.Count / 10;
-            _modulo = Duplicates.Count % 10;
-            if (_modulo > 0) _rows++;
-            _index = 0;
-
-            GenerateView();
-
-            Status = SlimViewerResources.StatusCompareFinished;
-        }
-
-        /// <summary>
-        ///     Initiates the specified sub folders.
-        /// </summary>
-        /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
-        /// <param name="currentFolder">The current folder.</param>
-        /// <param name="imageView">The image view.</param>
         /// <param name="similarity">The similarity, in Percentages</param>
-        internal async Task AsyncInitiate(bool subFolders, string currentFolder, ImageView imageView, int similarity)
+        internal async Task AsyncInitiate(bool subFolders, string currentFolder, ImageView imageView, int similarity = 0)
         {
             _imageView = imageView;
 
             Status = SlimViewerResources.StatusCompareStart;
 
-            _ = await Task.Run(() =>
-                Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix,
-                    similarity)
-            ).ConfigureAwait(false);
+            //no specified difference lvl, so Duplicates
+            if (similarity == 0)
+            {
+                _ = await Task.Run(() =>
+                    Duplicates = _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
+                ).ConfigureAwait(false);
+            }
+            //with difference lvl
+            else
+            {
+				_ = await Task.Run(() =>
+	                Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix,
+		                similarity)
+                ).ConfigureAwait(false);
+			}
 
             if (Duplicates == null)
             {
