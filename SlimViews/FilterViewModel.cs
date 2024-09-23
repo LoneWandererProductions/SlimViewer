@@ -24,16 +24,16 @@ namespace SlimViews
             }
         }
 
-		/// <summary>
-		///     Gets the filter options.
-		/// </summary>
-		/// <value>
-		///     The filter options.
-		/// </value>
-		public IEnumerable<ImageFilters> FilterOptions =>
-			Enum.GetValues(typeof(ImageFilters)) as IEnumerable<ImageFilters>;
+        /// <summary>
+        ///     Gets the filter options.
+        /// </summary>
+        /// <value>
+        ///     The filter options.
+        /// </value>
+        public IEnumerable<ImageFilters> FilterOptions =>
+            Enum.GetValues(typeof(ImageFilters)) as IEnumerable<ImageFilters>;
 
-		public ImageFilterConfig CurrentConfig
+        public ImageFilterConfig CurrentConfig
         {
             get => _currentConfig;
             set

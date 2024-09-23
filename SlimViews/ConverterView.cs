@@ -85,8 +85,8 @@ namespace SlimViews
             set
             {
                 Target = value;
-				SetProperty(ref _extensionSelect, value, nameof(ExtensionSelect));
-			}
+                SetProperty(ref _extensionSelect, value, nameof(ExtensionSelect));
+            }
         }
 
         /// <summary>
@@ -101,8 +101,8 @@ namespace SlimViews
             set
             {
                 Source = value;
-				SetProperty(ref _sourceSelect, value, nameof(SourceSelect));
-			}
+                SetProperty(ref _sourceSelect, value, nameof(SourceSelect));
+            }
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace SlimViews
         public string Source
         {
             get => _source;
-			set => SetProperty(ref _source, value, nameof(Source));
+            set => SetProperty(ref _source, value, nameof(Source));
         }
 
         /// <summary>
@@ -126,22 +126,22 @@ namespace SlimViews
         public string Target
         {
             get => _target;
-			set => SetProperty(ref _target, value, nameof(Target));
-		}
+            set => SetProperty(ref _target, value, nameof(Target));
+        }
 
-		/// <summary>
-		/// Sets the property.
-		/// </summary>
-		/// <typeparam name="T">Generic Parameter</typeparam>
-		/// <param name="field">The field.</param>
-		/// <param name="value">The value.</param>
-		/// <param name="propertyName">Name of the property.</param>
-		private void SetProperty<T>(ref T field, T value, string propertyName)
-		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return;
-			field = value;
-			OnPropertyChanged(propertyName);
-		}
+        /// <summary>
+        /// Sets the property.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -149,23 +149,23 @@ namespace SlimViews
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-		/// <summary>
-		///     Gets a value indicating whether this instance can execute.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		/// <returns>
-		///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-		/// </returns>
-		/// <value>
-		///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-		/// </value>
-		public bool CanExecute(object obj) => !string.IsNullOrEmpty(_source) && !string.IsNullOrEmpty(_target);
+        /// <summary>
+        ///     Gets a value indicating whether this instance can execute.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+        /// </returns>
+        /// <value>
+        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+        /// </value>
+        public bool CanExecute(object obj) => !string.IsNullOrEmpty(_source) && !string.IsNullOrEmpty(_target);
 
-		/// <summary>
-		///     Called when [property changed].
-		/// </summary>
-		/// <param name="propertyName">Name of the property.</param>
-		public void OnPropertyChanged(string propertyName)
+        /// <summary>
+        ///     Called when [property changed].
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

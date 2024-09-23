@@ -27,7 +27,14 @@ namespace SlimViews
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class CompareView : INotifyPropertyChanged
     {
-        private Dictionary<int, string>[] ObserverArray { get; } = new Dictionary<int, string>[10];
+        private Dictionary<int, string>[] _observers = new Dictionary<int, string>[10];
+
+        // Properties can still be accessed through an index
+        public Dictionary<int, string> this[int index]
+        {
+            get => _observers[index];
+            set => SetProperty(ref _observers[index], value, nameof(_observers));
+        }
 
 
         /// <summary>
@@ -142,16 +149,16 @@ namespace SlimViews
         public string Status
         {
             get => _status;
-			set => SetProperty(ref _status, value, nameof(Status));
-		}
+            set => SetProperty(ref _status, value, nameof(Status));
+        }
 
-		/// <summary>
-		///     Gets the previous Image.
-		/// </summary>
-		/// <value>
-		///     The previous Image.
-		/// </value>
-		public ICommand PreviousCommand => _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
+        /// <summary>
+        ///     Gets the previous Image.
+        /// </summary>
+        /// <value>
+        ///     The previous Image.
+        /// </value>
+        public ICommand PreviousCommand => _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
 
         /// <summary>
         ///     Gets the next Image.
@@ -171,8 +178,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverFirst
         {
             get => _observerFirst;
-			set => SetProperty(ref _observerFirst, value, nameof(ObserverFirst));
-		}
+            set => SetProperty(ref _observerFirst, value, nameof(ObserverFirst));
+        }
 
         /// <summary>
         ///     Gets or sets the observer second.
@@ -183,8 +190,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverSecond
         {
             get => _observerSecond;
-			set => SetProperty(ref _observerSecond, value, nameof(ObserverSecond));
-		}
+            set => SetProperty(ref _observerSecond, value, nameof(ObserverSecond));
+        }
 
         /// <summary>
         ///     Gets or sets the observer third.
@@ -195,8 +202,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverThird
         {
             get => _observerThird;
-			set => SetProperty(ref _observerThird, value, nameof(ObserverThird));
-		}
+            set => SetProperty(ref _observerThird, value, nameof(ObserverThird));
+        }
 
         /// <summary>
         ///     Gets or sets the observer fourth.
@@ -207,8 +214,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverFourth
         {
             get => _observerFourth;
-			set => SetProperty(ref _observerFourth, value, nameof(ObserverFourth));
-		}
+            set => SetProperty(ref _observerFourth, value, nameof(ObserverFourth));
+        }
 
         /// <summary>
         ///     Gets or sets the observer fifth.
@@ -219,8 +226,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverFifth
         {
             get => _observerFifth;
-			set => SetProperty(ref _observerFifth, value, nameof(ObserverFifth));
-		}
+            set => SetProperty(ref _observerFifth, value, nameof(ObserverFifth));
+        }
 
         /// <summary>
         ///     Gets or sets the observer sixth.
@@ -231,8 +238,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverSixth
         {
             get => _observerSixth;
-			set => SetProperty(ref _observerSixth, value, nameof(ObserverSixth));
-		}
+            set => SetProperty(ref _observerSixth, value, nameof(ObserverSixth));
+        }
 
         /// <summary>
         ///     Gets or sets the observer seventh.
@@ -243,8 +250,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverSeventh
         {
             get => _observerSeventh;
-			set => SetProperty(ref _observerSeventh, value, nameof(ObserverSeventh));
-		}
+            set => SetProperty(ref _observerSeventh, value, nameof(ObserverSeventh));
+        }
 
         /// <summary>
         ///     Gets or sets the observer eight.
@@ -255,8 +262,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverEight
         {
             get => _observerEight;
-			set => SetProperty(ref _observerEight, value, nameof(ObserverEight));
-		}
+            set => SetProperty(ref _observerEight, value, nameof(ObserverEight));
+        }
 
         /// <summary>
         ///     Gets or sets the observer ninth.
@@ -267,8 +274,8 @@ namespace SlimViews
         public Dictionary<int, string> ObserverNinth
         {
             get => _observerNinth;
-			set => SetProperty(ref _observerNinth, value, nameof(ObserverNinth));
-		}
+            set => SetProperty(ref _observerNinth, value, nameof(ObserverNinth));
+        }
 
         /// <summary>
         ///     Gets or sets the observer tenth.
@@ -279,28 +286,29 @@ namespace SlimViews
         public Dictionary<int, string> ObserverTenth
         {
             get => _observerTenth;
-			set => SetProperty(ref _observerTenth, value, nameof(ObserverTenth));
-		}
+            set => SetProperty(ref _observerTenth, value, nameof(ObserverTenth));
+        }
 
-		/// <summary>
-		/// Sets the property.
-		/// </summary>
-		/// <typeparam name="T">Generic Parameter</typeparam>
-		/// <param name="field">The field.</param>
-		/// <param name="value">The value.</param>
-		/// <param name="propertyName">Name of the property.</param>
-		private void SetProperty<T>(ref T field, T value, string propertyName)
-		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return;
-			field = value;
-			OnPropertyChanged(propertyName);
-		}
+        /// <summary>
+        /// Sets the property.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
 
-		/// <inheritdoc />
-		/// <summary>
-		///     Triggers if an Attribute gets changed
-		/// </summary>
-		public event PropertyChangedEventHandler PropertyChanged;
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Triggers if an Attribute gets changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Called when [property changed].
@@ -340,6 +348,17 @@ namespace SlimViews
 
             Status = SlimViewerResources.StatusCompareStart;
 
+            _observers[0] = _observerFirst;
+            _observers[1] = _observerSecond;
+            _observers[2] = _observerThird;
+            _observers[3] = _observerFourth;
+            _observers[4] = _observerFifth;
+            _observers[5] = _observerSixth;
+            _observers[6] = _observerSeventh;
+            _observers[7] = _observerEight;
+            _observers[8] = _observerNinth;
+            _observers[9] = _observerTenth;
+
             //no specified difference lvl, so Duplicates
             if (similarity == 0)
             {
@@ -350,11 +369,11 @@ namespace SlimViews
             //with difference lvl
             else
             {
-				_ = await Task.Run(() =>
-	                Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix,
-		                similarity)
+                _ = await Task.Run(() =>
+                    Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix,
+                        similarity)
                 ).ConfigureAwait(false);
-			}
+            }
 
             if (Duplicates == null)
             {
@@ -409,28 +428,15 @@ namespace SlimViews
             var index = _index * 10;
             int i;
 
-            ObserverArray[0] = _observerFirst;
-            ObserverArray[1] = _observerSecond;
-            ObserverArray[2] = _observerThird;
-            ObserverArray[3] = _observerFourth;
-            ObserverArray[4] = _observerFifth;
-            ObserverArray[5] = _observerSixth;
-            ObserverArray[6] = _observerSeventh;
-            ObserverArray[7] = _observerEight;
-            ObserverArray[8] = _observerNinth;
-            ObserverArray[9] = _observerTenth;
-
-            for (var j = 0; j <= 9; j++)
-            {
-                ObserverArray[j] = null;
-            }
-
-
             if (Duplicates.ElementAtOrDefault(index) != null)
             {
                 var lst = Duplicates[index];
                 i = 0;
                 ObserverFirst = lst.ToDictionary(_ => i++);
+            }
+            else
+            {
+                ObserverFirst = null;
             }
 
             if (Duplicates.ElementAtOrDefault(index + 1) != null)
@@ -439,12 +445,20 @@ namespace SlimViews
                 i = 0;
                 ObserverSecond = lst.ToDictionary(_ => i++);
             }
+            else
+            {
+                ObserverSecond = null;
+            }
 
             if (Duplicates.ElementAtOrDefault(index + 2) != null)
             {
                 var lst = Duplicates[index + 2];
                 i = 0;
                 ObserverThird = lst.ToDictionary(_ => i++);
+            }
+            else
+            {
+                ObserverThird = null;
             }
 
             if (Duplicates.ElementAtOrDefault(index + 3) != null)
@@ -453,12 +467,20 @@ namespace SlimViews
                 i = 0;
                 ObserverFourth = lst.ToDictionary(_ => i++);
             }
+            else
+            {
+                ObserverFourth = null;
+            }
 
             if (Duplicates.ElementAtOrDefault(index + 4) != null)
             {
                 var lst = Duplicates[index + 4];
                 i = 0;
                 ObserverFifth = lst.ToDictionary(_ => i++);
+            }
+            else
+            {
+                ObserverFifth = null;
             }
 
             if (Duplicates.ElementAtOrDefault(index + 5) != null)
@@ -467,12 +489,20 @@ namespace SlimViews
                 i = 0;
                 ObserverSixth = lst.ToDictionary(_ => i++);
             }
+            else
+            {
+                ObserverSixth = null;
+            }
 
             if (Duplicates.ElementAtOrDefault(index + 6) != null)
             {
                 var lst = Duplicates[index + 6];
                 i = 0;
                 ObserverSeventh = lst.ToDictionary(_ => i++);
+            }
+            else
+            {
+                ObserverSeventh = null;
             }
 
             if (Duplicates.ElementAtOrDefault(index + 7) != null)
@@ -481,6 +511,10 @@ namespace SlimViews
                 i = 0;
                 ObserverEight = lst.ToDictionary(_ => i++);
             }
+            else
+            {
+                ObserverEight = null;
+            }
 
             if (Duplicates.ElementAtOrDefault(index + 8) != null)
             {
@@ -488,12 +522,20 @@ namespace SlimViews
                 i = 0;
                 ObserverNinth = lst.ToDictionary(_ => i++);
             }
+            else
+            {
+                ObserverNinth = null;
+            }
 
             if (Duplicates.ElementAtOrDefault(index + 9) != null)
             {
                 var lst = Duplicates[index + 9];
                 i = 0;
                 ObserverTenth = lst.ToDictionary(_ => i++);
+            }
+            else
+            {
+                ObserverTenth = null;
             }
         }
 
@@ -505,9 +547,9 @@ namespace SlimViews
         /// <param name="id">The image identifier.</param>
         public void ChangeImage(int itemId, int id)
         {
-            if (id < 0 || id >= ObserverArray.Length || ObserverArray[id] == null) return;
+            if (id < 0 || id >= _observers.Length || _observers[id] == null) return;
 
-            var observer = ObserverArray[id];
+            var observer = _observers[id];
             if (!observer.ContainsKey(itemId)) return;
 
             var files = observer.Values.ToList();

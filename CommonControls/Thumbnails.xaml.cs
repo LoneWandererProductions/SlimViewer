@@ -313,10 +313,10 @@ namespace CommonControls
             ThumbWidth = _originalWidth;
             ThumbHeight = _originalHeight;
 
-			// Clear existing images from the grid
+            // Clear existing images from the grid
             Thb.Children.Clear();
 
-			LoadImages();
+            LoadImages();
 
             //All Images Loaded
             ImageLoaded?.Invoke();

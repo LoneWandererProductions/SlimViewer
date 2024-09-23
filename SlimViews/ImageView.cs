@@ -1612,8 +1612,8 @@ namespace SlimViews
                 var error = 0;
 
                 foreach (var check in from image in lst
-                         let btm = Helper.Render.GetOriginalBitmap(image)
-                         select SaveImage(image, SlimViewerRegister.Target, btm))
+                                      let btm = Helper.Render.GetOriginalBitmap(image)
+                                      select SaveImage(image, SlimViewerRegister.Target, btm))
                     if (check)
                         count++;
                     else
