@@ -14,7 +14,7 @@
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ComboBox  ItemsSource="{Binding FilterOptions}" 
+        <ComboBox ItemsSource="{Binding FilterOptions}"
                   SelectedItem="{Binding SelectedFilter}"
                   Width="200" Grid.Row="0" />
 

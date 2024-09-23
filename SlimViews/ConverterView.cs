@@ -129,8 +129,14 @@ namespace SlimViews
             set => SetProperty(ref _target, value, nameof(Target));
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Sets the property.
+        ///     Triggers if an Attribute gets changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Sets the property.
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="field">The field.</param>
@@ -143,12 +149,6 @@ namespace SlimViews
             OnPropertyChanged(propertyName);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
         /// </summary>
@@ -159,7 +159,10 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
         /// </value>
-        public bool CanExecute(object obj) => !string.IsNullOrEmpty(_source) && !string.IsNullOrEmpty(_target);
+        public bool CanExecute(object obj)
+        {
+            return !string.IsNullOrEmpty(_source) && !string.IsNullOrEmpty(_target);
+        }
 
         /// <summary>
         ///     Called when [property changed].

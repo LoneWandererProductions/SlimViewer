@@ -54,25 +54,17 @@ namespace ExtendedSystemObjects
         /// <returns>True if equal, otherwise false.</returns>
         public bool Equals(CategorizedDictionary<TK, TV> other)
         {
-            if (other == null || Count != other.Count)
-            {
-                return false;
-            }
+            if (other == null || Count != other.Count) return false;
 
             foreach (var (key, category, value) in this)
             {
-                if (!other.TryGetValue(key, out var otherValue))
-                {
-                    return false;
-                }
+                if (!other.TryGetValue(key, out var otherValue)) return false;
 
                 var otherCategory = other.GetCategoryAndValue(key)?.Category ?? string.Empty;
 
                 if (!string.Equals(category, otherCategory, StringComparison.OrdinalIgnoreCase) ||
                     !EqualityComparer<TV>.Default.Equals(value, otherValue))
-                {
                     return false;
-                }
             }
 
             return true;
@@ -96,9 +88,7 @@ namespace ExtendedSystemObjects
         public void Add(string category, TK key, TV value)
         {
             if (_data.ContainsKey(key))
-            {
                 throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
-            }
 
             _data[key] = (category, value);
         }
@@ -164,10 +154,7 @@ namespace ExtendedSystemObjects
         /// <returns>True if the entry was updated, false if the key does not exist.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            if (!_data.TryGetValue(key, out var entry))
-            {
-                return false;
-            }
+            if (!_data.TryGetValue(key, out var entry)) return false;
 
             _data[key] = (newCategory, entry.Value);
             return true;
@@ -297,9 +284,9 @@ namespace ExtendedSystemObjects
 
                 foreach (var (key, category, value) in this)
                 {
-                    hashCode = (hashCode * 23) + EqualityComparer<TK>.Default.GetHashCode(key);
-                    hashCode = (hashCode * 23) + (category?.GetHashCode() ?? 0);
-                    hashCode = (hashCode * 23) + EqualityComparer<TV>.Default.GetHashCode(value);
+                    hashCode = hashCode * 23 + EqualityComparer<TK>.Default.GetHashCode(key);
+                    hashCode = hashCode * 23 + (category?.GetHashCode() ?? 0);
+                    hashCode = hashCode * 23 + EqualityComparer<TV>.Default.GetHashCode(value);
                 }
 
                 return hashCode;

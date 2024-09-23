@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,7 +24,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using ExtendedSystemObjects;
 using Mathematics;
 
 namespace CommonControls
@@ -37,7 +35,7 @@ namespace CommonControls
     public sealed partial class Thumbnails
     {
         /// <summary>
-        /// The selection change delegate.
+        ///     The selection change delegate.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="itemId">The itemId.</param>
@@ -73,7 +71,7 @@ namespace CommonControls
             typeof(Thumbnails), null);
 
         /// <summary>
-        /// The dependency thumb grid
+        ///     The dependency thumb grid
         /// </summary>
         public static readonly DependencyProperty DependencyThumbGrid = DependencyProperty.Register(
             nameof(DependencyThumbGrid),
@@ -81,7 +79,7 @@ namespace CommonControls
             typeof(Thumbnails), null);
 
         /// <summary>
-        /// The selection box
+        ///     The selection box
         /// </summary>
         public static readonly DependencyProperty SelectionBox = DependencyProperty.Register(nameof(SelectionBox),
             typeof(bool),
@@ -89,7 +87,7 @@ namespace CommonControls
 
 
         /// <summary>
-        /// The is selected
+        ///     The is selected
         /// </summary>
         public static readonly DependencyProperty IsSelected = DependencyProperty.Register(nameof(IsSelected),
             typeof(bool),
@@ -97,7 +95,7 @@ namespace CommonControls
 
 
         /// <summary>
-        /// The items source property
+        ///     The items source property
         /// </summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
             typeof(Dictionary<int, string>),
@@ -215,7 +213,6 @@ namespace CommonControls
         /// </value>
         public Dictionary<int, string> ItemsSource
         {
-            //todo add an new reload
             get => (Dictionary<int, string>)GetValue(ItemsSourceProperty);
             set => SetValue(ItemsSourceProperty, value);
         }
@@ -272,10 +269,7 @@ namespace CommonControls
             var control = sender as Thumbnails;
             // add an Can Execute
 
-            if (!_refresh)
-            {
-                return;
-            }
+            if (!_refresh) return;
 
             control?.OnItemsSourceChanged();
         }
@@ -288,17 +282,11 @@ namespace CommonControls
         {
             _refresh = false;
 
-            if (!ItemsSource.ContainsKey(id))
-            {
-                return;
-            }
+            if (!ItemsSource.ContainsKey(id)) return;
 
             var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
 
-            if (image != null)
-            {
-                image.Source = null;
-            }
+            if (image != null) image.Source = null;
 
             _ = ItemsSource.Remove(id);
 
@@ -340,10 +328,7 @@ namespace CommonControls
         /// </summary>
         private async void LoadImages()
         {
-            if (ItemsSource?.Any() != true)
-            {
-                return;
-            }
+            if (ItemsSource?.Any() != true) return;
 
             var timer = new Stopwatch();
             timer.Start();
@@ -356,33 +341,18 @@ namespace CommonControls
             ImageDct = new Dictionary<string, Image>(pics.Count);
             Selection = new List<int>();
 
-            if (SelectBox)
-            {
-                ChkBox = new Dictionary<int, CheckBox>(pics.Count);
-            }
+            if (SelectBox) ChkBox = new Dictionary<int, CheckBox>(pics.Count);
 
             // Handle special cases
-            if (ThumbCellSize == 0)
-            {
-                ThumbCellSize = 100;
-            }
+            if (ThumbCellSize == 0) ThumbCellSize = 100;
 
-            if (ThumbHeight == 0 && ThumbWidth == 0)
-            {
-                ThumbHeight = 1;
-            }
+            if (ThumbHeight == 0 && ThumbWidth == 0) ThumbHeight = 1;
 
             if (ThumbHeight * ThumbWidth < pics.Count)
             {
-                if (ThumbWidth == 1)
-                {
-                    ThumbHeight = pics.Count;
-                }
+                if (ThumbWidth == 1) ThumbHeight = pics.Count;
 
-                if (ThumbHeight == 1)
-                {
-                    ThumbWidth = pics.Count;
-                }
+                if (ThumbHeight == 1) ThumbWidth = pics.Count;
 
                 if (ThumbHeight != 1 && ThumbWidth != 1 && pics.Count > 1)
                 {
@@ -420,7 +390,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Loads the image asynchronous.
+        ///     Loads the image asynchronous.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="name">The name.</param>
@@ -456,15 +426,13 @@ namespace CommonControls
             {
                 myBitmapCell = await GetBitmapImageFileStreamAsync(name, ThumbCellSize, ThumbCellSize);
             }
-            catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or InvalidOperationException)
+            catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException
+                                           or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
             }
 
-            if (myBitmapCell == null)
-            {
-                return;
-            }
+            if (myBitmapCell == null) return;
 
             // Set the image source on the UI thread
             Application.Current.Dispatcher.Invoke(() =>
@@ -474,7 +442,6 @@ namespace CommonControls
             });
 
             if (SelectBox)
-            {
                 // Handle checkboxes for selection on the UI thread
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -489,10 +456,7 @@ namespace CommonControls
                         IsChecked = IsCheckBoxSelected
                     };
 
-                    if (IsCheckBoxSelected)
-                    {
-                        Selection.Add(key);
-                    }
+                    if (IsCheckBoxSelected) Selection.Add(key);
 
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;
@@ -503,11 +467,10 @@ namespace CommonControls
                     Grid.SetColumn(checkbox, key % ThumbWidth);
                     _ = exGrid.Children.Add(checkbox);
                 });
-            }
         }
 
         /// <summary>
-        /// Gets the bitmap image file stream asynchronous.
+        ///     Gets the bitmap image file stream asynchronous.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="width">The width.</param>
@@ -553,15 +516,9 @@ namespace CommonControls
         private void ImageClick_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton)
-            {
-                return;
-            }
+            if (sender is not Image clickedButton) return;
 
-            if (!Keys.ContainsKey(clickedButton.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedButton.Name)) return;
 
             var id = Keys[clickedButton.Name];
 
@@ -578,15 +535,9 @@ namespace CommonControls
         private void ImageClick_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not Image clickedButton)
-            {
-                return;
-            }
+            if (sender is not Image clickedButton) return;
 
-            if (!Keys.ContainsKey(clickedButton.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedButton.Name)) return;
 
             _selection = Keys[clickedButton.Name];
 
@@ -621,15 +572,9 @@ namespace CommonControls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.Count == 0)
-            {
-                return;
-            }
+            if (Selection.Count == 0) return;
 
-            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id]))
-            {
-                check.IsChecked = false;
-            }
+            foreach (var check in new List<int>(Selection).Select(id => ChkBox[id])) check.IsChecked = false;
         }
 
         /// <summary>
@@ -640,15 +585,9 @@ namespace CommonControls
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox)
-            {
-                return;
-            }
+            if (sender is not CheckBox clickedCheckBox) return;
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
 
             var id = Keys[clickedCheckBox.Name];
 
@@ -663,15 +602,9 @@ namespace CommonControls
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox)
-            {
-                return;
-            }
+            if (sender is not CheckBox clickedCheckBox) return;
 
-            if (!Keys.ContainsKey(clickedCheckBox.Name))
-            {
-                return;
-            }
+            if (!Keys.ContainsKey(clickedCheckBox.Name)) return;
 
             var id = Keys[clickedCheckBox.Name];
 

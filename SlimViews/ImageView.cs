@@ -81,6 +81,11 @@ namespace SlimViews
         private BitmapImage _bmp;
 
         /// <summary>
+        ///     The brighten command
+        /// </summary>
+        private ICommand _brightenCommand;
+
+        /// <summary>
         ///     The Bitmap
         /// </summary>
         private Bitmap _btm;
@@ -121,6 +126,11 @@ namespace SlimViews
         private int _currentId;
 
         /// <summary>
+        ///     The darken command
+        /// </summary>
+        private ICommand _darkenCommand;
+
+        /// <summary>
         ///     The delete command
         /// </summary>
         private ICommand _deleteCommand;
@@ -151,6 +161,11 @@ namespace SlimViews
         ///     The current path
         /// </summary>
         private string _filePath;
+
+        /// <summary>
+        ///     The filter configuration command
+        /// </summary>
+        private ICommand _filterConfigCommand;
 
         /// <summary>
         ///     The folder command
@@ -299,21 +314,6 @@ namespace SlimViews
         ///     The similar command
         /// </summary>
         private ICommand _similarCommand;
-
-        /// <summary>
-        /// The filter configuration command
-        /// </summary>
-        private ICommand _filterConfigCommand;
-
-        /// <summary>
-        /// The brighten command
-        /// </summary>
-        private ICommand _brightenCommand;
-
-        /// <summary>
-        /// The darken command
-        /// </summary>
-        private ICommand _darkenCommand;
 
         /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
@@ -970,29 +970,29 @@ namespace SlimViews
 
 
         /// <summary>
-        /// Gets the filter configuration command.
+        ///     Gets the filter configuration command.
         /// </summary>
         /// <value>
-        /// The filter configuration command.
+        ///     The filter configuration command.
         /// </value>
         public ICommand FilterConfigCommand =>
             _filterConfigCommand ??= new DelegateCommand<string>(FilterConfigAction, CanExecute);
 
 
         /// <summary>
-        /// Gets the brighten command.
+        ///     Gets the brighten command.
         /// </summary>
         /// <value>
-        /// The brighten command.
+        ///     The brighten command.
         /// </value>
         public ICommand BrightenCommand =>
             _brightenCommand ??= new DelegateCommand<string>(BrightenAction, CanExecute);
 
         /// <summary>
-        /// Gets the darken command.
+        ///     Gets the darken command.
         /// </summary>
         /// <value>
-        /// The darken command.
+        ///     The darken command.
         /// </value>
         public ICommand DarkenCommand =>
             _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
@@ -1238,12 +1238,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Filter configuration.
+        ///     Filter configuration.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void FilterConfigAction(string obj)
         {
-            var filterConfig = new FilterConfigWindow()
+            var filterConfig = new FilterConfigWindow
             {
                 Topmost = true,
                 Owner = Main
@@ -1252,7 +1252,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Brightens the action.
+        ///     Brightens the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void BrightenAction(object obj)
@@ -1261,7 +1261,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Darkens the action.
+        ///     Darkens the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void DarkenAction(object obj)
@@ -1612,8 +1612,8 @@ namespace SlimViews
                 var error = 0;
 
                 foreach (var check in from image in lst
-                                      let btm = Helper.Render.GetOriginalBitmap(image)
-                                      select SaveImage(image, SlimViewerRegister.Target, btm))
+                         let btm = Helper.Render.GetOriginalBitmap(image)
+                         select SaveImage(image, SlimViewerRegister.Target, btm))
                     if (check)
                         count++;
                     else

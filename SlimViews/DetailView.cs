@@ -38,10 +38,9 @@ namespace SlimViews
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class DetailView : INotifyPropertyChanged
     {
-
         /// <summary>
-        /// The chunk size
-        /// Define a reasonable chunk size for text appending
+        ///     The chunk size
+        ///     Define a reasonable chunk size for text appending
         /// </summary>
         private const int _chunkSize = 1024;
 
@@ -251,20 +250,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Sets the property.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
         ///     Gets the open one command.
         /// </summary>
         /// <value>
@@ -296,9 +281,29 @@ namespace SlimViews
         /// </value>
         public ICommand ExportCommand => GetCommand(ref _exportCommand, ExportAction);
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Triggers if an Attribute gets changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Gets the command.
+        ///     Sets the property.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
+
+
+        /// <summary>
+        ///     Gets the command.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <param name="execute">The execute.</param>
@@ -307,12 +312,6 @@ namespace SlimViews
         {
             return command ??= new DelegateCommand<object>(execute, CanExecute);
         }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
@@ -491,9 +490,8 @@ namespace SlimViews
             await Task.Run(() =>
             {
                 foreach (var (color, count) in _analysis.GetColors(btm))
-                {
-                    str.AppendLine($"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
-                }
+                    str.AppendLine(
+                        $"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
             });
             StatusImage = _greenIcon;
             return str.ToString();

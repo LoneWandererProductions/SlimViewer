@@ -39,12 +39,12 @@
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
                                            ItemsSource="{Binding ObserverFirst}"
                                            ImageClicked="OnImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           ThumbCellSize="100" ThumbHeight="1"
                                            Tag="1" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"
                                            ItemsSource="{Binding ObserverSecond}"
                                            ImageClicked="OnImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           ThumbCellSize="100" ThumbHeight="1"
                                            Tag="2" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2"
                                            ItemsSource="{Binding ObserverThird}"
@@ -54,22 +54,22 @@
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"
                                            ItemsSource="{Binding ObserverFourth}"
                                            ImageClicked="OnImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           ThumbCellSize="100" ThumbHeight="1"
                                            Tag="4" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4"
                                            ItemsSource="{Binding ObserverFifth}"
                                            ImageClicked="OnImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           ThumbCellSize="100" ThumbHeight="1"
                                            Tag="5" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="5"
                                            ItemsSource="{Binding ObserverSixth}"
                                            ImageClicked="OnImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           ThumbCellSize="100" ThumbHeight="1"
                                            Tag="6" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="6"
                                            ItemsSource="{Binding ObserverSeventh}"
                                            ImageClicked="OnImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           ThumbCellSize="100" ThumbHeight="1"
                                            Tag="6" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="7"
                                            ItemsSource="{Binding ObserverEight}"
@@ -79,7 +79,7 @@
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="8"
                                            ItemsSource="{Binding ObserverNinth}"
                                            ImageClicked="OnImageClicked"
-                                           ThumbCellSize="100" ThumbHeight="1" 
+                                           ThumbCellSize="100" ThumbHeight="1"
                                            Tag="8" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="9"
                                            ItemsSource="{Binding ObserverTenth}"

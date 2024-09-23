@@ -41,10 +41,7 @@ namespace FileHandler
                 foreach (var file in fileToAdd)
                 {
                     //does not exist? Well next one
-                    if (!FileHandleSearch.FileExists(file))
-                    {
-                        continue;
-                    }
+                    if (!FileHandleSearch.FileExists(file)) continue;
 
                     // Add the entry for each file
                     var fileInfo = new FileInfo(file);
@@ -62,15 +59,9 @@ namespace FileHandler
             }
 
             //shall we delete old files?
-            if (!delele)
-            {
-                return true;
-            }
+            if (!delele) return true;
 
-            foreach (var unused in fileToAdd.Select(FileHandleDelete.DeleteFile).Where(cache => !cache))
-            {
-                check = false;
-            }
+            foreach (var unused in fileToAdd.Select(FileHandleDelete.DeleteFile).Where(cache => !cache)) check = false;
 
             return check;
         }
@@ -86,9 +77,7 @@ namespace FileHandler
         public static bool OpenZip(string zipPath, string extractPath, bool delete)
         {
             if (!FileHandleSearch.FileExists(zipPath))
-            {
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorFileNotFound, zipPath));
-            }
 
             try
             {

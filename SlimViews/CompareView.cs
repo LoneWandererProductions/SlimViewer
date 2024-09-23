@@ -27,16 +27,6 @@ namespace SlimViews
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class CompareView : INotifyPropertyChanged
     {
-        private Dictionary<int, string>[] _observers = new Dictionary<int, string>[10];
-
-        // Properties can still be accessed through an index
-        public Dictionary<int, string> this[int index]
-        {
-            get => _observers[index];
-            set => SetProperty(ref _observers[index], value, nameof(_observers));
-        }
-
-
         /// <summary>
         ///     The analysis
         /// </summary>
@@ -91,7 +81,7 @@ namespace SlimViews
         ///     The observer ninth
         /// </summary>
         private Dictionary<int, string> _observerNinth;
-
+        
         /// <summary>
         ///     The observer second
         /// </summary>
@@ -289,8 +279,14 @@ namespace SlimViews
             set => SetProperty(ref _observerTenth, value, nameof(ObserverTenth));
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Sets the property.
+        ///     Triggers if an Attribute gets changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Sets the property.
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="field">The field.</param>
@@ -303,12 +299,6 @@ namespace SlimViews
             field = value;
             OnPropertyChanged(propertyName);
         }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Called when [property changed].
@@ -342,38 +332,24 @@ namespace SlimViews
         /// <param name="currentFolder">The current folder.</param>
         /// <param name="imageView">The image view.</param>
         /// <param name="similarity">The similarity, in Percentages</param>
-        internal async Task AsyncInitiate(bool subFolders, string currentFolder, ImageView imageView, int similarity = 0)
+        internal async Task AsyncInitiate(bool subFolders, string currentFolder, ImageView imageView,
+            int similarity = 0)
         {
             _imageView = imageView;
 
             Status = SlimViewerResources.StatusCompareStart;
 
-            _observers[0] = _observerFirst;
-            _observers[1] = _observerSecond;
-            _observers[2] = _observerThird;
-            _observers[3] = _observerFourth;
-            _observers[4] = _observerFifth;
-            _observers[5] = _observerSixth;
-            _observers[6] = _observerSeventh;
-            _observers[7] = _observerEight;
-            _observers[8] = _observerNinth;
-            _observers[9] = _observerTenth;
-
             //no specified difference lvl, so Duplicates
             if (similarity == 0)
-            {
                 _ = await Task.Run(() =>
                     Duplicates = _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
                 ).ConfigureAwait(false);
-            }
             //with difference lvl
             else
-            {
                 _ = await Task.Run(() =>
                     Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix,
                         similarity)
                 ).ConfigureAwait(false);
-            }
 
             if (Duplicates == null)
             {
@@ -547,15 +523,15 @@ namespace SlimViews
         /// <param name="id">The image identifier.</param>
         public void ChangeImage(int itemId, int id)
         {
-            if (id < 0 || id >= _observers.Length || _observers[id] == null) return;
+            //if (id < 0 || id >= _observers.Count || _observers[id] == null) return;
 
-            var observer = _observers[id];
-            if (!observer.ContainsKey(itemId)) return;
+            //var observer = _observers[id];
+            //if (!observer.ContainsKey(itemId)) return;
 
-            var files = observer.Values.ToList();
-            var path = observer[itemId];
+            //var files = observer.Values.ToList();
+            //var path = observer[itemId];
 
-            LoadImages(path, itemId, files);
+            //LoadImages(path, itemId, files);
         }
 
 

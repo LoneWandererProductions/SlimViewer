@@ -27,7 +27,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Thumbs the image clicked.
+        ///     Thumbs the image clicked.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="itemId">The <see cref="ImageEventArgs" /> instance containing the event data.</param>
