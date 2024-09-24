@@ -6,6 +6,10 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using CommonDialogs;
+using ExtendedSystemObjects;
+using FileHandler;
+using Imaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,324 +19,268 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using CommonDialogs;
-using ExtendedSystemObjects;
-using FileHandler;
-using Imaging;
 
 namespace SlimViews
 {
-    /// <summary>
-    ///     Handle some repeating tasks or help to reduce the size of some classes
-    /// </summary>
-    internal static class Helper
-    {
-        /// <summary>
-        ///     The render
-        /// </summary>
-        internal static readonly ImageRender Render = new();
+	/// <summary>
+	///     Provides utility methods for various tasks to reduce code duplication across controls.
+	/// </summary>
+	internal static class Helper
+	{
+		internal static readonly ImageRender Render = new();
 
-        /// <summary>
-        ///     Unpacks the folder.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="fileNameWithoutExt">The file name without extension.</param>
-        /// <returns>Target Folder</returns>
-        internal static string UnpackFolder(string path, string fileNameWithoutExt)
-        {
-            //create Temp Folder
-            var root = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
-            if (!Directory.Exists(root)) _ = Directory.CreateDirectory(root);
+		/// <summary>
+		///     Unpacks the specified folder.
+		/// </summary>
+		/// <param name="path">The zip file path.</param>
+		/// <param name="fileNameWithoutExt">The folder name without extension.</param>
+		/// <returns>The path to the target folder.</returns>
+		internal static string UnpackFolder(string path, string fileNameWithoutExt)
+		{
+			var tempFolder = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
+			Directory.CreateDirectory(tempFolder);
 
-            root = Path.Combine(root, fileNameWithoutExt);
-            if (!Directory.Exists(root))
-            {
-                //if the folder exists which should not happen, we clear it out
-                _ = FileHandleDelete.DeleteAllContents(root, true);
-                _ = Directory.CreateDirectory(root);
-            }
+			var targetFolder = Path.Combine(tempFolder, fileNameWithoutExt);
+			if (Directory.Exists(targetFolder))
+			{
+				_ = FileHandleDelete.DeleteAllContents(targetFolder, true);
+			}
+			else
+			{
+				_ = Directory.CreateDirectory(targetFolder);
+			}
 
-            _ = FileHandleCompress.OpenZip(path, root, false);
+			_ = FileHandleCompress.OpenZip(path, targetFolder, false);
+			return targetFolder;
+		}
 
-            return root;
-        }
+		/// <summary>
+		///     Unpacks the first image file from a given path.
+		/// </summary>
+		/// <param name="path">The path to search.</param>
+		/// <returns>The path of the first image found, or null if none found.</returns>
+		internal static string UnpackFile(string path)
+		{
+			var files = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
+			return files.IsNullOrEmpty() ? null : files[0];
+		}
 
-        /// <summary>
-        ///     Unpacks the file.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>The first Image</returns>
-        internal static string UnpackFile(string path)
-        {
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
-            if (lst.IsNullOrEmpty()) return null;
+		/// <summary>
+		///     Converts a GIF to images and saves them to the specified export path.
+		/// </summary>
+		/// <param name="gifPath">The path of the GIF file.</param>
+		/// <param name="imageExport">The target path for converted images.</param>
+		internal static void ConvertGifAction(string gifPath, string imageExport)
+		{
+			foreach (var image in Render.SplitGif(gifPath))
+			{
+				try
+				{
+					var success = SaveImage(imageExport, ImagingResources.JpgExt, image);
+					if (!success)
+					{
+						ShowError(SlimViewerResources.ErrorCouldNotSaveFile);
+					}
+				}
+				catch (Exception ex) when (ex is ArgumentException || ex is IOException || ex is ExternalException)
+				{
+					Trace.WriteLine(ex);
+					ShowError(ex.ToString(), nameof(ConvertGifAction));
+				}
+			}
+		}
 
-            // ReSharper disable once PossibleNullReferenceException. is checked
-            return lst.IsNullOrEmpty() ? null : lst[0];
-        }
+		/// <summary>
+		///     Converts images in a folder to a GIF.
+		/// </summary>
+		/// <param name="folder">The source folder.</param>
+		/// <param name="gifPath">The target path for the GIF.</param>
+		/// <returns>The path to the newly created GIF file.</returns>
+		internal static string ConvertToGifAction(string folder, string gifPath)
+		{
+			var targetGifPath = Path.Combine(gifPath, SlimViewerResources.NewGif);
+			Render.CreateGif(folder, targetGifPath);
+			return targetGifPath;
+		}
 
-        /// <summary>
-        ///     Converts the gif to images action.
-        /// </summary>
-        /// <param name="gifPath">path of the gif.</param>
-        /// <param name="imageExport">target path for the converted Image</param>
-        internal static void ConvertGifAction(string gifPath, string imageExport)
-        {
-            foreach (var image in Render.SplitGif(gifPath))
-                try
-                {
-                    var check = SaveImage(imageExport, ImagingResources.JpgExt, image);
-                    if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
-                }
-                catch (ArgumentException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(),
-                        string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
-                }
-                catch (IOException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(),
-                        string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
-                }
-                catch (ExternalException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(),
-                        string.Concat(SlimViewerResources.MessageError, nameof(ConvertGifAction)));
-                }
-        }
+		/// <summary>
+		///     Converts a list of image paths to a GIF.
+		/// </summary>
+		/// <param name="images">The paths of the images.</param>
+		/// <param name="filePath">The target file path for the GIF.</param>
+		internal static void ConvertGifAction(List<string> images, string filePath)
+		{
+			Render.CreateGif(images, filePath);
+		}
 
-        /// <summary>
-        ///     Converts to GIF action.
-        /// </summary>
-        /// <param name="folder">Source Folder.</param>
-        /// <param name="gifPath">Target Folder.</param>
-        /// <returns>Path to new gif file</returns>
-        internal static string ConvertToGifAction(string folder, string gifPath)
-        {
-            var target = Path.Combine(gifPath, SlimViewerResources.NewGif);
-            Render.CreateGif(folder, target);
+		/// <summary>
+		///     Asynchronously generates an export file with specified information and an optional difference bitmap.
+		/// </summary>
+		internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne,
+		string colorTwo, string similarity, Bitmap difference)
+		{
+			var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null);
+			var content = new List<string>
+			 {
+				 informationOne,
+				 colorOne,
+				 informationTwo,
+				 colorTwo,
+				 similarity
+			 };
 
-            return target;
-        }
+			content.RemoveAll(string.IsNullOrEmpty);
 
-        /// <summary>
-        ///     Converts the GIF action.
-        /// </summary>
-        /// <param name="images">The Paths to the images.</param>
-        /// <param name="filePath">The file path.</param>
-        internal static void ConvertGifAction(List<string> images, string filePath)
-        {
-            Render.CreateGif(images, filePath);
-        }
+			try
+			{
+				await File.WriteAllLinesAsync(pathObj.FilePath, content).ConfigureAwait(false);
+			}
+			catch (Exception ex) when (ex is IOException || ex is ArgumentException)
+			{
+				Trace.WriteLine(ex);
+				ShowError(ex.ToString(), nameof(GenerateExportAsync));
+			}
 
-        /// <summary>
-        ///     Generates the export asynchronous.
-        /// </summary>
-        /// <param name="informationOne">The information one.</param>
-        /// <param name="informationTwo">The information two.</param>
-        /// <param name="colorOne">The color one.</param>
-        /// <param name="colorTwo">The color two.</param>
-        /// <param name="similarity">The similarity.</param>
-        /// <param name="difference">The difference.</param>
-        /// <exception cref="IOException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne,
-            string colorTwo, string similarity, Bitmap difference)
-        {
-            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null);
+			if (difference != null)
+			{
+				var pngPath = Path.ChangeExtension(pathObj.FilePath, ImagingResources.PngExt);
+				_ = SaveImage(pngPath, ImagingResources.PngExt, difference);
+			}
+		}
 
-            var content = new List<string>();
+		/// <summary>
+		///     Resizes the specified bitmap.
+		/// </summary>
+		/// <param name="bitmap">The bitmap to resize.</param>
+		/// <param name="width">The desired width.</param>
+		/// <param name="height">The desired height.</param>
+		/// <returns>The resized bitmap.</returns>
+		internal static Bitmap Resize(Bitmap bitmap, int width, int height)
+		{
+			try
+			{
+				return Render.BitmapScaling(bitmap, width, height);
+			}
+			catch (Exception ex) when (ex is ArgumentException || ex is InsufficientMemoryException)
+			{
+				Trace.WriteLine(ex);
+				ShowError(ex.ToString(), nameof(Resize));
+			}
 
-            if (!string.IsNullOrEmpty(informationOne)) content.Add(informationOne);
-            if (!string.IsNullOrEmpty(informationOne)) content.Add(colorOne);
-            if (!string.IsNullOrEmpty(informationTwo)) content.Add(informationTwo);
-            if (!string.IsNullOrEmpty(informationTwo)) content.Add(colorTwo);
-            if (!string.IsNullOrEmpty(similarity)) content.Add(similarity);
+			return bitmap;
+		}
 
-            try
-            {
-                await File.WriteAllLinesAsync(pathObj.FilePath, content).ConfigureAwait(false);
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex.ToString());
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex.ToString());
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateExportAsync)));
-            }
+		/// <summary>
+		///     Applies a filter to the specified bitmap.
+		/// </summary>
+		/// <param name="bitmap">The bitmap to filter.</param>
+		/// <param name="filter">The filter to apply.</param>
+		/// <returns>The filtered bitmap.</returns>
+		internal static Bitmap Filter(Bitmap bitmap, ImageFilters filter)
+		{
+			if (filter == ImageFilters.None) return bitmap;
 
-            if (difference == null) return;
+			try
+			{
+				return Render.FilterImage(bitmap, filter);
+			}
+			catch (Exception ex) when (ex is ArgumentException || ex is OutOfMemoryException)
+			{
+				Trace.WriteLine(ex);
+				ShowError(ex.ToString(), SlimViewerResources.MessageError);
+			}
 
-            var path = Path.ChangeExtension(pathObj.FilePath, ImagingResources.PngExt);
-            _ = SaveImage(path, ImagingResources.PngExt, difference);
-        }
+			return bitmap;
+		}
 
-        /// <summary>
-        ///     Resizes the specified BTM.
-        /// </summary>
-        /// <param name="btm">The BTM.</param>
-        /// <param name="height">The height.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>Resized Image</returns>
-        internal static Bitmap Resize(Bitmap btm, int width, int height)
-        {
-            try
-            {
-                btm = Render.BitmapScaling(btm, width, height);
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(Resize)));
-            }
-            catch (InsufficientMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(Resize)));
-            }
+		/// <summary>
+		///     Pixelates the specified bitmap.
+		/// </summary>
+		/// <param name="bitmap">The bitmap to pixelate.</param>
+		/// <param name="pixelWidth">The width of the pixelation.</param>
+		/// <returns>The pixelated bitmap.</returns>
+		public static Bitmap Pixelate(Bitmap bitmap, int pixelWidth)
+		{
+			return Render.Pixelate(bitmap, pixelWidth);
+		}
 
-            return btm;
-        }
+		/// <summary>
+		///     Saves the bitmap to the specified path with the given extension.
+		/// </summary>
+		/// <param name="path">The file path.</param>
+		/// <param name="extension">The desired file extension.</param>
+		/// <param name="bitmap">The bitmap to save.</param>
+		/// <returns>True if the save was successful; otherwise, false.</returns>
+		internal static bool SaveImage(string path, string extension, Bitmap bitmap)
+		{
+			path = Path.ChangeExtension(path, extension);
+			ImageFormat format = extension switch
+			{
+				ImagingResources.PngExt => ImageFormat.Png,
+				ImagingResources.JpgExt => ImageFormat.Jpeg,
+				ImagingResources.BmpExt => ImageFormat.Bmp,
+				ImagingResources.GifExt => ImageFormat.Gif,
+				ImagingResources.TifExt => ImageFormat.Tiff,
+				_ => throw new ArgumentException("Unsupported image format") // Handle unsupported formats
+			};
 
-        /// <summary>
-        ///     Filters the specified bitmap.
-        /// </summary>
-        /// <param name="btm">The BTM.</param>
-        /// <param name="filter">The filter.</param>
-        /// <returns>The Image with an applied filter</returns>
-        internal static Bitmap Filter(Bitmap btm, ImageFilters filter)
-        {
-            try
-            {
-                return filter == ImageFilters.None ? btm : Render.FilterImage(btm, filter);
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
-            }
+			Render.SaveBitmap(bitmap, path, format); // Ensure Render is properly defined
+			return true;
+		}
 
-            return btm;
-        }
+		/// <summary>
+		///     Loads an image from the specified path.
+		/// </summary>
+		/// <param name="path">The path to the image.</param>
+		/// <returns>The loaded bitmap, or null if loading fails.</returns>
+		internal static Bitmap LoadImage(string path)
+		{
+			try
+			{
+				return Render.GetBitmapFile(path);
+			}
+			catch (IOException ex)
+			{
+				Trace.WriteLine(ex);
+				ShowError(ex.ToString(), nameof(LoadImage));
+			}
 
-        /// <summary>
-        ///     Pixelate the specified bitmap.
-        /// </summary>
-        /// <param name="btm">The bitmap.</param>
-        /// <param name="pixelWidth">Width of the pixel.</param>
-        /// <returns>Pixelated Image</returns>
-        public static Bitmap Pixelate(Bitmap btm, int pixelWidth)
-        {
-            return Render.Pixelate(btm, pixelWidth);
-        }
+			return null;
+		}
 
-        /// <summary>
-        ///     Saves the image.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="extension">The extension.</param>
-        /// <param name="btm">The BTM.</param>
-        /// <returns>success Status</returns>
-        internal static bool SaveImage(string path, string extension, Bitmap btm)
-        {
-            if (Path.GetExtension(path) == ImagingResources.JpegExt)
-                path = Path.ChangeExtension(path, ImagingResources.JpgExt);
-            if (Path.GetExtension(path) != extension) path = Path.ChangeExtension(path, extension);
+		/// <summary>
+		///     Generates a bitmap from the specified file path.
+		/// </summary>
+		/// <param name="filePath">The file path.</param>
+		/// <returns>The generated bitmap, or null if generation fails.</returns>
+		internal static Bitmap GenerateImage(string filePath)
+		{
+			try
+			{
+				return Render.GetOriginalBitmap(filePath);
+			}
+			catch (Exception ex) when (ex is IOException || ex is ArgumentException ||
+				   ex is NotSupportedException || ex is InvalidOperationException)
+			{
+				Trace.WriteLine(ex);
+				ShowError(ex.ToString(), nameof(GenerateImage));
+			}
 
-            switch (extension)
-            {
-                case ImagingResources.PngExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Png);
-                    break;
-                case ImagingResources.JpgExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Jpeg);
-                    break;
-                case ImagingResources.BmpExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Bmp);
-                    break;
-                case ImagingResources.GifExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Gif);
-                    break;
-                case ImagingResources.TifExt:
-                    Render.SaveBitmap(btm, path, ImageFormat.Tiff);
-                    break;
-                default:
-                    return false;
-            }
+			return null;
+		}
 
-            return true;
-        }
-
-        /// <summary>
-        ///     Loads the images.
-        /// </summary>
-        /// <param name="path">The path to the image.</param>
-        /// <returns>List of Bitmap Images</returns>
-        internal static Bitmap LoadImage(string path)
-        {
-            try
-            {
-                return Render.GetBitmapFile(path);
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(LoadImage)));
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        ///     Generates the image.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <returns>Bitmap from the Image in Question</returns>
-        internal static Bitmap GenerateImage(string filePath)
-        {
-            try
-            {
-                return Render.GetOriginalBitmap(filePath);
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (NotSupportedException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (InvalidOperationException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-
-            return null;
-        }
-    }
+		/// <summary>
+		///     Displays an error message in a message box.
+		/// </summary>
+		/// <param name="message">The message to display.</param>
+		/// <param name="source">The source of the error (optional).</param>
+		private static void ShowError(string message, string source = null)
+		{
+			if (source != null)
+			{
+				message = $"{SlimViewerResources.MeesageErrorSource}{source}\n{message}";
+			}
+			MessageBox.Show(message, SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+		}
+	}
 }

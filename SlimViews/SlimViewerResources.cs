@@ -163,10 +163,20 @@ namespace SlimViews
         /// </summary>
         internal const string MessageErrorFileNotFound = "File not found: ";
 
-        /// <summary>
-        ///     The error Message extension not supported (const). Value: "Extension not yet supported: "
-        /// </summary>
-        internal const string MessageFileNotSupported = "Extension not yet supported: ";
+		/// <summary>
+		/// The error source (const). Value:  "Error Source: "
+		/// </summary>
+		internal const string MeesageErrorSource = "Error Source: ";
+
+		/// <summary>
+		/// The error title (const). Value:  "Error Source: "
+		/// </summary>
+		internal const string MessageErrorTitle = "An error occured.";
+
+		/// <summary>
+		///     The error Message extension not supported (const). Value: "Extension not yet supported: "
+		/// </summary>
+		internal const string MessageFileNotSupported = "Extension not yet supported: ";
 
         /// <summary>
         ///     The Status Compare started (const). Value: "Compare started."

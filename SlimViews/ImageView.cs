@@ -395,298 +395,239 @@ namespace SlimViews
         /// </value>
         public ColorPickerMenu Picker { get; init; }
 
-        /// <summary>
-        ///     Gets or sets the selected tool.
-        /// </summary>
-        /// <value>
-        ///     The selected tool.
-        /// </value>
-        public SelectionTools SelectedTool
-        {
-            get => _selectedTool;
-            set
-            {
-                _selectedTool = value;
-                OnPropertyChanged(nameof(SelectedTool));
-            }
-        }
+		/// <summary>
+		///     Gets the selections.
+		/// </summary>
+		/// <value>
+		///     The selections.
+		/// </value>
+		public IEnumerable<SelectionTools> Selections =>
+			Enum.GetValues(typeof(SelectionTools))
+				.Cast<SelectionTools>();
 
-        /// <summary>
-        ///     Gets the selections.
-        /// </summary>
-        /// <value>
-        ///     The selections.
-        /// </value>
-        public IEnumerable<SelectionTools> Selections =>
-            Enum.GetValues(typeof(SelectionTools))
-                .Cast<SelectionTools>();
+		/// <summary>
+		///     Gets or sets the selected tool.
+		/// </summary>
+		/// <value>
+		///     The selected tool.
+		/// </value>
+		public SelectionTools SelectedTool
+		{
+			get => _selectedTool;
+			set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
+		}
 
-        /// <summary>
-        ///     Gets or sets the basic File information.
-        /// </summary>
-        /// <value>
-        ///     The information.
-        /// </value>
-        public string Information
-        {
-            get => _information;
-            set
-            {
-                if (value == _information) return;
+		/// <summary>
+		///     Gets or sets the basic File information.
+		/// </summary>
+		/// <value>
+		///     The information.
+		/// </value>
+		public string Information
+		{
+			get => _information;
+			set => SetProperty(ref _information, value, nameof(Information));
+		}
 
-                _information = value;
-                OnPropertyChanged(nameof(Information));
-            }
-        }
+		/// <summary>
+		///     Gets or sets the similarity. In percent, other values that are bigger or smaller won't be accepted.
+		/// </summary>
+		/// <value>
+		///     The similarity.
+		/// </value>
+		public int Similarity
+		{
+			get => _similarity;
+			set
+			{
+				if (value is >= 0 and <= 100) // Only set if value is within valid range
+				{
+					SetProperty(ref _similarity, value, nameof(Similarity));
+					SlimViewerRegister.MainSimilarity = value;
+				}
+			}
+		}
 
-        /// <summary>
-        ///     Gets or sets the similarity. In percent, other Values that are bigger or smaller won't be accepted
-        /// </summary>
-        /// <value>
-        ///     The similarity.
-        /// </value>
-        public int Similarity
-        {
-            get => _similarity;
-            set
-            {
-                if (value == _similarity) return;
-                if (value is > 100 or < 0) return;
+		/// <summary>
+		///     Gets or sets the width of the pixel.
+		/// </summary>
+		/// <value>
+		///     The width of the pixel.
+		/// </value>
+		public int PixelWidth
+		{
+			get => _pixelWidth;
+			set
+			{
+				if (value >= 2) // Only set if value is valid
+				{
+					SetProperty(ref _pixelWidth, value, nameof(PixelWidth));
+				}
+			}
+		}
 
-                _similarity = value;
-                SlimViewerRegister.MainSimilarity = value;
+		/// <summary>
+		///     Gets or sets the File count.
+		/// </summary>
+		/// <value>
+		///     The count.
+		/// </value>
+		public int Count
+		{
+			get => _count;
+			set => SetProperty(ref _count, value, nameof(Count));
+		}
 
-                OnPropertyChanged(nameof(Similarity));
-            }
-        }
+		/// <summary>
+		///     Gets or sets the Filename.
+		/// </summary>
+		/// <value>
+		///     The name of the file.
+		/// </value>
+		public string FileName
+		{
+			get => _fileName;
+			set => SetProperty(ref _fileName, value, nameof(FileName));
+		}
 
-        /// <summary>
-        ///     Gets or sets the width of the pixel.
-        /// </summary>
-        /// <value>
-        ///     The width of the pixel.
-        /// </value>
-        public int PixelWidth
-        {
-            get => _pixelWidth;
-            set
-            {
-                if (value == _pixelWidth) return;
-                if (value < 2) return;
+		/// <summary>
+		///     Gets or sets a value indicating whether this instance is active.
+		/// </summary>
+		/// <value>
+		///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsActive
+		{
+			get => _isActive;
+			set => SetProperty(ref _isActive, value, nameof(IsActive));
+		}
 
-                _pixelWidth = value;
+		/// <summary>
+		///     Gets or sets a value indicating whether [sub folders].
+		/// </summary>
+		/// <value>
+		///     <c>true</c> if [sub folders]; otherwise, <c>false</c>.
+		/// </value>
+		public bool SubFolders
+		{
+			get => _subFolders;
+			set
+			{
+				SetProperty(ref _subFolders, value, nameof(SubFolders));
+				SlimViewerRegister.MainSubFolders = value;
+			}
+		}
 
-                OnPropertyChanged(nameof(PixelWidth));
-            }
-        }
+		/// <summary>
+		///     Gets or sets a value indicating whether [automatic clean].
+		/// </summary>
+		/// <value>
+		///     <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
+		/// </value>
+		public bool AutoClean
+		{
+			get => _autoClean;
+			set
+			{
+				SetProperty(ref _autoClean, value, nameof(AutoClean));
+				SlimViewerRegister.MainAutoClean = value;
+			}
+		}
 
-        /// <summary>
-        ///     Gets or sets the File count.
-        /// </summary>
-        /// <value>
-        ///     The count.
-        /// </value>
-        public int Count
-        {
-            get => _count;
-            set
-            {
-                if (value == _count) return;
+		/// <summary>
+		///     Gets or sets a value indicating whether this <see cref="ImageView" /> shows Thumbnails.
+		/// </summary>
+		/// <value>
+		///     <c>true</c> if thumbs; otherwise, <c>false</c>.
+		/// </value>
+		public bool Thumbs
+		{
+			get => _thumbs;
+			set => SetProperty(ref _thumbs, value, nameof(Thumbs));
+		}
 
-                _count = value;
-                OnPropertyChanged(nameof(Count));
-            }
-        }
+		/// <summary>
+		///     Gets or sets a value indicating whether this <see cref="ImageView" /> compresses the new CIF format.
+		/// </summary>
+		/// <value>
+		///     <c>true</c> if compress; otherwise, <c>false</c>.
+		/// </value>
+		public bool Compress
+		{
+			get => _compress;
+			set => SetProperty(ref _compress, value, nameof(Compress));
+		}
 
-        /// <summary>
-        ///     Gets or sets the Filename.
-        /// </summary>
-        /// <value>
-        ///     The name of the file.
-        /// </value>
-        public string FileName
-        {
-            get => _fileName;
-            set
-            {
-                if (_fileName == value) return;
+		/// <summary>
+		///     Gets or sets the observer.
+		/// </summary>
+		/// <value>
+		///     The observer.
+		/// </value>
+		public Dictionary<int, string> Observer
+		{
+			get => _observer;
+			set => SetProperty(ref _observer, value, nameof(Observer));
+		}
 
-                _fileName = value;
-                OnPropertyChanged(nameof(FileName));
-            }
-        }
+		/// <summary>
+		///     Gets or sets the BitmapImage.
+		/// </summary>
+		/// <value>
+		///     The BitmapImage.
+		/// </value>
+		public BitmapImage Bmp
+		{
+			get => _bmp;
+			set => SetProperty(ref _bmp, value, nameof(Bmp));
+		}
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether this instance is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsActive
-        {
-            get => _isActive;
-            set
-            {
-                if (_isActive == value) return;
+		/// <summary>
+		///     Gets or sets the status image.
+		/// </summary>
+		/// <value>
+		///     The status image.
+		/// </value>
+		public string StatusImage
+		{
+			get => _statusImage;
+			set => SetProperty(ref _statusImage, value, nameof(StatusImage));
+		}
 
-                _isActive = value;
-                OnPropertyChanged(nameof(IsActive));
-            }
-        }
+		/// <summary>
+		///     Gets or sets the GIF path.
+		/// </summary>
+		/// <value>
+		///     The GIF path.
+		/// </value>
+		public string GifPath
+		{
+			get => _gifPath;
+			set => SetProperty(ref _gifPath, value, nameof(GifPath));
+		}
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether [sub folders].
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if [sub folders]; otherwise, <c>false</c>.
-        /// </value>
-        public bool SubFolders
-        {
-            get => _subFolders;
-            set
-            {
-                if (_subFolders == value) return;
+		/// <summary>
+		///     Sets the property.
+		/// </summary>
+		/// <typeparam name="T">Generic Parameter</typeparam>
+		/// <param name="field">The field.</param>
+		/// <param name="value">The value.</param>
+		/// <param name="propertyName">Name of the property.</param>
+		private void SetProperty<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value)) return;
 
-                _subFolders = value;
-                SlimViewerRegister.MainSubFolders = value;
-                OnPropertyChanged(nameof(SubFolders));
-            }
-        }
+			field = value;
+			OnPropertyChanged(propertyName);
+		}
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether [automatic clean].
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
-        /// </value>
-        public bool AutoClean
-        {
-            get => _autoClean;
-            set
-            {
-                if (_autoClean == value) return;
-
-                _autoClean = value;
-                SlimViewerRegister.MainAutoClean = value;
-                OnPropertyChanged(nameof(AutoClean));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether this <see cref="ImageView" /> shows Thumbnails.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if thumbs; otherwise, <c>false</c>.
-        /// </value>
-        public bool Thumbs
-        {
-            get => _thumbs;
-            set
-            {
-                if (_thumbs == value) return;
-
-                _thumbs = value;
-                OnPropertyChanged(nameof(Thumbs));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether this <see cref="ImageView" /> compresses the new cif format.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if thumbs; otherwise, <c>false</c>.
-        /// </value>
-        public bool Compress
-        {
-            get => _compress;
-            set
-            {
-                if (_compress == value) return;
-
-                _compress = value;
-                OnPropertyChanged(nameof(Compress));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer.
-        /// </summary>
-        /// <value>
-        ///     The observer.
-        /// </value>
-        public Dictionary<int, string> Observer
-        {
-            get => _observer;
-            set
-            {
-                if (_observer == value) return;
-
-                _observer = value;
-                OnPropertyChanged(nameof(Observer));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the BitmapImage.
-        /// </summary>
-        /// <value>
-        ///     The BitmapImage.
-        /// </value>
-        public BitmapImage Bmp
-        {
-            get => _bmp;
-            set
-            {
-                if (_bmp == value) return;
-
-                _bmp = value;
-                OnPropertyChanged(nameof(Bmp));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the status image.
-        /// </summary>
-        /// <value>
-        ///     The status image.
-        /// </value>
-        public string StatusImage
-        {
-            get => _statusImage;
-            set
-            {
-                if (_statusImage == value) return;
-
-                _statusImage = value;
-                OnPropertyChanged(nameof(StatusImage));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the GIF path.
-        /// </summary>
-        /// <value>
-        ///     The GIF path.
-        /// </value>
-        public string GifPath
-        {
-            get => _gifPath;
-            set
-            {
-                if (_gifPath == value) return;
-
-                _gifPath = value;
-                OnPropertyChanged(nameof(GifPath));
-            }
-        }
-
-        /// <summary>
-        ///     Gets the close command.
-        /// </summary>
-        /// <value>
-        ///     The close command.
-        /// </value>
-        public ICommand CloseCommand =>
+		/// <summary>
+		///     Gets the close command.
+		/// </summary>
+		/// <value>
+		///     The close command.
+		/// </value>
+		public ICommand CloseCommand =>
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>

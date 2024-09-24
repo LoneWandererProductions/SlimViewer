@@ -71,67 +71,64 @@ namespace SlimViews
         /// </summary>
         private string _replacer;
 
-        /// <summary>
-        ///     Gets or sets the replacement string.
-        /// </summary>
-        /// <value>
-        ///     The replacement string.
-        /// </value>
-        public string Replacement
-        {
-            get => _replacement;
-            set
-            {
-                if (_replacement == value) return;
+		/// <summary>
+		///     Gets or sets the replacement string.
+		/// </summary>
+		/// <value>
+		///     The replacement string.
+		/// </value>
+		public string Replacement
+		{
+			get => _replacement;
+			set => SetProperty(ref _replacement, value, nameof(Replacement));
+		}
 
-                _replacement = value;
-                OnPropertyChanged(nameof(Replacement));
-            }
-        }
+		/// <summary>
+		///     Gets or sets the numbers.
+		/// </summary>
+		/// <value>
+		///     The numbers.
+		/// </value>
+		public int Numbers
+		{
+			get => _numbers;
+			set => SetProperty(ref _numbers, value, nameof(Numbers));
+		}
 
-        /// <summary>
-        ///     Gets or sets the numbers.
-        /// </summary>
-        /// <value>
-        ///     The numbers.
-        /// </value>
-        public int Numbers
-        {
-            get => _numbers;
-            set
-            {
-                if (_numbers == value) return;
+		/// <summary>
+		///     Gets or sets the replacer string.
+		/// </summary>
+		/// <value>
+		///     The replacer string.
+		/// </value>
+		public string Replacer
+		{
+			get => _replacer;
+			set => SetProperty(ref _replacer, value, nameof(Replacer));
+		}
 
-                _numbers = value;
-                OnPropertyChanged(nameof(Numbers));
-            }
-        }
+		/// <summary>
+		///     Sets the property.
+		/// </summary>
+		/// <typeparam name="T">Generic Parameter</typeparam>
+		/// <param name="field">The field.</param>
+		/// <param name="value">The value.</param>
+		/// <param name="propertyName">Name of the property.</param>
+		private void SetProperty<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value)) return;
 
-        /// <summary>
-        ///     Gets or sets the replacer string.
-        /// </summary>
-        /// <value>
-        ///     The replacer string.
-        /// </value>
-        public string Replacer
-        {
-            get => _replacer;
-            set
-            {
-                if (_replacer == value) return;
+			field = value;
+			OnPropertyChanged(propertyName);
+		}
 
-                _replacer = value;
-                OnPropertyChanged(nameof(Replacer));
-            }
-        }
-
-        /// <summary>
-        ///     Gets the explorer command.
-        /// </summary>
-        /// <value>
-        ///     The explorer command.
-        /// </value>
-        public ICommand RemoveAppendageCommand => _removeAppendageCommand ??=
+		/// <summary>
+		///     Gets the explorer command.
+		/// </summary>
+		/// <value>
+		///     The explorer command.
+		/// </value>
+		public ICommand RemoveAppendageCommand => _removeAppendageCommand ??=
             new DelegateCommand<object>(RemoveAppendageAction, CanExecute);
 
         /// <summary>
