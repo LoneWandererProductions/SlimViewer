@@ -27,10 +27,16 @@ namespace SlimViews
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class CompareView : INotifyPropertyChanged
     {
-        /// <summary>
-        ///     The analysis
-        /// </summary>
-        private readonly ImageAnalysis _analysis = new();
+		/// <summary>
+		/// Dictionary where the key represents the observer's number (0 for first, 1 for second, etc.)
+		/// Each value is another dictionary mapping an integer to a string.
+		/// </summary>
+		private Dictionary<int, Dictionary<int, string>> _observers = new Dictionary<int, Dictionary<int, string>>();
+
+		/// <summary>
+		///     The analysis
+		/// </summary>
+		private readonly ImageAnalysis _analysis = new();
 
         /// <summary>
         ///     The compare
@@ -337,7 +343,19 @@ namespace SlimViews
         {
             _imageView = imageView;
 
-            Status = SlimViewerResources.StatusCompareStart;
+			_observers.Add(1, _observerFirst);
+			_observers.Add(2, _observerSecond);
+			_observers.Add(3, _observerThird);
+			_observers.Add(4, _observerFourth);
+			_observers.Add(5, _observerFifth);
+			_observers.Add(6, _observerSixth);
+			_observers.Add(7, _observerSeventh);
+			_observers.Add(8, _observerEight);
+			_observers.Add(9, _observerNinth);
+			_observers.Add(10, _observerTenth);
+
+
+			Status = SlimViewerResources.StatusCompareStart;
 
             //no specified difference lvl, so Duplicates
             if (similarity == 0)
@@ -523,15 +541,15 @@ namespace SlimViews
         /// <param name="id">The image identifier.</param>
         public void ChangeImage(int itemId, int id)
         {
-            //if (id < 0 || id >= _observers.Count || _observers[id] == null) return;
+            if (id < 0 || id >= _observers.Count || _observers[id] == null) return;
 
-            //var observer = _observers[id];
-            //if (!observer.ContainsKey(itemId)) return;
+            var observer = _observers[id];
+            if (!observer.ContainsKey(itemId)) return;
 
-            //var files = observer.Values.ToList();
-            //var path = observer[itemId];
+            var files = observer.Values.ToList();
+            var path = observer[itemId];
 
-            //LoadImages(path, itemId, files);
+            LoadImages(path, itemId, files);
         }
 
 
