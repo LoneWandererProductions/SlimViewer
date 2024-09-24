@@ -27,16 +27,10 @@ namespace SlimViews
     /// <seealso cref="INotifyPropertyChanged" />
     internal sealed class CompareView : INotifyPropertyChanged
     {
-		/// <summary>
-		/// Dictionary where the key represents the observer's number (0 for first, 1 for second, etc.)
-		/// Each value is another dictionary mapping an integer to a string.
-		/// </summary>
-		private Dictionary<int, Dictionary<int, string>> _observers = new Dictionary<int, Dictionary<int, string>>();
-
-		/// <summary>
-		///     The analysis
-		/// </summary>
-		private readonly ImageAnalysis _analysis = new();
+        /// <summary>
+        ///     The analysis
+        /// </summary>
+        private readonly ImageAnalysis _analysis = new();
 
         /// <summary>
         ///     The compare
@@ -87,7 +81,7 @@ namespace SlimViews
         ///     The observer ninth
         /// </summary>
         private Dictionary<int, string> _observerNinth;
-        
+
         /// <summary>
         ///     The observer second
         /// </summary>
@@ -343,19 +337,7 @@ namespace SlimViews
         {
             _imageView = imageView;
 
-			_observers.Add(1, _observerFirst);
-			_observers.Add(2, _observerSecond);
-			_observers.Add(3, _observerThird);
-			_observers.Add(4, _observerFourth);
-			_observers.Add(5, _observerFifth);
-			_observers.Add(6, _observerSixth);
-			_observers.Add(7, _observerSeventh);
-			_observers.Add(8, _observerEight);
-			_observers.Add(9, _observerNinth);
-			_observers.Add(10, _observerTenth);
-
-
-			Status = SlimViewerResources.StatusCompareStart;
+            Status = SlimViewerResources.StatusCompareStart;
 
             //no specified difference lvl, so Duplicates
             if (similarity == 0)
@@ -541,15 +523,119 @@ namespace SlimViews
         /// <param name="id">The image identifier.</param>
         public void ChangeImage(int itemId, int id)
         {
-            if (id < 0 || id >= _observers.Count || _observers[id] == null) return;
+            switch (id)
+            {
+                case 0:
+                    {
+                        var files = _observerFirst.Values.ToList();
+                        if (!_observerFirst.ContainsKey(itemId)) return;
 
-            var observer = _observers[id];
-            if (!observer.ContainsKey(itemId)) return;
+                        var path = _observerFirst[itemId];
 
-            var files = observer.Values.ToList();
-            var path = observer[itemId];
+                        LoadImages(path, itemId, files);
 
-            LoadImages(path, itemId, files);
+                        break;
+                    }
+                case 1:
+                    {
+                        var files = _observerSecond.Values.ToList();
+                        if (!_observerSecond.ContainsKey(itemId)) return;
+
+                        var path = _observerSecond[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+                case 2:
+                    {
+                        var files = _observerThird.Values.ToList();
+                        if (!_observerThird.ContainsKey(itemId)) return;
+
+                        var path = _observerThird[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+                case 3:
+                    {
+                        var files = _observerFourth.Values.ToList();
+                        if (!_observerFourth.ContainsKey(itemId)) return;
+
+                        var path = _observerFourth[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+                case 4:
+                    {
+                        var files = _observerFifth.Values.ToList();
+                        if (!_observerFifth.ContainsKey(itemId)) return;
+
+                        var path = _observerFifth[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+                case 5:
+                    {
+                        var files = _observerSixth.Values.ToList();
+                        if (!_observerSixth.ContainsKey(itemId)) return;
+
+                        var path = _observerSixth[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+                case 6:
+                    {
+                        var files = _observerSeventh.Values.ToList();
+                        if (!_observerSeventh.ContainsKey(itemId)) return;
+
+                        var path = ObserverSeventh[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+                case 7:
+                    {
+                        var files = _observerEight.Values.ToList();
+                        if (!_observerEight.ContainsKey(itemId)) return;
+
+                        var path = _observerEight[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+                case 8:
+                {
+                    var files = _observerNinth.Values.ToList();
+                    if (!_observerNinth.ContainsKey(itemId)) return;
+
+                    var path = _observerNinth[itemId];
+
+                    LoadImages(path, itemId, files);
+
+                    break;
+                }
+                case 9:
+                    {
+                        var files = _observerTenth.Values.ToList();
+                        if (!_observerTenth.ContainsKey(itemId)) return;
+
+                        var path = _observerTenth[itemId];
+
+                        LoadImages(path, itemId, files);
+
+                        break;
+                    }
+            }
         }
 
 

@@ -145,6 +145,7 @@ namespace SlimViews
         private void SetProperty<T>(ref T field, T value, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return;
+
             field = value;
             OnPropertyChanged(propertyName);
         }

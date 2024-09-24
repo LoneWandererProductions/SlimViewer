@@ -40,32 +40,32 @@
                                            ItemsSource="{Binding ObserverFirst}"
                                            ImageClicked="OnImageClicked"
                                            ThumbCellSize="100" ThumbHeight="1"
-                                           Tag="1" />
+                                           Tag="0" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"
                                            ItemsSource="{Binding ObserverSecond}"
                                            ImageClicked="OnImageClicked"
                                            ThumbCellSize="100" ThumbHeight="1"
-                                           Tag="2" />
+                                           Tag="1" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2"
                                            ItemsSource="{Binding ObserverThird}"
                                            ImageClicked="OnImageClicked"
                                            ThumbCellSize="100" ThumbHeight="1"
-                                           Tag="3" />
+                                           Tag="2" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"
                                            ItemsSource="{Binding ObserverFourth}"
                                            ImageClicked="OnImageClicked"
                                            ThumbCellSize="100" ThumbHeight="1"
-                                           Tag="4" />
+                                           Tag="2" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4"
                                            ItemsSource="{Binding ObserverFifth}"
                                            ImageClicked="OnImageClicked"
                                            ThumbCellSize="100" ThumbHeight="1"
-                                           Tag="5" />
+                                           Tag="4" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="5"
                                            ItemsSource="{Binding ObserverSixth}"
                                            ImageClicked="OnImageClicked"
                                            ThumbCellSize="100" ThumbHeight="1"
-                                           Tag="6" />
+                                           Tag="5" />
                 <commonControls:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="6"
                                            ItemsSource="{Binding ObserverSeventh}"
                                            ImageClicked="OnImageClicked"
