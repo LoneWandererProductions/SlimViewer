@@ -1,0 +1,60 @@
+﻿<Window x:Class="SlimViews.TextureConfig"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SlimViews"
+        mc:Ignorable="d"
+        Title="Texture Config" Height="500" Width="400">
+    <Grid>
+        <StackPanel>
+            <!-- General texture settings -->
+            <TextBlock FontWeight="Bold" Text="General Settings" Margin="0,10,0,5"/>
+
+            <Label Content="Min Value" />
+            <TextBox Text="{Binding Config.MinValue, Mode=TwoWay}" />
+
+            <Label Content="Max Value" />
+            <TextBox Text="{Binding Config.MaxValue, Mode=TwoWay}" />
+
+            <Label Content="Alpha" />
+            <TextBox Text="{Binding Config.Alpha, Mode=TwoWay}" />
+
+            <Label Content="Base Color" />
+            <ComboBox SelectedItem="{Binding Config.BaseColor, Mode=TwoWay}">
+                <!-- You can populate the ComboBox with predefined colors -->
+                <ComboBoxItem Content="White" />
+                <ComboBoxItem Content="Black" />
+                <ComboBoxItem Content="Red" />
+                <ComboBoxItem Content="Green" />
+                <ComboBoxItem Content="Blue" />
+            </ComboBox>
+
+            <!-- Crosshatch settings -->
+            <TextBlock FontWeight="Bold" Text="Crosshatch Settings" Margin="0,10,0,5"/>
+
+            <Label Content="Line Spacing" />
+            <TextBox Text="{Binding Config.LineSpacing, Mode=TwoWay}" />
+
+            <Label Content="Line Color" />
+            <ComboBox SelectedItem="{Binding Config.LineColor, Mode=TwoWay}">
+                <!-- Populate with predefined colors -->
+                <ComboBoxItem Content="Black" />
+                <ComboBoxItem Content="White" />
+                <ComboBoxItem Content="Gray" />
+                <ComboBoxItem Content="Yellow" />
+            </ComboBox>
+
+            <Label Content="Line Thickness" />
+            <TextBox Text="{Binding Config.LineThickness, Mode=TwoWay}" />
+
+            <Label Content="Angle 1" />
+            <TextBox Text="{Binding Config.Angle1, Mode=TwoWay}" />
+
+            <Label Content="Angle 2" />
+            <TextBox Text="{Binding Config.Angle2, Mode=TwoWay}" />
+
+            <!-- Add more configuration controls as needed -->
+        </StackPanel>
+    </Grid>
+</Window>
