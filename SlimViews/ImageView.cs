@@ -1184,7 +1184,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void FilterConfigAction(string obj)
         {
-            var filterConfig = new FilterConfigWindow
+            var filterConfig = new FilterConfig
             {
                 Topmost = true,
                 Owner = Main

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/FilterViewModel.cs
+ * FILE:        SlimViews/FilterConfigView.cs
  * PURPOSE:     View Model for Filter Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -17,7 +17,7 @@ namespace SlimViews
 	/// Set Input Fields active or Inactive based on the used Filter
 	/// </summary>
 	/// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
-	public class FilterViewModel : INotifyPropertyChanged
+	public class FilterConfigView : INotifyPropertyChanged
     {
 		/// <summary>
 		/// The current configuration

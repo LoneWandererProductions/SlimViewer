@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/DetailView.cs
+ * FILE:        SlimViews/DetailCompareView.cs
  * PURPOSE:     View Model for the Detail Viewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -36,7 +36,7 @@ namespace SlimViews
     ///     View for Detail Window
     /// </summary>
     /// <seealso cref="INotifyPropertyChanged" />
-    internal sealed class DetailView : INotifyPropertyChanged
+    internal sealed class DetailCompareView : INotifyPropertyChanged
     {
         /// <summary>
         ///     The chunk size
@@ -168,9 +168,9 @@ namespace SlimViews
         public TextBox TxtBoxColorInformation;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DetailView" /> class.
+        ///     Initializes a new instance of the <see cref="DetailCompareView" /> class.
         /// </summary>
-        public DetailView()
+        public DetailCompareView()
         {
             _analysis = new ImageAnalysis();
             _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);

@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Title="Detailed Image Comparer" Height="450" Width="1000">
     <Window.DataContext>
-        <local:DetailView x:Name="View" />
+        <local:DetailCompareView x:Name="View" />
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
