@@ -92,6 +92,8 @@ namespace Imaging
             int width,
             int height,
             TextureType filter,
-            TextureShape shape, object shapeParams = null);
+            TextureShape shape,
+			Point? startPoint = null,
+			object shapeParams = null);
     }
 }
