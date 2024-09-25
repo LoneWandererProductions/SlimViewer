@@ -120,30 +120,6 @@ namespace Imaging
         /// </value>
         public double XyPeriod { get; init; } = 12.0;
 
-        /// <summary>
-        ///     Gets or sets the filter type for generating textures.
-        /// </summary>
-        /// <value>
-        ///     The filter type.
-        /// </value>
-        public TextureType Filter { get; set; } = TextureType.Noise;
-
-        /// <summary>
-        ///     Gets or sets the shape of the texture.
-        /// </summary>
-        /// <value>
-        ///     The texture shape.
-        /// </value>
-        public TextureShape Shape { get; set; } = TextureShape.Rectangle;
-
-        /// <summary>
-        ///     Gets or sets the shape parameters.
-        /// </summary>
-        /// <value>
-        ///     The shape parameters.
-        /// </value>
-        public object ShapeParams { get; set; } = null;
-
         // New parameters for crosshatch texture
 
         /// <summary>

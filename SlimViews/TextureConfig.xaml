@@ -5,54 +5,187 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
-        Title="Texture Config" Height="500" Width="400">
+        Title="Texture Config" Height="750" Width="450">
     <Grid>
         <StackPanel>
             <!-- General texture settings -->
             <TextBlock FontWeight="Bold" Text="General Settings" Margin="0,10,0,5"/>
 
-            <Label Content="Min Value" />
-            <TextBox Text="{Binding Config.MinValue, Mode=TwoWay}" />
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Min Value" Grid.Column="0" />
+                <TextBox Text="{Binding Config.MinValue, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
-            <Label Content="Max Value" />
-            <TextBox Text="{Binding Config.MaxValue, Mode=TwoWay}" />
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Max Value" Grid.Column="0" />
+                <TextBox Text="{Binding Config.MaxValue, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
-            <Label Content="Alpha" />
-            <TextBox Text="{Binding Config.Alpha, Mode=TwoWay}" />
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Alpha" Grid.Column="0" />
+                <TextBox Text="{Binding Config.Alpha, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
-            <Label Content="Base Color" />
-            <ComboBox SelectedItem="{Binding Config.BaseColor, Mode=TwoWay}">
-                <!-- You can populate the ComboBox with predefined colors -->
-                <ComboBoxItem Content="White" />
-                <ComboBoxItem Content="Black" />
-                <ComboBoxItem Content="Red" />
-                <ComboBoxItem Content="Green" />
-                <ComboBoxItem Content="Blue" />
-            </ComboBox>
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="X Period" Grid.Column="0" />
+                <TextBox Text="{Binding Config.XPeriod, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Y Period" Grid.Column="0" />
+                <TextBox Text="{Binding Config.YPeriod, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Turbulence Power" Grid.Column="0" />
+                <TextBox Text="{Binding Config.TurbulencePower, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Turbulence Size" Grid.Column="0" />
+                <TextBox Text="{Binding Config.TurbulenceSize, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Base Color" Grid.Column="0" />
+                <ComboBox SelectedItem="{Binding Config.BaseColor, Mode=TwoWay}" Grid.Column="1">
+                    <ComboBoxItem Content="White" />
+                    <ComboBoxItem Content="Black" />
+                    <ComboBoxItem Content="Red" />
+                    <ComboBoxItem Content="Green" />
+                    <ComboBoxItem Content="Blue" />
+                </ComboBox>
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Is Monochrome" Grid.Column="0" />
+                <CheckBox IsChecked="{Binding Config.IsMonochrome, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Is Tiled" Grid.Column="0" />
+                <CheckBox IsChecked="{Binding Config.IsTiled, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Use Smooth Noise" Grid.Column="0" />
+                <CheckBox IsChecked="{Binding Config.UseSmoothNoise, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Use Turbulence" Grid.Column="0" />
+                <CheckBox IsChecked="{Binding Config.UseTurbulence, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
+
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="XY Period" Grid.Column="0" />
+                <TextBox Text="{Binding Config.XyPeriod, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
             <!-- Crosshatch settings -->
             <TextBlock FontWeight="Bold" Text="Crosshatch Settings" Margin="0,10,0,5"/>
 
-            <Label Content="Line Spacing" />
-            <TextBox Text="{Binding Config.LineSpacing, Mode=TwoWay}" />
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Line Spacing" Grid.Column="0" />
+                <TextBox Text="{Binding Config.LineSpacing, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
-            <Label Content="Line Color" />
-            <ComboBox SelectedItem="{Binding Config.LineColor, Mode=TwoWay}">
-                <!-- Populate with predefined colors -->
-                <ComboBoxItem Content="Black" />
-                <ComboBoxItem Content="White" />
-                <ComboBoxItem Content="Gray" />
-                <ComboBoxItem Content="Yellow" />
-            </ComboBox>
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Line Color" Grid.Column="0" />
+                <ComboBox SelectedItem="{Binding Config.LineColor, Mode=TwoWay}" Grid.Column="1">
+                    <ComboBoxItem Content="Black" />
+                    <ComboBoxItem Content="White" />
+                    <ComboBoxItem Content="Gray" />
+                    <ComboBoxItem Content="Yellow" />
+                </ComboBox>
+            </Grid>
 
-            <Label Content="Line Thickness" />
-            <TextBox Text="{Binding Config.LineThickness, Mode=TwoWay}" />
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Line Thickness" Grid.Column="0" />
+                <TextBox Text="{Binding Config.LineThickness, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
-            <Label Content="Angle 1" />
-            <TextBox Text="{Binding Config.Angle1, Mode=TwoWay}" />
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Angle 1" Grid.Column="0" />
+                <TextBox Text="{Binding Config.Angle1, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
-            <Label Content="Angle 2" />
-            <TextBox Text="{Binding Config.Angle2, Mode=TwoWay}" />
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Angle 2" Grid.Column="0" />
+                <TextBox Text="{Binding Config.Angle2, Mode=TwoWay}" Grid.Column="1" />
+            </Grid>
 
             <!-- Add more configuration controls as needed -->
         </StackPanel>
