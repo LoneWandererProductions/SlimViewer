@@ -167,10 +167,15 @@ namespace SlimViews
         /// </summary>
         private ICommand _filterConfigCommand;
 
-        /// <summary>
-        ///     The folder command
-        /// </summary>
-        private ICommand _folderCommand;
+		/// <summary>
+		/// The texture configuration command
+		/// </summary>
+		private ICommand _textureConfigCommand;
+
+		/// <summary>
+		///     The folder command
+		/// </summary>
+		private ICommand _folderCommand;
 
         /// <summary>
         ///     The folder convert command
@@ -674,7 +679,7 @@ namespace SlimViews
         ///     The compare command.
         /// </value>
         public ICommand SimilarCommand =>
-            _similarCommand ??= new DelegateCommand<object>(SimilarAction, CanExecute);
+            _similarCommand ??= new DelegateCommand<object>(SimilarWindowAction, CanExecute);
 
         /// <summary>
         ///     Gets the compare command.
@@ -683,7 +688,7 @@ namespace SlimViews
         ///     The compare command.
         /// </value>
         public ICommand DuplicateCommand =>
-            _duplicateCommand ??= new DelegateCommand<object>(DuplicateAction, CanExecute);
+            _duplicateCommand ??= new DelegateCommand<object>(DuplicateWindowAction, CanExecute);
 
         /// <summary>
         ///     Gets the previous Image.
@@ -780,7 +785,7 @@ namespace SlimViews
         ///     The scale command.
         /// </value>
         public ICommand ScaleCommand =>
-            _scaleCommand ??= new DelegateCommand<object>(ScaleAction, CanExecute);
+            _scaleCommand ??= new DelegateCommand<object>(ScaleWindowAction, CanExecute);
 
         /// <summary>
         ///     Gets the folder rename command.
@@ -789,7 +794,7 @@ namespace SlimViews
         ///     The folder rename command.
         /// </value>
         public ICommand FolderRenameCommand =>
-            _folderRenameCommand ??= new DelegateCommand<object>(FolderRenameAction, CanExecute);
+            _folderRenameCommand ??= new DelegateCommand<object>(FolderRenameWindowAction, CanExecute);
 
         /// <summary>
         ///     Gets the folder convert command.
@@ -798,7 +803,7 @@ namespace SlimViews
         ///     The folder convert command.
         /// </value>
         public ICommand FolderConvertCommand =>
-            _folderConvertCommand ??= new DelegateCommand<object>(FolderConvertAction, CanExecute);
+            _folderConvertCommand ??= new DelegateCommand<object>(FolderConvertWindowAction, CanExecute);
 
         /// <summary>
         ///     Gets the folder convert command.
@@ -824,7 +829,7 @@ namespace SlimViews
         ///     The folder search command.
         /// </value>
         public ICommand FolderSearchCommand =>
-            _searchCommand ??= new DelegateCommand<object>(SearchAction, CanExecute);
+            _searchCommand ??= new DelegateCommand<object>(SearchWindowAction, CanExecute);
 
         /// <summary>
         ///     Gets the move command.
@@ -878,7 +883,7 @@ namespace SlimViews
         ///     The analyzer window command.
         /// </value>
         public ICommand AnalyzerWindowCommand =>
-            _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerAction, CanExecute);
+            _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerWindowAction, CanExecute);
 
         /// <summary>
         ///     Gets the resizer window command.
@@ -887,7 +892,7 @@ namespace SlimViews
         ///     The resizer window command.
         /// </value>
         public ICommand ResizerWindowCommand =>
-            _resizerWindowCommand ??= new DelegateCommand<object>(ResizerAction, CanExecute);
+            _resizerWindowCommand ??= new DelegateCommand<object>(ResizerWindowAction, CanExecute);
 
 
         /// <summary>
@@ -917,16 +922,25 @@ namespace SlimViews
         ///     The filter configuration command.
         /// </value>
         public ICommand FilterConfigCommand =>
-            _filterConfigCommand ??= new DelegateCommand<string>(FilterConfigAction, CanExecute);
+            _filterConfigCommand ??= new DelegateCommand<string>(FilterConfigWindowAction, CanExecute);
+
+		/// <summary>
+		///     Gets the filter configuration command.
+		/// </summary>
+		/// <value>
+		///     The filter configuration command.
+		/// </value>
+		public ICommand TextureConfigCommand =>
+			_textureConfigCommand ??= new DelegateCommand<string>(TextureConfigWindowAction, CanExecute);
 
 
-        /// <summary>
-        ///     Gets the brighten command.
-        /// </summary>
-        /// <value>
-        ///     The brighten command.
-        /// </value>
-        public ICommand BrightenCommand =>
+		/// <summary>
+		///     Gets the brighten command.
+		/// </summary>
+		/// <value>
+		///     The brighten command.
+		/// </value>
+		public ICommand BrightenCommand =>
             _brightenCommand ??= new DelegateCommand<string>(BrightenAction, CanExecute);
 
         /// <summary>
@@ -1178,25 +1192,11 @@ namespace SlimViews
             //TODO
         }
 
-        /// <summary>
-        ///     Filter configuration.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void FilterConfigAction(string obj)
-        {
-            var filterConfig = new FilterConfig
-            {
-                Topmost = true,
-                Owner = Main
-            };
-            filterConfig.Show();
-        }
-
-        /// <summary>
-        ///     Brightens the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void BrightenAction(object obj)
+		/// <summary>
+		///     Brightens the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void BrightenAction(object obj)
         {
             //TODO
         }
@@ -1457,11 +1457,39 @@ namespace SlimViews
             _ = Process.Start(SlimViewerResources.Explorer, argument);
         }
 
-        /// <summary>
-        ///     Rename the Folder action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void FolderRenameAction(object obj)
+		/// <summary>
+		///     Filter configuration Window.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void FilterConfigWindowAction(string obj)
+		{
+			var filterConfig = new FilterConfig
+			{
+				Topmost = true,
+				Owner = Main
+			};
+			filterConfig.Show();
+		}
+
+		/// <summary>
+		/// Textures the configuration Window.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void TextureConfigWindowAction(string obj)
+		{
+			var textureConfig = new TextureConfig
+			{
+				Topmost = true,
+				Owner = Main
+			};
+			textureConfig.Show();
+		}
+
+		/// <summary>
+		///     Rename the Folder action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void FolderRenameWindowAction(object obj)
         {
             SlimViewerRegister.ResetRenaming();
 
@@ -1488,11 +1516,11 @@ namespace SlimViews
                     _observer[key] = value;
         }
 
-        /// <summary>
-        ///     Image Scaling action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void ScaleAction(object obj)
+		/// <summary>
+		///     Image Scaling Window.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void ScaleWindowAction(object obj)
         {
             SlimViewerRegister.ResetScaling();
 
@@ -1514,21 +1542,21 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(ScaleAction)));
+                    string.Concat(SlimViewerResources.MessageError, nameof(ScaleWindowAction)));
             }
             catch (OverflowException ex)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(ScaleAction)));
+                    string.Concat(SlimViewerResources.MessageError, nameof(ScaleWindowAction)));
             }
         }
 
         /// <summary>
-        ///     Folders the convert action.
+        ///     Foldee convert Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void FolderConvertAction(object obj)
+        private void FolderConvertWindowAction(object obj)
         {
             SlimViewerRegister.ResetConvert();
 
@@ -1567,28 +1595,27 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertAction)));
+                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertWindowAction)));
             }
             catch (IOException ex)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertAction)));
+                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertWindowAction)));
             }
             catch (ExternalException ex)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertAction)));
+                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertWindowAction)));
             }
         }
 
-        /// <summary>
-        ///     Similar Action.
-        ///     TODO add Collection Action
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void SimilarAction(object obj)
+		/// <summary>
+		///     Similar Action Window.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void SimilarWindowAction(object obj)
         {
             var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this, Similarity)
             {
@@ -1601,11 +1628,11 @@ namespace SlimViews
             SlimViewerRegister.CompareView = true;
         }
 
-        /// <summary>
-        ///     Duplicates the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void DuplicateAction(object obj)
+		/// <summary>
+		///     Duplicate Action Window.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void DuplicateWindowAction(object obj)
         {
             var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this)
             {
@@ -1618,7 +1645,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     GIFs the window action.
+        ///     GIFs window action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void GifWindowAction(object obj)
@@ -1632,10 +1659,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Analyzer Window
+        ///     Analyzer Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void AnalyzerAction(object obj)
+        private void AnalyzerWindowAction(object obj)
         {
             var detailWindow = new DetailCompare
             {
@@ -1649,7 +1676,7 @@ namespace SlimViews
         ///     Resizer Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ResizerAction(object obj)
+        private void ResizerWindowAction(object obj)
         {
             var resizer = new Resizer
             {
@@ -1659,11 +1686,25 @@ namespace SlimViews
             resizer.Show();
         }
 
-        /// <summary>
-        ///     Cleans the temporary Folder action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void CleanTempAction(object obj)
+		/// <summary>
+		///     Searches Window action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void SearchWindowAction(object obj)
+		{
+			var searchWindow = new Search(SubFolders, SlimViewerRegister.CurrentFolder, this, Color)
+			{
+				Topmost = true,
+				Owner = Main
+			};
+			searchWindow.Show();
+		}
+
+		/// <summary>
+		///     Cleans the temporary Folder action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void CleanTempAction(object obj)
         {
             var check = false;
 
@@ -1687,20 +1728,6 @@ namespace SlimViews
                 _ = MessageBox.Show(SlimViewerResources.StatusDone, SlimViewerResources.CaptionDone,
                     MessageBoxButton.OK,
                     MessageBoxImage.Exclamation);
-        }
-
-        /// <summary>
-        ///     Searches the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void SearchAction(object obj)
-        {
-            var searchWindow = new Search(SubFolders, SlimViewerRegister.CurrentFolder, this, Color)
-            {
-                Topmost = true,
-                Owner = Main
-            };
-            searchWindow.Show();
         }
 
         /// <summary>
