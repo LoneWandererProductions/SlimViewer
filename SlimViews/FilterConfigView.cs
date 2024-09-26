@@ -54,6 +54,58 @@ namespace SlimViews
 		/// </summary>
 		private bool _isScaleActive;
 
+		private double _factor;
+		private double _bias;
+		private double _sigma;
+		private int _baseWindowSize;
+		private int _scale;
+
+		/// <summary>
+		/// Gets or sets the factor.
+		/// </summary>
+		public double Factor
+		{
+			get => _factor;
+			set => SetProperty(ref _factor, value, nameof(Factor));
+		}
+
+		/// <summary>
+		/// Gets or sets the bias.
+		/// </summary>
+		public double Bias
+		{
+			get => _bias;
+			set => SetProperty(ref _bias, value, nameof(Bias));
+		}
+
+		/// <summary>
+		/// Gets or sets the sigma.
+		/// </summary>
+		public double Sigma
+		{
+			get => _sigma;
+			set => SetProperty(ref _sigma, value, nameof(Sigma));
+		}
+
+		/// <summary>
+		/// Gets or sets the base window size.
+		/// </summary>
+		public int BaseWindowSize
+		{
+			get => _baseWindowSize;
+			set => SetProperty(ref _baseWindowSize, value, nameof(BaseWindowSize));
+		}
+
+		/// <summary>
+		/// Gets or sets the scale.
+		/// </summary>
+		public int Scale
+		{
+			get => _scale;
+			set => SetProperty(ref _scale, value, nameof(Scale));
+		}
+
+
 		/// <summary>
 		/// Gets or sets the selected filter.
 		/// </summary>
@@ -182,6 +234,23 @@ namespace SlimViews
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterConfigView"/> class.
+		/// </summary>
+		public FilterConfigView()
+		{
+			CurrentConfig = new ImageFilterConfig(); // Initialize with default values
+
+			// Set properties from CurrentConfig
+			Factor = CurrentConfig.Factor;
+			Bias = CurrentConfig.Bias;
+			Sigma = CurrentConfig.Sigma;
+			BaseWindowSize = CurrentConfig.BaseWindowSize;
+			Scale = CurrentConfig.Scale;
+
+			UpdateActiveProperties();
+		}
+
+		/// <summary>
 		/// Updates the active properties.
 		/// </summary>
 		private void UpdateActiveProperties()
@@ -201,6 +270,25 @@ namespace SlimViews
             OnPropertyChanged(nameof(IsBaseWindowSizeActive));
             OnPropertyChanged(nameof(IsScaleActive));
         }
+
+		/// <summary>
+		/// Saves the settings.
+		/// </summary>
+		private void SaveSettings()
+		{
+			// Gather the current properties into an ImageFilterConfig object
+			var config = new ImageFilterConfig
+			{
+				Factor = Factor, // Set default value if not active
+				Bias = Bias,
+				Sigma = Sigma,
+				BaseWindowSize = BaseWindowSize,
+				Scale = Scale
+			};
+
+			// Update the settings in ImageRegister
+			ImageRegister.SetSettings(SelectedFilter, config);
+		}
 
 		/// <summary>
 		/// Called when [property changed].

@@ -9,35 +9,43 @@
     <Window.DataContext>
         <local:FilterConfigView />
     </Window.DataContext>
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <!-- Added a row for buttons -->
         </Grid.RowDefinitions>
+
         <ComboBox ItemsSource="{Binding FilterOptions}"
                   SelectedItem="{Binding SelectedFilter}"
-                  Width="200" Grid.Row="0" />
+                  Grid.Row="0" />
 
         <StackPanel DataContext="{Binding CurrentConfig}" Grid.Row="1">
             <Label Content="Factor" />
-            <TextBox Text="{Binding Factor, Mode=TwoWay}" Margin="0,5,0,0"
+            <TextBox Text="{Binding Factor, Mode=TwoWay}"
                      IsEnabled="{Binding IsFactorActive}" />
 
             <Label Content="Bias" />
-            <TextBox Text="{Binding Bias, Mode=TwoWay}" Margin="0,5,0,0"
+            <TextBox Text="{Binding Bias, Mode=TwoWay}"
                      IsEnabled="{Binding IsBiasActive}" />
 
             <Label Content="Sigma" />
-            <TextBox Text="{Binding Sigma, Mode=TwoWay}" Margin="0,5,0,0"
+            <TextBox Text="{Binding Sigma, Mode=TwoWay}"
                      IsEnabled="{Binding IsSigmaActive}" />
 
             <Label Content="BaseWindowSize" />
-            <TextBox Text="{Binding BaseWindowSize, Mode=TwoWay}" Margin="0,5,0,0"
+            <TextBox Text="{Binding BaseWindowSize, Mode=TwoWay}"
                      IsEnabled="{Binding IsBaseWindowSizeActive}" />
 
             <Label Content="Scale" />
-            <TextBox Text="{Binding Scale, Mode=TwoWay}" Margin="0,5,0,0"
+            <TextBox Text="{Binding Scale, Mode=TwoWay}" 
                      IsEnabled="{Binding IsScaleActive}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="0,10,0,0">
+            <Button Content="Cancel" Width="75" Margin="5" Command="{Binding CancelCommand}" />
+            <Button Content="Save" Width="75" Margin="5" Command="{Binding SaveCommand}" />
         </StackPanel>
     </Grid>
 </Window>

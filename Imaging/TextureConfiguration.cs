@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/TextureConfig.cs
+ * FILE:        Imaging/TextureConfiguration.cs
  * PURPOSE:     Basic stuff for generating textures, this class is used for finetuning
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://lodev.org/cgtutor/randomnoise.html
@@ -14,7 +14,7 @@ namespace Imaging
     /// <summary>
     ///     Attributes for our texture generators
     /// </summary>
-    public class TextureConfig
+    public class TextureConfiguration
     {
         /// <summary>
         ///     Gets or sets the minimum value.
