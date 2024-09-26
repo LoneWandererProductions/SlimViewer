@@ -1,4 +1,13 @@
-﻿using System.Windows;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViewer
+ * FILE:        SlimViews/TextureConfig.xaml.cs
+ * PURPOSE:     The main Xaml for Texture Configuration
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+
+using System.Windows;
 
 namespace SlimViews
 {
@@ -7,7 +16,10 @@ namespace SlimViews
 	/// </summary>
 	public partial class TextureConfig : Window
     {
-        public TextureConfig()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TextureConfig"/> class.
+		/// </summary>
+		public TextureConfig()
         {
             InitializeComponent();
         }

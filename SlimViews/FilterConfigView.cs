@@ -54,10 +54,29 @@ namespace SlimViews
 		/// </summary>
 		private bool _isScaleActive;
 
+		/// <summary>
+		/// The factor
+		/// </summary>
 		private double _factor;
+
+		/// <summary>
+		/// The bias
+		/// </summary>
 		private double _bias;
+
+		/// <summary>
+		/// The sigma
+		/// </summary>
 		private double _sigma;
+
+		/// <summary>
+		/// The base window size
+		/// </summary>
 		private int _baseWindowSize;
+
+		/// <summary>
+		/// The scale
+		/// </summary>
 		private int _scale;
 
 		/// <summary>
