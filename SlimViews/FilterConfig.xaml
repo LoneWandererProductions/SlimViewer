@@ -21,7 +21,7 @@
                   SelectedItem="{Binding SelectedFilter}"
                   Grid.Row="0" />
 
-        <StackPanel DataContext="{Binding CurrentConfig}" Grid.Row="1">
+        <StackPanel Grid.Row="1">
             <Label Content="Factor" />
             <TextBox Text="{Binding Factor, Mode=TwoWay}"
                      IsEnabled="{Binding IsFactorActive}" />

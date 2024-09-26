@@ -467,7 +467,7 @@ namespace Imaging
         ///     Gets the settings.
         /// </summary>
         /// <param name="filter">The filter.</param>
-        /// <returns></returns>
+        /// <returns>Get the Setting based on Filter</returns>
         public static TextureConfiguration GetSettings(TextureType filter)
         {
             return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfiguration();
