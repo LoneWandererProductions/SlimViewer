@@ -48,7 +48,11 @@ namespace SlimViews
 		public TextureType SelectedTexture
 		{
 			get => _selectedTexture;
-			set => SetProperty(ref _selectedTexture, value, nameof(SelectedTexture));
+			set
+			{
+				SetProperty(ref _selectedTexture, value, nameof(SelectedTexture));
+				UpdateActiveProperties();
+			}
 		}
 
 		private double _angle2;
@@ -372,25 +376,25 @@ namespace SlimViews
 		{
 			var usedProperties = ImageRegister.GetUsedProperties(SelectedTexture);
 
-			IsMinValueActive = usedProperties.Contains(nameof(IsMinValueActive));
-			IsMaxValueActive = usedProperties.Contains(nameof(IsMaxValueActive));
-			IsAlphaActive = usedProperties.Contains(nameof(IsAlphaActive));
-			IsXPeriodActive = usedProperties.Contains(nameof(IsXPeriodActive));
-			IsYPeriodActive = usedProperties.Contains(nameof(IsYPeriodActive));
-			IsTurbulencePowerActive = usedProperties.Contains(nameof(IsTurbulencePowerActive));
-			IsTurbulenceSizeActive = usedProperties.Contains(nameof(IsTurbulenceSizeActive));
-			IsBaseColorActive = usedProperties.Contains(nameof(IsBaseColorActive));
-			IsMonochromeActive = usedProperties.Contains(nameof(IsMonochromeActive));
-			IsTiledActive = usedProperties.Contains(nameof(IsTiledActive));
-			IsUseSmoothNoiseActive = usedProperties.Contains(nameof(IsUseSmoothNoiseActive));
-			IsUseTurbulenceActive = usedProperties.Contains(nameof(IsUseTurbulenceActive));
-			IsXyPeriodActive = usedProperties.Contains(nameof(IsXyPeriodActive));
+			IsMinValueActive = usedProperties.Contains(nameof(MinValue));
+			IsMaxValueActive = usedProperties.Contains(nameof(MaxValue));
+			IsAlphaActive = usedProperties.Contains(nameof(Alpha));
+			IsXPeriodActive = usedProperties.Contains(nameof(XPeriod));
+			IsYPeriodActive = usedProperties.Contains(nameof(YPeriod));
+			IsTurbulencePowerActive = usedProperties.Contains(nameof(TurbulencePower));
+			IsTurbulenceSizeActive = usedProperties.Contains(nameof(TurbulenceSize));
+			IsBaseColorActive = usedProperties.Contains(nameof(BaseColor));
+			IsMonochromeActive = usedProperties.Contains(nameof(IsMonochrome));
+			IsTiledActive = usedProperties.Contains(nameof(IsTiled));
+			IsUseSmoothNoiseActive = usedProperties.Contains(nameof(UseSmoothNoise));
+			IsUseTurbulenceActive = usedProperties.Contains(nameof(UseTurbulence));
+			IsXyPeriodActive = usedProperties.Contains(nameof(XyPeriod));
 
-			IsLineSpacingActive = usedProperties.Contains(nameof(IsLineSpacingActive));
-			IsLineColorActive = usedProperties.Contains(nameof(IsLineColorActive));
-			IsLineThicknessActive = usedProperties.Contains(nameof(IsLineThicknessActive));
-			IsAngle1Active = usedProperties.Contains(nameof(IsAngle1Active));
-			IsAngle2Active = usedProperties.Contains(nameof(IsAngle2Active));
+			IsLineSpacingActive = usedProperties.Contains(nameof(LineSpacing));
+			IsLineColorActive = usedProperties.Contains(nameof(LineColor));
+			IsLineThicknessActive = usedProperties.Contains(nameof(LineThickness));
+			IsAngle1Active = usedProperties.Contains(nameof(Angle1));
+			IsAngle2Active = usedProperties.Contains(nameof(Angle2));
 
 			// Notify UI about changes
 			OnPropertyChanged(nameof(IsMinValueActive));

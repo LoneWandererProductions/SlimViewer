@@ -30,31 +30,6 @@ namespace SlimViews
 		private ImageFilters _selectedFilter;
 
 		/// <summary>
-		/// The is factor active
-		/// </summary>
-		private bool _isFactorActive;
-
-		/// <summary>
-		/// The is bias active
-		/// </summary>
-		private bool _isBiasActive;
-
-		/// <summary>
-		/// The is sigma active
-		/// </summary>
-		private bool _isSigmaActive;
-
-		/// <summary>
-		/// The is base window size active
-		/// </summary>
-		private bool _isBaseWindowSizeActive;
-
-		/// <summary>
-		/// The is scale active
-		/// </summary>
-		private bool _isScaleActive;
-
-		/// <summary>
 		/// The factor
 		/// </summary>
 		private double _factor;
@@ -178,11 +153,7 @@ namespace SlimViews
 		/// <value>
 		///   <c>true</c> if this instance is factor active; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsFactorActive
-		{
-			get => _isFactorActive;
-			set => SetProperty(ref _isFactorActive, value, nameof(IsFactorActive));
-		}
+		public bool IsFactorActive { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is bias active.
@@ -190,11 +161,7 @@ namespace SlimViews
 		/// <value>
 		///   <c>true</c> if this instance is bias active; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsBiasActive
-		{
-			get => _isBiasActive;
-			set => SetProperty(ref _isBiasActive, value, nameof(IsBiasActive));
-		}
+		public bool IsBiasActive { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is sigma active.
@@ -202,23 +169,14 @@ namespace SlimViews
 		/// <value>
 		///   <c>true</c> if this instance is sigma active; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsSigmaActive
-		{
-			get => _isSigmaActive;
-			set => SetProperty(ref _isSigmaActive, value, nameof(IsSigmaActive));
-		}
-
+		public bool IsSigmaActive { get; set; }
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is base window size active.
 		/// </summary>
 		/// <value>
 		///   <c>true</c> if this instance is base window size active; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsBaseWindowSizeActive
-		{
-			get => _isBaseWindowSizeActive;
-			set => SetProperty(ref _isBaseWindowSizeActive, value, nameof(IsBaseWindowSizeActive));
-		}
+		public bool IsBaseWindowSizeActive { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is scale active.
@@ -226,11 +184,7 @@ namespace SlimViews
 		/// <value>
 		///   <c>true</c> if this instance is scale active; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsScaleActive
-		{
-			get => _isScaleActive;
-			set => SetProperty(ref _isScaleActive, value, nameof(IsScaleActive));
-		}
+		public bool IsScaleActive { get; set; }
 
 		/// <summary>
 		///     Sets the property.
@@ -276,11 +230,11 @@ namespace SlimViews
         {
             var usedProperties = ImageRegister.GetUsedProperties(SelectedFilter);
 
-            IsFactorActive = usedProperties.Contains(nameof(ImageFilterConfig.Factor));
-            IsBiasActive = usedProperties.Contains(nameof(ImageFilterConfig.Bias));
-            IsSigmaActive = usedProperties.Contains(nameof(ImageFilterConfig.Sigma));
-            IsBaseWindowSizeActive = usedProperties.Contains(nameof(ImageFilterConfig.BaseWindowSize));
-            IsScaleActive = usedProperties.Contains(nameof(ImageFilterConfig.Scale));
+            IsFactorActive = usedProperties.Contains(nameof(Factor));
+            IsBiasActive = usedProperties.Contains(nameof(Bias));
+            IsSigmaActive = usedProperties.Contains(nameof(Sigma));
+            IsBaseWindowSizeActive = usedProperties.Contains(nameof(BaseWindowSize));
+            IsScaleActive = usedProperties.Contains(nameof(Scale));
 
             // Notify UI about changes
             OnPropertyChanged(nameof(IsFactorActive));
