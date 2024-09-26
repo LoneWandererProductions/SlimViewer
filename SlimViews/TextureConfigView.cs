@@ -427,7 +427,6 @@ namespace SlimViews
             OnPropertyChanged(nameof(IsXyPeriodActive));
         }
 
-
         /// <summary>
         /// Saves the settings.
         /// </summary>
