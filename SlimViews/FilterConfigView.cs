@@ -249,10 +249,45 @@ namespace SlimViews
 		/// </summary>
 		public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FilterConfigView"/> class.
-        /// </summary>
-        public FilterConfigView()
+		/// <summary>
+		/// Called when [property changed].
+		/// </summary>
+		/// <param name="propertyName">Name of the property.</param>
+		private void OnPropertyChanged(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		/// <summary>
+		///     Gets the command.
+		/// </summary>
+		/// <param name="command">The command.</param>
+		/// <param name="execute">The execute.</param>
+		/// <returns>The selected Command</returns>
+		private ICommand GetCommand(ref ICommand command, Action<object> execute)
+		{
+			return command ??= new DelegateCommand<object>(execute, CanExecute);
+		}
+
+		/// <summary>
+		///     Gets a value indicating whether this instance can execute.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		/// <returns>
+		///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+		/// </returns>
+		/// <value>
+		///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+		/// </value>
+		public bool CanExecute(object obj)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterConfigView"/> class.
+		/// </summary>
+		public FilterConfigView()
         {
             CurrentConfig = new ImageFilterConfig(); // Initialize with default values
 
@@ -343,41 +378,6 @@ namespace SlimViews
 			{
 				window.Close();
 			}
-		}
-
-		/// <summary>
-		/// Called when [property changed].
-		/// </summary>
-		/// <param name="propertyName">Name of the property.</param>
-		private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-		/// <summary>
-		///     Gets the command.
-		/// </summary>
-		/// <param name="command">The command.</param>
-		/// <param name="execute">The execute.</param>
-		/// <returns>The selected Command</returns>
-		private ICommand GetCommand(ref ICommand command, Action<object> execute)
-		{
-			return command ??= new DelegateCommand<object>(execute, CanExecute);
-		}
-
-		/// <summary>
-		///     Gets a value indicating whether this instance can execute.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		/// <returns>
-		///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-		/// </returns>
-		/// <value>
-		///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-		/// </value>
-		public bool CanExecute(object obj)
-		{
-            return true;
 		}
 	}
 }

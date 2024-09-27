@@ -176,9 +176,9 @@
 
         <!-- Buttons on the right -->
         <StackPanel Grid.Column="1" VerticalAlignment="Top"  Grid.Row="21" Orientation="Horizontal" >
-            <Button Content="Save" Command="{Binding SaveCommand}" Width="75" Margin="5"/>
-            <Button Content="Reset" Command="{Binding ResetCommand}" Width="75" Margin="5"/>
-            <Button Content="Cancel" Command="{Binding CancelCommand}" Width="75" Margin="5"/>
+            <Button Content="Save" Width="75" Margin="5" Command="{Binding SaveCommand}" />
+            <Button Content="Reset" Width="75" Margin="5" Command="{Binding ResetCommand}" />
+            <Button Content="Cancel" Width="75" Margin="5" Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
         </StackPanel>
     </Grid>
 </Window>

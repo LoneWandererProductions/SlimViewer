@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Input;
+using ViewModel;
+using System.Windows;
 
 namespace SlimViews
 {
@@ -56,32 +59,118 @@ namespace SlimViews
             }
         }
 
-        private double _angle2;
-        private double _angle1;
-        private int _lineThickness;
-        private Color _lineColor;
-        private int _lineSpacing;
-        private double _xyPeriod;
-        private bool _useTurbulence;
-        private bool _useSmoothNoise;
-        private bool _isTiled;
-        private bool _isMonochrome;
-        private Color _baseColor;
-        private double _turbulenceSize;
-        private double _turbulencePower;
-        private double _yPeriod;
-        private double _xPeriod;
-        private int _alpha;
-        private int _maxValue;
-        private int _minValue;
+		/// <summary>
+		/// The angle2
+		/// </summary>
+		private double _angle2;
 
-        /// <summary>
-        /// Gets or sets the minimum value.
-        /// </summary>
-        /// <value>
-        /// The minimum value.
-        /// </value>
-        public int MinValue
+		/// <summary>
+		/// The angle1
+		/// </summary>
+		private double _angle1;
+
+		/// <summary>
+		/// The line thickness
+		/// </summary>
+		private int _lineThickness;
+
+		/// <summary>
+		/// The line color
+		/// </summary>
+		private Color _lineColor;
+
+		/// <summary>
+		/// The line spacing
+		/// </summary>
+		private int _lineSpacing;
+
+		/// <summary>
+		/// The xy period
+		/// </summary>
+		private double _xyPeriod;
+
+		/// <summary>
+		/// The use turbulence
+		/// </summary>
+		private bool _useTurbulence;
+
+		/// <summary>
+		/// The use smooth noise
+		/// </summary>
+		private bool _useSmoothNoise;
+
+		/// <summary>
+		/// The is tiled
+		/// </summary>
+		private bool _isTiled;
+
+		/// <summary>
+		/// The is monochrome
+		/// </summary>
+		private bool _isMonochrome;
+
+		/// <summary>
+		/// The base color
+		/// </summary>
+		private Color _baseColor;
+
+		/// <summary>
+		/// The turbulence size
+		/// </summary>
+		private double _turbulenceSize;
+
+		/// <summary>
+		/// The turbulence power
+		/// </summary>
+		private double _turbulencePower;
+
+		/// <summary>
+		/// The y period
+		/// </summary>
+		private double _yPeriod;
+
+		/// <summary>
+		/// The x period
+		/// </summary>
+		private double _xPeriod;
+
+		/// <summary>
+		/// The alpha
+		/// </summary>
+		private int _alpha;
+
+		/// <summary>
+		/// The maximum value
+		/// </summary>
+		private int _maxValue;
+
+		/// <summary>
+		/// The minimum value
+		/// </summary>
+		private int _minValue;
+
+		/// <summary>
+		/// The save command
+		/// </summary>
+		private ICommand _saveCommand;
+
+		/// <summary>
+		/// The reset command
+		/// </summary>
+		private ICommand _resetCommand;
+
+		/// <summary>
+		/// The cancel command
+		/// </summary>
+		private ICommand _cancelCommand;
+
+		/// <summary>
+		/// Gets or sets the minimum value.
+		/// </summary>
+		/// <value>
+		/// The minimum value.
+		/// </value>
+		public int MinValue
         {
             get => _minValue;
             set => SetProperty(ref _minValue, value, nameof(MinValue));
@@ -292,21 +381,117 @@ namespace SlimViews
             set => SetProperty(ref _angle2, value, nameof(Angle2));
         }
 
-        // Active properties
-        public bool IsMinValueActive { get; set; }
-        public bool IsMaxValueActive { get; set; }
-        public bool IsAlphaActive { get; set; }
-        public bool IsXPeriodActive { get; set; }
-        public bool IsYPeriodActive { get; set; }
-        public bool IsTurbulencePowerActive { get; set; }
-        public bool IsTurbulenceSizeActive { get; set; }
-        public bool IsBaseColorActive { get; set; }
-        public bool IsMonochromeActive { get; set; }
-        public bool IsTiledActive { get; set; }
-        public bool IsUseSmoothNoiseActive { get; set; }
-        public bool IsUseTurbulenceActive { get; set; }
-        public bool IsXyPeriodActive { get; set; }
-        public bool IsLineSpacingActive { get; set; }
+		// Active properties
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is minimum value active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is minimum value active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsMinValueActive { get; set; }
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is maximum value active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is maximum value active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsMaxValueActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is alpha active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is alpha active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsAlphaActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is x period active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is x period active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsXPeriodActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is y period active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is y period active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsYPeriodActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is turbulence power active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is turbulence power active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsTurbulencePowerActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is turbulence size active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is turbulence size active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsTurbulenceSizeActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is base color active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is base color active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsBaseColorActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is monochrome active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is monochrome active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsMonochromeActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is tiled active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is tiled active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsTiledActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is use smooth noise active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is use smooth noise active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsUseSmoothNoiseActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is use turbulence active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is use turbulence active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsUseTurbulenceActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is xy period active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is xy period active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsXyPeriodActive { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is line spacing active.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is line spacing active; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsLineSpacingActive { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is line color active.
@@ -340,10 +525,34 @@ namespace SlimViews
         /// </value>
         public bool IsAngle2Active { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextureConfigView"/> class.
-        /// </summary>
-        public TextureConfigView()
+		/// <summary>
+		/// Gets the save command.
+		/// </summary>
+		/// <value>
+		/// The save command.
+		/// </value>
+		public ICommand SaveCommand => GetCommand(ref _saveCommand, SaveAction);
+
+		/// <summary>
+		/// Gets the reset command.
+		/// </summary>
+		/// <value>
+		/// The reset command.
+		/// </value>
+		public ICommand ResetCommand => GetCommand(ref _resetCommand, ResetAction);
+
+		/// <summary>
+		/// Gets the cancel command.
+		/// </summary>
+		/// <value>
+		/// The cancel command.
+		/// </value>
+		public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TextureConfigView"/> class.
+		/// </summary>
+		public TextureConfigView()
         {
             var defaultConfig = new TextureConfiguration(); // Initialize with default values
 
@@ -371,95 +580,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Updates the active properties.
-        /// </summary>
-        private void UpdateActiveProperties()
-        {
-            // Get the used properties for the selected texture
-            var usedProperties = ImageRegister.GetUsedProperties(SelectedTexture);
-
-            // Update active state for each property based on the selected texture
-            IsMinValueActive = usedProperties.Contains(nameof(MinValue));
-            IsMaxValueActive = usedProperties.Contains(nameof(MaxValue));
-            IsAlphaActive = usedProperties.Contains(nameof(Alpha));
-            IsXPeriodActive = usedProperties.Contains(nameof(XPeriod));
-            IsYPeriodActive = usedProperties.Contains(nameof(YPeriod));
-            IsTurbulencePowerActive = usedProperties.Contains(nameof(TurbulencePower));
-            IsTurbulenceSizeActive = usedProperties.Contains(nameof(TurbulenceSize));
-            IsBaseColorActive = usedProperties.Contains(nameof(BaseColor));
-            IsMonochromeActive = usedProperties.Contains(nameof(IsMonochrome));
-            IsTiledActive = usedProperties.Contains(nameof(IsTiled));
-            IsUseSmoothNoiseActive = usedProperties.Contains(nameof(UseSmoothNoise));
-            IsUseTurbulenceActive = usedProperties.Contains(nameof(UseTurbulence));
-            IsXyPeriodActive = usedProperties.Contains(nameof(XyPeriod));
-
-            // Retrieve the saved settings for the selected texture
-            var savedSettings = ImageRegister.GetSettings(SelectedTexture);
-
-            // Set the properties from the saved settings, if the property is active
-            if (IsMinValueActive) MinValue = savedSettings.MinValue;
-            if (IsMaxValueActive) MaxValue = savedSettings.MaxValue;
-            if (IsAlphaActive) Alpha = savedSettings.Alpha;
-            if (IsXPeriodActive) XPeriod = savedSettings.XPeriod;
-            if (IsYPeriodActive) YPeriod = savedSettings.YPeriod;
-            if (IsTurbulencePowerActive) TurbulencePower = savedSettings.TurbulencePower;
-            if (IsTurbulenceSizeActive) TurbulenceSize = savedSettings.TurbulenceSize;
-            if (IsBaseColorActive) BaseColor = savedSettings.BaseColor;
-            if (IsMonochromeActive) IsMonochrome = savedSettings.IsMonochrome;
-            if (IsTiledActive) IsTiled = savedSettings.IsTiled;
-            if (IsUseSmoothNoiseActive) UseSmoothNoise = savedSettings.UseSmoothNoise;
-            if (IsUseTurbulenceActive) UseTurbulence = savedSettings.UseTurbulence;
-            if (IsXyPeriodActive) XyPeriod = savedSettings.XyPeriod;
-
-            // Notify UI about changes
-            OnPropertyChanged(nameof(IsMinValueActive));
-            OnPropertyChanged(nameof(IsMaxValueActive));
-            OnPropertyChanged(nameof(IsAlphaActive));
-            OnPropertyChanged(nameof(IsXPeriodActive));
-            OnPropertyChanged(nameof(IsYPeriodActive));
-            OnPropertyChanged(nameof(IsTurbulencePowerActive));
-            OnPropertyChanged(nameof(IsTurbulenceSizeActive));
-            OnPropertyChanged(nameof(IsBaseColorActive));
-            OnPropertyChanged(nameof(IsMonochromeActive));
-            OnPropertyChanged(nameof(IsTiledActive));
-            OnPropertyChanged(nameof(IsUseSmoothNoiseActive));
-            OnPropertyChanged(nameof(IsUseTurbulenceActive));
-            OnPropertyChanged(nameof(IsXyPeriodActive));
-        }
-
-        /// <summary>
-        /// Saves the settings.
-        /// </summary>
-        private void SaveSettings()
-        {
-            // Gather the current properties into a TextureConfig object
-            var config = new TextureConfiguration
-            {
-                MinValue = MinValue,
-                MaxValue = MaxValue,
-                Alpha = Alpha,
-                XPeriod = XPeriod,
-                YPeriod = YPeriod,
-                TurbulencePower = TurbulencePower,
-                TurbulenceSize = TurbulenceSize,
-                BaseColor = BaseColor,
-                IsMonochrome = IsMonochrome,
-                IsTiled = IsTiled,
-                UseSmoothNoise = UseSmoothNoise,
-                UseTurbulence = UseTurbulence,
-                XyPeriod = XyPeriod,
-                LineSpacing = LineSpacing,
-                LineColor = LineColor,
-                LineThickness = LineThickness,
-                Angle1 = Angle1,
-                Angle2 = Angle2
-            };
-
-            // Update the settings in ImageRegister
-            ImageRegister.SetSettings(SelectedTexture, config);
-        }
-
-        /// <summary>
         /// Called when [property changed].
         /// </summary>
         /// <param name="name">The name.</param>
@@ -480,5 +600,153 @@ namespace SlimViews
             field = value;
             OnPropertyChanged(propertyName);
         }
-    }
+
+		/// <summary>
+		///     Gets the command.
+		/// </summary>
+		/// <param name="command">The command.</param>
+		/// <param name="execute">The execute.</param>
+		/// <returns>The selected Command</returns>
+		private ICommand GetCommand(ref ICommand command, Action<object> execute)
+		{
+			return command ??= new DelegateCommand<object>(execute, CanExecute);
+		}
+
+		/// <summary>
+		///     Gets a value indicating whether this instance can execute.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		/// <returns>
+		///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+		/// </returns>
+		/// <value>
+		///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+		/// </value>
+		public bool CanExecute(object obj)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Saves the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void SaveAction(object obj)
+		{
+			SaveSettings();
+		}
+
+		/// <summary>
+		/// Resets the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void ResetAction(object obj)
+		{
+			var config = new TextureConfiguration();
+			// Update the settings in ImageRegister
+			ImageRegister.SetSettings(SelectedTexture, config);
+		}
+
+		/// <summary>
+		/// Cancels the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void CancelAction(object obj)
+		{
+			// Close the window
+			if (obj is Window window)
+			{
+				window.Close();
+			}
+		}
+
+		/// <summary>
+		/// Updates the active properties.
+		/// </summary>
+		private void UpdateActiveProperties()
+		{
+			// Get the used properties for the selected texture
+			var usedProperties = ImageRegister.GetUsedProperties(SelectedTexture);
+
+			// Update active state for each property based on the selected texture
+			IsMinValueActive = usedProperties.Contains(nameof(MinValue));
+			IsMaxValueActive = usedProperties.Contains(nameof(MaxValue));
+			IsAlphaActive = usedProperties.Contains(nameof(Alpha));
+			IsXPeriodActive = usedProperties.Contains(nameof(XPeriod));
+			IsYPeriodActive = usedProperties.Contains(nameof(YPeriod));
+			IsTurbulencePowerActive = usedProperties.Contains(nameof(TurbulencePower));
+			IsTurbulenceSizeActive = usedProperties.Contains(nameof(TurbulenceSize));
+			IsBaseColorActive = usedProperties.Contains(nameof(BaseColor));
+			IsMonochromeActive = usedProperties.Contains(nameof(IsMonochrome));
+			IsTiledActive = usedProperties.Contains(nameof(IsTiled));
+			IsUseSmoothNoiseActive = usedProperties.Contains(nameof(UseSmoothNoise));
+			IsUseTurbulenceActive = usedProperties.Contains(nameof(UseTurbulence));
+			IsXyPeriodActive = usedProperties.Contains(nameof(XyPeriod));
+
+			// Retrieve the saved settings for the selected texture
+			var savedSettings = ImageRegister.GetSettings(SelectedTexture);
+
+			// Set the properties from the saved settings, if the property is active
+			if (IsMinValueActive) MinValue = savedSettings.MinValue;
+			if (IsMaxValueActive) MaxValue = savedSettings.MaxValue;
+			if (IsAlphaActive) Alpha = savedSettings.Alpha;
+			if (IsXPeriodActive) XPeriod = savedSettings.XPeriod;
+			if (IsYPeriodActive) YPeriod = savedSettings.YPeriod;
+			if (IsTurbulencePowerActive) TurbulencePower = savedSettings.TurbulencePower;
+			if (IsTurbulenceSizeActive) TurbulenceSize = savedSettings.TurbulenceSize;
+			if (IsBaseColorActive) BaseColor = savedSettings.BaseColor;
+			if (IsMonochromeActive) IsMonochrome = savedSettings.IsMonochrome;
+			if (IsTiledActive) IsTiled = savedSettings.IsTiled;
+			if (IsUseSmoothNoiseActive) UseSmoothNoise = savedSettings.UseSmoothNoise;
+			if (IsUseTurbulenceActive) UseTurbulence = savedSettings.UseTurbulence;
+			if (IsXyPeriodActive) XyPeriod = savedSettings.XyPeriod;
+
+			// Notify UI about changes
+			OnPropertyChanged(nameof(IsMinValueActive));
+			OnPropertyChanged(nameof(IsMaxValueActive));
+			OnPropertyChanged(nameof(IsAlphaActive));
+			OnPropertyChanged(nameof(IsXPeriodActive));
+			OnPropertyChanged(nameof(IsYPeriodActive));
+			OnPropertyChanged(nameof(IsTurbulencePowerActive));
+			OnPropertyChanged(nameof(IsTurbulenceSizeActive));
+			OnPropertyChanged(nameof(IsBaseColorActive));
+			OnPropertyChanged(nameof(IsMonochromeActive));
+			OnPropertyChanged(nameof(IsTiledActive));
+			OnPropertyChanged(nameof(IsUseSmoothNoiseActive));
+			OnPropertyChanged(nameof(IsUseTurbulenceActive));
+			OnPropertyChanged(nameof(IsXyPeriodActive));
+		}
+
+		/// <summary>
+		/// Saves the settings.
+		/// </summary>
+		private void SaveSettings()
+		{
+			// Gather the current properties into a TextureConfig object
+			var config = new TextureConfiguration
+			{
+				MinValue = MinValue,
+				MaxValue = MaxValue,
+				Alpha = Alpha,
+				XPeriod = XPeriod,
+				YPeriod = YPeriod,
+				TurbulencePower = TurbulencePower,
+				TurbulenceSize = TurbulenceSize,
+				BaseColor = BaseColor,
+				IsMonochrome = IsMonochrome,
+				IsTiled = IsTiled,
+				UseSmoothNoise = UseSmoothNoise,
+				UseTurbulence = UseTurbulence,
+				XyPeriod = XyPeriod,
+				LineSpacing = LineSpacing,
+				LineColor = LineColor,
+				LineThickness = LineThickness,
+				Angle1 = Angle1,
+				Angle2 = Angle2
+			};
+
+			// Update the settings in ImageRegister
+			ImageRegister.SetSettings(SelectedTexture, config);
+		}
+	}
 }
