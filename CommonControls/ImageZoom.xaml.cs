@@ -10,26 +10,30 @@
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
 // ReSharper disable UnusedType.Global
 
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace CommonControls
 {
-    /// <inheritdoc cref="Window" />
-    /// <summary>
-    ///     ImageZoom Image
-    /// </summary>
-    public sealed partial class ImageZoom
+	/// <inheritdoc cref="Window" />
+	/// <summary>
+	///     ImageZoom Image
+	/// </summary>
+	public sealed partial class ImageZoom
     {
-        /// <summary>
-        ///     Delegate for Image Frame
-        /// </summary>
-        /// <param name="frame">The frame.</param>
-        public delegate void DelegateFrame(SelectionFrame frame);
+		private SelectionAdorner _selectionAdorner;
+
+		/// <summary>
+		///     Delegate for Image Frame
+		/// </summary>
+		/// <param name="frame">The frame.</param>
+		public delegate void DelegateFrame(SelectionFrame frame);
 
         /// <summary>
         ///     Delegate for Image Point
@@ -237,12 +241,27 @@ namespace CommonControls
             MainCanvas.Width = BtmImage.Source.Width;
         }
 
-        /// <summary>
-        ///     Handles the MouseDown event of the Grid control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-        private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
+		private void AttachAdorner(SelectionTools tool)
+		{
+			if (_selectionAdorner == null)
+			{
+				var adornerLayer = AdornerLayer.GetAdornerLayer(MainCanvas);
+				_selectionAdorner = new SelectionAdorner(MainCanvas, tool);
+				adornerLayer.Add(_selectionAdorner);
+			}
+			else
+			{
+				_selectionAdorner.ClearFreeformPoints(); // Reset for new selection
+				_selectionAdorner = new SelectionAdorner(MainCanvas, tool);
+			}
+		}
+
+		/// <summary>
+		///     Handles the MouseDown event of the Grid control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+		private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Capture and track the mouse.
             _mouseDown = true;
@@ -251,41 +270,48 @@ namespace CommonControls
             _originPoint.Y = BtmImage.RenderTransform.Value.OffsetY;
             _ = MainCanvas.CaptureMouse();
 
-            switch (ZoomTool)
-            {
-                case SelectionTools.Move:
-                case SelectionTools.SelectPixel:
-                    // nothing
-                    break;
+			AttachAdorner(ZoomTool); // Attach adorner based on current tool
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
-                {
-                    // Get the Position on the Image
-                    _imageStartPoint = e.GetPosition(BtmImage);
+			switch (ZoomTool)
+			{
+				case SelectionTools.Move:
+				case SelectionTools.SelectPixel:
+					// nothing
+					break;
 
-                    // Initial placement of the drag selection box.
-                    Canvas.SetLeft(SelectionBox, _startPoint.X);
-                    Canvas.SetTop(SelectionBox, _startPoint.Y);
-                    SelectionBox.Width = 0;
-                    SelectionBox.Height = 0;
+				case SelectionTools.SelectRectangle:
+				case SelectionTools.Erase:
+					{
+						// Get the Position on the Image
+						_imageStartPoint = e.GetPosition(BtmImage);
 
-                    // Make the drag selection box visible.
-                    SelectionBox.Visibility = Visibility.Visible;
-                }
-                    break;
-                default:
-                    // nothing
-                    return;
-            }
-        }
+						// Initial placement of the drag selection box.
+						Canvas.SetLeft(SelectionBox, _startPoint.X);
+						Canvas.SetTop(SelectionBox, _startPoint.Y);
+						SelectionBox.Width = 0;
+						SelectionBox.Height = 0;
 
-        /// <summary>
-        ///     Handles the MouseUp event of the Grid control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-        private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+						// Make the drag selection box visible.
+						SelectionBox.Visibility = Visibility.Visible;
+					}
+					break;
+				case SelectionTools.SelectEllipse:
+					break;
+				case SelectionTools.Freeform:
+					_imageStartPoint = e.GetPosition(BtmImage);
+					break;
+				default:
+					// nothing
+					return;
+			}
+		}
+
+		/// <summary>
+		///     Handles the MouseUp event of the Grid control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+		private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             // Release the mouse capture and stop tracking it.
             _mouseDown = false;
@@ -356,71 +382,76 @@ namespace CommonControls
             }
         }
 
-        /// <summary>
-        ///     Handles the MouseMove event of the Canvas control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (!_mouseDown) return;
+		/// <summary>
+		/// Handles the MouseMove event of the Canvas control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
+		private void Canvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (!_mouseDown) return;
 
-            switch (ZoomTool)
-            {
-                case SelectionTools.Move:
-                {
-                    var position = e.GetPosition(MainCanvas);
-                    var matrix = BtmImage.RenderTransform.Value;
-                    matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
-                    matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
-                    BtmImage.RenderTransform = new MatrixTransform(matrix);
-                    break;
-                }
+			var mousePos = e.GetPosition(MainCanvas);
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
-                {
-                    // When the mouse is held down, reposition the drag selection box.
+			switch (ZoomTool)
+			{
+				case SelectionTools.Move:
+					{
+						var position = e.GetPosition(MainCanvas);
+						var matrix = BtmImage.RenderTransform.Value;
+						matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
+						matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
+						BtmImage.RenderTransform = new MatrixTransform(matrix);
+						break;
+					}
 
-                    var mousePos = e.GetPosition(MainCanvas);
+				case SelectionTools.SelectRectangle:
+				case SelectionTools.SelectEllipse:
+					{
+						// Update the adorner for rectangle or ellipse selection
+						if (_selectionAdorner != null)
+						{
+							_selectionAdorner.UpdateSelection(_startPoint, mousePos);
+						}
+						break;
+					}
 
-                    if (_startPoint.X < mousePos.X)
-                    {
-                        Canvas.SetLeft(SelectionBox, _startPoint.X);
-                        SelectionBox.Width = mousePos.X - _startPoint.X;
-                    }
-                    else
-                    {
-                        Canvas.SetLeft(SelectionBox, mousePos.X);
-                        SelectionBox.Width = _startPoint.X - mousePos.X;
-                    }
+				case SelectionTools.Freeform:
+					{
+						// Update the adorner for freeform selection by adding points
+						if (_selectionAdorner != null)
+						{
+							_selectionAdorner.AddFreeformPoint(mousePos);
+						}
+						break;
+					}
 
-                    if (_startPoint.Y < mousePos.Y)
-                    {
-                        Canvas.SetTop(SelectionBox, _startPoint.Y);
-                        SelectionBox.Height = mousePos.Y - _startPoint.Y;
-                    }
-                    else
-                    {
-                        Canvas.SetTop(SelectionBox, mousePos.Y);
-                        SelectionBox.Height = _startPoint.Y - mousePos.Y;
-                    }
-                }
-                    break;
-                case SelectionTools.SelectPixel:
-                    break;
-                default:
-                    // nothing
-                    return;
-            }
-        }
+				case SelectionTools.SelectPixel:
+					// Handle pixel selection if needed
+					break;
 
-        /// <summary>
-        ///     Handles the MouseWheel event of the Grid control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseWheelEventArgs" /> instance containing the event data.</param>
-        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+				case SelectionTools.Erase:
+					{
+						// Similar to rectangle selection, but intended for erasing
+						if (_selectionAdorner != null)
+						{
+							_selectionAdorner.UpdateSelection(_startPoint, mousePos);
+						}
+						break;
+					}
+
+				default:
+					// Nothing
+					return;
+			}
+		}
+
+		/// <summary>
+		///     Handles the MouseWheel event of the Grid control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="MouseWheelEventArgs" /> instance containing the event data.</param>
+		private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             //TODO add a Lock here for the Image change
 
@@ -435,12 +466,12 @@ namespace CommonControls
                 Scale.ScaleY /= 1.1;
             }
         }
-    }
+	}
 
-    /// <summary>
-    ///     The Selection Frame on the Image
-    /// </summary>
-    public sealed class SelectionFrame
+	/// <summary>
+	///     The Selection Frame on the Image
+	/// </summary>
+	public sealed class SelectionFrame
     {
         /// <summary>
         ///     Gets or sets the x.
@@ -473,31 +504,5 @@ namespace CommonControls
         ///     The height.
         /// </value>
         public int Height { get; internal set; }
-    }
-
-    /// <summary>
-    ///     The possible Selection Tools
-    /// </summary>
-    public enum SelectionTools
-    {
-        /// <summary>
-        ///     The move
-        /// </summary>
-        Move = 0,
-
-        /// <summary>
-        ///     The select rectangle
-        /// </summary>
-        SelectRectangle = 1,
-
-        /// <summary>
-        ///     The select Color of Point
-        /// </summary>
-        SelectPixel = 2,
-
-        /// <summary>
-        ///     The erase
-        /// </summary>
-        Erase = 3
     }
 }
