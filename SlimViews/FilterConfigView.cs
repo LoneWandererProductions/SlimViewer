@@ -9,7 +9,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection.Metadata;
+using System.Windows;
+using System.Windows.Input;
 using Imaging;
+using ViewModel;
 
 namespace SlimViews
 {
@@ -55,10 +59,25 @@ namespace SlimViews
         /// </summary>
         private int _scale;
 
-        /// <summary>
-        /// Gets or sets the factor.
-        /// </summary>
-        public double Factor
+		/// <summary>
+		/// The save command
+		/// </summary>
+		private ICommand _saveCommand;
+
+		/// <summary>
+		/// The reset command
+		/// </summary>
+		private ICommand _resetCommand;
+
+		/// <summary>
+		/// The cancel command
+		/// </summary>
+		private ICommand _cancelCommand;
+
+		/// <summary>
+		/// Gets or sets the factor.
+		/// </summary>
+		public double Factor
         {
             get => _factor;
             set => SetProperty(ref _factor, value, nameof(Factor));
@@ -99,7 +118,6 @@ namespace SlimViews
             get => _scale;
             set => SetProperty(ref _scale, value, nameof(Scale));
         }
-
 
         /// <summary>
         /// Gets or sets the selected filter.
@@ -202,10 +220,34 @@ namespace SlimViews
             OnPropertyChanged(propertyName);
         }
 
-        /// <summary>
-        /// Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+		/// <summary>
+		/// Gets the save command.
+		/// </summary>
+		/// <value>
+		/// The save command.
+		/// </value>
+		public ICommand SaveCommand => GetCommand(ref _saveCommand,SaveAction);
+
+		/// <summary>
+		/// Gets the reset command.
+		/// </summary>
+		/// <value>
+		/// The reset command.
+		/// </value>
+		public ICommand ResetCommand => GetCommand(ref _resetCommand, ResetAction);
+
+		/// <summary>
+		/// Gets the cancel command.
+		/// </summary>
+		/// <value>
+		/// The cancel command.
+		/// </value>
+		public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
+
+		/// <summary>
+		/// Occurs when a property value changes.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterConfigView"/> class.
@@ -257,33 +299,85 @@ namespace SlimViews
             OnPropertyChanged(nameof(IsScaleActive));
         }
 
+		/// <summary>
+		/// Saves the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void SaveAction(object obj)
+		{
+			SaveSettings();
+		}
 
-        /// <summary>
-        /// Saves the settings.
-        /// </summary>
-        private void SaveSettings()
+		/// <summary>
+		/// Saves the settings.
+		/// </summary>
+		private void SaveSettings()
         {
-            // Gather the current properties into an ImageFilterConfig object
-            var config = new ImageFilterConfig
-            {
-                Factor = Factor, // Set default value if not active
-                Bias = Bias,
-                Sigma = Sigma,
-                BaseWindowSize = BaseWindowSize,
-                Scale = Scale
-            };
+            //create a new ImageFilterConfig object
+            var config = new ImageFilterConfig();
 
-            // Update the settings in ImageRegister
+            // Update or better say reset the settings in ImageRegister
             ImageRegister.SetSettings(SelectedFilter, config);
-        }
+            UpdateActiveProperties();
+		}
 
-        /// <summary>
-        /// Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
+		/// <summary>
+		/// Resets the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void ResetAction(object obj)
+		{
+            var config = new ImageFilterConfig();
+			// Update the settings in ImageRegister
+			ImageRegister.SetSettings(SelectedFilter, config);
+		}
+
+		/// <summary>
+		/// Cancels the action.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		private void CancelAction(object obj)
+		{
+			// Close the window
+			if (obj is Window window)
+			{
+				window.Close();
+			}
+		}
+
+		/// <summary>
+		/// Called when [property changed].
+		/// </summary>
+		/// <param name="propertyName">Name of the property.</param>
+		private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
+
+		/// <summary>
+		///     Gets the command.
+		/// </summary>
+		/// <param name="command">The command.</param>
+		/// <param name="execute">The execute.</param>
+		/// <returns>The selected Command</returns>
+		private ICommand GetCommand(ref ICommand command, Action<object> execute)
+		{
+			return command ??= new DelegateCommand<object>(execute, CanExecute);
+		}
+
+		/// <summary>
+		///     Gets a value indicating whether this instance can execute.
+		/// </summary>
+		/// <param name="obj">The object.</param>
+		/// <returns>
+		///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+		/// </returns>
+		/// <value>
+		///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
+		/// </value>
+		public bool CanExecute(object obj)
+		{
+            return true;
+		}
+	}
 }

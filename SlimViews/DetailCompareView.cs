@@ -301,14 +301,13 @@ namespace SlimViews
             OnPropertyChanged(propertyName);
         }
 
-
-        /// <summary>
-        ///     Gets the command.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <param name="execute">The execute.</param>
-        /// <returns></returns>
-        private ICommand GetCommand(ref ICommand command, Action<object> execute)
+		/// <summary>
+		///     Gets the command.
+		/// </summary>
+		/// <param name="command">The command.</param>
+		/// <param name="execute">The execute.</param>
+		/// <returns>The selected Command</returns>
+		private ICommand GetCommand(ref ICommand command, Action<object> execute)
         {
             return command ??= new DelegateCommand<object>(execute, CanExecute);
         }
