@@ -15,6 +15,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -223,7 +224,7 @@ namespace CommonControls
         /// <value>
         ///     The Id of the Key
         /// </value>
-        private Dictionary<string, int> Keys { get; set; }
+        private ConcurrentDictionary<string, int> Keys { get; set; }
 
         /// <summary>
         ///     Gets or sets the image Dictionary.
@@ -231,7 +232,7 @@ namespace CommonControls
         /// <value>
         ///     The image Dictionary.
         /// </value>
-        private Dictionary<string, Image> ImageDct { get; set; }
+        private ConcurrentDictionary<string, Image> ImageDct { get; set; }
 
         /// <summary>
         ///     Gets or sets the CHK box.
@@ -239,7 +240,7 @@ namespace CommonControls
         /// <value>
         ///     The CHK box.
         /// </value>
-        private Dictionary<int, CheckBox> ChkBox { get; set; }
+        private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
 
         /// <summary>
         ///     Gets or sets the selection.
@@ -337,11 +338,11 @@ namespace CommonControls
             ExtendedGrid.CellSize = ThumbCellSize;
             var pics = new Dictionary<int, string>(ItemsSource);
 
-            Keys = new Dictionary<string, int>(pics.Count);
-            ImageDct = new Dictionary<string, Image>(pics.Count);
+            Keys = new ConcurrentDictionary<string, int>();
+            ImageDct = new ConcurrentDictionary<string, Image>();
             Selection = new List<int>();
 
-            if (SelectBox) ChkBox = new Dictionary<int, CheckBox>(pics.Count);
+            if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
             // Handle special cases
             if (ThumbCellSize == 0) ThumbCellSize = 100;
@@ -414,8 +415,8 @@ namespace CommonControls
             // Add to dictionaries and grid on the UI thread
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Keys.Add(images.Name, key);
-                ImageDct.Add(images.Name, images);
+                Keys.TryAdd(images.Name, key);
+                ImageDct.TryAdd(images.Name, images);
                 Grid.SetRow(images, key / ThumbWidth);
                 Grid.SetColumn(images, key % ThumbWidth);
                 _ = exGrid.Children.Add(images);
@@ -442,6 +443,7 @@ namespace CommonControls
             });
 
             if (SelectBox)
+            {
                 // Handle checkboxes for selection on the UI thread
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -460,13 +462,14 @@ namespace CommonControls
 
                     checkbox.Checked += CheckBox_Checked;
                     checkbox.Unchecked += CheckBox_Unchecked;
-                    ChkBox.Add(key, checkbox);
+                    ChkBox.TryAdd(key, checkbox);
 
                     checkbox.Name = string.Concat(ComCtlResources.ImageAdd, key);
                     Grid.SetRow(checkbox, key / ThumbWidth);
                     Grid.SetColumn(checkbox, key % ThumbWidth);
                     _ = exGrid.Children.Add(checkbox);
                 });
+            }
         }
 
         /// <summary>
