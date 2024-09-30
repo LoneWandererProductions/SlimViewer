@@ -241,6 +241,10 @@ namespace CommonControls
             MainCanvas.Width = BtmImage.Source.Width;
         }
 
+		/// <summary>
+		/// Attaches the adorner.
+		/// </summary>
+		/// <param name="tool">The tool.</param>
 		private void AttachAdorner(SelectionTools tool)
 		{
 			if (_selectionAdorner == null)

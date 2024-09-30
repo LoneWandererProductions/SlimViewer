@@ -24,16 +24,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Mathematics;
 
 namespace CommonControls
 {
-    /// <inheritdoc cref="Window" />
-    /// <summary>
-    ///     Basic Image Thumbnails
-    /// </summary>
-    public sealed partial class Thumbnails
+	/// <summary>
+	/// Basic Image Thumbnails
+	/// </summary>
+	/// <seealso cref="System.Windows.Controls.UserControl" />
+	/// <seealso cref="System.Windows.Markup.IComponentConnector" />
+	/// <inheritdoc cref="Window" />
+	public sealed partial class Thumbnails
     {
         /// <summary>
         ///     The selection change delegate.
@@ -122,11 +125,22 @@ namespace CommonControls
         /// </summary>
         private int _selection;
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Thumbnails" /> class.
-        /// </summary>
-        public Thumbnails()
+		/// <summary>
+		/// The current selected border
+		/// </summary>
+		private Border _currentSelectedBorder;
+
+		/// <summary>
+		/// The previous selected border
+		/// </summary>
+		private Border _previousSelectedBorder;
+
+
+		/// <inheritdoc />
+		/// <summary>
+		///     Initializes a new instance of the <see cref="Thumbnails" /> class.
+		/// </summary>
+		public Thumbnails()
         {
             InitializeComponent();
         }
@@ -234,13 +248,13 @@ namespace CommonControls
         /// </value>
         private ConcurrentDictionary<string, Image> ImageDct { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the CHK box.
-        /// </summary>
-        /// <value>
-        ///     The CHK box.
-        /// </value>
-        private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
+		/// <summary>
+		///     Gets or sets the CheckBox.
+		/// </summary>
+		/// <value>
+		///     The CheckBox.
+		/// </value>
+		private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
 
         /// <summary>
         ///     Gets or sets the selection.
@@ -511,31 +525,49 @@ namespace CommonControls
                 });
         }
 
-        /// <summary>
-        ///     Just some Method to Delegate click
-        /// </summary>
-        /// <param name="sender">Image</param>
-        /// <param name="e">Name of Image</param>
-        private void ImageClick_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //get the button that was clicked
-            if (sender is not Image clickedButton) return;
+		/// <summary>
+		///     Just some Method to Delegate click
+		/// </summary>
+		/// <param name="sender">Image</param>
+		/// <param name="e">Name of Image</param>
+		private void ImageClick_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			// Get the image that was clicked
+			if (sender is not Image clickedImage) return;
 
-            if (!Keys.ContainsKey(clickedButton.Name)) return;
+			if (!Keys.ContainsKey(clickedImage.Name)) return;
 
-            var id = Keys[clickedButton.Name];
+			var id = Keys[clickedImage.Name];
 
-            //create new click Object
-            var args = new ImageEventArgs { Id = id };
-            OnImageThumbClicked(args);
-        }
+			// Get the parent border (since we wrapped the image in a Border)
+			var clickedBorder = clickedImage.Parent as Border;
+			if (clickedBorder == null) return;
 
-        /// <summary>
-        ///     Handles the MouseRightButtonDown event of the ImageClick control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-        private void ImageClick_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+			// Clear previous selection highlight if any
+			if (_currentSelectedBorder != null)
+			{
+				_currentSelectedBorder.BorderBrush = Brushes.Transparent; // Reset previous border highlight
+				_currentSelectedBorder.BorderThickness = new Thickness(0); // Reset thickness
+			}
+
+			// Highlight the currently clicked thumbnail
+			clickedBorder.BorderBrush = Brushes.Blue; // Highlight with blue border
+			clickedBorder.BorderThickness = new Thickness(2); // Set border thickness
+
+			// Update the currently selected border
+			_currentSelectedBorder = clickedBorder;
+
+			// Create new click object
+			var args = new ImageEventArgs { Id = id };
+			OnImageThumbClicked(args); // Trigger the event with the selected image ID
+		}
+
+		/// <summary>
+		///     Handles the MouseRightButtonDown event of the ImageClick control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+		private void ImageClick_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             //get the button that was clicked
             if (sender is not Image clickedButton) return;
