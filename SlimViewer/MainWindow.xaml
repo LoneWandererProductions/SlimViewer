@@ -20,18 +20,18 @@
     <Window.InputBindings>
         <KeyBinding Modifiers="Control"
                     Key="O"
-                    Command="{Binding OpenCommand}" />
+                    Command="{Binding HotkeyCommand}" CommandParameter = "O"/>
         <KeyBinding Key="Left"
-                    Command="{Binding PreviousCommand}" />
+                    Command="{Binding HotkeyCommand}" CommandParameter = "Left"/>
         <KeyBinding Key="Right"
-                    Command="{Binding NextCommand}" />
+                    Command="{Binding HotkeyCommand}" CommandParameter = "Right"/>
         <KeyBinding Key="Delete"
-                    Command="{Binding DeleteCommand}" />
+                    Command="{Binding HotkeyCommand}" CommandParameter = "Delete"/>
         <KeyBinding Key="F5"
-                    Command="{Binding RefreshCommand}" />
+                    Command="{Binding HotkeyCommand}" CommandParameter = "F5" />
         <KeyBinding Modifiers="Control"
                     Key="S"
-                    Command="{Binding SaveCommand}" />
+                    Command="{Binding HotkeyCommand}" CommandParameter = "S"  />
     </Window.InputBindings>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>

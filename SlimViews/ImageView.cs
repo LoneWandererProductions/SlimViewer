@@ -146,6 +146,11 @@ namespace SlimViews
         private ICommand _explorerCommand;
 
         /// <summary>
+        /// The hotkey command
+        /// </summary>
+        private ICommand _hotkeyCommand;
+
+        /// <summary>
         ///     The file list
         ///     Holds the current List of Files we are viewing.
         ///     Needed for Move Files
@@ -953,6 +958,15 @@ namespace SlimViews
             _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
 
         /// <summary>
+        /// Gets the hotkey command.
+        /// </summary>
+        /// <value>
+        /// The hotkey command.
+        /// </value>
+        public ICommand HotkeyCommand =>
+            _hotkeyCommand ??= new DelegateCommand<string>(HotkeyAction, CanExecute);
+
+        /// <summary>
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
@@ -997,6 +1011,32 @@ namespace SlimViews
         {
             // check if executing is allowed, not used right now
             return true;
+        }
+
+        private void HotkeyAction(string key)
+        {
+            switch (key)
+            {
+                case "O":
+
+                    OpenAction(this);
+                    break;
+                case "Left":
+                    PreviousAction(this);
+                    break;
+                case "Right":
+                    NextAction(this);
+                    break;
+                case "Delete":
+                    DeleteAction(this);
+                    break;
+                case "F5":
+                    RefreshAction(this);    
+                    break;
+                case "S":
+                    SaveAction(this);
+                    break;
+            }
         }
 
         /// <summary>
@@ -1181,7 +1221,6 @@ namespace SlimViews
             var btm = Helper.Filter(_btm, filter);
             Bmp = btm.ToBitmapImage();
         }
-
 
         /// <summary>
         ///     Applies the texture.

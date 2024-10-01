@@ -422,6 +422,15 @@ namespace CommonControls
                 Name = string.Concat(ComCtlResources.ImageAdd, key)
             };
 
+            // Create a border around the image
+            var border = new Border
+            {
+                Child = images, // Set the image as the child of the border
+                BorderThickness = new Thickness(0), // Initially no border
+                BorderBrush = Brushes.Transparent, // Initially transparent
+                Margin = new Thickness(1) // Optionally add some margin for spacing
+            };
+
             // Add image click handler (this should run on the UI thread)
             images.MouseDown += ImageClick_MouseDown;
 
@@ -430,9 +439,9 @@ namespace CommonControls
             {
                 Keys.TryAdd(images.Name, key);
                 ImageDct.TryAdd(images.Name, images);
-                Grid.SetRow(images, key / ThumbWidth);
-                Grid.SetColumn(images, key % ThumbWidth);
-                _ = exGrid.Children.Add(images);
+                Grid.SetRow(border, key / ThumbWidth); // Use the border instead of the image
+                Grid.SetColumn(border, key % ThumbWidth);
+                _ = exGrid.Children.Add(border); // Add the border to the grid
             });
 
             // Try loading the bitmap image
@@ -538,6 +547,10 @@ namespace CommonControls
 
             var id = Keys[clickedImage.Name];
 
+            // Create new click object
+            var args = new ImageEventArgs { Id = id };
+            OnImageThumbClicked(args); // Trigger the event with the selected image ID
+
             // Get the parent border (since we wrapped the image in a Border)
             var clickedBorder = clickedImage.Parent as Border;
             if (clickedBorder == null) return;
@@ -556,9 +569,8 @@ namespace CommonControls
             // Update the currently selected border
             _currentSelectedBorder = clickedBorder;
 
-            // Create new click object
-            var args = new ImageEventArgs { Id = id };
-            OnImageThumbClicked(args); // Trigger the event with the selected image ID
+            // Update the previous selected border to the current one
+            _previousSelectedBorder = _currentSelectedBorder;
         }
 
         /// <summary>
