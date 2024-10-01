@@ -10,10 +10,8 @@
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
 // ReSharper disable UnusedType.Global
 
-using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,11 +19,11 @@ using System.Windows.Media.Imaging;
 
 namespace CommonControls
 {
-	/// <inheritdoc cref="Window" />
-	/// <summary>
-	///     ImageZoom Image
-	/// </summary>
-	public sealed partial class ImageZoom
+    /// <inheritdoc cref="Window" />
+    /// <summary>
+    ///     ImageZoom Image
+    /// </summary>
+    public sealed partial class ImageZoom
     {
 		private SelectionAdorner _selectionAdorner;
 
@@ -286,17 +284,6 @@ namespace CommonControls
 				case SelectionTools.SelectRectangle:
 				case SelectionTools.Erase:
 					{
-						// Get the Position on the Image
-						_imageStartPoint = e.GetPosition(BtmImage);
-
-						// Initial placement of the drag selection box.
-						Canvas.SetLeft(SelectionBox, _startPoint.X);
-						Canvas.SetTop(SelectionBox, _startPoint.Y);
-						SelectionBox.Width = 0;
-						SelectionBox.Height = 0;
-
-						// Make the drag selection box visible.
-						SelectionBox.Visibility = Visibility.Visible;
 					}
 					break;
 				case SelectionTools.SelectEllipse:
@@ -321,8 +308,6 @@ namespace CommonControls
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
 
-            // Hide the drag selection box.
-            SelectionBox.Visibility = Visibility.Collapsed;
 
             //clicked Endpoint
             Point endpoint;
@@ -336,8 +321,6 @@ namespace CommonControls
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
                 {
-                    SelectionBox.Visibility = Visibility.Collapsed;
-
                     // Get the Position on the Image
                     endpoint = e.GetPosition(BtmImage);
                     var frame = new SelectionFrame();
@@ -414,7 +397,7 @@ namespace CommonControls
 					{
 						// Update the adorner for rectangle or ellipse selection
 						if (_selectionAdorner != null)
-						{
+                        {
 							_selectionAdorner.UpdateSelection(_startPoint, mousePos);
 						}
 						break;

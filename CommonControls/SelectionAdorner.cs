@@ -20,20 +20,46 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Updates the selection.
+        /// Updates the selection for rectangle and ellipse tools.
         /// </summary>
-        /// <param name="start">The start.</param>
-        /// <param name="end">The end.</param>
+        /// <param name="start">The start point.</param>
+        /// <param name="end">The end point.</param>
         public void UpdateSelection(Point start, Point end)
         {
-            startPoint = start;
-            endPoint = end;
+            // Apply transformation to the start and end points if necessary
+            MatrixTransform transform = AdornedElement.RenderTransform as MatrixTransform;
+            if (transform != null)
+            {
+                Matrix matrix = transform.Matrix;
+                startPoint = matrix.Transform(start);
+                endPoint = matrix.Transform(end);
+            }
+            else
+            {
+                startPoint = start;
+                endPoint = end;
+            }
+
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Adds a point for the freeform tool.
+        /// </summary>
+        /// <param name="point">The freeform point.</param>
         public void AddFreeformPoint(Point point)
         {
-            freeformPoints.Add(point);
+            MatrixTransform transform = AdornedElement.RenderTransform as MatrixTransform;
+            if (transform != null)
+            {
+                Matrix matrix = transform.Matrix;
+                freeformPoints.Add(matrix.Transform(point));
+            }
+            else
+            {
+                freeformPoints.Add(point);
+            }
+
             InvalidateVisual();
         }
 
@@ -48,38 +74,43 @@ namespace CommonControls
             var pen = new Pen(Brushes.Red, 2);
 
             // Only render if at least one of the start or end points is available
-            if (currentTool == SelectionTools.SelectRectangle || currentTool == SelectionTools.SelectEllipse)
+            if (startPoint.HasValue && endPoint.HasValue)
             {
-                if (startPoint.HasValue && endPoint.HasValue)
+                Rect selectionRect = new Rect(startPoint.Value, endPoint.Value);
+
+                switch (currentTool)
                 {
-                    Rect selectionRect = new Rect(startPoint.Value, endPoint.Value);
+                    case SelectionTools.SelectRectangle:
+                        drawingContext.DrawRectangle(null, pen, selectionRect);
+                        break;
 
-                    switch (currentTool)
-                    {
-                        case SelectionTools.SelectRectangle:
-                            drawingContext.DrawRectangle(null, pen, selectionRect);
-                            break;
+                    case SelectionTools.SelectEllipse:
+                        drawingContext.DrawEllipse(null, pen, selectionRect.TopLeft, selectionRect.Width / 2, selectionRect.Height / 2);
+                        break;
 
-                        case SelectionTools.SelectEllipse:
-                            drawingContext.DrawEllipse(null, pen, selectionRect.TopLeft, selectionRect.Width / 2, selectionRect.Height / 2);
-                            break;
-                    }
+                    case SelectionTools.Erase:
+                        // Draw the erase area (which can behave similarly to a rectangle tool, but with different logic)
+                        drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)), pen, selectionRect);
+                        break;
+
+                    case SelectionTools.SelectPixel:
+                        // Select a single pixel (this can be visualized as a very small rectangle)
+                        drawingContext.DrawRectangle(Brushes.Red, pen, new Rect(startPoint.Value, new Size(1, 1)));
+                        break;
                 }
             }
-            else if (currentTool == SelectionTools.Freeform)
+
+            // Freeform selection tool rendering
+            if (currentTool == SelectionTools.Freeform && freeformPoints.Count > 1)
             {
-                if (freeformPoints.Count > 1)
+                var geometry = new StreamGeometry();
+                using (var ctx = geometry.Open())
                 {
-                    var geometry = new StreamGeometry();
-                    using (var ctx = geometry.Open())
-                    {
-                        ctx.BeginFigure(freeformPoints[0], false, false);
-                        ctx.PolyLineTo(freeformPoints.Skip(1).ToArray(), true, false);
-                    }
-                    drawingContext.DrawGeometry(null, pen, geometry);
+                    ctx.BeginFigure(freeformPoints[0], false, false);
+                    ctx.PolyLineTo(freeformPoints.Skip(1).ToArray(), true, false);
                 }
+                drawingContext.DrawGeometry(null, pen, geometry);
             }
         }
     }
-
 }
