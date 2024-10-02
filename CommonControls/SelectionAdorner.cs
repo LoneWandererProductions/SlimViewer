@@ -1,4 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonControls
+ * FILE:        CommonControls/SelectionAdorner.cs
+ * PURPOSE:     Extensions for ImageZoom, handle all the selection Tools.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ */
+
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -6,13 +14,39 @@ using System.Linq;
 
 namespace CommonControls
 {
+    /// <summary>
+    /// Adorner for ImageZoom
+    /// </summary>
+    /// <seealso cref="System.Windows.Documents.Adorner" />
     internal sealed class SelectionAdorner : Adorner
     {
+        /// <summary>
+        /// The start point
+        /// </summary>
         private Point? startPoint;
-        private Point? endPoint;
-        private List<Point> freeformPoints = new List<Point>();
-        private Transform imageTransform;  // Store the transform applied to the image
 
+        /// <summary>
+        /// The end point
+        /// </summary>
+        private Point? endPoint;
+
+        /// <summary>
+        /// The freeform points
+        /// </summary>
+        private List<Point> freeformPoints = new List<Point>();
+
+        /// <summary>
+        /// The image transform
+        /// Store the transform applied to the image
+        /// </summary>
+        private Transform imageTransform;
+
+        /// <summary>
+        /// Gets or sets the tool.
+        /// </summary>
+        /// <value>
+        /// The tool.
+        /// </value>
         public SelectionTools Tool { get; internal set; }
 
         /// <summary>
@@ -52,6 +86,9 @@ namespace CommonControls
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Clears the freeform points.
+        /// </summary>
         public void ClearFreeformPoints()
         {
             freeformPoints.Clear();
@@ -79,7 +116,7 @@ namespace CommonControls
             // Only render if at least one of the start or end points is available
             if (startPoint.HasValue && endPoint.HasValue)
             {
-                Rect selectionRect = new Rect(startPoint.Value, endPoint.Value);
+                Rect selectionRect = new(startPoint.Value, endPoint.Value);
 
                 switch (Tool)
                 {

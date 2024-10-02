@@ -346,9 +346,12 @@ namespace CommonControls
                 {
                     // Get the Position on the Image
                     endpoint = e.GetPosition(BtmImage);
-                    var frame = new SelectionFrame();
+                        var frame = new SelectionFrame
+                        {
+                            Tool = "Rectangle"
+                        };
 
-                    if (_imageStartPoint.X < endpoint.X)
+                        if (_imageStartPoint.X < endpoint.X)
                     {
                         frame.X = (int)_imageStartPoint.X;
                         frame.Width = (int)(endpoint.X - _imageStartPoint.X);
@@ -533,5 +536,6 @@ namespace CommonControls
         ///     The height.
         /// </value>
         public int Height { get; internal set; }
+        public string Tool { get; internal set; }
     }
 }
