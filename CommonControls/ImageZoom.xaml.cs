@@ -275,7 +275,7 @@ namespace CommonControls
             else
             {
                 // Clear points and reset for the new selection tool
-                _selectionAdorner.ClearFreeformPoints();
+                _selectionAdorner?.ClearFreeformPoints();
                 _selectionAdorner.Tool = tool; // Update the tool if necessary
             }
         }
@@ -389,6 +389,20 @@ namespace CommonControls
                 default:
                     // nothing
                     return;
+            }
+
+            if (_selectionAdorner != null)
+            {
+                // Get the AdornerLayer for the image
+                var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+
+                if (adornerLayer != null)
+                {
+                    // Remove the SelectionAdorner
+                    adornerLayer.Remove(_selectionAdorner);
+                    _selectionAdorner = null;  // Clear the reference
+                }
+
             }
         }
 

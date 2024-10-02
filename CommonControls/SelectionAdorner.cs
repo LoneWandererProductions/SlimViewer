@@ -15,6 +15,12 @@ namespace CommonControls
 
         public SelectionTools Tool { get; internal set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelectionAdorner"/> class.
+        /// </summary>
+        /// <param name="adornedElement">The adorned element.</param>
+        /// <param name="tool">The tool.</param>
+        /// <param name="transform">The transform.</param>
         public SelectionAdorner(UIElement adornedElement, SelectionTools tool, Transform transform = null)
             : base(adornedElement)
         {
@@ -62,6 +68,10 @@ namespace CommonControls
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.
+        /// </summary>
+        /// <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>
         protected override void OnRender(DrawingContext drawingContext)
         {
             var pen = new Pen(Brushes.Red, 2);
