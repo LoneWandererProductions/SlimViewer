@@ -10,13 +10,16 @@ namespace CommonControls
     {
         private Point? startPoint;
         private Point? endPoint;
-        private SelectionTools currentTool;
         private List<Point> freeformPoints = new List<Point>();
+        private Transform imageTransform;  // Store the transform applied to the image
 
-        public SelectionAdorner(UIElement adornedElement, SelectionTools tool)
+        public SelectionTools Tool { get; internal set; }
+
+        public SelectionAdorner(UIElement adornedElement, SelectionTools tool, Transform transform = null)
             : base(adornedElement)
         {
-            currentTool = tool;
+            Tool = tool;
+            imageTransform = transform ?? Transform.Identity;  // Use the provided transform, or default to Identity if none provided
         }
 
         /// <summary>
@@ -27,18 +30,8 @@ namespace CommonControls
         public void UpdateSelection(Point start, Point end)
         {
             // Apply transformation to the start and end points if necessary
-            MatrixTransform transform = AdornedElement.RenderTransform as MatrixTransform;
-            if (transform != null)
-            {
-                Matrix matrix = transform.Matrix;
-                startPoint = matrix.Transform(start);
-                endPoint = matrix.Transform(end);
-            }
-            else
-            {
-                startPoint = start;
-                endPoint = end;
-            }
+            startPoint = imageTransform.Transform(start);
+            endPoint = imageTransform.Transform(end);
 
             InvalidateVisual();
         }
@@ -49,23 +42,23 @@ namespace CommonControls
         /// <param name="point">The freeform point.</param>
         public void AddFreeformPoint(Point point)
         {
-            MatrixTransform transform = AdornedElement.RenderTransform as MatrixTransform;
-            if (transform != null)
-            {
-                Matrix matrix = transform.Matrix;
-                freeformPoints.Add(matrix.Transform(point));
-            }
-            else
-            {
-                freeformPoints.Add(point);
-            }
-
+            freeformPoints.Add(imageTransform.Transform(point));
             InvalidateVisual();
         }
 
         public void ClearFreeformPoints()
         {
             freeformPoints.Clear();
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Updates the image transform when the image is resized or cropped.
+        /// </summary>
+        /// <param name="transform">The new transform to apply.</param>
+        public void UpdateImageTransform(Transform transform)
+        {
+            imageTransform = transform ?? Transform.Identity;  // Use the provided transform, or default to Identity if none provided
             InvalidateVisual();
         }
 
@@ -78,7 +71,7 @@ namespace CommonControls
             {
                 Rect selectionRect = new Rect(startPoint.Value, endPoint.Value);
 
-                switch (currentTool)
+                switch (Tool)
                 {
                     case SelectionTools.SelectRectangle:
                         drawingContext.DrawRectangle(null, pen, selectionRect);
@@ -101,7 +94,7 @@ namespace CommonControls
             }
 
             // Freeform selection tool rendering
-            if (currentTool == SelectionTools.Freeform && freeformPoints.Count > 1)
+            if (Tool == SelectionTools.Freeform && freeformPoints.Count > 1)
             {
                 var geometry = new StreamGeometry();
                 using (var ctx = geometry.Open())

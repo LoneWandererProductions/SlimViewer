@@ -25,7 +25,10 @@ namespace CommonControls
     /// </summary>
     public sealed partial class ImageZoom
     {
-		private SelectionAdorner _selectionAdorner;
+        /// <summary>
+        /// The selection adorner
+        /// </summary>
+        private SelectionAdorner _selectionAdorner { get; set; }
 
 		/// <summary>
 		///     Delegate for Image Frame
@@ -188,6 +191,7 @@ namespace CommonControls
         /// </summary>
         private void OnImageSourceGifChanged()
         {
+
             if (!File.Exists(ImageGifPath))
             {
                 BtmImage.GifSource = null;
@@ -209,6 +213,12 @@ namespace CommonControls
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
+
+            // Update the adorner with the new image transform
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+
+            // Reattach adorner for new image (this ensures correct behavior for the new image)
+            AttachAdorner(ZoomTool);
         }
 
         /// <summary>
@@ -237,33 +247,46 @@ namespace CommonControls
 
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
+
+            // Update the adorner with the new image transform
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+
+            // Reattach adorner for new image (this ensures correct behavior for the new image)
+            AttachAdorner(ZoomTool);
         }
 
-		/// <summary>
-		/// Attaches the adorner.
-		/// </summary>
-		/// <param name="tool">The tool.</param>
-		private void AttachAdorner(SelectionTools tool)
-		{
-			if (_selectionAdorner == null)
-			{
-				var adornerLayer = AdornerLayer.GetAdornerLayer(MainCanvas);
-				_selectionAdorner = new SelectionAdorner(MainCanvas, tool);
-				adornerLayer.Add(_selectionAdorner);
-			}
-			else
-			{
-				_selectionAdorner.ClearFreeformPoints(); // Reset for new selection
-				_selectionAdorner = new SelectionAdorner(MainCanvas, tool);
-			}
-		}
+        /// <summary>
+        /// Attaches the adorner.
+        /// </summary>
+        /// <param name="tool">The tool.</param>
+        /// <summary>
+        /// Attaches the adorner.
+        /// </summary>
+        /// <param name="tool">The tool.</param>
+        private void AttachAdorner(SelectionTools tool)
+        {
+            if (_selectionAdorner == null)
+            {
+                // Get the adorner layer for the BtmImage instead of the MainCanvas
+                var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+                _selectionAdorner = new SelectionAdorner(BtmImage, tool);
+                adornerLayer.Add(_selectionAdorner);
+            }
+            else
+            {
+                // Clear points and reset for the new selection tool
+                _selectionAdorner.ClearFreeformPoints();
+                _selectionAdorner.Tool = tool; // Update the tool if necessary
+            }
+        }
 
-		/// <summary>
-		///     Handles the MouseDown event of the Grid control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-		private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
+
+        /// <summary>
+        ///     Handles the MouseDown event of the Grid control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+        private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Capture and track the mouse.
             _mouseDown = true;
@@ -389,7 +412,9 @@ namespace CommonControls
 						matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
 						matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
 						BtmImage.RenderTransform = new MatrixTransform(matrix);
-						break;
+
+                        _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                        break;
 					}
 
 				case SelectionTools.SelectRectangle:
@@ -398,7 +423,7 @@ namespace CommonControls
 						// Update the adorner for rectangle or ellipse selection
 						if (_selectionAdorner != null)
                         {
-							_selectionAdorner.UpdateSelection(_startPoint, mousePos);
+							_selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 						}
 						break;
 					}
@@ -408,7 +433,7 @@ namespace CommonControls
 						// Update the adorner for freeform selection by adding points
 						if (_selectionAdorner != null)
 						{
-							_selectionAdorner.AddFreeformPoint(mousePos);
+							_selectionAdorner?.AddFreeformPoint(mousePos);
 						}
 						break;
 					}
@@ -422,7 +447,7 @@ namespace CommonControls
 						// Similar to rectangle selection, but intended for erasing
 						if (_selectionAdorner != null)
 						{
-							_selectionAdorner.UpdateSelection(_startPoint, mousePos);
+							_selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 						}
 						break;
 					}
@@ -452,6 +477,8 @@ namespace CommonControls
                 Scale.ScaleX /= 1.1;
                 Scale.ScaleY /= 1.1;
             }
+
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 	}
 
