@@ -399,11 +399,12 @@ namespace CommonControls
 		/// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (!_mouseDown) return;
+            if (!_mouseDown) return;
 
-			var mousePos = e.GetPosition(MainCanvas);
+            // Get the mouse position relative to the image instead of the canvas
+            var mousePos = e.GetPosition(BtmImage);
 
-			switch (ZoomTool)
+            switch (ZoomTool)
 			{
 				case SelectionTools.Move:
 					{
