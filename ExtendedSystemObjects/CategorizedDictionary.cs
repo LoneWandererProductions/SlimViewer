@@ -10,12 +10,12 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedType.Global
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace ExtendedSystemObjects
 {
@@ -30,12 +30,50 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The internal data of our custom Dictionary
         /// </summary>
-        private readonly Dictionary<TK, (string Category, TV Value)> _data = new();
+        private readonly Dictionary<TK, (string Category, TV Value)> _data;
+
+        /// <summary>
+        /// The lock for thread safety
+        /// </summary>
+        private readonly ReaderWriterLockSlim _lock;
 
         /// <summary>
         ///     Gets the number of elements contained in the CategorizedDictionary.
         /// </summary>
-        public int Count => _data.Count;
+        public int Count
+        {
+            get
+            {
+                _lock.EnterReadLock();
+                try
+                {
+                    return _data.Count;
+                }
+                finally
+                {
+                    _lock.ExitReadLock();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}"/> class.
+        /// </summary>
+        public CategorizedDictionary()
+        {
+            _data = new();
+            _lock = new ReaderWriterLockSlim();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}"/> class.
+        /// </summary>
+        /// <param name="count">The count.</param>
+        public CategorizedDictionary(int count)
+        {
+            _data = new(count);
+            _lock = new ReaderWriterLockSlim();
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -55,17 +93,25 @@ namespace ExtendedSystemObjects
         /// <returns>True if equal, otherwise false.</returns>
         public bool Equals(CategorizedDictionary<TK, TV> other)
         {
-            if (other == null || Count != other.Count) return false;
+            if (other == null || Count != other.Count)
+            {
+                return false;
+            }
 
             foreach (var (key, category, value) in this)
             {
-                if (!other.TryGetValue(key, out var otherValue)) return false;
+                if (!other.TryGetValue(key, out var otherValue))
+                {
+                    return false;
+                }
 
                 var otherCategory = other.GetCategoryAndValue(key)?.Category ?? string.Empty;
 
                 if (!string.Equals(category, otherCategory, StringComparison.OrdinalIgnoreCase) ||
                     !EqualityComparer<TV>.Default.Equals(value, otherValue))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -77,7 +123,15 @@ namespace ExtendedSystemObjects
         /// <returns>List of Keys</returns>
         public IEnumerable<TK> GetKeys()
         {
-            return _data.Keys;
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.Keys; // Create a copy for thread safety
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -88,10 +142,20 @@ namespace ExtendedSystemObjects
         /// <param name="value">The value to add.</param>
         public void Add(string category, TK key, TV value)
         {
-            if (_data.ContainsKey(key))
-                throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
+            _lock.EnterWriteLock();
+            try
+            {
+                if (_data.ContainsKey(key))
+                {
+                    throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
+                }
 
-            _data[key] = (category, value);
+                _data[key] = (category, value);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -101,7 +165,15 @@ namespace ExtendedSystemObjects
         /// <param name="value">The value.</param>
         public void Add(TK key, TV value)
         {
-            Add(string.Empty, key, value);
+            _lock.EnterWriteLock();
+            try
+            {
+                Add(string.Empty, key, value);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -111,7 +183,15 @@ namespace ExtendedSystemObjects
         /// <returns>The value if found, otherwise the default value for the type.</returns>
         public TV Get(TK key)
         {
-            return _data.TryGetValue(key, out var entry) ? entry.Value : default;
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.TryGetValue(key, out var entry) ? entry.Value : default;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -121,7 +201,15 @@ namespace ExtendedSystemObjects
         /// <returns>A tuple containing the category and value if found, otherwise null.</returns>
         public (string Category, TV Value)? GetCategoryAndValue(TK key)
         {
-            return _data.TryGetValue(key, out var entry) ? entry : null;
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.TryGetValue(key, out var entry) ? entry : null;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -131,9 +219,17 @@ namespace ExtendedSystemObjects
         /// <returns>A dictionary of key-value pairs in the specified category.</returns>
         public Dictionary<TK, TV> GetCategory(string category)
         {
-            return _data
-                .Where(entry => entry.Value.Category == category)
-                .ToDictionary(entry => entry.Key, entry => entry.Value.Value);
+            _lock.EnterReadLock();
+            try
+            {
+                return _data
+                    .Where(entry => entry.Value.Category == category)
+                    .ToDictionary(entry => entry.Key, entry => entry.Value.Value);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -142,9 +238,17 @@ namespace ExtendedSystemObjects
         /// <returns>An enumerable of all categories.</returns>
         public IEnumerable<string> GetCategories()
         {
-            return _data.Values
-                .Select(entry => entry.Category)
-                .Distinct();
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.Values
+                    .Select(entry => entry.Category)
+                    .Distinct();
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -155,10 +259,21 @@ namespace ExtendedSystemObjects
         /// <returns>True if the entry was updated, false if the key does not exist.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            if (!_data.TryGetValue(key, out var entry)) return false;
+            _lock.EnterWriteLock();
+            try
+            {
+                if (!_data.TryGetValue(key, out var entry))
+                {
+                    return false;
+                }
 
-            _data[key] = (newCategory, entry.Value);
-            return true;
+                _data[key] = (newCategory, entry.Value);
+                return true;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -169,14 +284,22 @@ namespace ExtendedSystemObjects
         /// <returns>True if the key exists, otherwise false.</returns>
         public bool TryGetCategory(TK key, out string category)
         {
-            if (_data.TryGetValue(key, out var entry))
+            _lock.EnterReadLock();
+            try
             {
-                category = entry.Category;
-                return true;
-            }
+                if (_data.TryGetValue(key, out var entry))
+                {
+                    category = entry.Category;
+                    return true;
+                }
 
-            category = null;
-            return false;
+                category = null;
+                return false;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -187,14 +310,22 @@ namespace ExtendedSystemObjects
         /// <returns>True if the key exists, otherwise false.</returns>
         public bool TryGetValue(TK key, out TV value)
         {
-            if (_data.TryGetValue(key, out var entry))
+            _lock.EnterReadLock();
+            try
             {
-                value = entry.Value;
-                return true;
-            }
+                if (_data.TryGetValue(key, out var entry))
+                {
+                    value = entry.Value;
+                    return true;
+                }
 
-            value = default;
-            return false;
+                value = default;
+                return false;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -203,7 +334,15 @@ namespace ExtendedSystemObjects
         /// <returns>A list of Keys and Values</returns>
         public List<KeyValuePair<TK, TV>> ToKeyValueList()
         {
-            return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).ToList();
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.Select(entry => new KeyValuePair<TK, TV>(entry.Key, entry.Value.Value)).ToList();
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -241,11 +380,19 @@ namespace ExtendedSystemObjects
         /// <returns>A string representing the dictionary's contents.</returns>
         public override string ToString()
         {
-            var entries = _data.Select(entry =>
-                string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key, entry.Value.Category,
-                    entry.Value.Value));
+            _lock.EnterReadLock();
+            try
+            {
+                var entries = _data.Select(entry =>
+                    string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key, entry.Value.Category,
+                        entry.Value.Value));
 
-            return string.Join(Environment.NewLine, entries);
+                return string.Join(Environment.NewLine, entries);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -254,7 +401,15 @@ namespace ExtendedSystemObjects
         /// <returns>An enumerator for the dictionary.</returns>
         public IEnumerator<(TK Key, string Category, TV Value)> GetEnumerator()
         {
-            return _data.Select(entry => (entry.Key, entry.Value.Category, entry.Value.Value)).GetEnumerator();
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.Select(entry => (entry.Key, entry.Value.Category, entry.Value.Value)).GetEnumerator();
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <inheritdoc />
@@ -285,9 +440,9 @@ namespace ExtendedSystemObjects
 
                 foreach (var (key, category, value) in this)
                 {
-                    hashCode = hashCode * 23 + EqualityComparer<TK>.Default.GetHashCode(key);
-                    hashCode = hashCode * 23 + (category?.GetHashCode() ?? 0);
-                    hashCode = hashCode * 23 + EqualityComparer<TV>.Default.GetHashCode(value);
+                    hashCode = (hashCode * 23) + EqualityComparer<TK>.Default.GetHashCode(key);
+                    hashCode = (hashCode * 23) + (category?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 23) + EqualityComparer<TV>.Default.GetHashCode(value);
                 }
 
                 return hashCode;
