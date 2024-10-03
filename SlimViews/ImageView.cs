@@ -172,15 +172,15 @@ namespace SlimViews
         /// </summary>
         private ICommand _filterConfigCommand;
 
-		/// <summary>
-		/// The texture configuration command
-		/// </summary>
-		private ICommand _textureConfigCommand;
+        /// <summary>
+        /// The texture configuration command
+        /// </summary>
+        private ICommand _textureConfigCommand;
 
-		/// <summary>
-		///     The folder command
-		/// </summary>
-		private ICommand _folderCommand;
+        /// <summary>
+        ///     The folder command
+        /// </summary>
+        private ICommand _folderCommand;
 
         /// <summary>
         ///     The folder convert command
@@ -228,11 +228,6 @@ namespace SlimViews
         private ICommand _moveCommand;
 
         /// <summary>
-        ///     The next command
-        /// </summary>
-        private ICommand _nextCommand;
-
-        /// <summary>
         ///     The observer
         /// </summary>
         private Dictionary<int, string> _observer;
@@ -261,11 +256,6 @@ namespace SlimViews
         ///     The pixel width
         /// </summary>
         private int _pixelWidth;
-
-        /// <summary>
-        ///     The previous command
-        /// </summary>
-        private ICommand _previousCommand;
 
         /// <summary>
         ///     The refresh command
@@ -405,239 +395,239 @@ namespace SlimViews
         /// </value>
         public ColorPickerMenu Picker { get; init; }
 
-		/// <summary>
-		///     Gets the selections.
-		/// </summary>
-		/// <value>
-		///     The selections.
-		/// </value>
-		public IEnumerable<SelectionTools> Selections =>
-			Enum.GetValues(typeof(SelectionTools))
-				.Cast<SelectionTools>();
+        /// <summary>
+        ///     Gets the selections.
+        /// </summary>
+        /// <value>
+        ///     The selections.
+        /// </value>
+        public IEnumerable<SelectionTools> Selections =>
+            Enum.GetValues(typeof(SelectionTools))
+                .Cast<SelectionTools>();
 
-		/// <summary>
-		///     Gets or sets the selected tool.
-		/// </summary>
-		/// <value>
-		///     The selected tool.
-		/// </value>
-		public SelectionTools SelectedTool
-		{
-			get => _selectedTool;
-			set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
-		}
+        /// <summary>
+        ///     Gets or sets the selected tool.
+        /// </summary>
+        /// <value>
+        ///     The selected tool.
+        /// </value>
+        public SelectionTools SelectedTool
+        {
+            get => _selectedTool;
+            set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
+        }
 
-		/// <summary>
-		///     Gets or sets the basic File information.
-		/// </summary>
-		/// <value>
-		///     The information.
-		/// </value>
-		public string Information
-		{
-			get => _information;
-			set => SetProperty(ref _information, value, nameof(Information));
-		}
+        /// <summary>
+        ///     Gets or sets the basic File information.
+        /// </summary>
+        /// <value>
+        ///     The information.
+        /// </value>
+        public string Information
+        {
+            get => _information;
+            set => SetProperty(ref _information, value, nameof(Information));
+        }
 
-		/// <summary>
-		///     Gets or sets the similarity. In percent, other values that are bigger or smaller won't be accepted.
-		/// </summary>
-		/// <value>
-		///     The similarity.
-		/// </value>
-		public int Similarity
-		{
-			get => _similarity;
-			set
-			{
-				if (value is >= 0 and <= 100) // Only set if value is within valid range
-				{
-					SetProperty(ref _similarity, value, nameof(Similarity));
-					SlimViewerRegister.MainSimilarity = value;
-				}
-			}
-		}
+        /// <summary>
+        ///     Gets or sets the similarity. In percent, other values that are bigger or smaller won't be accepted.
+        /// </summary>
+        /// <value>
+        ///     The similarity.
+        /// </value>
+        public int Similarity
+        {
+            get => _similarity;
+            set
+            {
+                if (value is >= 0 and <= 100) // Only set if value is within valid range
+                {
+                    SetProperty(ref _similarity, value, nameof(Similarity));
+                    SlimViewerRegister.MainSimilarity = value;
+                }
+            }
+        }
 
-		/// <summary>
-		///     Gets or sets the width of the pixel.
-		/// </summary>
-		/// <value>
-		///     The width of the pixel.
-		/// </value>
-		public int PixelWidth
-		{
-			get => _pixelWidth;
-			set
-			{
-				if (value >= 2) // Only set if value is valid
-				{
-					SetProperty(ref _pixelWidth, value, nameof(PixelWidth));
-				}
-			}
-		}
+        /// <summary>
+        ///     Gets or sets the width of the pixel.
+        /// </summary>
+        /// <value>
+        ///     The width of the pixel.
+        /// </value>
+        public int PixelWidth
+        {
+            get => _pixelWidth;
+            set
+            {
+                if (value >= 2) // Only set if value is valid
+                {
+                    SetProperty(ref _pixelWidth, value, nameof(PixelWidth));
+                }
+            }
+        }
 
-		/// <summary>
-		///     Gets or sets the File count.
-		/// </summary>
-		/// <value>
-		///     The count.
-		/// </value>
-		public int Count
-		{
-			get => _count;
-			set => SetProperty(ref _count, value, nameof(Count));
-		}
+        /// <summary>
+        ///     Gets or sets the File count.
+        /// </summary>
+        /// <value>
+        ///     The count.
+        /// </value>
+        public int Count
+        {
+            get => _count;
+            set => SetProperty(ref _count, value, nameof(Count));
+        }
 
-		/// <summary>
-		///     Gets or sets the Filename.
-		/// </summary>
-		/// <value>
-		///     The name of the file.
-		/// </value>
-		public string FileName
-		{
-			get => _fileName;
-			set => SetProperty(ref _fileName, value, nameof(FileName));
-		}
+        /// <summary>
+        ///     Gets or sets the Filename.
+        /// </summary>
+        /// <value>
+        ///     The name of the file.
+        /// </value>
+        public string FileName
+        {
+            get => _fileName;
+            set => SetProperty(ref _fileName, value, nameof(FileName));
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether this instance is active.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsActive
-		{
-			get => _isActive;
-			set => SetProperty(ref _isActive, value, nameof(IsActive));
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsActive
+        {
+            get => _isActive;
+            set => SetProperty(ref _isActive, value, nameof(IsActive));
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether [sub folders].
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if [sub folders]; otherwise, <c>false</c>.
-		/// </value>
-		public bool SubFolders
-		{
-			get => _subFolders;
-			set
-			{
-				SetProperty(ref _subFolders, value, nameof(SubFolders));
-				SlimViewerRegister.MainSubFolders = value;
-			}
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether [sub folders].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [sub folders]; otherwise, <c>false</c>.
+        /// </value>
+        public bool SubFolders
+        {
+            get => _subFolders;
+            set
+            {
+                SetProperty(ref _subFolders, value, nameof(SubFolders));
+                SlimViewerRegister.MainSubFolders = value;
+            }
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether [automatic clean].
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
-		/// </value>
-		public bool AutoClean
-		{
-			get => _autoClean;
-			set
-			{
-				SetProperty(ref _autoClean, value, nameof(AutoClean));
-				SlimViewerRegister.MainAutoClean = value;
-			}
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether [automatic clean].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
+        /// </value>
+        public bool AutoClean
+        {
+            get => _autoClean;
+            set
+            {
+                SetProperty(ref _autoClean, value, nameof(AutoClean));
+                SlimViewerRegister.MainAutoClean = value;
+            }
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether this <see cref="ImageView" /> shows Thumbnails.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if thumbs; otherwise, <c>false</c>.
-		/// </value>
-		public bool Thumbs
-		{
-			get => _thumbs;
-			set => SetProperty(ref _thumbs, value, nameof(Thumbs));
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether this <see cref="ImageView" /> shows Thumbnails.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if thumbs; otherwise, <c>false</c>.
+        /// </value>
+        public bool Thumbs
+        {
+            get => _thumbs;
+            set => SetProperty(ref _thumbs, value, nameof(Thumbs));
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether this <see cref="ImageView" /> compresses the new CIF format.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if compress; otherwise, <c>false</c>.
-		/// </value>
-		public bool Compress
-		{
-			get => _compress;
-			set => SetProperty(ref _compress, value, nameof(Compress));
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether this <see cref="ImageView" /> compresses the new CIF format.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if compress; otherwise, <c>false</c>.
+        /// </value>
+        public bool Compress
+        {
+            get => _compress;
+            set => SetProperty(ref _compress, value, nameof(Compress));
+        }
 
-		/// <summary>
-		///     Gets or sets the observer.
-		/// </summary>
-		/// <value>
-		///     The observer.
-		/// </value>
-		public Dictionary<int, string> Observer
-		{
-			get => _observer;
-			set => SetProperty(ref _observer, value, nameof(Observer));
-		}
+        /// <summary>
+        ///     Gets or sets the observer.
+        /// </summary>
+        /// <value>
+        ///     The observer.
+        /// </value>
+        public Dictionary<int, string> Observer
+        {
+            get => _observer;
+            set => SetProperty(ref _observer, value, nameof(Observer));
+        }
 
-		/// <summary>
-		///     Gets or sets the BitmapImage.
-		/// </summary>
-		/// <value>
-		///     The BitmapImage.
-		/// </value>
-		public BitmapImage Bmp
-		{
-			get => _bmp;
-			set => SetProperty(ref _bmp, value, nameof(Bmp));
-		}
+        /// <summary>
+        ///     Gets or sets the BitmapImage.
+        /// </summary>
+        /// <value>
+        ///     The BitmapImage.
+        /// </value>
+        public BitmapImage Bmp
+        {
+            get => _bmp;
+            set => SetProperty(ref _bmp, value, nameof(Bmp));
+        }
 
-		/// <summary>
-		///     Gets or sets the status image.
-		/// </summary>
-		/// <value>
-		///     The status image.
-		/// </value>
-		public string StatusImage
-		{
-			get => _statusImage;
-			set => SetProperty(ref _statusImage, value, nameof(StatusImage));
-		}
+        /// <summary>
+        ///     Gets or sets the status image.
+        /// </summary>
+        /// <value>
+        ///     The status image.
+        /// </value>
+        public string StatusImage
+        {
+            get => _statusImage;
+            set => SetProperty(ref _statusImage, value, nameof(StatusImage));
+        }
 
-		/// <summary>
-		///     Gets or sets the GIF path.
-		/// </summary>
-		/// <value>
-		///     The GIF path.
-		/// </value>
-		public string GifPath
-		{
-			get => _gifPath;
-			set => SetProperty(ref _gifPath, value, nameof(GifPath));
-		}
+        /// <summary>
+        ///     Gets or sets the GIF path.
+        /// </summary>
+        /// <value>
+        ///     The GIF path.
+        /// </value>
+        public string GifPath
+        {
+            get => _gifPath;
+            set => SetProperty(ref _gifPath, value, nameof(GifPath));
+        }
 
-		/// <summary>
-		///     Sets the property.
-		/// </summary>
-		/// <typeparam name="T">Generic Parameter</typeparam>
-		/// <param name="field">The field.</param>
-		/// <param name="value">The value.</param>
-		/// <param name="propertyName">Name of the property.</param>
-		private void SetProperty<T>(ref T field, T value, string propertyName)
-		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        /// <summary>
+        ///     Sets the property.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
 
-			field = value;
-			OnPropertyChanged(propertyName);
-		}
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
 
-		/// <summary>
-		///     Gets the close command.
-		/// </summary>
-		/// <value>
-		///     The close command.
-		/// </value>
-		public ICommand CloseCommand =>
+        /// <summary>
+        ///     Gets the close command.
+        /// </summary>
+        /// <value>
+        ///     The close command.
+        /// </value>
+        public ICommand CloseCommand =>
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
@@ -694,23 +684,6 @@ namespace SlimViews
         /// </value>
         public ICommand DuplicateCommand =>
             _duplicateCommand ??= new DelegateCommand<object>(DuplicateWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the previous Image.
-        /// </summary>
-        /// <value>
-        ///     The previous Image.
-        /// </value>
-        public ICommand PreviousCommand => _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the next Image.
-        /// </summary>
-        /// <value>
-        ///     The next Image.
-        /// </value>
-        public ICommand NextCommand =>
-            _nextCommand ??= new DelegateCommand<object>(NextAction, CanExecute);
 
         /// <summary>
         ///     Gets the delete command.
@@ -929,23 +902,23 @@ namespace SlimViews
         public ICommand FilterConfigCommand =>
             _filterConfigCommand ??= new DelegateCommand<string>(FilterConfigWindowAction, CanExecute);
 
-		/// <summary>
-		///     Gets the filter configuration command.
-		/// </summary>
-		/// <value>
-		///     The filter configuration command.
-		/// </value>
-		public ICommand TextureConfigCommand =>
-			_textureConfigCommand ??= new DelegateCommand<string>(TextureConfigWindowAction, CanExecute);
+        /// <summary>
+        ///     Gets the filter configuration command.
+        /// </summary>
+        /// <value>
+        ///     The filter configuration command.
+        /// </value>
+        public ICommand TextureConfigCommand =>
+            _textureConfigCommand ??= new DelegateCommand<string>(TextureConfigWindowAction, CanExecute);
 
 
-		/// <summary>
-		///     Gets the brighten command.
-		/// </summary>
-		/// <value>
-		///     The brighten command.
-		/// </value>
-		public ICommand BrightenCommand =>
+        /// <summary>
+        ///     Gets the brighten command.
+        /// </summary>
+        /// <value>
+        ///     The brighten command.
+        /// </value>
+        public ICommand BrightenCommand =>
             _brightenCommand ??= new DelegateCommand<string>(BrightenAction, CanExecute);
 
         /// <summary>
@@ -1013,6 +986,10 @@ namespace SlimViews
             return true;
         }
 
+        /// <summary>
+        /// Hotkey actions.
+        /// </summary>
+        /// <param name="key">The key.</param>
         private void HotkeyAction(string key)
         {
             switch (key)
@@ -1031,7 +1008,7 @@ namespace SlimViews
                     DeleteAction(this);
                     break;
                 case "F5":
-                    RefreshAction(this);    
+                    RefreshAction(this);
                     break;
                 case "S":
                     SaveAction(this);
@@ -1231,11 +1208,11 @@ namespace SlimViews
             //TODO
         }
 
-		/// <summary>
-		///     Brightens the action.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void BrightenAction(object obj)
+        /// <summary>
+        ///     Brightens the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void BrightenAction(object obj)
         {
             //TODO
         }
@@ -1496,39 +1473,39 @@ namespace SlimViews
             _ = Process.Start(SlimViewerResources.Explorer, argument);
         }
 
-		/// <summary>
-		///     Filter configuration Window.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void FilterConfigWindowAction(string obj)
-		{
-			var filterConfig = new FilterConfig
-			{
-				Topmost = true,
-				Owner = Main
-			};
-			filterConfig.Show();
-		}
+        /// <summary>
+        ///     Filter configuration Window.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void FilterConfigWindowAction(string obj)
+        {
+            var filterConfig = new FilterConfig
+            {
+                Topmost = true,
+                Owner = Main
+            };
+            filterConfig.Show();
+        }
 
-		/// <summary>
-		/// Textures the configuration Window.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void TextureConfigWindowAction(string obj)
-		{
-			var textureConfig = new TextureConfig
-			{
-				Topmost = true,
-				Owner = Main
-			};
-			textureConfig.Show();
-		}
+        /// <summary>
+        /// Textures the configuration Window.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void TextureConfigWindowAction(string obj)
+        {
+            var textureConfig = new TextureConfig
+            {
+                Topmost = true,
+                Owner = Main
+            };
+            textureConfig.Show();
+        }
 
-		/// <summary>
-		///     Rename the Folder action.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void FolderRenameWindowAction(object obj)
+        /// <summary>
+        ///     Rename the Folder action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void FolderRenameWindowAction(object obj)
         {
             SlimViewerRegister.ResetRenaming();
 
@@ -1555,11 +1532,11 @@ namespace SlimViews
                     _observer[key] = value;
         }
 
-		/// <summary>
-		///     Image Scaling Window.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void ScaleWindowAction(object obj)
+        /// <summary>
+        ///     Image Scaling Window.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ScaleWindowAction(object obj)
         {
             SlimViewerRegister.ResetScaling();
 
@@ -1592,7 +1569,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Foldee convert Window.
+        ///     Folder convert Window.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void FolderConvertWindowAction(object obj)
@@ -1650,11 +1627,11 @@ namespace SlimViews
             }
         }
 
-		/// <summary>
-		///     Similar Action Window.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void SimilarWindowAction(object obj)
+        /// <summary>
+        ///     Similar Action Window.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void SimilarWindowAction(object obj)
         {
             var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this, Similarity)
             {
@@ -1667,11 +1644,11 @@ namespace SlimViews
             SlimViewerRegister.CompareView = true;
         }
 
-		/// <summary>
-		///     Duplicate Action Window.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void DuplicateWindowAction(object obj)
+        /// <summary>
+        ///     Duplicate Action Window.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void DuplicateWindowAction(object obj)
         {
             var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this)
             {
@@ -1725,25 +1702,25 @@ namespace SlimViews
             resizer.Show();
         }
 
-		/// <summary>
-		///     Searches Window action.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void SearchWindowAction(object obj)
-		{
-			var searchWindow = new Search(SubFolders, SlimViewerRegister.CurrentFolder, this, Color)
-			{
-				Topmost = true,
-				Owner = Main
-			};
-			searchWindow.Show();
-		}
+        /// <summary>
+        ///     Searches Window action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void SearchWindowAction(object obj)
+        {
+            var searchWindow = new Search(SubFolders, SlimViewerRegister.CurrentFolder, this, Color)
+            {
+                Topmost = true,
+                Owner = Main
+            };
+            searchWindow.Show();
+        }
 
-		/// <summary>
-		///     Cleans the temporary Folder action.
-		/// </summary>
-		/// <param name="obj">The object.</param>
-		private void CleanTempAction(object obj)
+        /// <summary>
+        ///     Cleans the temporary Folder action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void CleanTempAction(object obj)
         {
             var check = false;
 

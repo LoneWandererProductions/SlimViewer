@@ -14,32 +14,33 @@ using System.Linq;
 
 namespace CommonControls
 {
+    /// <inheritdoc />
     /// <summary>
     /// Adorner for ImageZoom
     /// </summary>
-    /// <seealso cref="System.Windows.Documents.Adorner" />
+    /// <seealso cref="T:System.Windows.Documents.Adorner" />
     internal sealed class SelectionAdorner : Adorner
     {
         /// <summary>
         /// The start point
         /// </summary>
-        private Point? startPoint;
+        private Point? _startPoint;
 
         /// <summary>
         /// The end point
         /// </summary>
-        private Point? endPoint;
+        private Point? _endPoint;
 
         /// <summary>
-        /// The freeform points
+        /// The free form points
         /// </summary>
-        private List<Point> freeformPoints = new List<Point>();
+        private List<Point> _freeFormPoints = new List<Point>();
 
         /// <summary>
         /// The image transform
         /// Store the transform applied to the image
         /// </summary>
-        private Transform imageTransform;
+        private Transform _imageTransform;
 
         /// <summary>
         /// Gets or sets the tool.
@@ -49,8 +50,9 @@ namespace CommonControls
         /// </value>
         public SelectionTools Tool { get; internal set; }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectionAdorner"/> class.
+        /// Initializes a new instance of the <see cref="T:CommonControls.SelectionAdorner" /> class.
         /// </summary>
         /// <param name="adornedElement">The adorned element.</param>
         /// <param name="tool">The tool.</param>
@@ -59,7 +61,7 @@ namespace CommonControls
             : base(adornedElement)
         {
             Tool = tool;
-            imageTransform = transform ?? Transform.Identity;  // Use the provided transform, or default to Identity if none provided
+            _imageTransform = transform ?? Transform.Identity; // Use the provided transform, or default to Identity if none provided
         }
 
         /// <summary>
@@ -70,28 +72,28 @@ namespace CommonControls
         public void UpdateSelection(Point start, Point end)
         {
             // Apply transformation to the start and end points if necessary
-            startPoint = imageTransform.Transform(start);
-            endPoint = imageTransform.Transform(end);
+            _startPoint = _imageTransform.Transform(start);
+            _endPoint = _imageTransform.Transform(end);
 
             InvalidateVisual();
         }
 
         /// <summary>
-        /// Adds a point for the freeform tool.
+        /// Adds a point for the free form tool.
         /// </summary>
-        /// <param name="point">The freeform point.</param>
-        public void AddFreeformPoint(Point point)
+        /// <param name="point">The free form point.</param>
+        public void AddFreeFormPoint(Point point)
         {
-            freeformPoints.Add(imageTransform.Transform(point));
+            _freeFormPoints.Add(_imageTransform.Transform(point));
             InvalidateVisual();
         }
 
         /// <summary>
-        /// Clears the freeform points.
+        /// Clears the free form points.
         /// </summary>
         public void ClearFreeformPoints()
         {
-            freeformPoints.Clear();
+            _freeFormPoints.Clear();
             InvalidateVisual();
         }
 
@@ -101,56 +103,69 @@ namespace CommonControls
         /// <param name="transform">The new transform to apply.</param>
         public void UpdateImageTransform(Transform transform)
         {
-            imageTransform = transform ?? Transform.Identity;  // Use the provided transform, or default to Identity if none provided
+            _imageTransform = transform ?? Transform.Identity; // Use the provided transform, or default to Identity if none provided
             InvalidateVisual();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.
         /// </summary>
         /// <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>
         protected override void OnRender(DrawingContext drawingContext)
         {
-            var pen = new Pen(Brushes.Red, 2);
+            // Create a dashed pen
+            var dashedPen = new Pen(Brushes.Red, 2)
+            {
+                DashStyle = new DashStyle(new double[] { 2, 2 }, 0) // 2 pixels on, 2 pixels off
+            };
 
             // Only render if at least one of the start or end points is available
-            if (startPoint.HasValue && endPoint.HasValue)
+            if (_startPoint.HasValue && _endPoint.HasValue)
             {
-                Rect selectionRect = new(startPoint.Value, endPoint.Value);
+                Rect selectionRect = new(_startPoint.Value, _endPoint.Value);
 
                 switch (Tool)
                 {
                     case SelectionTools.SelectRectangle:
-                        drawingContext.DrawRectangle(null, pen, selectionRect);
+                    case SelectionTools.Erase:
+                        // Draw the erase area (which can behave similarly to a rectangle tool, but with different logic)
+                        drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)), dashedPen, selectionRect);
                         break;
 
                     case SelectionTools.SelectEllipse:
-                        drawingContext.DrawEllipse(null, pen, selectionRect.TopLeft, selectionRect.Width / 2, selectionRect.Height / 2);
-                        break;
+                        // Calculate the center of the rectangle
+                        Point center = new Point(
+                            selectionRect.Left + selectionRect.Width / 2,
+                            selectionRect.Top + selectionRect.Height / 2);
 
-                    case SelectionTools.Erase:
-                        // Draw the erase area (which can behave similarly to a rectangle tool, but with different logic)
-                        drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)), pen, selectionRect);
+                        // Draw the ellipse with the calculated center and half the width and height as radii
+                        drawingContext.DrawEllipse(null, dashedPen, center, selectionRect.Width / 2, selectionRect.Height / 2);
                         break;
 
                     case SelectionTools.SelectPixel:
                         // Select a single pixel (this can be visualized as a very small rectangle)
-                        drawingContext.DrawRectangle(Brushes.Red, pen, new Rect(startPoint.Value, new Size(1, 1)));
+                        drawingContext.DrawRectangle(Brushes.Red, dashedPen, new Rect(_startPoint.Value, new Size(1, 1)));
+                        break;
+
+                    case SelectionTools.FreeForm:
+                        if (_freeFormPoints.Count > 1)
+                        {
+                            var geometry = new StreamGeometry();
+
+                            using (var ctx = geometry.Open())
+                            {
+                                ctx.BeginFigure(_freeFormPoints[0], false, false);
+                                ctx.PolyLineTo(_freeFormPoints.Skip(1).ToArray(), true, false);
+                            }
+
+                            drawingContext.DrawGeometry(null, dashedPen, geometry);
+                        }
+
                         break;
                 }
             }
-
-            // Freeform selection tool rendering
-            if (Tool == SelectionTools.Freeform && freeformPoints.Count > 1)
-            {
-                var geometry = new StreamGeometry();
-                using (var ctx = geometry.Open())
-                {
-                    ctx.BeginFigure(freeformPoints[0], false, false);
-                    ctx.PolyLineTo(freeformPoints.Skip(1).ToArray(), true, false);
-                }
-                drawingContext.DrawGeometry(null, pen, geometry);
-            }
         }
+
     }
 }

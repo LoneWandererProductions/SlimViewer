@@ -12,43 +12,43 @@
 
 namespace CommonControls
 {
-	/// <summary>
-	///     The possible Selection Tools
-	/// </summary>
-	/// <summary>
-	///     The possible Selection Tools
-	/// </summary>
-	public enum SelectionTools
-	{
-		/// <summary>
-		///     The move tool
-		/// </summary>
-		Move = 0,
+    /// <summary>
+    ///     The possible Selection Tools
+    /// </summary>
+    /// <summary>
+    ///     The possible Selection Tools
+    /// </summary>
+    public enum SelectionTools
+    {
+        /// <summary>
+        ///     The move tool
+        /// </summary>
+        Move = 0,
 
-		/// <summary>
-		///     The select rectangle tool
-		/// </summary>
-		SelectRectangle = 1,
+        /// <summary>
+        ///     The select rectangle tool
+        /// </summary>
+        SelectRectangle = 1,
 
-		/// <summary>
-		///     The select pixel tool
-		/// </summary>
-		SelectPixel = 2,
+        /// <summary>
+        ///     The select pixel tool
+        /// </summary>
+        SelectPixel = 2,
 
-		/// <summary>
-		///     The erase tool
-		/// </summary>
-		Erase = 3,
+        /// <summary>
+        ///     The erase tool
+        /// </summary>
+        Erase = 3,
 
-		/// <summary>
-		///     The select ellipse tool
-		/// </summary>
-		SelectEllipse = 4,
+        /// <summary>
+        ///     The select ellipse tool
+        /// </summary>
+        SelectEllipse = 4,
 
-		/// <summary>
-		///     The freeform selection tool
-		/// </summary>
-		Freeform = 5
-	}
+        /// <summary>
+        ///     The free form selection tool
+        /// </summary>
+        FreeForm = 5
+    }
 
 }

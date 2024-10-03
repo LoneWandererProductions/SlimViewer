@@ -8,6 +8,7 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
 
 using System.Drawing;
 
@@ -84,6 +85,7 @@ namespace Imaging
         /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
+        /// <param name="startPoint">The Start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>
         ///     Texture Bitmap
@@ -93,7 +95,7 @@ namespace Imaging
             int height,
             TextureType filter,
             TextureShape shape,
-			Point? startPoint = null,
-			object shapeParams = null);
+            Point? startPoint = null,
+            object shapeParams = null);
     }
 }

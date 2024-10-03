@@ -14,7 +14,7 @@ namespace Imaging
     /// <summary>
     ///     Attributes for our texture generators
     /// </summary>
-    public class TextureConfiguration
+    public sealed class TextureConfiguration
     {
         /// <summary>
         ///     Gets or sets the minimum value.

@@ -30,11 +30,11 @@ namespace CommonControls
         /// </summary>
         private SelectionAdorner _selectionAdorner { get; set; }
 
-		/// <summary>
-		///     Delegate for Image Frame
-		/// </summary>
-		/// <param name="frame">The frame.</param>
-		public delegate void DelegateFrame(SelectionFrame frame);
+        /// <summary>
+        ///     Delegate for Image Frame
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        public delegate void DelegateFrame(SelectionFrame frame);
 
         /// <summary>
         ///     Delegate for Image Point
@@ -259,10 +259,6 @@ namespace CommonControls
         /// Attaches the adorner.
         /// </summary>
         /// <param name="tool">The tool.</param>
-        /// <summary>
-        /// Attaches the adorner.
-        /// </summary>
-        /// <param name="tool">The tool.</param>
         private void AttachAdorner(SelectionTools tool)
         {
             if (_selectionAdorner == null)
@@ -295,37 +291,37 @@ namespace CommonControls
             _originPoint.Y = BtmImage.RenderTransform.Value.OffsetY;
             _ = MainCanvas.CaptureMouse();
 
-			AttachAdorner(ZoomTool); // Attach adorner based on current tool
+            AttachAdorner(ZoomTool); // Attach Adorner based on current tool
 
-			switch (ZoomTool)
-			{
-				case SelectionTools.Move:
-				case SelectionTools.SelectPixel:
-					// nothing
-					break;
+            switch (ZoomTool)
+            {
+                case SelectionTools.Move:
+                case SelectionTools.SelectPixel:
+                    // nothing
+                    break;
 
-				case SelectionTools.SelectRectangle:
-				case SelectionTools.Erase:
-					{
-					}
-					break;
-				case SelectionTools.SelectEllipse:
-					break;
-				case SelectionTools.Freeform:
-					_imageStartPoint = e.GetPosition(BtmImage);
-					break;
-				default:
-					// nothing
-					return;
-			}
-		}
+                case SelectionTools.SelectRectangle:
+                case SelectionTools.Erase:
+                    {
+                    }
+                    break;
+                case SelectionTools.SelectEllipse:
+                    break;
+                case SelectionTools.FreeForm:
+                    _imageStartPoint = e.GetPosition(BtmImage);
+                    break;
+                default:
+                    // nothing
+                    return;
+            }
+        }
 
-		/// <summary>
-		///     Handles the MouseUp event of the Grid control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-		private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        ///     Handles the MouseUp event of the Grid control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+        private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             // Release the mouse capture and stop tracking it.
             _mouseDown = false;
@@ -346,12 +342,12 @@ namespace CommonControls
                 {
                     // Get the Position on the Image
                     endpoint = e.GetPosition(BtmImage);
-                        var frame = new SelectionFrame
-                        {
-                            Tool = "Rectangle"
-                        };
+                    var frame = new SelectionFrame
+                    {
+                        Tool = "Rectangle"
+                    };
 
-                        if (_imageStartPoint.X < endpoint.X)
+                    if (_imageStartPoint.X < endpoint.X)
                     {
                         frame.X = (int)_imageStartPoint.X;
                         frame.Width = (int)(endpoint.X - _imageStartPoint.X);
@@ -405,83 +401,85 @@ namespace CommonControls
                     adornerLayer.Remove(_selectionAdorner);
                     _selectionAdorner = null;  // Clear the reference
                 }
-
             }
         }
 
-		/// <summary>
-		/// Handles the MouseMove event of the Canvas control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
-		private void Canvas_MouseMove(object sender, MouseEventArgs e)
-		{
+        /// <summary>
+        /// Handles the MouseMove event of the Canvas control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        {
             if (!_mouseDown) return;
 
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
 
             switch (ZoomTool)
-			{
-				case SelectionTools.Move:
-					{
-						var position = e.GetPosition(MainCanvas);
-						var matrix = BtmImage.RenderTransform.Value;
-						matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
-						matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
-						BtmImage.RenderTransform = new MatrixTransform(matrix);
+            {
+                case SelectionTools.Move:
+                {
+                    var position = e.GetPosition(MainCanvas);
+                    var matrix = BtmImage.RenderTransform.Value;
+                    matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
+                    matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
+                    BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                        _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                        break;
-					}
+                    _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                    break;
+                }
 
-				case SelectionTools.SelectRectangle:
-				case SelectionTools.SelectEllipse:
-					{
-						// Update the adorner for rectangle or ellipse selection
-						if (_selectionAdorner != null)
-                        {
-							_selectionAdorner?.UpdateSelection(_startPoint, mousePos);
-						}
-						break;
-					}
+                case SelectionTools.SelectRectangle:
+                case SelectionTools.SelectEllipse:
+                {
+                    // Update the adorner for rectangle or ellipse selection
+                    if (_selectionAdorner != null)
+                    {
+                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                    }
 
-				case SelectionTools.Freeform:
-					{
-						// Update the adorner for freeform selection by adding points
-						if (_selectionAdorner != null)
-						{
-							_selectionAdorner?.AddFreeformPoint(mousePos);
-						}
-						break;
-					}
+                    break;
+                }
 
-				case SelectionTools.SelectPixel:
-					// Handle pixel selection if needed
-					break;
+                case SelectionTools.FreeForm:
+                {
+                    // Update the adorner for freeform selection by adding points
+                    if (_selectionAdorner != null)
+                    {
+                        _selectionAdorner?.AddFreeFormPoint(mousePos);
+                    }
 
-				case SelectionTools.Erase:
-					{
-						// Similar to rectangle selection, but intended for erasing
-						if (_selectionAdorner != null)
-						{
-							_selectionAdorner?.UpdateSelection(_startPoint, mousePos);
-						}
-						break;
-					}
+                    break;
+                }
 
-				default:
-					// Nothing
-					return;
-			}
-		}
+                case SelectionTools.SelectPixel:
+                    // Handle pixel selection if needed
+                    break;
 
-		/// <summary>
-		///     Handles the MouseWheel event of the Grid control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MouseWheelEventArgs" /> instance containing the event data.</param>
-		private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+                case SelectionTools.Erase:
+                {
+                    // Similar to rectangle selection, but intended for erasing
+                    if (_selectionAdorner != null)
+                    {
+                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                    }
+
+                    break;
+                }
+
+                default:
+                    // Nothing
+                    return;
+            }
+        }
+
+        /// <summary>
+        ///     Handles the MouseWheel event of the Grid control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseWheelEventArgs" /> instance containing the event data.</param>
+        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             //TODO add a Lock here for the Image change
 
@@ -498,12 +496,12 @@ namespace CommonControls
 
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
-	}
+    }
 
-	/// <summary>
-	///     The Selection Frame on the Image
-	/// </summary>
-	public sealed class SelectionFrame
+    /// <summary>
+    ///     The Selection Frame on the Image
+    /// </summary>
+    public sealed class SelectionFrame
     {
         /// <summary>
         ///     Gets or sets the x.
@@ -536,6 +534,12 @@ namespace CommonControls
         ///     The height.
         /// </value>
         public int Height { get; internal set; }
+        /// <summary>
+        /// Gets the tool.
+        /// </summary>
+        /// <value>
+        /// The tool.
+        /// </value>
         public string Tool { get; internal set; }
     }
 }

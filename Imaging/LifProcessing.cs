@@ -39,21 +39,17 @@ namespace Imaging
         // Save the Lif object (layers and settings) to a binary file
         public static void SaveLif(Lif lif, string path)
         {
-            using (var fs = new FileStream(path, FileMode.Create))
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(fs, lif);
-            }
+            using var fs = new FileStream(path, FileMode.Create);
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(fs, lif);
         }
 
         // Load the Lif object (layers and settings) from a binary file
         public static Lif LoadLif(string path)
         {
-            using (var fs = new FileStream(path, FileMode.Open))
-            {
-                var formatter = new BinaryFormatter();
-                return (Lif)formatter.Deserialize(fs);
-            }
+            using var fs = new FileStream(path, FileMode.Open);
+            var formatter = new BinaryFormatter();
+            return (Lif)formatter.Deserialize(fs);
         }
 
         // Convert a Bitmap to a CIF (Compressed Image Format) dictionary
