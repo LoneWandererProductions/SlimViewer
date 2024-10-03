@@ -10,6 +10,7 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedType.Global
 
 using System;
 using System.Collections;

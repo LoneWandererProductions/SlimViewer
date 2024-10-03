@@ -94,124 +94,109 @@ namespace SlimViews
         /// </summary>
         private int _width = 100;
 
-		/// <summary>
-		///     Gets or sets a value indicating whether this instance is percentages checked.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is percentages checked; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsPercentagesChecked
-		{
-			get => _isPercentagesChecked;
-			set => SetProperty(ref _isPercentagesChecked, value, nameof(IsPercentagesChecked));
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is percentages checked.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is percentages checked; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsPercentagesChecked
+        {
+            get => _isPercentagesChecked;
+            set => SetProperty(ref _isPercentagesChecked, value, nameof(IsPercentagesChecked));
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether this instance is relative size checked.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is relative size checked; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsRelativeSizeChecked
-		{
-			get => _isRelativeSizeChecked;
-			set => SetProperty(ref _isRelativeSizeChecked, value, nameof(IsRelativeSizeChecked));
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is relative size checked.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is relative size checked; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsRelativeSizeChecked
+        {
+            get => _isRelativeSizeChecked;
+            set => SetProperty(ref _isRelativeSizeChecked, value, nameof(IsRelativeSizeChecked));
+        }
 
-		/// <summary>
-		///     Gets or sets the selected filter option.
-		/// </summary>
-		/// <value>
-		///     The selected filter option.
-		/// </value>
-		public ImageFilters SelectedFilterOption
-		{
-			get => _selectedFilterOption;
-			set => SetProperty(ref _selectedFilterOption, value, nameof(SelectedFilterOption));
-		}
+        /// <summary>
+        ///     Gets or sets the selected filter option.
+        /// </summary>
+        /// <value>
+        ///     The selected filter option.
+        /// </value>
+        public ImageFilters SelectedFilterOption
+        {
+            get => _selectedFilterOption;
+            set => SetProperty(ref _selectedFilterOption, value, nameof(SelectedFilterOption));
+        }
 
-		/// <summary>
-		///     Gets or sets the selected extension.
-		/// </summary>
-		/// <value>
-		///     The selected extension.
-		/// </value>
-		public string SelectedExtension
-		{
-			get => _selectedExtension;
-			set => SetProperty(ref _selectedExtension, value, nameof(SelectedExtension));
-		}
+        /// <summary>
+        ///     Gets or sets the selected extension.
+        /// </summary>
+        /// <value>
+        ///     The selected extension.
+        /// </value>
+        public string SelectedExtension
+        {
+            get => _selectedExtension;
+            set => SetProperty(ref _selectedExtension, value, nameof(SelectedExtension));
+        }
 
-		/// <summary>
-		///     Gets or sets the height.
-		/// </summary>
-		/// <value>
-		///     The height.
-		/// </value>
-		public int Height
-		{
-			get => _height;
-			set => SetProperty(ref _height, value, nameof(Height));
-		}
+        /// <summary>
+        ///     Gets or sets the height.
+        /// </summary>
+        /// <value>
+        ///     The height.
+        /// </value>
+        public int Height
+        {
+            get => _height;
+            set => SetProperty(ref _height, value, nameof(Height));
+        }
 
-		/// <summary>
-		///     Gets or sets the width.
-		/// </summary>
-		/// <value>
-		///     The width.
-		/// </value>
-		public int Width
-		{
-			get => _width;
-			set => SetProperty(ref _width, value, nameof(Width));
-		}
+        /// <summary>
+        ///     Gets or sets the width.
+        /// </summary>
+        /// <value>
+        ///     The width.
+        /// </value>
+        public int Width
+        {
+            get => _width;
+            set => SetProperty(ref _width, value, nameof(Width));
+        }
 
-		/// <summary>
-		///     Gets or sets the output.
-		/// </summary>
-		/// <value>
-		///     The output.
-		/// </value>
-		public string Output
-		{
-			get => _output;
-			set => SetProperty(ref _output, value, nameof(Output));
-		}
+        /// <summary>
+        ///     Gets or sets the output.
+        /// </summary>
+        /// <value>
+        ///     The output.
+        /// </value>
+        public string Output
+        {
+            get => _output;
+            set => SetProperty(ref _output, value, nameof(Output));
+        }
 
-		/// <summary>
-		///     Gets or sets the input.
-		/// </summary>
-		/// <value>
-		///     The input.
-		/// </value>
-		public string Input
-		{
-			get => _input;
-			set => SetProperty(ref _input, value, nameof(Input));
-		}
+        /// <summary>
+        ///     Gets or sets the input.
+        /// </summary>
+        /// <value>
+        ///     The input.
+        /// </value>
+        public string Input
+        {
+            get => _input;
+            set => SetProperty(ref _input, value, nameof(Input));
+        }
 
-		/// <summary>
-		///     Sets the property.
-		/// </summary>
-		/// <typeparam name="T">Generic Parameter</typeparam>
-		/// <param name="field">The field.</param>
-		/// <param name="value">The value.</param>
-		/// <param name="propertyName">Name of the property.</param>
-		private void SetProperty<T>(ref T field, T value, string propertyName)
-		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-			field = value;
-			OnPropertyChanged(propertyName);
-		}
-
-		/// <summary>
-		///     Gets the process command.
-		/// </summary>
-		/// <value>
-		///     The process command.
-		/// </value>
-		public ICommand ProcessCommand =>
+        /// <summary>
+        ///     Gets the process command.
+        /// </summary>
+        /// <value>
+        ///     The process command.
+        /// </value>
+        public ICommand ProcessCommand =>
             _processCommand ??= new DelegateCommand<object>(ProcessAction, CanExecute);
 
         /// <summary>
@@ -263,6 +248,21 @@ namespace SlimViews
         ///     Triggers if an Attribute gets changed
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Sets the property.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.

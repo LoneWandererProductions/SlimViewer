@@ -168,139 +168,139 @@ namespace SlimViews
         public ICommand CloseCommand =>
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
-		/// <summary>
-		///     Gets or sets the basic File information.
-		/// </summary>
-		/// <value>
-		///     The information.
-		/// </value>
-		public string Information
-		{
-			get => _information;
-			set => SetProperty(ref _information, value, nameof(Information));
-		}
+        /// <summary>
+        ///     Gets or sets the basic File information.
+        /// </summary>
+        /// <value>
+        ///     The information.
+        /// </value>
+        public string Information
+        {
+            get => _information;
+            set => SetProperty(ref _information, value, nameof(Information));
+        }
 
-		/// <summary>
-		///     Gets or sets the file path.
-		/// </summary>
-		/// <value>
-		///     The file path.
-		/// </value>
-		public string FilePath
-		{
-			get => _filePath;
-			set => SetProperty(ref _filePath, value, nameof(FilePath));
-		}
+        /// <summary>
+        ///     Gets or sets the file path.
+        /// </summary>
+        /// <value>
+        ///     The file path.
+        /// </value>
+        public string FilePath
+        {
+            get => _filePath;
+            set => SetProperty(ref _filePath, value, nameof(FilePath));
+        }
 
-		/// <summary>
-		///     Gets or sets the output path.
-		/// </summary>
-		/// <value>
-		///     The output path.
-		/// </value>
-		public string OutputPath
-		{
-			get => _outputPath;
-			set => SetProperty(ref _outputPath, value, nameof(OutputPath));
-		}
+        /// <summary>
+        ///     Gets or sets the output path.
+        /// </summary>
+        /// <value>
+        ///     The output path.
+        /// </value>
+        public string OutputPath
+        {
+            get => _outputPath;
+            set => SetProperty(ref _outputPath, value, nameof(OutputPath));
+        }
 
-		/// <summary>
-		///     Gets or sets the BitmapImage.
-		/// </summary>
-		/// <value>
-		///     The BitmapImage.
-		/// </value>
-		public BitmapImage Bmp
-		{
-			get => _bmp;
-			set => SetProperty(ref _bmp, value, nameof(Bmp));
-		}
+        /// <summary>
+        ///     Gets or sets the BitmapImage.
+        /// </summary>
+        /// <value>
+        ///     The BitmapImage.
+        /// </value>
+        public BitmapImage Bmp
+        {
+            get => _bmp;
+            set => SetProperty(ref _bmp, value, nameof(Bmp));
+        }
 
-		/// <summary>
-		///     Gets or sets the GIF path.
-		/// </summary>
-		/// <value>
-		///     The GIF path.
-		/// </value>
-		public string GifPath
-		{
-			get => _gifPath;
-			set => SetProperty(ref _gifPath, value, nameof(GifPath));
-		}
+        /// <summary>
+        ///     Gets or sets the GIF path.
+        /// </summary>
+        /// <value>
+        ///     The GIF path.
+        /// </value>
+        public string GifPath
+        {
+            get => _gifPath;
+            set => SetProperty(ref _gifPath, value, nameof(GifPath));
+        }
 
-		/// <summary>
-		///     Gets or sets the observer.
-		/// </summary>
-		/// <value>
-		///     The observer.
-		/// </value>
-		public Dictionary<int, string> Observer
-		{
-			get => _observer;
-			set => SetProperty(ref _observer, value, nameof(Observer));
-		}
+        /// <summary>
+        ///     Gets or sets the observer.
+        /// </summary>
+        /// <value>
+        ///     The observer.
+        /// </value>
+        public Dictionary<int, string> Observer
+        {
+            get => _observer;
+            set => SetProperty(ref _observer, value, nameof(Observer));
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether this instance is active.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsActive
-		{
-			get => _isActive;
-			set => SetProperty(ref _isActive, value, nameof(IsActive));
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsActive
+        {
+            get => _isActive;
+            set => SetProperty(ref _isActive, value, nameof(IsActive));
+        }
 
-		/// <summary>
-		///     Gets or sets a value indicating whether [automatic clear].
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if [automatic clear]; otherwise, <c>false</c>.
-		/// </value>
-		public bool AutoClear
-		{
-			get => _autoClear;
-			set
-			{
-				// Use SetProperty to handle change notification
-				if (_autoClear != value) // Check if the value is actually changing
-				{
-					_autoClear = value;
-					SlimViewerRegister.GifCleanUp = value; // Set this whenever the property changes
-					OnPropertyChanged(nameof(AutoClear)); // Notify about the change
-				}
-			}
-		}
+        /// <summary>
+        ///     Gets or sets a value indicating whether [automatic clear].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [automatic clear]; otherwise, <c>false</c>.
+        /// </value>
+        public bool AutoClear
+        {
+            get => _autoClear;
+            set
+            {
+                // Use SetProperty to handle change notification
+                if (_autoClear != value) // Check if the value is actually changing
+                {
+                    _autoClear = value;
+                    SlimViewerRegister.GifCleanUp = value; // Set this whenever the property changes
+                    OnPropertyChanged(nameof(AutoClear)); // Notify about the change
+                }
+            }
+        }
 
-		/// <summary>
-		///     Sets the property.
-		/// </summary>
-		/// <typeparam name="T">Generic Parameter</typeparam>
-		/// <param name="field">The field.</param>
-		/// <param name="value">The value.</param>
-		/// <param name="propertyName">Name of the property.</param>
-		private void SetProperty<T>(ref T field, T value, string propertyName)
-		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-			field = value;
-			OnPropertyChanged(propertyName);
-		}
-
-		/// <summary>
-		///     Gets or sets the thumbnail.
-		/// </summary>
-		/// <value>
-		///     The thumbnail.
-		/// </value>
-		internal Thumbnails Thumbnail { private get; set; }
+        /// <summary>
+        ///     Gets or sets the thumbnail.
+        /// </summary>
+        /// <value>
+        ///     The thumbnail.
+        /// </value>
+        internal Thumbnails Thumbnail { private get; set; }
 
         /// <inheritdoc />
         /// <summary>
         ///     Triggers if an Attribute gets changed
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Sets the property.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
 
         /// <summary>
         ///     Called when [property changed].

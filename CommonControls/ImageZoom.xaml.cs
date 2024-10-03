@@ -26,11 +26,6 @@ namespace CommonControls
     public sealed partial class ImageZoom
     {
         /// <summary>
-        /// The selection adorner
-        /// </summary>
-        private SelectionAdorner _selectionAdorner;
-
-        /// <summary>
         ///     Delegate for Image Frame
         /// </summary>
         /// <param name="frame">The frame.</param>
@@ -86,6 +81,11 @@ namespace CommonControls
         ///     The origin Point.
         /// </summary>
         private Point _originPoint;
+
+        /// <summary>
+        ///     The selection adorner
+        /// </summary>
+        private SelectionAdorner _selectionAdorner;
 
         /// <summary>
         ///     The mouse down position
@@ -255,7 +255,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Attaches the adorner.
+        ///     Attaches the adorner.
         /// </summary>
         /// <param name="tool">The tool.</param>
         private void AttachAdorner(SelectionTools tool)
@@ -359,13 +359,13 @@ namespace CommonControls
                 {
                     // Remove the SelectionAdorner
                     adornerLayer.Remove(_selectionAdorner);
-                    _selectionAdorner = null;  // Clear the reference
+                    _selectionAdorner = null; // Clear the reference
                 }
             }
         }
 
         /// <summary>
-        /// Handles the MouseMove event of the Canvas control.
+        ///     Handles the MouseMove event of the Canvas control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>

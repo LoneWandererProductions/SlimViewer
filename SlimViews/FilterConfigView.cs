@@ -9,7 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Input;
 using Imaging;
@@ -19,63 +18,80 @@ namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
-    /// Set Input Fields active or Inactive based on the used Filter
+    ///     Set Input Fields active or Inactive based on the used Filter
     /// </summary>
     /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
     public sealed class FilterConfigView : INotifyPropertyChanged
     {
         /// <summary>
-        /// The current configuration
-        /// </summary>
-        private ImageFilterConfig _currentConfig;
-
-        /// <summary>
-        /// The selected filter
-        /// </summary>
-        private ImageFilters _selectedFilter;
-
-        /// <summary>
-        /// The factor
-        /// </summary>
-        private double _factor;
-
-        /// <summary>
-        /// The bias
-        /// </summary>
-        private double _bias;
-
-        /// <summary>
-        /// The sigma
-        /// </summary>
-        private double _sigma;
-
-        /// <summary>
-        /// The base window size
+        ///     The base window size
         /// </summary>
         private int _baseWindowSize;
 
         /// <summary>
-        /// The scale
+        ///     The bias
         /// </summary>
-        private int _scale;
+        private double _bias;
 
         /// <summary>
-        /// The save command
-        /// </summary>
-        private ICommand _saveCommand;
-
-        /// <summary>
-        /// The reset command
-        /// </summary>
-        private ICommand _resetCommand;
-
-        /// <summary>
-        /// The cancel command
+        ///     The cancel command
         /// </summary>
         private ICommand _cancelCommand;
 
         /// <summary>
-        /// Gets or sets the factor.
+        ///     The current configuration
+        /// </summary>
+        private ImageFilterConfig _currentConfig;
+
+        /// <summary>
+        ///     The factor
+        /// </summary>
+        private double _factor;
+
+        /// <summary>
+        ///     The reset command
+        /// </summary>
+        private ICommand _resetCommand;
+
+        /// <summary>
+        ///     The save command
+        /// </summary>
+        private ICommand _saveCommand;
+
+        /// <summary>
+        ///     The scale
+        /// </summary>
+        private int _scale;
+
+        /// <summary>
+        ///     The selected filter
+        /// </summary>
+        private ImageFilters _selectedFilter;
+
+        /// <summary>
+        ///     The sigma
+        /// </summary>
+        private double _sigma;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="FilterConfigView" /> class.
+        /// </summary>
+        public FilterConfigView()
+        {
+            CurrentConfig = new ImageFilterConfig(); // Initialize with default values
+
+            // Set properties from CurrentConfig
+            Factor = CurrentConfig.Factor;
+            Bias = CurrentConfig.Bias;
+            Sigma = CurrentConfig.Sigma;
+            BaseWindowSize = CurrentConfig.BaseWindowSize;
+            Scale = CurrentConfig.Scale;
+
+            UpdateActiveProperties();
+        }
+
+        /// <summary>
+        ///     Gets or sets the factor.
         /// </summary>
         public double Factor
         {
@@ -84,7 +100,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the bias.
+        ///     Gets or sets the bias.
         /// </summary>
         public double Bias
         {
@@ -93,7 +109,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the sigma.
+        ///     Gets or sets the sigma.
         /// </summary>
         public double Sigma
         {
@@ -102,7 +118,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the base window size.
+        ///     Gets or sets the base window size.
         /// </summary>
         public int BaseWindowSize
         {
@@ -111,7 +127,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the scale.
+        ///     Gets or sets the scale.
         /// </summary>
         public int Scale
         {
@@ -120,10 +136,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the selected filter.
+        ///     Gets or sets the selected filter.
         /// </summary>
         /// <value>
-        /// The selected filter.
+        ///     The selected filter.
         /// </value>
         public ImageFilters SelectedFilter
         {
@@ -149,10 +165,10 @@ namespace SlimViews
             Enum.GetValues(typeof(ImageFilters)) as IEnumerable<ImageFilters>;
 
         /// <summary>
-        /// Gets or sets the current configuration.
+        ///     Gets or sets the current configuration.
         /// </summary>
         /// <value>
-        /// The current configuration.
+        ///     The current configuration.
         /// </value>
         public ImageFilterConfig CurrentConfig
         {
@@ -167,43 +183,73 @@ namespace SlimViews
         // Local properties to control UI element states
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is factor active.
+        ///     Gets or sets a value indicating whether this instance is factor active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is factor active; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is factor active; otherwise, <c>false</c>.
         /// </value>
         public bool IsFactorActive { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is bias active.
+        ///     Gets or sets a value indicating whether this instance is bias active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is bias active; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is bias active; otherwise, <c>false</c>.
         /// </value>
         public bool IsBiasActive { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is sigma active.
+        ///     Gets or sets a value indicating whether this instance is sigma active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is sigma active; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is sigma active; otherwise, <c>false</c>.
         /// </value>
         public bool IsSigmaActive { get; set; }
+
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is base window size active.
+        ///     Gets or sets a value indicating whether this instance is base window size active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is base window size active; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is base window size active; otherwise, <c>false</c>.
         /// </value>
         public bool IsBaseWindowSizeActive { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is scale active.
+        ///     Gets or sets a value indicating whether this instance is scale active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is scale active; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is scale active; otherwise, <c>false</c>.
         /// </value>
         public bool IsScaleActive { get; set; }
+
+        /// <summary>
+        ///     Gets the save command.
+        /// </summary>
+        /// <value>
+        ///     The save command.
+        /// </value>
+        public ICommand SaveCommand => GetCommand(ref _saveCommand, SaveAction);
+
+        /// <summary>
+        ///     Gets the reset command.
+        /// </summary>
+        /// <value>
+        ///     The reset command.
+        /// </value>
+        public ICommand ResetCommand => GetCommand(ref _resetCommand, ResetAction);
+
+        /// <summary>
+        ///     Gets the cancel command.
+        /// </summary>
+        /// <value>
+        ///     The cancel command.
+        /// </value>
+        public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
+
+        /// <summary>
+        ///     Occurs when a property value changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Sets the property.
@@ -221,36 +267,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets the save command.
-        /// </summary>
-        /// <value>
-        /// The save command.
-        /// </value>
-        public ICommand SaveCommand => GetCommand(ref _saveCommand,SaveAction);
-
-        /// <summary>
-        /// Gets the reset command.
-        /// </summary>
-        /// <value>
-        /// The reset command.
-        /// </value>
-        public ICommand ResetCommand => GetCommand(ref _resetCommand, ResetAction);
-
-        /// <summary>
-        /// Gets the cancel command.
-        /// </summary>
-        /// <value>
-        /// The cancel command.
-        /// </value>
-        public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
-
-        /// <summary>
-        /// Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Called when [property changed].
+        ///     Called when [property changed].
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         private void OnPropertyChanged(string propertyName)
@@ -285,24 +302,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FilterConfigView"/> class.
-        /// </summary>
-        public FilterConfigView()
-        {
-            CurrentConfig = new ImageFilterConfig(); // Initialize with default values
-
-            // Set properties from CurrentConfig
-            Factor = CurrentConfig.Factor;
-            Bias = CurrentConfig.Bias;
-            Sigma = CurrentConfig.Sigma;
-            BaseWindowSize = CurrentConfig.BaseWindowSize;
-            Scale = CurrentConfig.Scale;
-
-            UpdateActiveProperties();
-        }
-
-        /// <summary>
-        /// Updates the active properties.
+        ///     Updates the active properties.
         /// </summary>
         private void UpdateActiveProperties()
         {
@@ -335,7 +335,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Saves the action.
+        ///     Saves the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void SaveAction(object obj)
@@ -344,7 +344,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Saves the settings.
+        ///     Saves the settings.
         /// </summary>
         private void SaveSettings()
         {
@@ -357,7 +357,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Resets the action.
+        ///     Resets the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ResetAction(object obj)
@@ -368,16 +368,13 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Cancels the action.
+        ///     Cancels the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void CancelAction(object obj)
         {
             // Close the window
-            if (obj is Window window)
-            {
-                window.Close();
-            }
+            if (obj is Window window) window.Close();
         }
     }
 }

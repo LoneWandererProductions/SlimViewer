@@ -146,11 +146,6 @@ namespace SlimViews
         private ICommand _explorerCommand;
 
         /// <summary>
-        /// The hotkey command
-        /// </summary>
-        private ICommand _hotkeyCommand;
-
-        /// <summary>
         ///     The file list
         ///     Holds the current List of Files we are viewing.
         ///     Needed for Move Files
@@ -171,11 +166,6 @@ namespace SlimViews
         ///     The filter configuration command
         /// </summary>
         private ICommand _filterConfigCommand;
-
-        /// <summary>
-        /// The texture configuration command
-        /// </summary>
-        private ICommand _textureConfigCommand;
 
         /// <summary>
         ///     The folder command
@@ -201,6 +191,11 @@ namespace SlimViews
         ///     The GIF window command
         /// </summary>
         private ICommand _gifWindowCommand;
+
+        /// <summary>
+        ///     The hotkey command
+        /// </summary>
+        private ICommand _hotkeyCommand;
 
         /// <summary>
         ///     The information
@@ -332,6 +327,11 @@ namespace SlimViews
         private bool _subFolders;
 
         /// <summary>
+        ///     The texture configuration command
+        /// </summary>
+        private ICommand _textureConfigCommand;
+
+        /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
@@ -460,9 +460,7 @@ namespace SlimViews
             set
             {
                 if (value >= 2) // Only set if value is valid
-                {
                     SetProperty(ref _pixelWidth, value, nameof(PixelWidth));
-                }
             }
         }
 
@@ -604,21 +602,6 @@ namespace SlimViews
         {
             get => _gifPath;
             set => SetProperty(ref _gifPath, value, nameof(GifPath));
-        }
-
-        /// <summary>
-        ///     Sets the property.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-            field = value;
-            OnPropertyChanged(propertyName);
         }
 
         /// <summary>
@@ -931,10 +914,10 @@ namespace SlimViews
             _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
 
         /// <summary>
-        /// Gets the hotkey command.
+        ///     Gets the hotkey command.
         /// </summary>
         /// <value>
-        /// The hotkey command.
+        ///     The hotkey command.
         /// </value>
         public ICommand HotkeyCommand =>
             _hotkeyCommand ??= new DelegateCommand<string>(HotkeyAction, CanExecute);
@@ -962,6 +945,21 @@ namespace SlimViews
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
+        ///     Sets the property.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+
+            field = value;
+            OnPropertyChanged(propertyName);
+        }
+
+        /// <summary>
         ///     Called when [property changed].
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
@@ -987,7 +985,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Hotkey actions.
+        ///     Hotkey actions.
         /// </summary>
         /// <param name="key">The key.</param>
         private void HotkeyAction(string key)
@@ -1488,7 +1486,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Textures the configuration Window.
+        ///     Textures the configuration Window.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void TextureConfigWindowAction(string obj)

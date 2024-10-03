@@ -22,7 +22,7 @@ namespace Imaging
     ///     Extension for Image to play e.g. gif Images
     /// </summary>
     /// <seealso cref="Image" />
-    public sealed class ImageGif : Image, IDisposable
+    public sealed class ImageGif : Image
     {
         /// <summary>
         ///     The frame index property
@@ -104,17 +104,15 @@ namespace Imaging
         {
             // Check if the image exists
             if (!File.Exists(GifSource))
-            {
                 // Log or show an error message
                 return;
-            }
 
             try
             {
                 var info = ImageGifHandler.GetImageInfo(GifSource);
 
                 // Handle possible error
-                if (info == null || !info.IsAnimated) return;
+                if (info is not { IsAnimated: true }) return;
 
                 _imageList = ImageGifHandler.LoadGif(GifSource);
                 Source = _imageList[0];
@@ -122,7 +120,7 @@ namespace Imaging
                 var time = Math.Max(1, info.Frames / 10);
                 _animation = new Int32Animation(0, info.Frames - 1,
                         new Duration(new TimeSpan(0, 0, 0, time)))
-                { RepeatBehavior = RepeatBehavior.Forever };
+                    { RepeatBehavior = RepeatBehavior.Forever };
 
                 _isInitialized = true;
 
@@ -150,13 +148,11 @@ namespace Imaging
         /// </summary>
         private static void ChangingFrameIndex(DependencyObject obj, DependencyPropertyChangedEventArgs ev)
         {
-            if (obj is ImageGif {AutoStart: true} gifImage)
+            if (obj is ImageGif { AutoStart: true } gifImage)
             {
                 var newIndex = (int)ev.NewValue;
                 if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
-                {
                     gifImage.Source = gifImage._imageList[newIndex];
-                }
             }
         }
 
@@ -191,28 +187,6 @@ namespace Imaging
         public void StopAnimation()
         {
             BeginAnimation(FrameIndexProperty, null);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Dispose method for releasing resources.
-        /// </summary>
-        public void Dispose()
-        {
-            StopAnimation();
-            // Optionally clear image resources
-            if (_imageList != null)
-            {
-                foreach (var img in _imageList)
-                {
-                    if (img is IDisposable disposable)
-                        disposable.Dispose();
-                }
-                _imageList.Clear();
-            }
-
-            _imageList = null;
-            _animation = null;
         }
     }
 }

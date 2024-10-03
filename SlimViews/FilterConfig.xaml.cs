@@ -6,19 +6,17 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Windows;
-
 namespace SlimViews
 {
-	/// <summary>
-	/// Configuration for our Filters
-	/// </summary>
-	public partial class FilterConfig : Window
+    /// <summary>
+    ///     Configuration for our Filters
+    /// </summary>
+    public partial class FilterConfig
     {
-		/// <summary>
-		/// Initializes a new instance of the <see cref="FilterConfig"/> class.
-		/// </summary>
-		public FilterConfig()
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="FilterConfig" /> class.
+        /// </summary>
+        public FilterConfig()
         {
             InitializeComponent();
         }

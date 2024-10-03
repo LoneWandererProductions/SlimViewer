@@ -526,93 +526,93 @@ namespace SlimViews
             switch (id)
             {
                 case 0:
-                    {
-                        var files = _observerFirst.Values.ToList();
-                        if (!_observerFirst.ContainsKey(itemId)) return;
+                {
+                    var files = _observerFirst.Values.ToList();
+                    if (!_observerFirst.ContainsKey(itemId)) return;
 
-                        var path = _observerFirst[itemId];
+                    var path = _observerFirst[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 1:
-                    {
-                        var files = _observerSecond.Values.ToList();
-                        if (!_observerSecond.ContainsKey(itemId)) return;
+                {
+                    var files = _observerSecond.Values.ToList();
+                    if (!_observerSecond.ContainsKey(itemId)) return;
 
-                        var path = _observerSecond[itemId];
+                    var path = _observerSecond[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 2:
-                    {
-                        var files = _observerThird.Values.ToList();
-                        if (!_observerThird.ContainsKey(itemId)) return;
+                {
+                    var files = _observerThird.Values.ToList();
+                    if (!_observerThird.ContainsKey(itemId)) return;
 
-                        var path = _observerThird[itemId];
+                    var path = _observerThird[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 3:
-                    {
-                        var files = _observerFourth.Values.ToList();
-                        if (!_observerFourth.ContainsKey(itemId)) return;
+                {
+                    var files = _observerFourth.Values.ToList();
+                    if (!_observerFourth.ContainsKey(itemId)) return;
 
-                        var path = _observerFourth[itemId];
+                    var path = _observerFourth[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 4:
-                    {
-                        var files = _observerFifth.Values.ToList();
-                        if (!_observerFifth.ContainsKey(itemId)) return;
+                {
+                    var files = _observerFifth.Values.ToList();
+                    if (!_observerFifth.ContainsKey(itemId)) return;
 
-                        var path = _observerFifth[itemId];
+                    var path = _observerFifth[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 5:
-                    {
-                        var files = _observerSixth.Values.ToList();
-                        if (!_observerSixth.ContainsKey(itemId)) return;
+                {
+                    var files = _observerSixth.Values.ToList();
+                    if (!_observerSixth.ContainsKey(itemId)) return;
 
-                        var path = _observerSixth[itemId];
+                    var path = _observerSixth[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 6:
-                    {
-                        var files = _observerSeventh.Values.ToList();
-                        if (!_observerSeventh.ContainsKey(itemId)) return;
+                {
+                    var files = _observerSeventh.Values.ToList();
+                    if (!_observerSeventh.ContainsKey(itemId)) return;
 
-                        var path = ObserverSeventh[itemId];
+                    var path = ObserverSeventh[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 7:
-                    {
-                        var files = _observerEight.Values.ToList();
-                        if (!_observerEight.ContainsKey(itemId)) return;
+                {
+                    var files = _observerEight.Values.ToList();
+                    if (!_observerEight.ContainsKey(itemId)) return;
 
-                        var path = _observerEight[itemId];
+                    var path = _observerEight[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
                 case 8:
                 {
                     var files = _observerNinth.Values.ToList();
@@ -625,16 +625,16 @@ namespace SlimViews
                     break;
                 }
                 case 9:
-                    {
-                        var files = _observerTenth.Values.ToList();
-                        if (!_observerTenth.ContainsKey(itemId)) return;
+                {
+                    var files = _observerTenth.Values.ToList();
+                    if (!_observerTenth.ContainsKey(itemId)) return;
 
-                        var path = _observerTenth[itemId];
+                    var path = _observerTenth[itemId];
 
-                        LoadImages(path, itemId, files);
+                    LoadImages(path, itemId, files);
 
-                        break;
-                    }
+                    break;
+                }
             }
         }
 

@@ -6,551 +6,136 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using Imaging;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Input;
-using ViewModel;
 using System.Windows;
+using System.Windows.Input;
+using Imaging;
+using ViewModel;
 
 namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
-    /// Main View for texture Configuration
+    ///     Main View for texture Configuration
     /// </summary>
     /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
     public sealed class TextureConfigView : INotifyPropertyChanged
     {
         /// <summary>
-        /// Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     Gets the filter options.
-        /// </summary>
-        /// <value>
-        ///     The filter options.
-        /// </value>
-        public IEnumerable<TextureType> TextureOptions =>
-            Enum.GetValues(typeof(TextureType)) as IEnumerable<TextureType>;
-
-        /// <summary>
-        /// The selected texture
-        /// </summary>
-        private TextureType _selectedTexture;
-
-        /// <summary>
-        /// Gets or sets the selected texture.
-        /// </summary>
-        /// <value>
-        /// The selected texture.
-        /// </value>
-        public TextureType SelectedTexture
-        {
-            get => _selectedTexture;
-            set
-            {
-                SetProperty(ref _selectedTexture, value, nameof(SelectedTexture));
-                UpdateActiveProperties();
-            }
-        }
-
-        /// <summary>
-        /// The angle2
-        /// </summary>
-        private double _angle2;
-
-        /// <summary>
-        /// The angle1
-        /// </summary>
-        private double _angle1;
-
-        /// <summary>
-        /// The line thickness
-        /// </summary>
-        private int _lineThickness;
-
-        /// <summary>
-        /// The line color
-        /// </summary>
-        private Color _lineColor;
-
-        /// <summary>
-        /// The line spacing
-        /// </summary>
-        private int _lineSpacing;
-
-        /// <summary>
-        /// The xy period
-        /// </summary>
-        private double _xyPeriod;
-
-        /// <summary>
-        /// The use turbulence
-        /// </summary>
-        private bool _useTurbulence;
-
-        /// <summary>
-        /// The use smooth noise
-        /// </summary>
-        private bool _useSmoothNoise;
-
-        /// <summary>
-        /// The is tiled
-        /// </summary>
-        private bool _isTiled;
-
-        /// <summary>
-        /// The is monochrome
-        /// </summary>
-        private bool _isMonochrome;
-
-        /// <summary>
-        /// The base color
-        /// </summary>
-        private Color _baseColor;
-
-        /// <summary>
-        /// The turbulence size
-        /// </summary>
-        private double _turbulenceSize;
-
-        /// <summary>
-        /// The turbulence power
-        /// </summary>
-        private double _turbulencePower;
-
-        /// <summary>
-        /// The y period
-        /// </summary>
-        private double _yPeriod;
-
-        /// <summary>
-        /// The x period
-        /// </summary>
-        private double _xPeriod;
-
-        /// <summary>
-        /// The alpha
+        ///     The alpha
         /// </summary>
         private int _alpha;
 
         /// <summary>
-        /// The maximum value
+        ///     The angle1
         /// </summary>
-        private int _maxValue;
+        private double _angle1;
 
         /// <summary>
-        /// The minimum value
+        ///     The angle2
         /// </summary>
-        private int _minValue;
+        private double _angle2;
 
         /// <summary>
-        /// The save command
+        ///     The base color
         /// </summary>
-        private ICommand _saveCommand;
+        private Color _baseColor;
 
         /// <summary>
-        /// The reset command
-        /// </summary>
-        private ICommand _resetCommand;
-
-        /// <summary>
-        /// The cancel command
+        ///     The cancel command
         /// </summary>
         private ICommand _cancelCommand;
 
         /// <summary>
-        /// Gets or sets the minimum value.
+        ///     The is monochrome
         /// </summary>
-        /// <value>
-        /// The minimum value.
-        /// </value>
-        public int MinValue
-        {
-            get => _minValue;
-            set => SetProperty(ref _minValue, value, nameof(MinValue));
-        }
+        private bool _isMonochrome;
 
         /// <summary>
-        /// Gets or sets the maximum value.
+        ///     The is tiled
         /// </summary>
-        /// <value>
-        /// The maximum value.
-        /// </value>
-        public int MaxValue
-        {
-            get => _maxValue;
-            set => SetProperty(ref _maxValue, value, nameof(MaxValue));
-        }
+        private bool _isTiled;
 
         /// <summary>
-        /// Gets or sets the alpha.
+        ///     The line color
         /// </summary>
-        /// <value>
-        /// The alpha.
-        /// </value>
-        public int Alpha
-        {
-            get => _alpha;
-            set => SetProperty(ref _alpha, value, nameof(Alpha));
-        }
+        private Color _lineColor;
 
         /// <summary>
-        /// Gets or sets the x period.
+        ///     The line spacing
         /// </summary>
-        /// <value>
-        /// The x period.
-        /// </value>
-        public double XPeriod
-        {
-            get => _xPeriod;
-            set => SetProperty(ref _xPeriod, value, nameof(XPeriod));
-        }
+        private int _lineSpacing;
 
         /// <summary>
-        /// Gets or sets the y period.
+        ///     The line thickness
         /// </summary>
-        /// <value>
-        /// The y period.
-        /// </value>
-        public double YPeriod
-        {
-            get => _yPeriod;
-            set => SetProperty(ref _yPeriod, value, nameof(YPeriod));
-        }
+        private int _lineThickness;
 
         /// <summary>
-        /// Gets or sets the turbulence power.
+        ///     The maximum value
         /// </summary>
-        /// <value>
-        /// The turbulence power.
-        /// </value>
-        public double TurbulencePower
-        {
-            get => _turbulencePower;
-            set => SetProperty(ref _turbulencePower, value, nameof(TurbulencePower));
-        }
+        private int _maxValue;
 
         /// <summary>
-        /// Gets or sets the size of the turbulence.
+        ///     The minimum value
         /// </summary>
-        /// <value>
-        /// The size of the turbulence.
-        /// </value>
-        public double TurbulenceSize
-        {
-            get => _turbulenceSize;
-            set => SetProperty(ref _turbulenceSize, value, nameof(TurbulenceSize));
-        }
+        private int _minValue;
 
         /// <summary>
-        /// Gets or sets the color of the base.
+        ///     The reset command
         /// </summary>
-        /// <value>
-        /// The color of the base.
-        /// </value>
-        public Color BaseColor
-        {
-            get => _baseColor;
-            set => SetProperty(ref _baseColor, value, nameof(BaseColor));
-        }
+        private ICommand _resetCommand;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is monochrome.
+        ///     The save command
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is monochrome; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMonochrome
-        {
-            get => _isMonochrome;
-            set => SetProperty(ref _isMonochrome, value, nameof(IsMonochrome));
-        }
+        private ICommand _saveCommand;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is tiled.
+        ///     The selected texture
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is tiled; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsTiled
-        {
-            get => _isTiled;
-            set => SetProperty(ref _isTiled, value, nameof(IsTiled));
-        }
+        private TextureType _selectedTexture;
 
         /// <summary>
-        /// Gets or sets a value indicating whether [use smooth noise].
+        ///     The turbulence power
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if [use smooth noise]; otherwise, <c>false</c>.
-        /// </value>
-        public bool UseSmoothNoise
-        {
-            get => _useSmoothNoise;
-            set => SetProperty(ref _useSmoothNoise, value, nameof(UseSmoothNoise));
-        }
+        private double _turbulencePower;
 
         /// <summary>
-        /// Gets or sets a value indicating whether [use turbulence].
+        ///     The turbulence size
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if [use turbulence]; otherwise, <c>false</c>.
-        /// </value>
-        public bool UseTurbulence
-        {
-            get => _useTurbulence;
-            set => SetProperty(ref _useTurbulence, value, nameof(UseTurbulence));
-        }
+        private double _turbulenceSize;
 
         /// <summary>
-        /// Gets or sets the xy period.
+        ///     The use smooth noise
         /// </summary>
-        /// <value>
-        /// The xy period.
-        /// </value>
-        public double XyPeriod
-        {
-            get => _xyPeriod;
-            set => SetProperty(ref _xyPeriod, value, nameof(XyPeriod));
-        }
+        private bool _useSmoothNoise;
 
         /// <summary>
-        /// Gets or sets the line spacing.
+        ///     The use turbulence
         /// </summary>
-        /// <value>
-        /// The line spacing.
-        /// </value>
-        public int LineSpacing
-        {
-            get => _lineSpacing;
-            set => SetProperty(ref _lineSpacing, value, nameof(LineSpacing));
-        }
+        private bool _useTurbulence;
 
         /// <summary>
-        /// Gets or sets the color of the line.
+        ///     The x period
         /// </summary>
-        /// <value>
-        /// The color of the line.
-        /// </value>
-        public Color LineColor
-        {
-            get => _lineColor;
-            set => SetProperty(ref _lineColor, value, nameof(LineColor));
-        }
+        private double _xPeriod;
 
         /// <summary>
-        /// Gets or sets the line thickness.
+        ///     The xy period
         /// </summary>
-        /// <value>
-        /// The line thickness.
-        /// </value>
-        public int LineThickness
-        {
-            get => _lineThickness;
-            set => SetProperty(ref _lineThickness, value, nameof(LineThickness));
-        }
+        private double _xyPeriod;
 
         /// <summary>
-        /// Gets or sets the angle1.
+        ///     The y period
         /// </summary>
-        /// <value>
-        /// The angle1.
-        /// </value>
-        public double Angle1
-        {
-            get => _angle1;
-            set => SetProperty(ref _angle1, value, nameof(Angle1));
-        }
-
+        private double _yPeriod;
 
         /// <summary>
-        /// Gets or sets the angle2.
-        /// </summary>
-        /// <value>
-        /// The angle2.
-        /// </value>
-        public double Angle2
-        {
-            get => _angle2;
-            set => SetProperty(ref _angle2, value, nameof(Angle2));
-        }
-
-        // Active properties
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is minimum value active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is minimum value active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMinValueActive { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is maximum value active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is maximum value active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMaxValueActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is alpha active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is alpha active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAlphaActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is x period active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is x period active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsXPeriodActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is y period active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is y period active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsYPeriodActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is turbulence power active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is turbulence power active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsTurbulencePowerActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is turbulence size active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is turbulence size active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsTurbulenceSizeActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is base color active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is base color active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsBaseColorActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is monochrome active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is monochrome active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMonochromeActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is tiled active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is tiled active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsTiledActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is use smooth noise active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is use smooth noise active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsUseSmoothNoiseActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is use turbulence active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is use turbulence active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsUseTurbulenceActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is xy period active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is xy period active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsXyPeriodActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is line spacing active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is line spacing active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsLineSpacingActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is line color active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is line color active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsLineColorActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is line thickness active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is line thickness active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsLineThicknessActive { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is angle1 active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is angle1 active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAngle1Active { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is angle2 active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is angle2 active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAngle2Active { get; set; }
-
-        /// <summary>
-        /// Gets the save command.
-        /// </summary>
-        /// <value>
-        /// The save command.
-        /// </value>
-        public ICommand SaveCommand => GetCommand(ref _saveCommand, SaveAction);
-
-        /// <summary>
-        /// Gets the reset command.
-        /// </summary>
-        /// <value>
-        /// The reset command.
-        /// </value>
-        public ICommand ResetCommand => GetCommand(ref _resetCommand, ResetAction);
-
-        /// <summary>
-        /// Gets the cancel command.
-        /// </summary>
-        /// <value>
-        /// The cancel command.
-        /// </value>
-        public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextureConfigView"/> class.
+        ///     Initializes a new instance of the <see cref="TextureConfigView" /> class.
         /// </summary>
         public TextureConfigView()
         {
@@ -580,14 +165,432 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Called when [property changed].
+        ///     Gets the filter options.
         /// </summary>
-        /// <param name="name">The name.</param>
-        private void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        /// <value>
+        ///     The filter options.
+        /// </value>
+        public IEnumerable<TextureType> TextureOptions =>
+            Enum.GetValues(typeof(TextureType)) as IEnumerable<TextureType>;
 
         /// <summary>
-        /// Sets the property.
+        ///     Gets or sets the selected texture.
+        /// </summary>
+        /// <value>
+        ///     The selected texture.
+        /// </value>
+        public TextureType SelectedTexture
+        {
+            get => _selectedTexture;
+            set
+            {
+                SetProperty(ref _selectedTexture, value, nameof(SelectedTexture));
+                UpdateActiveProperties();
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the minimum value.
+        /// </summary>
+        /// <value>
+        ///     The minimum value.
+        /// </value>
+        public int MinValue
+        {
+            get => _minValue;
+            set => SetProperty(ref _minValue, value, nameof(MinValue));
+        }
+
+        /// <summary>
+        ///     Gets or sets the maximum value.
+        /// </summary>
+        /// <value>
+        ///     The maximum value.
+        /// </value>
+        public int MaxValue
+        {
+            get => _maxValue;
+            set => SetProperty(ref _maxValue, value, nameof(MaxValue));
+        }
+
+        /// <summary>
+        ///     Gets or sets the alpha.
+        /// </summary>
+        /// <value>
+        ///     The alpha.
+        /// </value>
+        public int Alpha
+        {
+            get => _alpha;
+            set => SetProperty(ref _alpha, value, nameof(Alpha));
+        }
+
+        /// <summary>
+        ///     Gets or sets the x period.
+        /// </summary>
+        /// <value>
+        ///     The x period.
+        /// </value>
+        public double XPeriod
+        {
+            get => _xPeriod;
+            set => SetProperty(ref _xPeriod, value, nameof(XPeriod));
+        }
+
+        /// <summary>
+        ///     Gets or sets the y period.
+        /// </summary>
+        /// <value>
+        ///     The y period.
+        /// </value>
+        public double YPeriod
+        {
+            get => _yPeriod;
+            set => SetProperty(ref _yPeriod, value, nameof(YPeriod));
+        }
+
+        /// <summary>
+        ///     Gets or sets the turbulence power.
+        /// </summary>
+        /// <value>
+        ///     The turbulence power.
+        /// </value>
+        public double TurbulencePower
+        {
+            get => _turbulencePower;
+            set => SetProperty(ref _turbulencePower, value, nameof(TurbulencePower));
+        }
+
+        /// <summary>
+        ///     Gets or sets the size of the turbulence.
+        /// </summary>
+        /// <value>
+        ///     The size of the turbulence.
+        /// </value>
+        public double TurbulenceSize
+        {
+            get => _turbulenceSize;
+            set => SetProperty(ref _turbulenceSize, value, nameof(TurbulenceSize));
+        }
+
+        /// <summary>
+        ///     Gets or sets the color of the base.
+        /// </summary>
+        /// <value>
+        ///     The color of the base.
+        /// </value>
+        public Color BaseColor
+        {
+            get => _baseColor;
+            set => SetProperty(ref _baseColor, value, nameof(BaseColor));
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is monochrome.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is monochrome; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMonochrome
+        {
+            get => _isMonochrome;
+            set => SetProperty(ref _isMonochrome, value, nameof(IsMonochrome));
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is tiled.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is tiled; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsTiled
+        {
+            get => _isTiled;
+            set => SetProperty(ref _isTiled, value, nameof(IsTiled));
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether [use smooth noise].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [use smooth noise]; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseSmoothNoise
+        {
+            get => _useSmoothNoise;
+            set => SetProperty(ref _useSmoothNoise, value, nameof(UseSmoothNoise));
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether [use turbulence].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [use turbulence]; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseTurbulence
+        {
+            get => _useTurbulence;
+            set => SetProperty(ref _useTurbulence, value, nameof(UseTurbulence));
+        }
+
+        /// <summary>
+        ///     Gets or sets the xy period.
+        /// </summary>
+        /// <value>
+        ///     The xy period.
+        /// </value>
+        public double XyPeriod
+        {
+            get => _xyPeriod;
+            set => SetProperty(ref _xyPeriod, value, nameof(XyPeriod));
+        }
+
+        /// <summary>
+        ///     Gets or sets the line spacing.
+        /// </summary>
+        /// <value>
+        ///     The line spacing.
+        /// </value>
+        public int LineSpacing
+        {
+            get => _lineSpacing;
+            set => SetProperty(ref _lineSpacing, value, nameof(LineSpacing));
+        }
+
+        /// <summary>
+        ///     Gets or sets the color of the line.
+        /// </summary>
+        /// <value>
+        ///     The color of the line.
+        /// </value>
+        public Color LineColor
+        {
+            get => _lineColor;
+            set => SetProperty(ref _lineColor, value, nameof(LineColor));
+        }
+
+        /// <summary>
+        ///     Gets or sets the line thickness.
+        /// </summary>
+        /// <value>
+        ///     The line thickness.
+        /// </value>
+        public int LineThickness
+        {
+            get => _lineThickness;
+            set => SetProperty(ref _lineThickness, value, nameof(LineThickness));
+        }
+
+        /// <summary>
+        ///     Gets or sets the angle1.
+        /// </summary>
+        /// <value>
+        ///     The angle1.
+        /// </value>
+        public double Angle1
+        {
+            get => _angle1;
+            set => SetProperty(ref _angle1, value, nameof(Angle1));
+        }
+
+
+        /// <summary>
+        ///     Gets or sets the angle2.
+        /// </summary>
+        /// <value>
+        ///     The angle2.
+        /// </value>
+        public double Angle2
+        {
+            get => _angle2;
+            set => SetProperty(ref _angle2, value, nameof(Angle2));
+        }
+
+        // Active properties
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is minimum value active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is minimum value active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMinValueActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is maximum value active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is maximum value active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMaxValueActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is alpha active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is alpha active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAlphaActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is x period active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is x period active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsXPeriodActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is y period active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is y period active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsYPeriodActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is turbulence power active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is turbulence power active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsTurbulencePowerActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is turbulence size active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is turbulence size active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsTurbulenceSizeActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is base color active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is base color active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBaseColorActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is monochrome active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is monochrome active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMonochromeActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is tiled active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is tiled active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsTiledActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is use smooth noise active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is use smooth noise active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsUseSmoothNoiseActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is use turbulence active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is use turbulence active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsUseTurbulenceActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is xy period active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is xy period active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsXyPeriodActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is line spacing active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is line spacing active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsLineSpacingActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is line color active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is line color active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsLineColorActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is line thickness active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is line thickness active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsLineThicknessActive { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is angle1 active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is angle1 active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAngle1Active { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is angle2 active.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is angle2 active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAngle2Active { get; set; }
+
+        /// <summary>
+        ///     Gets the save command.
+        /// </summary>
+        /// <value>
+        ///     The save command.
+        /// </value>
+        public ICommand SaveCommand => GetCommand(ref _saveCommand, SaveAction);
+
+        /// <summary>
+        ///     Gets the reset command.
+        /// </summary>
+        /// <value>
+        ///     The reset command.
+        /// </value>
+        public ICommand ResetCommand => GetCommand(ref _resetCommand, ResetAction);
+
+        /// <summary>
+        ///     Gets the cancel command.
+        /// </summary>
+        /// <value>
+        ///     The cancel command.
+        /// </value>
+        public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
+
+        /// <summary>
+        ///     Occurs when a property value changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Called when [property changed].
+        /// </summary>
+        /// <param name="name">The name.</param>
+        private void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        /// <summary>
+        ///     Sets the property.
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="field">The field.</param>
@@ -628,7 +631,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Saves the action.
+        ///     Saves the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void SaveAction(object obj)
@@ -637,7 +640,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Resets the action.
+        ///     Resets the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ResetAction(object obj)
@@ -648,20 +651,17 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Cancels the action.
+        ///     Cancels the action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void CancelAction(object obj)
         {
             // Close the window
-            if (obj is Window window)
-            {
-                window.Close();
-            }
+            if (obj is Window window) window.Close();
         }
 
         /// <summary>
-        /// Updates the active properties.
+        ///     Updates the active properties.
         /// </summary>
         private void UpdateActiveProperties()
         {
@@ -718,7 +718,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Saves the settings.
+        ///     Saves the settings.
         /// </summary>
         private void SaveSettings()
         {

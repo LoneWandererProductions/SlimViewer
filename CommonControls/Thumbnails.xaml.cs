@@ -31,7 +31,7 @@ using Mathematics;
 namespace CommonControls
 {
     /// <summary>
-    /// Basic Image Thumbnails
+    ///     Basic Image Thumbnails
     /// </summary>
     /// <seealso cref="System.Windows.Controls.UserControl" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
@@ -111,6 +111,11 @@ namespace CommonControls
         private static bool _refresh = true;
 
         /// <summary>
+        ///     The current selected border
+        /// </summary>
+        private Border _currentSelectedBorder;
+
+        /// <summary>
         ///     The original height
         /// </summary>
         private int _originalHeight;
@@ -121,19 +126,14 @@ namespace CommonControls
         private int _originalWidth;
 
         /// <summary>
+        ///     The previous selected border
+        /// </summary>
+        private Border _previousSelectedBorder;
+
+        /// <summary>
         ///     The selection
         /// </summary>
         private int _selection;
-
-        /// <summary>
-        /// The current selected border
-        /// </summary>
-        private Border _currentSelectedBorder;
-
-        /// <summary>
-        /// The previous selected border
-        /// </summary>
-        private Border _previousSelectedBorder;
 
         /// <inheritdoc />
         /// <summary>
@@ -449,7 +449,7 @@ namespace CommonControls
                 myBitmapCell = await GetBitmapImageFileStreamAsync(name, ThumbCellSize, ThumbCellSize);
             }
             catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException
-                or InvalidOperationException)
+                                           or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
             }
@@ -464,7 +464,6 @@ namespace CommonControls
             });
 
             if (SelectBox)
-            {
                 // Handle checkboxes for selection on the UI thread
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -490,7 +489,6 @@ namespace CommonControls
                     Grid.SetColumn(checkbox, key % ThumbWidth);
                     _ = exGrid.Children.Add(checkbox);
                 });
-            }
         }
 
         /// <summary>

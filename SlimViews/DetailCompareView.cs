@@ -42,7 +42,7 @@ namespace SlimViews
         ///     The chunk size
         ///     Define a reasonable chunk size for text appending
         /// </summary>
-        private const int _chunkSize = 1024;
+        private const int ChunkSize = 1024;
 
         /// <summary>
         ///     The analysis
@@ -301,13 +301,13 @@ namespace SlimViews
             OnPropertyChanged(propertyName);
         }
 
-		/// <summary>
-		///     Gets the command.
-		/// </summary>
-		/// <param name="command">The command.</param>
-		/// <param name="execute">The execute.</param>
-		/// <returns>The selected Command</returns>
-		private ICommand GetCommand(ref ICommand command, Action<object> execute)
+        /// <summary>
+        ///     Gets the command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <param name="execute">The execute.</param>
+        /// <returns>The selected Command</returns>
+        private ICommand GetCommand(ref ICommand command, Action<object> execute)
         {
             return command ??= new DelegateCommand<object>(execute, CanExecute);
         }
@@ -434,7 +434,7 @@ namespace SlimViews
             var offset = 0;
             while (offset < text.Length)
             {
-                var length = Math.Min(_chunkSize, text.Length - offset);
+                var length = Math.Min(ChunkSize, text.Length - offset);
                 var chunk = text.Substring(offset, length);
 
                 await richTextBox.Dispatcher.InvokeAsync(() => richTextBox.AppendText(chunk));

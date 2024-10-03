@@ -4,11 +4,6 @@
              StartupUri="MainWindow.xaml" x:ClassModifier="internal">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="Path/To/Your/ThemingFile.xaml"/>-->
-                <!-- User custom styles -->
-                <!--<ResourceDictionary Source="Path/To/UserCustomStyles.xaml"/>-->
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
