@@ -34,7 +34,15 @@ namespace CommonControls
         /// <summary>
         /// The free form points
         /// </summary>
-        private List<Point> _freeFormPoints = new List<Point>();
+        private readonly List<Point> _freeFormPoints = new List<Point>();
+
+        /// <summary>
+        /// Gets the current selection frame.
+        /// </summary>
+        /// <value>
+        /// The current selection frame.
+        /// </value>
+        public SelectionFrame CurrentSelectionFrame { get; private set; } = new SelectionFrame();
 
         /// <summary>
         /// The image transform
@@ -91,7 +99,7 @@ namespace CommonControls
         /// <summary>
         /// Clears the free form points.
         /// </summary>
-        public void ClearFreeformPoints()
+        public void ClearFreeFormPoints()
         {
             _freeFormPoints.Clear();
             InvalidateVisual();
@@ -125,6 +133,16 @@ namespace CommonControls
             {
                 Rect selectionRect = new(_startPoint.Value, _endPoint.Value);
 
+                // Update the CurrentSelectionFrame with the selection details
+                CurrentSelectionFrame = new SelectionFrame
+                {
+                    X = (int)selectionRect.X,
+                    Y = (int)selectionRect.Y,
+                    Width = (int)selectionRect.Width,
+                    Height = (int)selectionRect.Height,
+                    Tool = Tool.ToString()  // Store the current tool as a string
+                };
+
                 switch (Tool)
                 {
                     case SelectionTools.SelectRectangle:
@@ -135,7 +153,7 @@ namespace CommonControls
 
                     case SelectionTools.SelectEllipse:
                         // Calculate the center of the rectangle
-                        Point center = new Point(
+                        var center = new Point(
                             selectionRect.Left + selectionRect.Width / 2,
                             selectionRect.Top + selectionRect.Height / 2);
 
@@ -166,6 +184,5 @@ namespace CommonControls
                 }
             }
         }
-
     }
 }

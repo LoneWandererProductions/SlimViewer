@@ -281,8 +281,7 @@ namespace CommonControls
         private static void OnItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var control = sender as Thumbnails;
-            // add an Can Execute
-
+            if (e.NewValue == e.OldValue) return;
             if (!_refresh) return;
 
             control?.OnItemsSourceChanged();

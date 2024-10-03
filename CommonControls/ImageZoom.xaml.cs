@@ -28,7 +28,7 @@ namespace CommonControls
         /// <summary>
         /// The selection adorner
         /// </summary>
-        private SelectionAdorner _selectionAdorner { get; set; }
+        private SelectionAdorner _selectionAdorner;
 
         /// <summary>
         ///     Delegate for Image Frame
@@ -191,7 +191,6 @@ namespace CommonControls
         /// </summary>
         private void OnImageSourceGifChanged()
         {
-
             if (!File.Exists(ImageGifPath))
             {
                 BtmImage.GifSource = null;
@@ -266,12 +265,12 @@ namespace CommonControls
                 // Get the adorner layer for the BtmImage instead of the MainCanvas
                 var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
                 _selectionAdorner = new SelectionAdorner(BtmImage, tool);
-                adornerLayer.Add(_selectionAdorner);
+                adornerLayer?.Add(_selectionAdorner);
             }
             else
             {
                 // Clear points and reset for the new selection tool
-                _selectionAdorner?.ClearFreeformPoints();
+                _selectionAdorner?.ClearFreeFormPoints();
                 _selectionAdorner.Tool = tool; // Update the tool if necessary
             }
         }
@@ -302,8 +301,8 @@ namespace CommonControls
 
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
-                    {
-                    }
+                {
+                }
                     break;
                 case SelectionTools.SelectEllipse:
                     break;
@@ -327,9 +326,7 @@ namespace CommonControls
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
 
-
             //clicked Endpoint
-            Point endpoint;
 
             switch (ZoomTool)
             {
@@ -340,49 +337,12 @@ namespace CommonControls
                 case SelectionTools.SelectRectangle:
                 case SelectionTools.Erase:
                 {
-                    // Get the Position on the Image
-                    endpoint = e.GetPosition(BtmImage);
-                    var frame = new SelectionFrame
-                    {
-                        Tool = "Rectangle"
-                    };
-
-                    if (_imageStartPoint.X < endpoint.X)
-                    {
-                        frame.X = (int)_imageStartPoint.X;
-                        frame.Width = (int)(endpoint.X - _imageStartPoint.X);
-                    }
-                    else
-                    {
-                        frame.Y = (int)endpoint.X;
-                        frame.Width = (int)(_imageStartPoint.X - endpoint.X);
-                    }
-
-                    if (_startPoint.Y < endpoint.Y)
-                    {
-                        frame.Y = (int)_startPoint.Y;
-                        frame.Height = (int)(endpoint.Y - _imageStartPoint.Y);
-                    }
-                    else
-                    {
-                        frame.Y = (int)endpoint.Y;
-                        frame.Height = (int)(_imageStartPoint.Y - endpoint.Y);
-                    }
-                    //cleanups, In case we overstepped the boundaries
-
-                    if (frame.X < 0) frame.X = 0;
-
-                    if (frame.Y < 0) frame.Y = 0;
-
-                    if (frame.Width > ItemsSource.Width) frame.Width = (int)ItemsSource.Width;
-
-                    if (frame.Height < 0) frame.Height = (int)ItemsSource.Height;
-
+                    var frame = _selectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                 }
                     break;
                 case SelectionTools.SelectPixel:
-                    endpoint = e.GetPosition(BtmImage);
+                    var endpoint = e.GetPosition(BtmImage);
                     SelectedPoint?.Invoke(endpoint);
                     break;
                 default:
@@ -434,21 +394,15 @@ namespace CommonControls
                 case SelectionTools.SelectEllipse:
                 {
                     // Update the adorner for rectangle or ellipse selection
-                    if (_selectionAdorner != null)
-                    {
-                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
-                    }
+                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
                     break;
                 }
 
                 case SelectionTools.FreeForm:
                 {
-                    // Update the adorner for freeform selection by adding points
-                    if (_selectionAdorner != null)
-                    {
-                        _selectionAdorner?.AddFreeFormPoint(mousePos);
-                    }
+                    // Update the adorner for free form selection by adding points
+                    _selectionAdorner?.AddFreeFormPoint(mousePos);
 
                     break;
                 }
@@ -460,10 +414,7 @@ namespace CommonControls
                 case SelectionTools.Erase:
                 {
                     // Similar to rectangle selection, but intended for erasing
-                    if (_selectionAdorner != null)
-                    {
-                        _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
-                    }
+                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
                     break;
                 }
@@ -496,50 +447,5 @@ namespace CommonControls
 
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
-    }
-
-    /// <summary>
-    ///     The Selection Frame on the Image
-    /// </summary>
-    public sealed class SelectionFrame
-    {
-        /// <summary>
-        ///     Gets or sets the x.
-        /// </summary>
-        /// <value>
-        ///     The x.
-        /// </value>
-        public int X { get; internal set; }
-
-        /// <summary>
-        ///     Gets or sets the y.
-        /// </summary>
-        /// <value>
-        ///     The y.
-        /// </value>
-        public int Y { get; internal set; }
-
-        /// <summary>
-        ///     Gets or sets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
-        public int Width { get; internal set; }
-
-        /// <summary>
-        ///     Gets or sets the height.
-        /// </summary>
-        /// <value>
-        ///     The height.
-        /// </value>
-        public int Height { get; internal set; }
-        /// <summary>
-        /// Gets the tool.
-        /// </summary>
-        /// <value>
-        /// The tool.
-        /// </value>
-        public string Tool { get; internal set; }
     }
 }
