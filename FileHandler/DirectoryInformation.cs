@@ -28,14 +28,14 @@ namespace FileHandler
         public static string GetParentDirectory(int level)
         {
             var root = Directory.GetCurrentDirectory();
-
+           
             if (string.IsNullOrEmpty(root))
-                throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, root));
+                throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {root}");
 
             var path = Directory.GetParent(root)?.ToString();
-
+            
             if (string.IsNullOrEmpty(path))
-                throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, path));
+                throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {path}");
 
             try
             {
@@ -45,7 +45,7 @@ namespace FileHandler
             {
                 FileHandlerRegister.AddError(nameof(GetParentDirectory), path, ex);
                 Trace.WriteLine(ex);
-                throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorGetParentDirectory, ex));
+                throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {ex}");
             }
 
             return path;

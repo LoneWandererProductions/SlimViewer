@@ -9,6 +9,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FileHandler
 {
@@ -24,7 +25,7 @@ namespace FileHandler
         /// <param name="target">Full qualified target Path</param>
         /// <returns>The <see cref="bool" />Was the Folder Renamed and all contents moved.</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool RenameDirectory(string source, string target)
+        public static async Task<bool> RenameDirectory(string source, string target)
         {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -37,7 +38,7 @@ namespace FileHandler
 
             try
             {
-                Directory.Move(source, target);
+                await Task.Run(() => Directory.Move(source, target));
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
@@ -56,7 +57,7 @@ namespace FileHandler
         /// <param name="target">Full qualified target File Name</param>
         /// <returns>The <see cref="bool" />Was the File Renamed.</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool RenameFile(string source, string target)
+        public static async Task<bool> RenameFile(string source, string target)
         {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -69,7 +70,7 @@ namespace FileHandler
 
             try
             {
-                File.Move(source, target);
+                await Task.Run(() => File.Move(source, target));
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
             {

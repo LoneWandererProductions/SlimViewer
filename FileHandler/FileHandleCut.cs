@@ -82,9 +82,10 @@ namespace FileHandler
             foreach (var subDir in dirs)
             {
                 var tempPath = Path.Combine(target, subDir.Name);
+
                 if (!Directory.Exists(target)) _ = Directory.CreateDirectory(target);
 
-                if (File.Exists(tempPath)) continue;
+                if (Directory.Exists(tempPath)) continue;
 
                 _ = CutFiles(subDir.FullName, tempPath, overwrite);
             }

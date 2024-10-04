@@ -85,14 +85,7 @@ namespace FileHandler
         /// <returns>The root<see cref="string" />.</returns>
         internal static string SearchRoot(IReadOnlyCollection<string> source)
         {
-            var shortest = source.First();
-
-            // ReSharper disable once LoopCanBePartlyConvertedToQuery
-            foreach (var path in source)
-                if (path.Length < shortest.Length)
-                    shortest = path;
-
-            return shortest;
+            return source.OrderBy(path => path.Length).First();
         }
 
         /// <summary>

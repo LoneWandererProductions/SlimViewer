@@ -28,22 +28,18 @@ namespace FileHandler
             var fileNameOnly = Path.GetFileNameWithoutExtension(path);
             var extension = Path.GetExtension(path);
             var directory = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directory)) return null;
+            if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory)) return null;
 
             var newPath = path;
-
-            var count = 0;
+            var count = 1; // Start from 1
 
             while (File.Exists(newPath))
             {
-                var cache = $"{fileNameOnly}({count++})";
-                var tempFileName = Path.Combine(directory!, Path.ChangeExtension(cache, extension));
-                if (File.Exists(tempFileName)) continue;
-
-                newPath = tempFileName;
+                var cache = $"{fileNameOnly}({count++}){extension}";
+                newPath = Path.Combine(directory, cache);
             }
 
             return newPath;
         }
+
     }
-}
