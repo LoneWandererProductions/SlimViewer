@@ -74,7 +74,7 @@ namespace FileHandler
         /// <param name="delete">if set to <c>true</c> [delete].</param>
         /// <returns>Operation Success</returns>
         /// <exception cref="FileHandlerException"></exception>
-        public static async Task<bool> OpenZipAsync(string zipPath, string extractPath, bool delete)
+        public static async Task<bool> OpenZip(string zipPath, string extractPath, bool delete)
         {
             if (!FileHandleSearch.FileExists(zipPath))
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorFileNotFound, zipPath));
@@ -87,7 +87,7 @@ namespace FileHandler
             catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
                                            or NotSupportedException)
             {
-                FileHandlerRegister.AddError(nameof(OpenZipAsync), zipPath, ex);
+                FileHandlerRegister.AddError(nameof(OpenZip), zipPath, ex);
                 Trace.WriteLine(ex);
                 return false;
             }

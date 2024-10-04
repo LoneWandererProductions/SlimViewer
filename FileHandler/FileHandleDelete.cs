@@ -80,7 +80,6 @@ namespace FileHandler
             return true; // File deleted successfully
         }
 
-
         /// <summary>
         ///     Deletes a File
         /// </summary>
@@ -175,7 +174,7 @@ namespace FileHandler
         /// <param name="subdirectories">Include Sub-folders</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static async Task<bool> DeleteFolderContentsByExtensionAsync(string path, List<string> fileExtList, bool subdirectories)
+        public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList, bool subdirectories)
         {
             if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
@@ -203,7 +202,7 @@ namespace FileHandler
                     Elements = new List<string>(myFiles), Message = FileHandlerResources.InformationFileDeletion
                 };
 
-                FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteFolderContentsByExtensionAsync), itm);
+                FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteFolderContentsByExtension), itm);
             }
 
             if (myFiles.Count == 0) return false;

@@ -31,7 +31,7 @@ namespace FileHandler
             if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory)) return null;
 
             var newPath = path;
-            var count = 1; // Start from 1
+            var count = 0;
 
             while (File.Exists(newPath))
             {
@@ -43,3 +43,4 @@ namespace FileHandler
         }
 
     }
+}
