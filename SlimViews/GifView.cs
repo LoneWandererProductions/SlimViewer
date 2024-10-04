@@ -393,7 +393,7 @@ namespace SlimViews
 
             //add name of the split files
             var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
-            Helper.ConvertGifAction(GifPath, name);
+            Helper.ConvertGifActionAsync(GifPath, name);
             var currentFolder = _imageExport;
 
             var fileList =

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -22,7 +23,7 @@ namespace Imaging
     ///     Extension for Image to play e.g. gif Images
     /// </summary>
     /// <seealso cref="Image" />
-    public sealed class ImageGif : Image
+    public sealed class ImageGif : Image, IDisposable
     {
         /// <summary>
         ///     The frame index property
@@ -59,6 +60,11 @@ namespace Imaging
         ///     The is initialized
         /// </summary>
         private bool _isInitialized;
+
+        /// <summary>
+        /// The is disposed
+        /// </summary>
+        private bool _isDisposed;
 
         /// <inheritdoc />
         /// <summary>
@@ -100,7 +106,7 @@ namespace Imaging
         /// <summary>
         ///     Initializes this instance.
         /// </summary>
-        private void Initialize()
+        private async Task InitializeAsync()
         {
             // Check if the image exists
             if (!File.Exists(GifSource))
@@ -114,13 +120,13 @@ namespace Imaging
                 // Handle possible error
                 if (info is not { IsAnimated: true }) return;
 
-                _imageList = ImageGifHandler.LoadGif(GifSource);
+                _imageList = await ImageGifHandler.LoadGif(GifSource);
                 Source = _imageList[0];
 
                 var time = Math.Max(1, info.Frames / 10);
                 _animation = new Int32Animation(0, info.Frames - 1,
                         new Duration(new TimeSpan(0, 0, 0, time)))
-                    { RepeatBehavior = RepeatBehavior.Forever };
+                { RepeatBehavior = RepeatBehavior.Forever };
 
                 _isInitialized = true;
 
@@ -169,7 +175,7 @@ namespace Imaging
         /// </summary>
         private static void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            (sender as ImageGif)?.Initialize();
+            (sender as ImageGif)?.InitializeAsync();
         }
 
         /// <summary>
@@ -177,7 +183,7 @@ namespace Imaging
         /// </summary>
         private void StartAnimation()
         {
-            if (!_isInitialized) Initialize();
+            if (!_isInitialized) _ = InitializeAsync();
             BeginAnimation(FrameIndexProperty, _animation);
         }
 
@@ -187,6 +193,53 @@ namespace Imaging
         public void StopAnimation()
         {
             BeginAnimation(FrameIndexProperty, null);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <returns></returns>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the specified disposing.
+        /// </summary>
+        /// <param name="disposing">if set to <c>true</c> [disposing].</param>
+        private void Dispose(bool disposing)
+        {
+            if (_isDisposed) return;
+
+            if (disposing)
+            {
+                // Free managed resources
+                StopAnimation();
+                if (_imageList != null)
+                {
+                    foreach (var image in _imageList)
+                    {
+                        if (image is IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+                    _imageList.Clear();
+                }
+            }
+
+            _isDisposed = true;
+        }
+
+        /// <summary>
+        /// Finalizes this instance.
+        /// </summary>
+        /// <returns>Freed Resources</returns>
+        ~ImageGif()
+        {
+            Dispose(false);
         }
     }
 }

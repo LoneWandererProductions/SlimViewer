@@ -66,9 +66,11 @@ namespace SlimViews
         /// </summary>
         /// <param name="gifPath">The path of the GIF file.</param>
         /// <param name="imageExport">The target path for converted images.</param>
-        internal static void ConvertGifAction(string gifPath, string imageExport)
+        internal static async Task ConvertGifActionAsync(string gifPath, string imageExport)
         {
-            foreach (var image in Render.SplitGif(gifPath))
+            var images = await Render.SplitGif(gifPath); // Call the asynchronous SplitGifAsync method
+
+            foreach (var image in images)
                 try
                 {
                     var success = SaveImage(imageExport, ImagingResources.JpgExt, image);
