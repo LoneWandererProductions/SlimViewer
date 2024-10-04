@@ -216,9 +216,9 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
-                <RowDefinition Height="25" />
+                <RowDefinition Height="30" />
                 <RowDefinition Height="5" />
-                <RowDefinition Height="25" />
+                <RowDefinition Height="30" />
                 <RowDefinition Height="120" />
             </Grid.RowDefinitions>
             <commonControls:ImageZoom
@@ -230,9 +230,10 @@
                 ZoomTool="{Binding ElementName=CmbBxSelection, Path=SelectedItem}"
                 SelectedFrame="ImageZoom_SelectedFrame"
                 SelectedPoint="ImageZoom_SelectedPointColor" />
-            <TextBox Grid.Row="1" TextWrapping="Wrap"
+            <TextBox Grid.Row="1" TextWrapping="NoWrap"
                      Focusable="True"
-                     Text="{Binding Path=Information}" Grid.Column="2" Grid.ColumnSpan="4" />
+                     Text="{Binding Path=Information}" Grid.Column="2" Grid.ColumnSpan="4"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
             <TextBox TextWrapping="Wrap"
                      Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3"
                      Grid.Column="2">

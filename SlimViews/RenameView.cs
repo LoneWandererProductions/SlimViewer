@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using FileHandler;
@@ -114,7 +115,7 @@ namespace SlimViews
         ///     The explorer command.
         /// </value>
         public ICommand RemoveAppendageCommand => _removeAppendageCommand ??=
-            new DelegateCommand<object>(RemoveAppendageAction, CanExecute);
+            new DelegateCommand<object>(RemoveAppendageActionAsync, CanExecute);
 
         /// <summary>
         ///     Gets the add command.
@@ -122,7 +123,7 @@ namespace SlimViews
         /// <value>
         ///     The add command.
         /// </value>
-        public ICommand AddCommand => _addCommand ??= new DelegateCommand<object>(AddAction, CanExecute);
+        public ICommand AddCommand => _addCommand ??= new DelegateCommand<object>(AddActionAsync, CanExecute);
 
         /// <summary>
         ///     Gets the remove command.
@@ -131,7 +132,7 @@ namespace SlimViews
         ///     The remove command.
         /// </value>
         public ICommand RemoveCommand =>
-            _removeCommand ??= new DelegateCommand<object>(RemoveAction, CanExecute);
+            _removeCommand ??= new DelegateCommand<object>(RemoveActionAsync, CanExecute);
 
         /// <summary>
         ///     Gets the reorder command.
@@ -140,7 +141,7 @@ namespace SlimViews
         ///     The reorder command.
         /// </value>
         public ICommand ReorderCommand =>
-            _reorderCommand ??= new DelegateCommand<object>(ReorderCommandAction, CanExecute);
+            _reorderCommand ??= new DelegateCommand<object>(ReorderCommandActionAsync, CanExecute);
 
         /// <summary>
         ///     Gets the reorder command.
@@ -149,7 +150,7 @@ namespace SlimViews
         ///     The reorder command.
         /// </value>
         public ICommand ReplaceCommand =>
-            _replaceCommand ??= new DelegateCommand<object>(ReplaceCommandAction, CanExecute);
+            _replaceCommand ??= new DelegateCommand<object>(ReplaceCommandActionAsync, CanExecute);
 
         /// <summary>
         ///     Gets the appendages at command.
@@ -158,7 +159,7 @@ namespace SlimViews
         ///     The appendages at command.
         /// </value>
         public ICommand AppendagesAtCommand =>
-            _appendagesAtCommand ??= new DelegateCommand<object>(AppendagesAtAction, CanExecute);
+            _appendagesAtCommand ??= new DelegateCommand<object>(AppendagesAtActionAsync, CanExecute);
 
         /// <summary>
         ///     Gets or sets the observer.
@@ -217,7 +218,7 @@ namespace SlimViews
         ///     Removes Appendage in File Name
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void RemoveAppendageAction(object obj)
+        private async void RemoveAppendageActionAsync(object obj)
         {
             var observer = new Dictionary<int, string>(Observer);
             if (Replacement == null) return;
@@ -238,7 +239,7 @@ namespace SlimViews
 
                     var target = Path.Combine(directory, file);
 
-                    var check = FileHandleRename.RenameFile(value, target);
+                    var check = await FileHandleRename.RenameFile(value, target);
                     if (check) observer[key] = target;
                 }
 
@@ -255,7 +256,7 @@ namespace SlimViews
         /// <summary>
         ///     Adds Elements in File Name
         /// </summary>
-        private void AddAction(object obj)
+        private async void AddActionAsync(object obj)
         {
             var observer = new Dictionary<int, string>(Observer);
             if (Replacement == null) return;
@@ -276,7 +277,7 @@ namespace SlimViews
 
                     var target = Path.Combine(directory, file);
 
-                    var check = FileHandleRename.RenameFile(value, target);
+                    var check = await FileHandleRename.RenameFile(value, target);
                     if (check) observer[key] = target;
                 }
 
@@ -293,7 +294,7 @@ namespace SlimViews
         /// <summary>
         ///     Remove Elements in File Name
         /// </summary>
-        private void RemoveAction(object obj)
+        private async void RemoveActionAsync(object obj)
         {
             var observer = new Dictionary<int, string>(Observer);
             if (Replacement == null) return;
@@ -314,7 +315,7 @@ namespace SlimViews
 
                     var target = Path.Combine(directory, file);
 
-                    var check = FileHandleRename.RenameFile(value, target);
+                    var check = await FileHandleRename.RenameFile(value, target);
                     if (check) observer[key] = value;
                 }
 
@@ -331,7 +332,7 @@ namespace SlimViews
         /// <summary>
         ///     Reorder Elements in File Name
         /// </summary>
-        private void ReorderCommandAction(object obj)
+        private async void ReorderCommandActionAsync(object obj)
         {
             var observer = new Dictionary<int, string>(Observer);
             try
@@ -352,7 +353,7 @@ namespace SlimViews
 
                     file = Path.Combine(directory, file);
 
-                    var check = FileHandleRename.RenameFile(value, file);
+                    var check = await FileHandleRename.RenameFile(value, file);
                     if (check) observer[key] = file;
                 }
 
@@ -370,7 +371,7 @@ namespace SlimViews
         ///     Replaces part or the string command.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ReplaceCommandAction(object obj)
+        private async void ReplaceCommandActionAsync(object obj)
         {
             var observer = new Dictionary<int, string>(Observer);
             if (Replacer == null) return;
@@ -393,7 +394,7 @@ namespace SlimViews
 
                     file = Path.Combine(directory, file);
 
-                    var check = FileHandleRename.RenameFile(value, file);
+                    var check = await FileHandleRename.RenameFile(value, file);
                     if (check) observer[key] = file;
                 }
 
@@ -411,7 +412,7 @@ namespace SlimViews
         ///     Remove Appendage at number count action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void AppendagesAtAction(object obj)
+        private async void AppendagesAtActionAsync(object obj)
         {
             var observer = new Dictionary<int, string>(Observer);
             if (Numbers <= 0) return;
@@ -436,7 +437,7 @@ namespace SlimViews
 
                     file = Path.Combine(directory, file);
 
-                    var check = FileHandleRename.RenameFile(value, file);
+                    var check = await FileHandleRename.RenameFile(value, file);
                     if (check) observer[key] = file;
                 }
 

@@ -1297,7 +1297,7 @@ namespace SlimViews
         ///     Renames the Image.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void RenameAction(object obj)
+        private async void RenameAction(object obj)
         {
             if (!IsActive) return;
             if (!Observer.ContainsKey(_currentId)) return;
@@ -1321,7 +1321,8 @@ namespace SlimViews
 
             try
             {
-                if (!FileHandleRename.RenameFile(file, filePath)) return;
+                var check = await FileHandleRename.RenameFile(file, filePath);
+                if (!check) return;
             }
             catch (FileHandlerException ex)
             {

@@ -46,7 +46,7 @@ namespace SlimViews
             else
                 _ = Directory.CreateDirectory(targetFolder);
 
-            _ = FileHandleCompress.OpenZipAsync(path, targetFolder, false);
+            _ = FileHandleCompress.OpenZip(path, targetFolder, false);
             return targetFolder;
         }
 
