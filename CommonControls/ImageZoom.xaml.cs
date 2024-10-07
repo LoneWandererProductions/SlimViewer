@@ -10,6 +10,7 @@
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
 // ReSharper disable UnusedType.Global
 
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
@@ -208,15 +209,25 @@ namespace CommonControls
             ScrollView.ScrollToTop();
             ScrollView.UpdateLayout();
 
+            // Set GifSource and subscribe to the ImageLoaded event
+            BtmImage.ImageLoaded += BtmImage_ImageLoaded;
             BtmImage.GifSource = ImageGifPath;
+        }
 
+        // Event handler for when the GIF has finished loading
+        private void BtmImage_ImageLoaded(object sender, EventArgs e)
+        {
+            // Unsubscribe to prevent memory leaks
+            BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
+
+            // Now the source is fully loaded, you can safely access it
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
 
             // Update the adorner with the new image transform
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 
-            // Reattach adorner for new image (this ensures correct behavior for the new image)
+            // Reattach adorner for the new image (ensures correct behavior)
             AttachAdorner(ZoomTool);
         }
 

@@ -25,6 +25,8 @@ namespace Imaging
     /// <seealso cref="Image" />
     public sealed class ImageGif : Image, IDisposable
     {
+        public event EventHandler ImageLoaded;
+
         /// <summary>
         ///     The frame index property
         /// </summary>
@@ -130,6 +132,9 @@ namespace Imaging
 
                 _isInitialized = true;
 
+                // Fire the ImageLoaded event to notify that the GIF is ready
+                ImageLoaded?.Invoke(this, EventArgs.Empty);
+
                 if (AutoStart) StartAnimation();
             }
             catch (Exception ex)
@@ -195,10 +200,10 @@ namespace Imaging
             BeginAnimation(FrameIndexProperty, null);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        /// <returns></returns>
         public void Dispose()
         {
             Dispose(true);
