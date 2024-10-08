@@ -25,8 +25,6 @@ namespace Imaging
     /// <seealso cref="Image" />
     public sealed class ImageGif : Image, IDisposable
     {
-        public event EventHandler ImageLoaded;
-
         /// <summary>
         ///     The frame index property
         /// </summary>
@@ -106,6 +104,17 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Loads the GIF asynchronous.
+        /// </summary>
+        /// <returns>if Gif was sucessful loaded.</returns>
+        public async Task<bool> LoadGifAsync()
+        {
+            if (_isInitialized) return true;
+            await InitializeAsync();
+            return _isInitialized;
+        }
+
+        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         private async Task InitializeAsync()
@@ -131,9 +140,6 @@ namespace Imaging
                 { RepeatBehavior = RepeatBehavior.Forever };
 
                 _isInitialized = true;
-
-                // Fire the ImageLoaded event to notify that the GIF is ready
-                ImageLoaded?.Invoke(this, EventArgs.Empty);
 
                 if (AutoStart) StartAnimation();
             }
@@ -162,7 +168,7 @@ namespace Imaging
             if (obj is ImageGif { AutoStart: true } gifImage)
             {
                 var newIndex = (int)ev.NewValue;
-                if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
+                if (newIndex >= 0 && newIndex < gifImage._imageList?.Count)
                     gifImage.Source = gifImage._imageList[newIndex];
             }
         }
@@ -178,9 +184,9 @@ namespace Imaging
         /// <summary>
         ///     GIFs the source property changed.
         /// </summary>
-        private static void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static async void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            (sender as ImageGif)?.InitializeAsync();
+            await (sender as ImageGif)?.InitializeAsync();
         }
 
         /// <summary>
@@ -222,17 +228,15 @@ namespace Imaging
             {
                 // Free managed resources
                 StopAnimation();
-                if (_imageList != null)
+
+                _imageList?.ForEach(image =>
                 {
-                    foreach (var image in _imageList)
+                    if (image is IDisposable disposable)
                     {
-                        if (image is IDisposable disposable)
-                        {
-                            disposable.Dispose();
-                        }
+                        disposable.Dispose();
                     }
-                    _imageList.Clear();
-                }
+                });
+                _imageList?.Clear();
             }
 
             _isDisposed = true;

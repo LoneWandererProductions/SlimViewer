@@ -12,6 +12,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -51,7 +52,7 @@ namespace CommonControls
         public static readonly DependencyProperty ImageGifSourceProperty = DependencyProperty.Register(
             nameof(ImageGifPath),
             typeof(string),
-            typeof(ImageZoom), new PropertyMetadata(OnImageGifSourcePropertyChanged));
+            typeof(ImageZoom), new PropertyMetadata(OnImageGifSourcePropertyChangedAsync));
 
         /// <summary>
         ///     The zoom tools
@@ -180,17 +181,20 @@ namespace CommonControls
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        private static void OnImageGifSourcePropertyChanged(DependencyObject sender,
+        private static async Task OnImageGifSourcePropertyChangedAsync(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
             var control = sender as ImageZoom;
-            control?.OnImageSourceGifChanged();
+            if (control != null)
+            {
+                await control.OnImageSourceGifChangedAsync();
+            }
         }
 
         /// <summary>
-        ///     Called when [image source GIF changed].
+        /// Called when [image source GIF changed].
         /// </summary>
-        private void OnImageSourceGifChanged()
+        private async Task OnImageSourceGifChangedAsync()
         {
             if (!File.Exists(ImageGifPath))
             {
@@ -199,26 +203,46 @@ namespace CommonControls
                 return;
             }
 
-            //reset position
+            // Reset position
             var matrix = BtmImage.RenderTransform.Value;
             matrix.OffsetX = 0;
             matrix.OffsetY = 0;
             BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-            //reset Scrollbar
+            // Reset Scrollbar
             ScrollView.ScrollToTop();
             ScrollView.UpdateLayout();
 
-            // Set GifSource and subscribe to the ImageLoaded event
-            BtmImage.ImageLoaded += BtmImage_ImageLoaded;
-            BtmImage.GifSource = ImageGifPath;
+            // Load GIF asynchronously and check if initialization was successful
+            bool isInitialized = await BtmImage.LoadGifAsync();
+            if (!isInitialized)
+            {
+                // Handle failure to load GIF (e.g., log error, show message, etc.)
+                return;
+            }
+
+            // Once GIF is loaded, update the canvas
+            MainCanvas.Height = BtmImage.Source.Height;
+            MainCanvas.Width = BtmImage.Source.Width;
+
+            // Update the adorner with the new image transform
+            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+
+            // Reattach adorner for the new image
+            AttachAdorner(ZoomTool);
         }
 
-        // Event handler for when the GIF has finished loading
-        private void BtmImage_ImageLoaded(object sender, EventArgs e)
+        /// <summary>
+        /// Event handler for when the GIF has finished loading
+        /// Handles the ImageLoaded event of the BtmImage control.
+        /// Sadly needed on heavy load.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void BtmImageImageLoaded(object sender, EventArgs e)
         {
             // Unsubscribe to prevent memory leaks
-            BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
+            BtmImage.ImageLoaded -= BtmImageImageLoaded;
 
             // Now the source is fully loaded, you can safely access it
             MainCanvas.Height = BtmImage.Source.Height;
