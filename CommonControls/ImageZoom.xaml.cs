@@ -52,7 +52,8 @@ namespace CommonControls
         public static readonly DependencyProperty ImageGifSourceProperty = DependencyProperty.Register(
             nameof(ImageGifPath),
             typeof(string),
-            typeof(ImageZoom), new PropertyMetadata(OnImageGifSourcePropertyChangedAsync));
+            typeof(ImageZoom),
+            new PropertyMetadata(OnImageGifSourcePropertyChanged)); // Use synchronous method
 
         /// <summary>
         ///     The zoom tools
@@ -177,17 +178,17 @@ namespace CommonControls
         }
 
         /// <summary>
-        ///     Called when [image GIF source property changed].
+        /// Called when [image GIF source property changed].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        private static async Task OnImageGifSourcePropertyChangedAsync(DependencyObject sender,
-            DependencyPropertyChangedEventArgs e)
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnImageGifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var control = sender as ImageZoom;
             if (control != null)
             {
-                await control.OnImageSourceGifChangedAsync();
+                // Call the async method but do not await it
+                _ = control.OnImageSourceGifChangedAsync();
             }
         }
 
@@ -241,9 +242,6 @@ namespace CommonControls
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void BtmImageImageLoaded(object sender, EventArgs e)
         {
-            // Unsubscribe to prevent memory leaks
-            BtmImage.ImageLoaded -= BtmImageImageLoaded;
-
             // Now the source is fully loaded, you can safely access it
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
