@@ -1,10 +1,10 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        Imaging/ImageGif.cs
- * PURPOSE:     Extends the Image Control and adds Gif Support via SourceGif Property
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
+* COPYRIGHT:   See COPYING in the top level directory
+* PROJECT:     Imaging
+* FILE:        Imaging/ImageGif.cs
+* PURPOSE:     Extends the Image Control and adds Gif Support via SourceGif Property
+* PROGRAMER:   Peter Geinitz (Wayfarer)
+*/
 
 using System;
 using System.Collections.Generic;
@@ -25,6 +25,8 @@ namespace Imaging
     /// <seealso cref="Image" />
     public sealed class ImageGif : Image, IDisposable
     {
+        public event EventHandler ImageLoaded;
+
         /// <summary>
         ///     The frame index property
         /// </summary>
@@ -104,17 +106,6 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Loads the GIF asynchronous.
-        /// </summary>
-        /// <returns>if Gif was sucessful loaded.</returns>
-        public async Task<bool> LoadGifAsync()
-        {
-            if (_isInitialized) return true;
-            await InitializeAsync();
-            return _isInitialized;
-        }
-
-        /// <summary>
         ///     Initializes this instance.
         /// </summary>
         private async Task InitializeAsync()
@@ -140,6 +131,9 @@ namespace Imaging
                 { RepeatBehavior = RepeatBehavior.Forever };
 
                 _isInitialized = true;
+
+                // Fire the ImageLoaded event to notify that the GIF is ready
+                ImageLoaded?.Invoke(this, EventArgs.Empty);
 
                 if (AutoStart) StartAnimation();
             }
@@ -168,7 +162,7 @@ namespace Imaging
             if (obj is ImageGif { AutoStart: true } gifImage)
             {
                 var newIndex = (int)ev.NewValue;
-                if (newIndex >= 0 && newIndex < gifImage._imageList?.Count)
+                if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
                     gifImage.Source = gifImage._imageList[newIndex];
             }
         }
@@ -184,9 +178,9 @@ namespace Imaging
         /// <summary>
         ///     GIFs the source property changed.
         /// </summary>
-        private static async void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            await (sender as ImageGif)?.InitializeAsync();
+            (sender as ImageGif)?.InitializeAsync();
         }
 
         /// <summary>
@@ -228,15 +222,17 @@ namespace Imaging
             {
                 // Free managed resources
                 StopAnimation();
-
-                _imageList?.ForEach(image =>
+                if (_imageList != null)
                 {
-                    if (image is IDisposable disposable)
+                    foreach (var image in _imageList)
                     {
-                        disposable.Dispose();
+                        if (image is IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
                     }
-                });
-                _imageList?.Clear();
+                    _imageList.Clear();
+                }
             }
 
             _isDisposed = true;
