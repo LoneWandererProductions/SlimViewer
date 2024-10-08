@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/TextureConfiguration.cs
+ * FILE:        Imaging/TextureConfig.cs
  * PURPOSE:     Basic stuff for generating textures, this class is used for finetuning
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://lodev.org/cgtutor/randomnoise.html
@@ -14,7 +14,7 @@ namespace Imaging
     /// <summary>
     ///     Attributes for our texture generators
     /// </summary>
-    public sealed class TextureConfiguration
+    public class TextureConfig
     {
         /// <summary>
         ///     Gets or sets the minimum value.
@@ -86,7 +86,7 @@ namespace Imaging
         /// <value>
         ///     <c>true</c> if this instance is monochrome; otherwise, <c>false</c>.
         /// </value>
-        public bool IsMonochrome { get; init; } = true;
+        public bool IsMonochrome { get; set; } = true;
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is tiled.
@@ -94,7 +94,7 @@ namespace Imaging
         /// <value>
         ///     <c>true</c> if this instance is tiled; otherwise, <c>false</c>.
         /// </value>
-        public bool IsTiled { get; init; } = true;
+        public bool IsTiled { get; set; } = true;
 
         /// <summary>
         ///     Gets or sets a value indicating whether to use smooth noise.
@@ -119,6 +119,30 @@ namespace Imaging
         ///     The xy period.
         /// </value>
         public double XyPeriod { get; init; } = 12.0;
+
+        /// <summary>
+        ///     Gets or sets the filter type for generating textures.
+        /// </summary>
+        /// <value>
+        ///     The filter type.
+        /// </value>
+        public TextureType Filter { get; set; } = TextureType.Noise;
+
+        /// <summary>
+        ///     Gets or sets the shape of the texture.
+        /// </summary>
+        /// <value>
+        ///     The texture shape.
+        /// </value>
+        public TextureShape Shape { get; set; } = TextureShape.Rectangle;
+
+        /// <summary>
+        ///     Gets or sets the shape parameters.
+        /// </summary>
+        /// <value>
+        ///     The shape parameters.
+        /// </value>
+        public object ShapeParams { get; set; } = null;
 
         // New parameters for crosshatch texture
 

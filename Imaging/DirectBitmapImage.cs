@@ -21,51 +21,39 @@ using System.Windows.Media.Imaging;
 
 namespace Imaging
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Similar to DirectBitmap, generate a pixel image, should be slightly faster
     /// </summary>
-    public class DirectBitmapImage : IDisposable
+    public sealed class DirectBitmapImage : IDisposable
     {
         /// <summary>
-        /// Gets the bitmap Image.
-        /// </summary>
-        /// <value>
-        /// The bitmap Image.
-        /// </value>
-        public BitmapImage BitmapImage => ConvertImage();
-
-        /// <summary>
-        /// The bitmap
+        ///     The bitmap
         /// </summary>
         private readonly WriteableBitmap _bitmap;
 
         /// <summary>
-        /// The height
-        /// </summary>
-        private readonly int _height;
-
-        /// <summary>
-        /// The width
-        /// </summary>
-        private readonly int _width;
-
-        /// <summary>
-        /// Gets the bits.
-        /// </summary>
-        public uint[] Bits { get; }
-
-        /// <summary>
-        /// GCHandle to manage the memory of the bits array
+        ///     GCHandle to manage the memory of the bits array
         /// </summary>
         private readonly GCHandle _bitsHandle;
 
         /// <summary>
-        /// Indicates if the instance has been disposed
+        ///     The height
+        /// </summary>
+        private readonly int _height;
+
+        /// <summary>
+        ///     The width
+        /// </summary>
+        private readonly int _width;
+
+        /// <summary>
+        ///     Indicates if the instance has been disposed
         /// </summary>
         private bool _disposed;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DirectBitmapImage" /> class.
+        ///     Initializes a new instance of the <see cref="DirectBitmapImage" /> class.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -83,7 +71,31 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Sets the pixels from an enumerable source of pixel data.
+        ///     Gets the bitmap Image.
+        /// </summary>
+        /// <value>
+        ///     The bitmap Image.
+        /// </value>
+        public BitmapImage BitmapImage => ConvertImage();
+
+        /// <summary>
+        ///     Gets the bits.
+        /// </summary>
+        public uint[] Bits { get; }
+
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Sets the pixels from an enumerable source of pixel data.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         public void SetPixels(IEnumerable<PixelData> pixels)
@@ -113,7 +125,9 @@ namespace Imaging
                     dataPointer[pixelIndex + 3] = pixel.A; // Alpha
 
                     // Store the pixel data as ARGB in the Bits array
-                    Bits[pixel.Y * _width + pixel.X] = Bits[pixel.Y * _width + pixel.X] = (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B); ; // This will be fine as long as A, R, G, B are 0-255
+                    Bits[(pixel.Y * _width) + pixel.X] = Bits[(pixel.Y * _width) + pixel.X] =
+                        (uint)((pixel.A << 24) | (pixel.R << 16) | (pixel.G << 8) | pixel.B);
+                    ; // This will be fine as long as A, R, G, B are 0-255
                 }
             }
 
@@ -123,7 +137,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Converts the image.
+        ///     Converts the image.
         /// </summary>
         /// <returns>The BitmapImage from our WriteableBitmap.</returns>
         private BitmapImage ConvertImage()
@@ -132,7 +146,7 @@ namespace Imaging
             var bitmap = new WriteableBitmap(_width, _height, 96, 96, PixelFormats.Bgra32, null);
 
             // Create a byte array to hold the byte representation of the Bits
-            byte[] byteArray = new byte[Bits.Length * sizeof(uint)];
+            var byteArray = new byte[Bits.Length * sizeof(uint)];
 
             // Fill the byte array with data from the Bits array
             Buffer.BlockCopy(Bits, 0, byteArray, 0, byteArray.Length);
@@ -145,33 +159,32 @@ namespace Imaging
 
             // Create a new BitmapImage from the WriteableBitmap
             var bitmapImage = new BitmapImage();
-            using (var memoryStream = new MemoryStream())
-            {
-                // Encode the WriteableBitmap as a PNG and write it to a MemoryStream
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                encoder.Save(memoryStream);
+            using var memoryStream = new MemoryStream();
+            // Encode the WriteableBitmap as a PNG and write it to a MemoryStream
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            encoder.Save(memoryStream);
 
-                // Reset the stream's position to the beginning
-                memoryStream.Seek(0, SeekOrigin.Begin);
+            // Reset the stream's position to the beginning
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
-                // Load the BitmapImage from the MemoryStream
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = memoryStream;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze(); // Make it immutable and thread-safe
-            }
+            // Load the BitmapImage from the MemoryStream
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = memoryStream;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze(); // Make it immutable and thread-safe
 
             return bitmapImage;
         }
 
         /// <summary>
-        /// Applies the color matrix.
+        ///     Applies the color matrix.
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         public void ApplyColorMatrix(float[][] matrix)
         {
+            // Initialize transformedColors to hold the transformed pixel colors
             var transformedColors = new (int x, int y, Color color)[Bits.Length];
 
             // Loop through the Bits array and apply the color matrix
@@ -181,49 +194,52 @@ namespace Imaging
 
                 // Extract ARGB values from the color
                 var converter = new ColorHsv((int)color);
+                Debug.WriteLine(
+                    $"Original color for pixel {i}: ARGB({converter.A}, {converter.R}, {converter.G}, {converter.B})");
 
-                // Initialize new color values
-                float newR = 0, newG = 0, newB = 0, newA = 0;
+                // Create a vector for the color (ARGB)
+                var colorVector = new float[4] { converter.R, converter.G, converter.B, converter.A };
 
-                // Apply the color matrix
-                newR = converter.R * matrix[0][0] + converter.G * matrix[0][1] + converter.B * matrix[0][2] + converter.A * matrix[0][3];
-                newG = converter.R * matrix[1][0] + converter.G * matrix[1][1] + converter.B * matrix[1][2] + converter.A * matrix[1][3];
-                newB = converter.R * matrix[2][0] + converter.G * matrix[2][1] + converter.B * matrix[2][2] + converter.A * matrix[2][3];
-                newA = converter.R * matrix[3][0] + converter.G * matrix[3][1] + converter.B * matrix[3][2] + converter.A * matrix[3][3];
+                // Initialize a new result array for transformed colors
+                var result = new float[4];
 
-                // Add the bias
-                newR += matrix[4][0];
-                newG += matrix[4][1];
-                newB += matrix[4][2];
-                newA += matrix[4][3];
+                // Perform the matrix multiplication
+                result[0] = (matrix[0][0] * colorVector[0]) + (matrix[0][1] * colorVector[1]) +
+                            (matrix[0][2] * colorVector[2]) + (matrix[0][3] * colorVector[3]);
+                result[1] = (matrix[1][0] * colorVector[0]) + (matrix[1][1] * colorVector[1]) +
+                            (matrix[1][2] * colorVector[2]) + (matrix[1][3] * colorVector[3]);
+                result[2] = (matrix[2][0] * colorVector[0]) + (matrix[2][1] * colorVector[1]) +
+                            (matrix[2][2] * colorVector[2]) + (matrix[2][3] * colorVector[3]);
+                result[3] = (matrix[3][0] * colorVector[0]) + (matrix[3][1] * colorVector[1]) +
+                            (matrix[3][2] * colorVector[2]) + (matrix[3][3] * colorVector[3]);
 
-                // Print debug information
-                Trace.WriteLine($"Pixel {i}: Original R={converter.R}, G={converter.G}, B={converter.B}, A={converter.A}");
-                Trace.WriteLine($"Matrix Applied: New Color (R={newR}, G={newG}, B={newB}, A={newA})");
+                // Log transformed color before adding bias
+                Debug.WriteLine(
+                    $"Transformed color for pixel {i} (before bias): R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
 
-                // After applying the color matrix
-                Trace.WriteLine($"Transformed before clamping: R={newR}, G={newG}, B={newB}, A={newA}");
+                // Add the bias from the last row of the matrix
+                result[0] += matrix[4][0]; // Bias for R
+                result[1] += matrix[4][1]; // Bias for G
+                result[2] += matrix[4][2]; // Bias for B
+                result[3] += matrix[4][3]; // Bias for A
+
+                // Log color after bias addition
+                Debug.WriteLine($"After adding bias: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
 
                 // Clamp the values to [0, 255]
-                newR = ImageHelper.Clamp(newR);
-                newG = ImageHelper.Clamp(newG);
-                newB = ImageHelper.Clamp(newB);
-                newA = ImageHelper.Clamp(newA);
+                result[0] = Math.Clamp(result[0], 0, 255);
+                result[1] = Math.Clamp(result[1], 0, 255);
+                result[2] = Math.Clamp(result[2], 0, 255);
+                result[3] = Math.Clamp(result[3], 0, 255);
 
                 // Log clamped values
-                Trace.WriteLine($"Clamped: R={newR}, G={newG}, B={newB}, A={newA}");
+                Debug.WriteLine($"Clamped values: R={result[0]}, G={result[1]}, B={result[2]}, A={result[3]}");
 
                 // Create new color
-                var newColor = new Color()
+                var newColor = new Color
                 {
-                    A = (byte)newA,
-                    R = (byte)newR,
-                    G = (byte)newG,
-                    B = (byte)newB
+                    A = (byte)result[3], R = (byte)result[0], G = (byte)result[1], B = (byte)result[2]
                 };
-
-                // Log final color
-                Trace.WriteLine($"Final Color: (A={newColor.A}, R={newColor.R}, G={newColor.G}, B={newColor.B})");
 
                 // Calculate the x and y positions
                 var x = i % _width;
@@ -231,14 +247,17 @@ namespace Imaging
 
                 // Store the transformed pixel color
                 transformedColors[i] = (x, y, newColor);
+                Debug.WriteLine(
+                    $"Transformed pixel position ({x}, {y}) with new color: ARGB({newColor.A}, {newColor.R}, {newColor.G}, {newColor.B})");
             }
 
             // Use SetPixelsSimd to apply the transformed pixel colors
             SetPixelsSimd(transformedColors.Where(p => p.color.A != 0)); // Filter out default colors
+            Debug.WriteLine("Applied transformed colors to pixels.");
         }
 
         /// <summary>
-        /// Sets the pixels simd.
+        ///     Sets the pixels simd.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         /// <exception cref="InvalidOperationException">ImagingResources.ErrorInvalidOperation</exception>
@@ -287,14 +306,14 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Updates the bitmap from the Bits array.
+        ///     Updates the bitmap from the Bits array.
         /// </summary>
         public void UpdateBitmapFromBits()
         {
             _bitmap.Lock();
 
             // Create a byte array to hold the byte representation of the Bits
-            byte[] byteArray = new byte[Bits.Length * sizeof(uint)];
+            var byteArray = new byte[Bits.Length * sizeof(uint)];
 
             // Fill the byte array with data from the Bits array
             Buffer.BlockCopy(Bits, 0, byteArray, 0, byteArray.Length);
@@ -305,23 +324,12 @@ namespace Imaging
             _bitmap.Unlock();
         }
 
-
-        /// <inheritdoc />
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and managed resources.
+        ///     Releases unmanaged and managed resources.
         /// </summary>
         /// <param name="disposing">
-        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
-        /// unmanaged resources.
+        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        ///     unmanaged resources.
         /// </param>
         private void Dispose(bool disposing)
         {
@@ -343,7 +351,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Finalizes the instance.
+        ///     Finalizes the instance.
         /// </summary>
         ~DirectBitmapImage()
         {
