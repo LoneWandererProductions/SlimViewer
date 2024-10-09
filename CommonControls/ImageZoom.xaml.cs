@@ -222,7 +222,12 @@ namespace CommonControls
             BtmImage.GifSource = ImageGifPath;
         }
 
-        // Event handler for when the GIF has finished loading
+        /// <summary>
+        /// Handles the ImageLoaded event of the BtmImage control.
+        /// Event handler for when the GIF has finished loading
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void BtmImage_ImageLoaded(object sender, EventArgs e)
         {
             // Unsubscribe to prevent memory leaks
