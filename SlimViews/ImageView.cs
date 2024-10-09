@@ -693,7 +693,7 @@ namespace SlimViews
         ///     The rename command.
         /// </value>
         public ICommand RenameCommand =>
-            _renameCommand ??= new DelegateCommand<object>(RenameAction, CanExecute);
+            _renameCommand ??= new AsyncDelegateCommand<object>(RenameAction, CanExecute);
 
         /// <summary>
         ///     Gets the folder command.
@@ -1297,7 +1297,7 @@ namespace SlimViews
         ///     Renames the Image.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private async void RenameAction(object obj)
+        private async Task RenameAction(object obj)
         {
             if (!IsActive) return;
             if (!Observer.ContainsKey(_currentId)) return;
@@ -1310,12 +1310,14 @@ namespace SlimViews
 
             var filePath = Path.Combine(folder, FileName);
 
-            //Check if we have an duplicate, if true, shall we overwrite?
+            // Check if we have a duplicate; if true, shall we overwrite?
             if (File.Exists(filePath))
             {
-                var dialogResult = MessageBox.Show(SlimViewerResources.MessageFileAlreadyExists,
+                var dialogResult = await Task.Run(() =>
+                    MessageBox.Show(SlimViewerResources.MessageFileAlreadyExists,
                     SlimViewerResources.CaptionFileAlreadyExists,
-                    MessageBoxButton.YesNo);
+                    MessageBoxButton.YesNo));
+
                 if (dialogResult == MessageBoxResult.No) return;
             }
 
@@ -1334,6 +1336,7 @@ namespace SlimViews
             Observer[_currentId] = filePath;
             GenerateView(filePath);
         }
+
 
         /// <summary>
         ///     Refresh the Control
