@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Imaging;
@@ -21,7 +20,8 @@ namespace SlimViews
     /// <summary>
     ///     Converter View
     /// </summary>
-    internal sealed class ConverterView : INotifyPropertyChanged
+    /// <seealso cref="ViewModel.ViewModelBase" />
+    internal sealed class ConverterView : ViewModelBase
     {
         /// <summary>
         ///     The extension select
@@ -129,12 +129,6 @@ namespace SlimViews
             set => SetProperty(ref _target, value, nameof(Target));
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         ///     Sets the property.
         /// </summary>
@@ -163,15 +157,6 @@ namespace SlimViews
         public bool CanExecute(object obj)
         {
             return !string.IsNullOrEmpty(_source) && !string.IsNullOrEmpty(_target);
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

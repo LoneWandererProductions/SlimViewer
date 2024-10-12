@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using FileHandler;
@@ -22,10 +21,12 @@ using ViewModel;
 
 namespace SlimViews
 {
+    /// <inheritdoc />
     /// <summary>
     ///     The View for Rename
     /// </summary>
-    internal sealed class RenameView
+    /// <seealso cref="T:ViewModel.ViewModelBase" />
+    internal sealed class RenameView : ViewModelBase
     {
         /// <summary>
         ///     The add command

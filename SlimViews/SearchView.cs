@@ -26,7 +26,8 @@ namespace SlimViews
     /// <summary>
     ///     Search View Model
     /// </summary>
-    internal sealed class SearchView : INotifyPropertyChanged
+    /// <seealso cref="T:ViewModel.ViewModelBase" />
+    internal sealed class SearchView : ViewModelBase
     {
         /// <summary>
         ///     The analysis
@@ -161,12 +162,6 @@ namespace SlimViews
         public ICommand SearchColorCommand =>
             _searchColorCommand ??= new DelegateCommand<object>(ColorAction, CanExecute);
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         ///     Sets the property.
         /// </summary>
@@ -180,15 +175,6 @@ namespace SlimViews
 
             field = value;
             OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

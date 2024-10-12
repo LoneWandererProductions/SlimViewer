@@ -20,12 +20,13 @@ using ViewModel;
 
 namespace SlimViews
 {
+
     /// <inheritdoc />
     /// <summary>
     ///     Compare the Images, the View Model
     /// </summary>
-    /// <seealso cref="INotifyPropertyChanged" />
-    internal sealed class CompareView : INotifyPropertyChanged
+    /// <seealso cref="ViewModel.ViewModelBase" />
+    internal sealed class CompareView : ViewModelBase
     {
         /// <summary>
         ///     The analysis

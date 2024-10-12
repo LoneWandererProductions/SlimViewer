@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -35,8 +34,8 @@ namespace SlimViews
     /// <summary>
     ///     View for Detail Window
     /// </summary>
-    /// <seealso cref="INotifyPropertyChanged" />
-    internal sealed class DetailCompareView : INotifyPropertyChanged
+    /// <seealso cref="ViewModel.ViewModelBase" />
+    internal sealed class DetailCompareView : ViewModelBase
     {
         /// <summary>
         ///     The chunk size
@@ -281,12 +280,6 @@ namespace SlimViews
         /// </value>
         public ICommand ExportCommand => GetCommand(ref _exportCommand, ExportAction);
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         ///     Sets the property.
         /// </summary>
@@ -297,6 +290,7 @@ namespace SlimViews
         private void SetProperty<T>(ref T field, T value, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return;
+
             field = value;
             OnPropertyChanged(propertyName);
         }
@@ -325,15 +319,6 @@ namespace SlimViews
         public bool CanExecute(object obj)
         {
             return _btmOne != null && _btmTwo != null;
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

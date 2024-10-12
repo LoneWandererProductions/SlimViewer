@@ -17,10 +17,12 @@ using ViewModel;
 
 namespace SlimViews
 {
+    /// <inheritdoc />
     /// <summary>
     ///     The View for Rename
     /// </summary>
-    internal sealed class ScaleView
+    /// <seealso cref="T:ViewModel.ViewModelBase" />
+    internal sealed class ScaleView : ViewModelBase
     {
         /// <summary>
         ///     The Degrees
@@ -85,21 +87,6 @@ namespace SlimViews
         /// </value>
         public ICommand OkayCommand =>
             _okayCommand ??= new DelegateCommand<Window>(OkayAction, CanExecute);
-
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        // ReSharper disable once EventNeverSubscribedTo.Global
-        public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.

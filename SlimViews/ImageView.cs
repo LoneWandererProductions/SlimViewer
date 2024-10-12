@@ -38,7 +38,12 @@ using Point = System.Windows.Point;
 
 namespace SlimViews
 {
-    public sealed class ImageView : INotifyPropertyChanged
+    /// <inheritdoc />
+    /// <summary>
+    /// Basic View and main entry Point
+    /// </summary>
+    /// <seealso cref="T:ViewModel.ViewModelBase" />
+    public sealed class ImageView : ViewModelBase
     {
         /// <summary>
         ///     The render
@@ -938,12 +943,6 @@ namespace SlimViews
         /// </value>
         public ImageZoom ImageZoom { get; init; }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         ///     Sets the property.
         /// </summary>
@@ -957,15 +956,6 @@ namespace SlimViews
 
             field = value;
             OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
