@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
@@ -29,11 +30,6 @@ namespace SlimViews
         private string _extensionSelect;
 
         /// <summary>
-        ///     The add command
-        /// </summary>
-        private ICommand _okayCommand;
-
-        /// <summary>
         ///     The source
         /// </summary>
         private string _source;
@@ -49,13 +45,20 @@ namespace SlimViews
         private string _target;
 
         /// <summary>
-        ///     Gets the explorer command.
+        /// Initializes a new instance of the <see cref="ConverterView"/> class.
+        /// </summary>
+        public ConverterView()
+        {
+            OkayCommand = new DelegateCommand<Window>(OkayAction, CanExecute);
+        }
+
+        /// <summary>
+        ///     Gets the okay command.
         /// </summary>
         /// <value>
-        ///     The explorer command.
+        ///     The okay command.
         /// </value>
-        public ICommand OkayCommand =>
-            _okayCommand ??= new DelegateCommand<Window>(OkayAction, CanExecute);
+        public ICommand OkayCommand { get; }
 
         /// <summary>
         ///     Gets the selected source.
@@ -82,11 +85,7 @@ namespace SlimViews
         public string ExtensionSelect
         {
             get => _extensionSelect;
-            set
-            {
-                Target = value;
-                SetProperty(ref _extensionSelect, value, nameof(ExtensionSelect));
-            }
+            set => SetField(ref _extensionSelect, value, () => Target = value, nameof(ExtensionSelect));
         }
 
         /// <summary>
@@ -98,11 +97,7 @@ namespace SlimViews
         public string SourceSelect
         {
             get => _sourceSelect;
-            set
-            {
-                Source = value;
-                SetProperty(ref _sourceSelect, value, nameof(SourceSelect));
-            }
+            set => SetField(ref _sourceSelect, value, () => Source = value, nameof(SourceSelect));
         }
 
         /// <summary>
@@ -130,7 +125,24 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Sets the property.
+        /// Sets the property with an action.
+        /// </summary>
+        /// <typeparam name="T">Generic Parameter</typeparam>
+        /// <param name="field">The field.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="updateAction">The action to perform when setting the value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        private void SetField<T>(ref T field, T value, Action updateAction, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+
+            field = value;
+            updateAction?.Invoke();
+            OnPropertyChanged(propertyName);
+        }
+
+        /// <summary>
+        /// Sets the property.
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="field">The field.</param>
@@ -162,7 +174,7 @@ namespace SlimViews
         /// <summary>
         ///     Okays the action.
         /// </summary>
-        /// <param name="window">The object.</param>
+        /// <param name="window">The window to close.</param>
         private void OkayAction(Window window)
         {
             SlimViewerRegister.Source = Source;

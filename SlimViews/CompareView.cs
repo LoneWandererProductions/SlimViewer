@@ -20,7 +20,6 @@ using ViewModel;
 
 namespace SlimViews
 {
-
     /// <inheritdoc />
     /// <summary>
     ///     Compare the Images, the View Model
@@ -280,12 +279,6 @@ namespace SlimViews
             set => SetProperty(ref _observerTenth, value, nameof(ObserverTenth));
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         ///     Sets the property.
         /// </summary>
@@ -299,15 +292,6 @@ namespace SlimViews
 
             field = value;
             OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

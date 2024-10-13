@@ -11,9 +11,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using FileHandler;
@@ -26,7 +26,7 @@ namespace SlimViews
     ///     The View for Rename
     /// </summary>
     /// <seealso cref="T:ViewModel.ViewModelBase" />
-    internal sealed class RenameView : ViewModelBase
+    public sealed class RenameView : ViewModelBase
     {
         /// <summary>
         ///     The add command
@@ -186,20 +186,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event EventHandler<PropertyChangedEventArgs> PropertyChanged;
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
         ///     Gets a value indicating whether this instance can execute.
         /// </summary>
         /// <param name="obj">The object.</param>
@@ -216,230 +202,103 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Removes Appendage in File Name
+        /// Removes an appendage from the file names in the observer list.
         /// </summary>
-        /// <param name="obj">The object.</param>
+        /// <param name="obj">The object, typically not used in this action.</param>
         private async void RemoveAppendageActionAsync(object obj)
         {
-            var observer = new Dictionary<int, string>(Observer);
             if (Replacement == null) return;
 
-            try
-            {
-                foreach (var (key, value) in Observer)
-                {
-                    var str = Path.GetFileName(value);
-
-                    var file = str.RemoveAppendage(Replacement);
-
-                    if (string.IsNullOrEmpty(file) ||
-                        string.Equals(str, file, StringComparison.OrdinalIgnoreCase)) continue;
-
-                    var directory = Path.GetDirectoryName(value);
-                    if (string.IsNullOrEmpty(directory)) continue;
-
-                    var target = Path.Combine(directory, file);
-
-                    var check = await FileHandleRename.RenameFile(value, target);
-                    if (check) observer[key] = target;
-                }
-
-                SlimViewerRegister.Changed = true;
-                Observer = observer;
-            }
-            catch (FileHandlerException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString());
-            }
+            await ProcessFileRenamingAsync((str) => str.RemoveAppendage(Replacement));
         }
 
         /// <summary>
-        ///     Adds Elements in File Name
+        /// Adds an appendage to the file names in the observer list.
         /// </summary>
+        /// <param name="obj">The object, typically not used in this action.</param>
         private async void AddActionAsync(object obj)
         {
-            var observer = new Dictionary<int, string>(Observer);
             if (Replacement == null) return;
 
-            try
-            {
-                foreach (var (key, value) in Observer)
-                {
-                    var str = Path.GetFileName(value);
-
-                    var file = str.AddAppendage(Replacement);
-
-                    if (string.IsNullOrEmpty(file) ||
-                        string.Equals(str, file, StringComparison.OrdinalIgnoreCase)) continue;
-
-                    var directory = Path.GetDirectoryName(value);
-                    if (string.IsNullOrEmpty(directory)) continue;
-
-                    var target = Path.Combine(directory, file);
-
-                    var check = await FileHandleRename.RenameFile(value, target);
-                    if (check) observer[key] = target;
-                }
-
-                SlimViewerRegister.Changed = true;
-                Observer = new Dictionary<int, string>(observer);
-            }
-            catch (FileHandlerException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString());
-            }
+            await ProcessFileRenamingAsync((str) => str.AddAppendage(Replacement));
         }
 
         /// <summary>
-        ///     Remove Elements in File Name
+        /// Removes a specified part from the file names in the observer list.
         /// </summary>
+        /// <param name="obj">The object, typically not used in this action.</param>
         private async void RemoveActionAsync(object obj)
         {
-            var observer = new Dictionary<int, string>(Observer);
             if (Replacement == null) return;
+
+            await ProcessFileRenamingAsync((str) => str.ReplacePart(Replacement, string.Empty));
+        }
+
+        /// <summary>
+        /// Reorders elements in the file names by numbers.
+        /// </summary>
+        /// <param name="obj">The object, typically not used in this action.</param>
+        private async void ReorderCommandActionAsync(object obj)
+        {
+            await ProcessFileRenamingAsync((str) =>
+            {
+                var file = str.ReOrderNumbers();
+                return string.IsNullOrEmpty(file) ? null : file;
+            }, true);
+        }
+
+        /// <summary>
+        /// Replaces a specified part of the file names with a new value in the observer list.
+        /// </summary>
+        /// <param name="obj">The object, typically not used in this action.</param>
+        private async void ReplaceCommandActionAsync(object obj)
+        {
+            if (Replacer == null) return;
+
+            await ProcessFileRenamingAsync((str) => str.ReplacePart(Replacement, Replacer));
+        }
+
+        /// <summary>
+        /// Removes a specified number of characters from the start of the file names in the observer list.
+        /// </summary>
+        /// <param name="obj">The object, typically not used in this action.</param>
+        private async void AppendagesAtActionAsync(object obj)
+        {
+            if (Numbers <= 0) return;
+
+            await ProcessFileRenamingAsync((str) => str.Length <= Numbers ? null : str.Remove(0, Numbers));
+        }
+
+        /// <summary>
+        /// Processes file renaming for all entries in the observer list based on the provided modification function.
+        /// </summary>
+        /// <param name="modifyFileName">A function that defines how to modify the file name.</param>
+        /// <param name="addExtension">Indicates whether to append the original file extension to the modified name.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        private async Task ProcessFileRenamingAsync(Func<string, string> modifyFileName, bool addExtension = false)
+        {
+            var observer = new Dictionary<int, string>(Observer);
 
             try
             {
                 foreach (var (key, value) in Observer)
                 {
-                    var str = Path.GetFileName(value);
+                    var str = Path.GetFileNameWithoutExtension(value);
+                    var ext = Path.GetExtension(value);
 
-                    var file = str.ReplacePart(Replacement, string.Empty);
+                    var file = modifyFileName(str);
+                    if (string.IsNullOrEmpty(file) || string.Equals(str, file, StringComparison.OrdinalIgnoreCase))
+                        continue;
 
-                    if (string.IsNullOrEmpty(file) ||
-                        string.Equals(str, file, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (addExtension)
+                        file = string.Concat(file, ext);
 
                     var directory = Path.GetDirectoryName(value);
                     if (string.IsNullOrEmpty(directory)) continue;
 
                     var target = Path.Combine(directory, file);
-
                     var check = await FileHandleRename.RenameFile(value, target);
-                    if (check) observer[key] = value;
-                }
-
-                SlimViewerRegister.Changed = true;
-                Observer = new Dictionary<int, string>(observer);
-            }
-            catch (FileHandlerException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        /// <summary>
-        ///     Reorder Elements in File Name
-        /// </summary>
-        private async void ReorderCommandActionAsync(object obj)
-        {
-            var observer = new Dictionary<int, string>(Observer);
-            try
-            {
-                foreach (var (key, value) in Observer)
-                {
-                    var str = Path.GetFileNameWithoutExtension(value);
-                    var ext = Path.GetExtension(value);
-
-                    var file = str.ReOrderNumbers();
-                    if (string.IsNullOrEmpty(file) ||
-                        string.Equals(str, file, StringComparison.OrdinalIgnoreCase)) continue;
-
-                    file = string.Concat(file, ext);
-
-                    var directory = Path.GetDirectoryName(value);
-                    if (string.IsNullOrEmpty(directory)) continue;
-
-                    file = Path.Combine(directory, file);
-
-                    var check = await FileHandleRename.RenameFile(value, file);
-                    if (check) observer[key] = file;
-                }
-
-                SlimViewerRegister.Changed = true;
-                Observer = observer;
-            }
-            catch (FileHandlerException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        /// <summary>
-        ///     Replaces part or the string command.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private async void ReplaceCommandActionAsync(object obj)
-        {
-            var observer = new Dictionary<int, string>(Observer);
-            if (Replacer == null) return;
-
-            try
-            {
-                foreach (var (key, value) in Observer)
-                {
-                    var str = Path.GetFileNameWithoutExtension(value);
-                    var ext = Path.GetExtension(value);
-
-                    var file = str.ReplacePart(Replacement, Replacer);
-                    if (string.IsNullOrEmpty(file) ||
-                        string.Equals(str, file, StringComparison.OrdinalIgnoreCase)) continue;
-
-                    file = string.Concat(file, ext);
-
-                    var directory = Path.GetDirectoryName(value);
-                    if (string.IsNullOrEmpty(directory)) continue;
-
-                    file = Path.Combine(directory, file);
-
-                    var check = await FileHandleRename.RenameFile(value, file);
-                    if (check) observer[key] = file;
-                }
-
-                SlimViewerRegister.Changed = true;
-                Observer = observer;
-            }
-            catch (FileHandlerException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
-
-        /// <summary>
-        ///     Remove Appendage at number count action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private async void AppendagesAtActionAsync(object obj)
-        {
-            var observer = new Dictionary<int, string>(Observer);
-            if (Numbers <= 0) return;
-
-            try
-            {
-                foreach (var (key, value) in Observer)
-                {
-                    var str = Path.GetFileNameWithoutExtension(value);
-                    var ext = Path.GetExtension(value);
-
-                    if (str.Length <= Numbers) continue;
-
-                    var file = str.Remove(0, Numbers);
-
-                    if (string.IsNullOrEmpty(file)) continue;
-
-                    file = string.Concat(file, ext);
-
-                    var directory = Path.GetDirectoryName(value);
-                    if (string.IsNullOrEmpty(directory)) continue;
-
-                    file = Path.Combine(directory, file);
-
-                    var check = await FileHandleRename.RenameFile(value, file);
-                    if (check) observer[key] = file;
+                    if (check) observer[key] = target;
                 }
 
                 SlimViewerRegister.Changed = true;

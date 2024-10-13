@@ -6,10 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedParameter.Global
 // ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable MemberCanBeMadeStatic.Global
 
 using System;
 using System.Collections.Generic;
@@ -107,16 +104,6 @@ namespace SlimViews
         private Bitmap _difference;
 
         /// <summary>
-        ///     The difference command
-        /// </summary>
-        private ICommand _differenceCommand;
-
-        /// <summary>
-        ///     The export command
-        /// </summary>
-        private ICommand _exportCommand;
-
-        /// <summary>
         ///     The information one
         /// </summary>
         private string _informationOne;
@@ -125,16 +112,6 @@ namespace SlimViews
         ///     The information two
         /// </summary>
         private string _informationTwo;
-
-        /// <summary>
-        ///     The open one command
-        /// </summary>
-        private ICommand _openOneCommand;
-
-        /// <summary>
-        ///     The open two command
-        /// </summary>
-        private ICommand _openTwoCommand;
 
         /// <summary>
         ///     The path one
@@ -157,12 +134,12 @@ namespace SlimViews
         private string _statusImage;
 
         /// <summary>
-        ///     The information
+        ///     The information RichTextBox
         /// </summary>
         public RichTextBox RtBoxInformation;
 
         /// <summary>
-        ///     The color information
+        ///     The color information TextBox
         /// </summary>
         public TextBox TxtBoxColorInformation;
 
@@ -174,14 +151,17 @@ namespace SlimViews
             _analysis = new ImageAnalysis();
             _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
             _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
+
+            // Initialize commands in the constructor
+            OpenOneCommand = new DelegateCommand<object>(OpenOneAction, CanExecute);
+            OpenTwoCommand = new DelegateCommand<object>(OpenTwoAction, CanExecute);
+            DifferenceCommand = new DelegateCommand<object>(DifferenceAction, CanExecute);
+            ExportCommand = new DelegateCommand<object>(ExportAction, CanExecute);
         }
 
         /// <summary>
-        ///     Gets or sets the BitmapImage.
+        ///     Gets or sets the first BitmapImage.
         /// </summary>
-        /// <value>
-        ///     The BitmapImage.
-        /// </value>
         public BitmapImage BmpOne
         {
             get => _bmpOne;
@@ -189,11 +169,8 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the BMP two.
+        ///     Gets or sets the second BitmapImage.
         /// </summary>
-        /// <value>
-        ///     The BMP two.
-        /// </value>
         public BitmapImage BmpTwo
         {
             get => _bmpTwo;
@@ -201,11 +178,8 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the path one.
+        ///     Gets or sets the path of the first image.
         /// </summary>
-        /// <value>
-        ///     The path one.
-        /// </value>
         public string PathOne
         {
             get => _pathOne;
@@ -213,11 +187,8 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the path two.
+        ///     Gets or sets the path of the second image.
         /// </summary>
-        /// <value>
-        ///     The path two.
-        /// </value>
         public string PathTwo
         {
             get => _pathTwo;
@@ -227,9 +198,6 @@ namespace SlimViews
         /// <summary>
         ///     Gets or sets the status image.
         /// </summary>
-        /// <value>
-        ///     The status image.
-        /// </value>
         public string StatusImage
         {
             get => _statusImage;
@@ -237,11 +205,8 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the color.
+        ///     Gets or sets the color used for difference highlighting.
         /// </summary>
-        /// <value>
-        ///     The color.
-        /// </value>
         public string Colors
         {
             get => _color;
@@ -249,44 +214,28 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the open one command.
+        ///     Command to open the first image.
         /// </summary>
-        /// <value>
-        ///     The open one command.
-        /// </value>
-        public ICommand OpenOneCommand => GetCommand(ref _openOneCommand, OpenOneAction);
+        public ICommand OpenOneCommand { get; }
 
         /// <summary>
-        ///     Gets the open two command.
+        ///     Command to open the second image.
         /// </summary>
-        /// <value>
-        ///     The open two command.
-        /// </value>
-        public ICommand OpenTwoCommand => GetCommand(ref _openTwoCommand, OpenTwoAction);
+        public ICommand OpenTwoCommand { get; }
 
         /// <summary>
-        ///     Gets the difference command.
+        ///     Command to compute the difference between images.
         /// </summary>
-        /// <value>
-        ///     The difference command.
-        /// </value>
-        public ICommand DifferenceCommand => GetCommand(ref _differenceCommand, DifferenceAction);
+        public ICommand DifferenceCommand { get; }
 
         /// <summary>
-        ///     Gets the difference command.
+        ///     Command to export the comparison results.
         /// </summary>
-        /// <value>
-        ///     The difference command.
-        /// </value>
-        public ICommand ExportCommand => GetCommand(ref _exportCommand, ExportAction);
+        public ICommand ExportCommand { get; }
 
         /// <summary>
-        ///     Sets the property.
+        ///     Sets the property and raises the PropertyChanged event.
         /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
         private void SetProperty<T>(ref T field, T value, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return;
@@ -296,35 +245,16 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the command.
+        ///     Determines whether the commands can execute.
         /// </summary>
-        /// <param name="command">The command.</param>
-        /// <param name="execute">The execute.</param>
-        /// <returns>The selected Command</returns>
-        private ICommand GetCommand(ref ICommand command, Action<object> execute)
-        {
-            return command ??= new DelegateCommand<object>(execute, CanExecute);
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether this instance can execute.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-        /// </returns>
-        /// <value>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-        /// </value>
         public bool CanExecute(object obj)
         {
             return _btmOne != null && _btmTwo != null;
         }
 
         /// <summary>
-        ///     Opens the one action.
+        ///     Action to open the first image.
         /// </summary>
-        /// <param name="obj">The object.</param>
         private async void OpenOneAction(object obj)
         {
             var pathObj = OpenFile();
@@ -335,10 +265,10 @@ namespace SlimViews
             _difference = null;
             _colorOne = null;
 
-            //check if file extension is supported
+            // Check if file extension is supported
             if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
             {
-                _ = MessageBox.Show(string.Concat(SlimViewerResources.MessageFileNotSupported, pathObj.Extension),
+                MessageBox.Show($"{SlimViewerResources.MessageFileNotSupported}{pathObj.Extension}",
                     SlimViewerResources.MessageError);
                 return;
             }
@@ -351,8 +281,7 @@ namespace SlimViews
             _btmOne = btm;
             BmpOne = btm.ToBitmapImage();
 
-            _informationOne =
-                SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, btm.ToBitmapImage());
+            _informationOne = SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpOne);
 
             Compare();
 
@@ -365,9 +294,8 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Opens the two action.
+        ///     Action to open the second image.
         /// </summary>
-        /// <param name="obj">The object.</param>
         private async void OpenTwoAction(object obj)
         {
             var pathObj = OpenFile();
@@ -378,10 +306,10 @@ namespace SlimViews
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
-            //check if file extension is supported
+            // Check if file extension is supported
             if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
             {
-                _ = MessageBox.Show(string.Concat(SlimViewerResources.MessageFileNotSupported, pathObj.Extension),
+                MessageBox.Show($"{SlimViewerResources.MessageFileNotSupported}{pathObj.Extension}",
                     SlimViewerResources.MessageError);
                 return;
             }
@@ -393,10 +321,8 @@ namespace SlimViews
             _btmTwo = btm;
             BmpTwo = btm.ToBitmapImage();
 
-            _informationTwo =
-                SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, btm.ToBitmapImage());
+            _informationTwo = SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo);
             RtBoxInformation.AppendText(_informationTwo);
-            // Scroll to the end of the RichTextBox
             RtBoxInformation.ScrollToEnd();
 
             Compare();
@@ -410,11 +336,9 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Appends the text asynchronous.
+        ///     Appends text to a TextBoxBase control asynchronously.
         /// </summary>
-        /// <param name="richTextBox">The rich text box.</param>
-        /// <param name="text">The text.</param>
-        private static async Task AppendTextAsync(TextBoxBase richTextBox, string text)
+        private static async Task AppendTextAsync(TextBoxBase textBox, string text)
         {
             var offset = 0;
             while (offset < text.Length)
@@ -422,29 +346,25 @@ namespace SlimViews
                 var length = Math.Min(ChunkSize, text.Length - offset);
                 var chunk = text.Substring(offset, length);
 
-                await richTextBox.Dispatcher.InvokeAsync(() => richTextBox.AppendText(chunk));
-
+                await textBox.Dispatcher.InvokeAsync(() => textBox.AppendText(chunk));
                 offset += length;
 
-                // Optionally yield control to the UI thread occasionally
                 await Task.Yield();
             }
 
-            richTextBox.ScrollToEnd(); // Scroll after all chunks are appended
+            textBox.ScrollToEnd();
         }
 
         /// <summary>
-        ///     Differences the action.
+        ///     Action to compute the difference between the two images.
         /// </summary>
-        /// <param name="obj">The object.</param>
         private void DifferenceAction(object obj)
         {
             if (_btmOne == null || _btmTwo == null) return;
 
-            var color = Colors;
-            if (string.IsNullOrEmpty(color)) return;
+            if (string.IsNullOrEmpty(Colors)) return;
 
-            var col = Color.FromName(color);
+            var col = Color.FromName(Colors);
 
             _difference = _analysis.DifferenceImage(_btmOne, _btmTwo, col);
 
@@ -452,37 +372,34 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Exports the Information.
+        ///     Action to export the comparison results.
         /// </summary>
-        /// <param name="obj">The object.</param>
         private void ExportAction(object obj)
         {
             if (string.IsNullOrEmpty(_informationOne) && string.IsNullOrEmpty(_informationTwo)) return;
 
-            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity,
-                _difference);
+            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity, _difference);
         }
 
         /// <summary>
-        ///     Computes the text.
+        ///     Computes the text for color information.
         /// </summary>
-        /// <param name="btm">The bitmap.</param>
-        /// <returns>The color Infos</returns>
         private async Task<string> ComputeText(Bitmap btm)
         {
             var str = new StringBuilder();
             await Task.Run(() =>
             {
                 foreach (var (color, count) in _analysis.GetColors(btm))
-                    str.AppendLine(
-                        $"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
+                {
+                    str.AppendLine($"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
+                }
             });
             StatusImage = _greenIcon;
             return str.ToString();
         }
 
         /// <summary>
-        ///     Compares this instance.
+        ///     Compares the two images and updates similarity information.
         /// </summary>
         private void Compare()
         {
@@ -492,15 +409,12 @@ namespace SlimViews
 
             _similarity = $"{SlimViewerResources.Similarity}{data.Similarity}{Environment.NewLine}";
             RtBoxInformation.AppendText(_similarity);
-
-            // Scroll to the end of the RichTextBox
             RtBoxInformation.ScrollToEnd();
         }
 
         /// <summary>
-        ///     Opens the file.
+        ///     Opens a file dialog to select an image file.
         /// </summary>
-        /// <returns>Path object with all needed file information</returns>
         private static PathObject OpenFile()
         {
             return FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen);
