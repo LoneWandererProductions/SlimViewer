@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -34,7 +35,7 @@ namespace SlimViews
         public Rename(Dictionary<int, string> observer)
         {
             InitializeComponent();
-            View.Observer = observer;
+            View.Observer = new ConcurrentDictionary<int, string>(observer);
         }
 
         /// <summary>
@@ -43,6 +44,6 @@ namespace SlimViews
         /// <value>
         ///     The observer.
         /// </value>
-        internal Dictionary<int, string> Observer => View.Observer;
+        internal Dictionary<int, string> Observer => new Dictionary<int, string>(View.Observer);
     }
 }
