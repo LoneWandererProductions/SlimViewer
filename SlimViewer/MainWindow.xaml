@@ -33,178 +33,212 @@
                     Key="S"
                     Command="{Binding HotkeyCommand}" CommandParameter="S" />
     </Window.InputBindings>
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400" />
-            <ColumnDefinition Width="25" />
-            <ColumnDefinition Width="25" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="86*" />
-            <ColumnDefinition Width="39*" />
-        </Grid.ColumnDefinitions>
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="55"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="180"/>
         </Grid.RowDefinitions>
-        <Menu>
-            <MenuItem Header="Menu">
-                <MenuItem Header="Open" Command="{Binding OpenCommand}" />
-                <MenuItem Header="Open CBZ" Command="{Binding OpenCbzCommand}" />
-                <MenuItem Header="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding Path =IsActive}" />
-                <MenuItem Header="Delete" Command="{Binding DeleteCommand}" IsEnabled="{Binding Path =IsActive}" />
-                <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding Path =IsActive}" />
-                <Separator />
-                <MenuItem Header="Close" Command="{Binding CloseCommand}" />
-            </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Filter">
-                    <MenuItem Header="Configure Filter" Command="{Binding FilterConfigCommand}" />
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="105" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Menu>
+                <MenuItem Header="Menu">
+                    <MenuItem Header="Open" Command="{Binding OpenCommand}" />
+                    <MenuItem Header="Open CBZ" Command="{Binding OpenCbzCommand}" />
+                    <MenuItem Header="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding Path =IsActive}" />
+                    <MenuItem Header="Delete" Command="{Binding DeleteCommand}" IsEnabled="{Binding Path =IsActive}" />
+                    <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding Path =IsActive}" />
                     <Separator />
-                    <MenuItem Header="Sepia" Command="{Binding ApplyFilterCommand}" CommandParameter="Sepia"
+                    <MenuItem Header="Close" Command="{Binding CloseCommand}" />
+                </MenuItem>
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Filter">
+                        <MenuItem Header="Configure Filter" Command="{Binding FilterConfigCommand}" />
+                        <Separator />
+                        <MenuItem Header="Sepia" Command="{Binding ApplyFilterCommand}" CommandParameter="Sepia"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Gray scale" Command="{Binding ApplyFilterCommand}" CommandParameter="GrayScale"
+                        <MenuItem Header="Gray scale" Command="{Binding ApplyFilterCommand}" CommandParameter="GrayScale"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Black and White" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Black and White" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="BlackAndWhite" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Invert" Command="{Binding ApplyFilterCommand}" CommandParameter="Invert"
+                        <MenuItem Header="Invert" Command="{Binding ApplyFilterCommand}" CommandParameter="Invert"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Polaroid" Command="{Binding ApplyFilterCommand}" CommandParameter="Polaroid"
+                        <MenuItem Header="Polaroid" Command="{Binding ApplyFilterCommand}" CommandParameter="Polaroid"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Contour" Command="{Binding ApplyFilterCommand}" CommandParameter="Contour"
+                        <MenuItem Header="Contour" Command="{Binding ApplyFilterCommand}" CommandParameter="Contour"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Brightness" Command="{Binding ApplyFilterCommand}" CommandParameter="Brightness"
+                        <MenuItem Header="Brightness" Command="{Binding ApplyFilterCommand}" CommandParameter="Brightness"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Contrast" Command="{Binding ApplyFilterCommand}" CommandParameter="Contrast"
+                        <MenuItem Header="Contrast" Command="{Binding ApplyFilterCommand}" CommandParameter="Contrast"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Hue Shift" Command="{Binding ApplyFilterCommand}" CommandParameter="HueShift"
+                        <MenuItem Header="Hue Shift" Command="{Binding ApplyFilterCommand}" CommandParameter="HueShift"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Color Balance" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Color Balance" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="ColorBalance" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Vintage" Command="{Binding ApplyFilterCommand}" CommandParameter="Vintage"
+                        <MenuItem Header="Vintage" Command="{Binding ApplyFilterCommand}" CommandParameter="Vintage"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Sharpen" Command="{Binding ApplyFilterCommand}" CommandParameter="Sharpen"
+                        <MenuItem Header="Sharpen" Command="{Binding ApplyFilterCommand}" CommandParameter="Sharpen"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Gaussian Blur" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Gaussian Blur" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="GaussianBlur" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Emboss" Command="{Binding ApplyFilterCommand}" CommandParameter="Emboss"
+                        <MenuItem Header="Emboss" Command="{Binding ApplyFilterCommand}" CommandParameter="Emboss"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Box Blur" Command="{Binding ApplyFilterCommand}" CommandParameter="BoxBlur"
+                        <MenuItem Header="Box Blur" Command="{Binding ApplyFilterCommand}" CommandParameter="BoxBlur"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Laplacian" Command="{Binding ApplyFilterCommand}" CommandParameter="Laplacian"
+                        <MenuItem Header="Laplacian" Command="{Binding ApplyFilterCommand}" CommandParameter="Laplacian"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Edge Enhance" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Edge Enhance" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="EdgeEnhance" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Motion Blur" Command="{Binding ApplyFilterCommand}" CommandParameter="MotionBlur"
+                        <MenuItem Header="Motion Blur" Command="{Binding ApplyFilterCommand}" CommandParameter="MotionBlur"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Unsharp Mask" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Unsharp Mask" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="UnsharpMask" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Difference of Gaussians" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Difference of Gaussians" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="DifferenceOfGaussians" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Crosshatch" Command="{Binding ApplyFilterCommand}" CommandParameter="Crosshatch"
+                        <MenuItem Header="Crosshatch" Command="{Binding ApplyFilterCommand}" CommandParameter="Crosshatch"
                               IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Floyd Steinberg Dithering" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Floyd Steinberg Dithering" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="FloydSteinbergDithering" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Anisotropic Kuwahara" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Anisotropic Kuwahara" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="AnisotropicKuwahara" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Supersampling Antialiasing" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Supersampling Antialiasing" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="SupersamplingAntialiasing" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Post Processing Antialiasing" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Post Processing Antialiasing" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="PostProcessingAntialiasing" IsEnabled="{Binding Path=IsActive}" />
-                    <MenuItem Header="Pencil Sketch Effect" Command="{Binding ApplyFilterCommand}"
+                        <MenuItem Header="Pencil Sketch Effect" Command="{Binding ApplyFilterCommand}"
                               CommandParameter="PencilSketchEffect" IsEnabled="{Binding Path=IsActive}" />
-                    <Separator />
-                    <MenuItem Header="Pixelate Image">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Text="{Binding Path=PixelWidth, Mode=TwoWay}" />
-                            <Button Content="Okay" Grid.Column="2" Command="{Binding Pixelate}"
+                        <Separator />
+                        <MenuItem Header="Pixelate Image">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding Path=PixelWidth, Mode=TwoWay}" />
+                                <Button Content="Okay" Grid.Column="2" Command="{Binding Pixelate}"
                                     IsEnabled="{Binding Path=IsActive}" />
-                        </Grid>
+                            </Grid>
+                        </MenuItem>
                     </MenuItem>
-                </MenuItem>
-                <MenuItem Header="Texture">
-                    <MenuItem Header="Configure Filter" Command="{Binding TextureConfigCommand}" />
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path=IsActive}" />
-                <MenuItem Header="Rotate 90°" Command="{Binding RotateForwardCommand}"
+                    <MenuItem Header="Texture">
+                        <MenuItem Header="Configure Filter" Command="{Binding TextureConfigCommand}" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Rotate 90°" Command="{Binding RotateForwardCommand}"
                           IsEnabled="{Binding Path=IsActive}" />
-                <MenuItem Header="Rotate -90°" Command="{Binding RotateBackwardCommand}"
+                    <MenuItem Header="Rotate -90°" Command="{Binding RotateBackwardCommand}"
                           IsEnabled="{Binding Path=IsActive}" />
-                <Separator />
-                <MenuItem Header="Brighten" Command="{Binding BrightenCommand}" IsEnabled="{Binding Path=IsActive}" />
-                <MenuItem Header="Darken" Command="{Binding DarkenCommand}" IsEnabled="{Binding Path=IsActive}" />
-                <Separator />
-                <MenuItem Header="Scale Image" Command="{Binding ScaleCommand}" IsEnabled="{Binding Path=IsActive}" />
-            </MenuItem>
-            <MenuItem Header="Folder">
-                <MenuItem Header="Open Folder" Command="{Binding FolderCommand}" />
-                <Separator />
-                <MenuItem Header="Rename Images" Command="{Binding FolderRenameCommand}"
+                    <Separator />
+                    <MenuItem Header="Brighten" Command="{Binding BrightenCommand}" IsEnabled="{Binding Path=IsActive}" />
+                    <MenuItem Header="Darken" Command="{Binding DarkenCommand}" IsEnabled="{Binding Path=IsActive}" />
+                    <Separator />
+                    <MenuItem Header="Scale Image" Command="{Binding ScaleCommand}" IsEnabled="{Binding Path=IsActive}" />
+                </MenuItem>
+                <MenuItem Header="Folder">
+                    <MenuItem Header="Open Folder" Command="{Binding FolderCommand}" />
+                    <Separator />
+                    <MenuItem Header="Rename Images" Command="{Binding FolderRenameCommand}"
                           IsEnabled="{Binding Path =IsActive}" />
-                <MenuItem Header="Convert Images" Command="{Binding FolderConvertCommand}"
+                    <MenuItem Header="Convert Images" Command="{Binding FolderConvertCommand}"
                           IsEnabled="{Binding Path =IsActive}" />
-                <MenuItem Header="Search Images" Command="{Binding FolderSearchCommand}"
+                    <MenuItem Header="Search Images" Command="{Binding FolderSearchCommand}"
                           IsEnabled="{Binding Path =IsActive}" />
-                <MenuItem Header="Move Image(s)" Command="{Binding MoveCommand}"
+                    <MenuItem Header="Move Image(s)" Command="{Binding MoveCommand}"
                           IsEnabled="{Binding Path =IsActive}" />
-                <MenuItem Header="Move all Images" Command="{Binding MoveAllCommand}"
+                    <MenuItem Header="Move all Images" Command="{Binding MoveAllCommand}"
                           IsEnabled="{Binding Path =IsActive}" />
-                <Separator />
-                <MenuItem Header="Compare Images">
-                    <MenuItem Header="Duplicate Images" Command="{Binding DuplicateCommand}"
+                    <Separator />
+                    <MenuItem Header="Compare Images">
+                        <MenuItem Header="Duplicate Images" Command="{Binding DuplicateCommand}"
                               IsEnabled="{Binding Path =IsActive}" />
-                    <MenuItem Header="Similar Images">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Text="{Binding Path=Similarity, Mode=TwoWay}" />
-                            <Button Content="Okay" Grid.Column="2" Command="{Binding SimilarCommand}"
+                        <MenuItem Header="Similar Images">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding Path=Similarity, Mode=TwoWay}" />
+                                <Button Content="Okay" Grid.Column="2" Command="{Binding SimilarCommand}"
                                     IsEnabled="{Binding Path =IsActive}" />
-                        </Grid>
+                            </Grid>
+                        </MenuItem>
                     </MenuItem>
                 </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Tool">
-                <MenuItem Header="Gif Generator" Command="{Binding GifWindowCommand}" />
-                <MenuItem Header="Image Analyzer" Command="{Binding AnalyzerWindowCommand}" />
-                <MenuItem Header="Image Resizer" Command="{Binding ResizerWindowCommand}" />
-            </MenuItem>
-            <MenuItem Header="Option">
-                <CheckBox IsChecked="{Binding Path =SubFolders}">Subfolders</CheckBox>
-                <CheckBox IsChecked="{Binding Path =Thumbs}">Show Thumbs</CheckBox>
-                <Separator />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <CheckBox IsChecked="{Binding Path = AutoClean}" Content="Auto Clean Temp Folder" />
-                    <Button Content="Clean" Command="{Binding CleanTempFolder}" Grid.Column="2" />
-                </Grid>
-                <Separator />
-                <CheckBox IsChecked="{Binding ElementName=ImageZoom, Path=AutoplayGifImage}">Autoplay Gif</CheckBox>
-            </MenuItem>
-            <MenuItem Header="Experimental">
-                <MenuItem Header="Open Cif" Command="{Binding OpenCommandCif}" />
-                <MenuItem Header="Convert to Cif" Command="{Binding ConvertCommandCif}" />
-                <Separator />
-                <CheckBox IsChecked="{Binding Path = Compress}">Compress Cif</CheckBox>
-            </MenuItem>
-        </Menu>
-        <Grid Grid.Row="1" Grid.ColumnSpan="10" Grid.Column="0">
+                <MenuItem Header="Tool">
+                    <MenuItem Header="Gif Generator" Command="{Binding GifWindowCommand}" />
+                    <MenuItem Header="Image Analyzer" Command="{Binding AnalyzerWindowCommand}" />
+                    <MenuItem Header="Image Resizer" Command="{Binding ResizerWindowCommand}" />
+                </MenuItem>
+                <MenuItem Header="Option">
+                    <CheckBox IsChecked="{Binding Path =SubFolders}">Subfolders</CheckBox>
+                    <CheckBox IsChecked="{Binding Path =Thumbs}">Show Thumbs</CheckBox>
+                    <Separator />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding Path = AutoClean}" Content="Auto Clean Temp Folder" />
+                        <Button Content="Clean" Command="{Binding CleanTempFolder}" Grid.Column="2" />
+                    </Grid>
+                    <Separator />
+                    <CheckBox IsChecked="{Binding ElementName=ImageZoom, Path=AutoplayGifImage}">Autoplay Gif</CheckBox>
+                </MenuItem>
+                <MenuItem Header="Experimental">
+                    <MenuItem Header="Open Cif" Command="{Binding OpenCommandCif}" />
+                    <MenuItem Header="Convert to Cif" Command="{Binding ConvertCommandCif}" />
+                    <Separator />
+                    <CheckBox IsChecked="{Binding Path = Compress}">Compress Cif</CheckBox>
+                </MenuItem>
+            </Menu>
+            <Button Content="Remove from List" Grid.Row="0" Grid.Column="2"
+                    Command="{Binding ClearCommand}" IsEnabled="{Binding Path =IsActive}"/>
+            <Label Content="File Count" Grid.Column="3"  VerticalAlignment="Center" />
+            <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="4" />
+            <ComboBox x:Name="CmbBxSelection" Grid.Row="0" Grid.Column="5"
+                          ItemsSource="{Binding Selections}" SelectedItem="{Binding SelectedTool}"  />
+            <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Left"
+                                                ColorChanged="ColorPickerMenu_ColorChanged"/>
+
+        </Grid>
+        <Grid Grid.Row="1">
+            <commonControls:ImageZoom
+                IsTabStop="True"
+                ItemsSource="{Binding Bmp}"
+                ImageGifPath="{Binding GifPath}"
+                Grid.Row="1"
+                Name="ImageZoom"
+                ZoomTool="{Binding ElementName=CmbBxSelection, Path=SelectedItem}"
+                SelectedFrame="ImageZoom_SelectedFrame"
+                SelectedPoint="ImageZoom_SelectedPointColor" />
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25" />
                 <ColumnDefinition Width="25" />
@@ -214,45 +248,28 @@
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="120" />
-            </Grid.RowDefinitions>
-            <commonControls:ImageZoom
-                IsTabStop="True"
-                ItemsSource="{Binding Bmp}"
-                ImageGifPath="{Binding GifPath}"
-                Grid.ColumnSpan="6"
-                Name="ImageZoom"
-                ZoomTool="{Binding ElementName=CmbBxSelection, Path=SelectedItem}"
-                SelectedFrame="ImageZoom_SelectedFrame"
-                SelectedPoint="ImageZoom_SelectedPointColor" />
-            <TextBox Grid.Row="1" TextWrapping="NoWrap"
+            <Button Content="R" Grid.Row="2" Grid.Column="1"
+                    Command="{Binding RenameCommand}" IsEnabled="{Binding Path =IsActive}" />
+            <Button Content="D" Grid.Row="0" Grid.Column="0"
+                    Command="{Binding DeleteCommand}" IsEnabled="{Binding Path =IsActive}" />
+            <Button Content="//" Grid.Row="0" Grid.Column="1"
+                    Command="{Binding ExplorerCommand}" IsEnabled="{Binding Path =IsActive}" />
+            <Button Content="Move" Grid.Row="2" Grid.Column="3"
+                    Command="{Binding MoveCommand}" IsEnabled="{Binding Path =IsActive}" />
+            <Button Content="Move All" Grid.Row="2" Grid.Column="5"
+                    Command="{Binding MoveAllCommand}" IsEnabled="{Binding Path =IsActive}" />
+            <Image Grid.Row="2" Grid.Column="0" Source="{Binding StatusImage}" />
+            <TextBox Grid.Row="0" TextWrapping="NoWrap"
                      Focusable="True"
                      Text="{Binding Path=Information}" Grid.Column="2" Grid.ColumnSpan="4"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
             <TextBox TextWrapping="Wrap"
-                     Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3"
+                     Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2"
                      Grid.Column="2">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding RenameCommand}" Key="Enter" />
                 </TextBox.InputBindings>
             </TextBox>
-
-            <Button Content="R" Grid.Row="3" Grid.Column="1"
-                    Command="{Binding RenameCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Button Content="D" Grid.Row="1" Grid.Column="0"
-                    Command="{Binding DeleteCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Button Content="//" Grid.Row="1" Grid.Column="1"
-                    Command="{Binding ExplorerCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Button Content="Move" Grid.Row="3" Grid.Column="3"
-                    Command="{Binding MoveCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Button Content="Move All" Grid.Row="3" Grid.Column="5"
-                    Command="{Binding MoveAllCommand}" IsEnabled="{Binding Path =IsActive}" />
-            <Image Grid.Row="3" Grid.Column="0" Source="{Binding StatusImage}" />
             <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Row="4"
                           Focusable="False" Grid.ColumnSpan="6" Grid.Column="0">
                 <!--Well not really that clean, but it works for now, events can't be transmitted without some hassle-->
@@ -267,13 +284,5 @@
                     ImageLoaded="Thumbnail_OnImageLoaded" />
             </ScrollViewer>
         </Grid>
-        <Button Content="Remove from List" Grid.Row="0" Grid.Column="3"
-                Command="{Binding ClearCommand}" IsEnabled="{Binding Path =IsActive}" />
-        <Label Content="File Count" Grid.Row="0" Grid.Column="4" />
-        <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="5" />
-        <ComboBox x:Name="CmbBxSelection" Grid.Row="0" Grid.Column="6"
-                  ItemsSource="{Binding Selections}" SelectedItem="{Binding SelectedTool}" />
-        <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Left"
-                                        ColorChanged="ColorPickerMenu_ColorChanged" />
     </Grid>
 </Window>
