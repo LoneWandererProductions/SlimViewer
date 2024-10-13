@@ -76,7 +76,7 @@ namespace SlimViews
                     var success = SaveImage(imageExport, ImagingResources.JpgExt, image);
                     if (!success) ShowError(SlimViewerResources.ErrorCouldNotSaveFile);
                 }
-                catch (Exception ex) when (ex is ArgumentException || ex is IOException || ex is ExternalException)
+                catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
                 {
                     Trace.WriteLine(ex);
                     ShowError(ex.ToString(), nameof(ConvertGifAction));
@@ -128,7 +128,7 @@ namespace SlimViews
             {
                 await File.WriteAllLinesAsync(pathObj.FilePath, content).ConfigureAwait(false);
             }
-            catch (Exception ex) when (ex is IOException || ex is ArgumentException)
+            catch (Exception ex) when (ex is IOException or ArgumentException)
             {
                 Trace.WriteLine(ex);
                 ShowError(ex.ToString(), nameof(GenerateExportAsync));
@@ -154,7 +154,7 @@ namespace SlimViews
             {
                 return Render.BitmapScaling(bitmap, width, height);
             }
-            catch (Exception ex) when (ex is ArgumentException || ex is InsufficientMemoryException)
+            catch (Exception ex) when (ex is ArgumentException or InsufficientMemoryException)
             {
                 Trace.WriteLine(ex);
                 ShowError(ex.ToString(), nameof(Resize));
@@ -177,7 +177,7 @@ namespace SlimViews
             {
                 return Render.FilterImage(bitmap, filter);
             }
-            catch (Exception ex) when (ex is ArgumentException || ex is OutOfMemoryException)
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
                 Trace.WriteLine(ex);
                 ShowError(ex.ToString(), SlimViewerResources.MessageError);
@@ -214,10 +214,10 @@ namespace SlimViews
                 ImagingResources.BmpExt => ImageFormat.Bmp,
                 ImagingResources.GifExt => ImageFormat.Gif,
                 ImagingResources.TifExt => ImageFormat.Tiff,
-                _ => throw new ArgumentException("Unsupported image format") // Handle unsupported formats
+                _ => throw new ArgumentException(SlimViewerResources.ErrorNotSupported) // Handle unsupported formats
             };
 
-            Render.SaveBitmap(bitmap, path, format); // Ensure Render is properly defined
+            Render.SaveBitmap(bitmap, path, format);
             return true;
         }
 
@@ -252,8 +252,7 @@ namespace SlimViews
             {
                 return Render.GetOriginalBitmap(filePath);
             }
-            catch (Exception ex) when (ex is IOException || ex is ArgumentException ||
-                                       ex is NotSupportedException || ex is InvalidOperationException)
+            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
                 ShowError(ex.ToString(), nameof(GenerateImage));

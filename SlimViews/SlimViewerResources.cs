@@ -114,6 +114,11 @@ namespace SlimViews
         internal const string ErrorSerializer = "Could not Serialize: ";
 
         /// <summary>
+        ///     The Error Image not supported (const). Value: " "Unsupported image format."
+        /// </summary>
+        internal const string ErrorNotSupported = "Unsupported image format.";
+
+        /// <summary>
         ///     The Message Box Message (const). Value: "Shall we overwrite the file?."
         /// </summary>
         internal const string MessageFileAlreadyExists = "Shall we overwrite the file?";
