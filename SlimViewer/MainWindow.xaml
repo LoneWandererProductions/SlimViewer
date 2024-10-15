@@ -46,6 +46,7 @@
                 <ColumnDefinition Width="105" />
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="100"/>
@@ -212,11 +213,15 @@
             </Menu>
             <Button Content="Remove from List" Grid.Row="0" Grid.Column="2"
                     Command="{Binding ClearCommand}" IsEnabled="{Binding Path =IsActive}"/>
+            <Label Content="File Count" Grid.Column="3"  VerticalAlignment="Center" />
+
             <Label Content="File Count" Grid.Row="0" Grid.Column="3"  VerticalAlignment="Center" />
             <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="4" />
-            <ComboBox x:Name="CmbBxSelection" Grid.Row="0" Grid.Column="5"
+            <ComboBox x:Name="CmbBxSelection" Grid.Row="0" Grid.Column="6"
                           ItemsSource="{Binding Selections}" SelectedItem="{Binding SelectedTool}"  />
-            <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Left"
+            <ComboBox  Grid.Row="2" Grid.Column="6"
+                         />
+            <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
                                                 ColorChanged="ColorPickerMenu_ColorChanged"/>
 
         </Grid>
