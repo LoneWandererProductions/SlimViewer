@@ -68,4 +68,11 @@
         <Button Grid.Column="1" Content="Process" Grid.Row="11" Command="{Binding ProcessCommand}" />
         <Button Grid.Column="3" Content="Cancel" Grid.Row="11" Command="{Binding CancelCommand}" />
     </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 </Window>

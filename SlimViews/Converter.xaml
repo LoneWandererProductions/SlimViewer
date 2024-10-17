@@ -41,4 +41,11 @@
         <Label Content="{Binding Path=Target}" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3"
                VerticalAlignment="Stretch" />
     </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 </Window>
