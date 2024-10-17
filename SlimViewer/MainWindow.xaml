@@ -43,7 +43,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="400*" />
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="105" />
+                <ColumnDefinition Width="120" />
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="5" />
@@ -289,4 +289,11 @@
             </ScrollViewer>
         </Grid>
     </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 </Window>
