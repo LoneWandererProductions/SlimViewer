@@ -224,6 +224,7 @@
             <ComboBox  Grid.Row="2" Grid.Column="6"/>
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
                                                 ColorChanged="ColorPickerMenu_ColorChanged"/>
+            <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageZoom, Mode=TwoWay}"  Grid.Row="2" Grid.Column="2"  />
 
         </Grid>
         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray"/>

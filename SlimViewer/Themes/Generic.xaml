@@ -133,4 +133,8 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="5" />
     </Style>
+
+    <!-- Style for ScrollBar -->
+
+
 </ResourceDictionary>
