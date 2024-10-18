@@ -139,6 +139,27 @@
         </Setter>
     </Style>
 
+    <!-- Style for ScrollBar -->
+    <Style TargetType="ScrollBar">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Width" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}" 
+                            CornerRadius="5" 
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1">
+                            <!-- Track with custom color and rounded edges -->
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <!-- Style for TextBoxes -->
     <Style TargetType="TextBox">
