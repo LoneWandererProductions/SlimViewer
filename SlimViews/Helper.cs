@@ -27,7 +27,13 @@ namespace SlimViews
     /// </summary>
     internal static class Helper
     {
-        internal static readonly ImageRender Render = new();
+        /// <summary>
+        /// Gets the render.
+        /// </summary>
+        /// <value>
+        /// The render.
+        /// </value>
+        internal static ImageRender Render { get;  } = new();
 
         /// <summary>
         ///     Unpacks the specified folder.

@@ -30,6 +30,22 @@ namespace Imaging
     /// </summary>
     public sealed class ImageRender : IImageRender
     {
+        /// <summary>
+        /// The image Settings
+        /// </summary>
+        /// <value>
+        /// The image settings.
+        /// </value>
+        public ImageRegister ImageSettings{ get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageRender"/> class.
+        /// </summary>
+        public ImageRender()
+        {
+            ImageSettings = ImageRegister.Instance; // Ensure singleton instance is available
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Get the bitmap file.
@@ -110,7 +126,7 @@ namespace Imaging
         [return: MaybeNull]
         public Bitmap FilterImage(Bitmap image, ImageFilters filter)
         {
-            return ImageFilterStream.FilterImage(image, filter);
+            return ImageFilterStream.FilterImage(image, filter, ImageSettings);
         }
 
         /// <inheritdoc />
@@ -693,6 +709,32 @@ namespace Imaging
         public void CreateGif(List<string> path, string target)
         {
             ImageGifHandler.CreateGif(path, target);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Bitmaps to base64.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>
+        /// Image as string
+        /// </returns>
+        public string BitmapToBase64(Bitmap bitmap)
+        {
+            return ImageConverter.BitmapToBase64(bitmap);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Bitmaps the image to base64.
+        /// </summary>
+        /// <param name="bitmapImage">The bitmap image.</param>
+        /// <returns>
+        /// Image as string
+        /// </returns>
+        public string BitmapImageToBase64(BitmapImage bitmapImage)
+        {
+            return ImageConverter.BitmapImageToBase64(bitmapImage);
         }
     }
 }

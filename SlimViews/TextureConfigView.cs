@@ -647,7 +647,7 @@ namespace SlimViews
         {
             var config = new TextureConfiguration();
             // Update the settings in ImageRegister
-            ImageRegister.SetSettings(SelectedTexture, config);
+            Helper.Render.ImageSettings.SetSettings(SelectedTexture, config);
         }
 
         /// <summary>
@@ -666,7 +666,7 @@ namespace SlimViews
         private void UpdateActiveProperties()
         {
             // Get the used properties for the selected texture
-            var usedProperties = ImageRegister.GetUsedProperties(SelectedTexture);
+            var usedProperties = Helper.Render.ImageSettings.GetUsedProperties(SelectedTexture);
 
             // Update active state for each property based on the selected texture
             IsMinValueActive = usedProperties.Contains(nameof(MinValue));
@@ -684,7 +684,7 @@ namespace SlimViews
             IsXyPeriodActive = usedProperties.Contains(nameof(XyPeriod));
 
             // Retrieve the saved settings for the selected texture
-            var savedSettings = ImageRegister.GetSettings(SelectedTexture);
+            var savedSettings = Helper.Render.ImageSettings.GetSettings(SelectedTexture);
 
             // Set the properties from the saved settings, if the property is active
             if (IsMinValueActive) MinValue = savedSettings.MinValue;
@@ -746,7 +746,7 @@ namespace SlimViews
             };
 
             // Update the settings in ImageRegister
-            ImageRegister.SetSettings(SelectedTexture, config);
+            Helper.Render.ImageSettings.SetSettings(SelectedTexture, config);
         }
     }
 }

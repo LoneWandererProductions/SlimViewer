@@ -82,10 +82,15 @@ namespace Mathematics
                 double sum = 0;
 
                 for (var i = 0; i < triangle.VertexCount; i++)
-                    sum += triangle[i].X * triangle[(i + 1) % triangle.VertexCount].Y -
-                           triangle[i].Y * triangle[(i + 1) % triangle.VertexCount].X;
+                {
+                    sum += (triangle[i].X * triangle[(i + 1) % triangle.VertexCount].Y) -
+                           (triangle[i].Y * triangle[(i + 1) % triangle.VertexCount].X);
+                }
 
-                if (sum >= 0) continue;
+                if (sum >= 0)
+                {
+                    continue;
+                }
 
                 lst.Add(triangle);
             }
@@ -145,8 +150,7 @@ namespace Mathematics
             foreach (var triangle in triangles)
             {
                 // Scale into view, we moved the normalising into cartesian space
-                // out of the matrix.vector function from the previous videos, so
-                // do this manually
+
                 triangle[0] /= triangle[0].W;
                 triangle[1] /= triangle[1].W;
                 triangle[2] /= triangle[2].W;

@@ -40,9 +40,12 @@ namespace Mathematics
             var z = result[0, 2];
             var w = result[0, 3];
 
-            var check = Math.Round(w, 2);
+            var check = Math.Abs(Math.Round(w, 2));
 
-            if (check == 0.0f) return new Vector3D(x, y, z);
+            if (check == 0.0d)
+            {
+                return new Vector3D(x, y, z);
+            }
 
             x /= w;
             y /= w;
