@@ -45,7 +45,7 @@ namespace SlimViews
         private string _target;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConverterView"/> class.
+        ///     Initializes a new instance of the <see cref="ConverterView" /> class.
         /// </summary>
         public ConverterView()
         {
@@ -125,7 +125,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Sets the property with an action.
+        ///     Sets the property with an action.
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="field">The field.</param>
@@ -142,7 +142,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Sets the property.
+        ///     Sets the property.
         /// </summary>
         /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="field">The field.</param>

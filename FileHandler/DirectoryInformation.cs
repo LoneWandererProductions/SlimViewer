@@ -28,12 +28,12 @@ namespace FileHandler
         public static string GetParentDirectory(int level)
         {
             var root = Directory.GetCurrentDirectory();
-           
+
             if (string.IsNullOrEmpty(root))
                 throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {root}");
 
             var path = Directory.GetParent(root)?.ToString();
-            
+
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory} {path}");
 

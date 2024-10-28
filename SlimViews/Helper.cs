@@ -28,12 +28,12 @@ namespace SlimViews
     internal static class Helper
     {
         /// <summary>
-        /// Gets the render.
+        ///     Gets the render.
         /// </summary>
         /// <value>
-        /// The render.
+        ///     The render.
         /// </value>
-        internal static ImageRender Render { get;  } = new();
+        internal static ImageRender Render { get; } = new();
 
         /// <summary>
         ///     Unpacks the specified folder.
@@ -258,7 +258,8 @@ namespace SlimViews
             {
                 return Render.GetOriginalBitmap(filePath);
             }
-            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException or InvalidOperationException)
+            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException
+                                           or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
                 ShowError(ex.ToString(), nameof(GenerateImage));

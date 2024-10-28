@@ -275,10 +275,8 @@ namespace SlimViews
                 // Attempt to rename the file asynchronously
                 var check = await FileHandleRename.RenameFile(value, target);
                 if (check)
-                {
                     // Update the observer dictionary with the new filename
                     observer[key] = target;
-                }
             }
 
             // Update the Observer property with the modified dictionary

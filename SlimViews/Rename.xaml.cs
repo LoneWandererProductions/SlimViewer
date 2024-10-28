@@ -44,6 +44,6 @@ namespace SlimViews
         /// <value>
         ///     The observer.
         /// </value>
-        internal Dictionary<int, string> Observer => new Dictionary<int, string>(View.Observer);
+        internal Dictionary<int, string> Observer => new(View.Observer);
     }
 }

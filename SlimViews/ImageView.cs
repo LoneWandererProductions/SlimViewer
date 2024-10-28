@@ -11,7 +11,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -40,7 +39,7 @@ namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
-    /// Basic View and main entry Point
+    ///     Basic View and main entry Point
     /// </summary>
     /// <seealso cref="T:ViewModel.ViewModelBase" />
     public sealed class ImageView : ViewModelBase
@@ -1305,8 +1304,8 @@ namespace SlimViews
             {
                 var dialogResult = await Task.Run(() =>
                     MessageBox.Show(SlimViewerResources.MessageFileAlreadyExists,
-                    SlimViewerResources.CaptionFileAlreadyExists,
-                    MessageBoxButton.YesNo));
+                        SlimViewerResources.CaptionFileAlreadyExists,
+                        MessageBoxButton.YesNo));
 
                 if (dialogResult == MessageBoxResult.No) return;
             }

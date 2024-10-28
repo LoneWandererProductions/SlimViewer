@@ -9,8 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeMadeStatic.Global
 
-using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using ViewModel;

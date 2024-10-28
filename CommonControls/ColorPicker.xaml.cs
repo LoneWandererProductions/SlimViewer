@@ -53,7 +53,7 @@ namespace CommonControls
             typeof(ColorPicker), null);
 
         /// <summary>
-        /// The show text boxes property
+        ///     The show text boxes property
         /// </summary>
         public static readonly DependencyProperty ShowTextBoxesProperty =
             DependencyProperty.Register(
@@ -61,32 +61,6 @@ namespace CommonControls
                 typeof(bool),
                 typeof(ColorPicker),
                 new PropertyMetadata(true, OnShowTextBoxesChanged));
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [show text boxes].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [show text boxes]; otherwise, <c>false</c>.
-        /// </value>
-        public bool ShowTextBoxes
-        {
-            get => (bool)GetValue(ShowTextBoxesProperty);
-            set => SetValue(ShowTextBoxesProperty, value);
-        }
-
-        /// <summary>
-        /// Called when [show text boxes changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnShowTextBoxesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is ColorPicker colorPicker)
-            {
-                // Force layout update on visibility change
-                colorPicker.UpdateLayout();
-            }
-        }
 
         /// <summary>
         ///     The alpha
@@ -171,6 +145,18 @@ namespace CommonControls
         }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether [show text boxes].
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [show text boxes]; otherwise, <c>false</c>.
+        /// </value>
+        public bool ShowTextBoxes
+        {
+            get => (bool)GetValue(ShowTextBoxesProperty);
+            set => SetValue(ShowTextBoxesProperty, value);
+        }
+
+        /// <summary>
         ///     Gets the colors.
         /// </summary>
         /// <value>
@@ -190,10 +176,7 @@ namespace CommonControls
             get => _hue;
             set
             {
-                if (_hue.IsEqualTo(value, 10) || value * 180 / Math.PI is > 360 or < 0)
-                {
-                    return;
-                }
+                if (_hue.IsEqualTo(value, 10) || value * 180 / Math.PI is > 360 or < 0) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -214,10 +197,7 @@ namespace CommonControls
             get => _sat;
             set
             {
-                if (_sat.IsEqualTo(value, 10) || value is > 1 or < 0)
-                {
-                    return;
-                }
+                if (_sat.IsEqualTo(value, 10) || value is > 1 or < 0) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -238,10 +218,7 @@ namespace CommonControls
             get => _val;
             set
             {
-                if (_val.IsEqualTo(value, 10) || value is > 1 or < 0)
-                {
-                    return;
-                }
+                if (_val.IsEqualTo(value, 10) || value is > 1 or < 0) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -262,10 +239,7 @@ namespace CommonControls
             get => _r;
             set
             {
-                if (_r == value || value is > 255 or < 0)
-                {
-                    return;
-                }
+                if (_r == value || value is > 255 or < 0) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -286,10 +260,7 @@ namespace CommonControls
             get => _g;
             set
             {
-                if (_g == value || value is > 255 or < 0)
-                {
-                    return;
-                }
+                if (_g == value || value is > 255 or < 0) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -310,10 +281,7 @@ namespace CommonControls
             get => _b;
             set
             {
-                if (_b == value || value is > 255 or < 0)
-                {
-                    return;
-                }
+                if (_b == value || value is > 255 or < 0) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -333,10 +301,7 @@ namespace CommonControls
             get => _alpha;
             set
             {
-                if (_alpha == value || value is > 255 or < 0)
-                {
-                    return;
-                }
+                if (_alpha == value || value is > 255 or < 0) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -364,10 +329,7 @@ namespace CommonControls
             get => _hex;
             set
             {
-                if (_hex == value)
-                {
-                    return;
-                }
+                if (_hex == value) return;
 
                 ColorPickerRegister.ColorChanged = true;
 
@@ -417,6 +379,18 @@ namespace CommonControls
         ///     Triggers if an Attribute gets changed
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Called when [show text boxes changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
+        private static void OnShowTextBoxesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker colorPicker)
+                // Force layout update on visibility change
+                colorPicker.UpdateLayout();
+        }
 
         /// <summary>
         ///     An Image was clicked <see cref="DelegateColor" />.
@@ -497,10 +471,7 @@ namespace CommonControls
 
             _ = CanvasPreview.Children.Add(rectangle);
 
-            if (ColorPickerRegister.ColorChanged)
-            {
-                OnColorChanged();
-            }
+            if (ColorPickerRegister.ColorChanged) OnColorChanged();
         }
 
         /// <summary>

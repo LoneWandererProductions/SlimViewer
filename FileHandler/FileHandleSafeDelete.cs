@@ -69,7 +69,7 @@ namespace FileHandler
         /// <returns>True if the file is unlocked; otherwise, false.</returns>
         private static bool WaitForFileUnlock(string path)
         {
-            int attempts = 0;
+            var attempts = 0;
 
             while (FileHandleDelete.IsFileLocked(path) && attempts < FileHandlerRegister.Tries)
             {

@@ -378,7 +378,8 @@ namespace SlimViews
         {
             if (string.IsNullOrEmpty(_informationOne) && string.IsNullOrEmpty(_informationTwo)) return;
 
-            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity, _difference);
+            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity,
+                _difference);
         }
 
         /// <summary>
@@ -390,9 +391,8 @@ namespace SlimViews
             await Task.Run(() =>
             {
                 foreach (var (color, count) in _analysis.GetColors(btm))
-                {
-                    str.AppendLine($"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
-                }
+                    str.AppendLine(
+                        $"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
             });
             StatusImage = _greenIcon;
             return str.ToString();

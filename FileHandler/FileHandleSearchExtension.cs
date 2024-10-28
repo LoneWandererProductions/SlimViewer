@@ -41,7 +41,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        ///    Custom Sort, internal helper only avalable though extension
+        ///     Custom Sort, internal helper only avalable though extension
         /// </summary>
         /// <param name="lst">The list of files.</param>
         /// <returns>Ordered List of files.</returns>

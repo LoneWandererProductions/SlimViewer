@@ -17,17 +17,16 @@ using SlimViews;
 namespace SlimTests
 {
     /// <summary>
-    /// Basic tests for renamer
+    ///     Basic tests for renamer
     /// </summary>
     [TestClass]
     public class RenameViewTests
     {
+        private string _directory;
         private RenameView _renameView;
 
-        private string _directory;
-
         /// <summary>
-        /// Setups this instance.
+        ///     Setups this instance.
         /// </summary>
         [TestInitialize]
         public void Setup()
@@ -51,23 +50,20 @@ namespace SlimTests
         }
 
         /// <summary>
-        /// Cleanups the test directory.
+        ///     Cleanups the test directory.
         /// </summary>
         private void CleanupTestDirectory()
         {
             if (!Directory.Exists(_directory)) return;
             // Delete all files in the directory
-            foreach (var file in Directory.GetFiles(_directory))
-            {
-                File.Delete(file);
-            }
+            foreach (var file in Directory.GetFiles(_directory)) File.Delete(file);
 
             // Optionally, delete the directory itself if you want a fresh start each time
             // Directory.Delete(_directory, true);
         }
 
         /// <summary>
-        /// Creates the test file.
+        ///     Creates the test file.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="content">The content.</param>
@@ -77,7 +73,7 @@ namespace SlimTests
         }
 
         /// <summary>
-        /// Cleanups this instance.
+        ///     Cleanups this instance.
         /// </summary>
         [TestCleanup]
         public void Cleanup()
@@ -86,7 +82,7 @@ namespace SlimTests
         }
 
         /// <summary>
-        /// Tests the private method add action asynchronous.
+        ///     Tests the private method add action asynchronous.
         /// </summary>
         [TestMethod]
         public async Task TestPrivateMethod_AddActionAsync()
@@ -110,7 +106,7 @@ namespace SlimTests
         }
 
         /// <summary>
-        /// Tests the private method remove appendage action asynchronous.
+        ///     Tests the private method remove appendage action asynchronous.
         /// </summary>
         [TestMethod]
         public async Task TestPrivateMethod_RemoveAppendageActionAsync()
@@ -118,7 +114,8 @@ namespace SlimTests
             // Arrange
             _renameView.Replacement = "_new";
             // Act
-            var method = typeof(RenameView).GetMethod("RemoveAppendageActionAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var method = typeof(RenameView).GetMethod("RemoveAppendageActionAsync",
+                BindingFlags.NonPublic | BindingFlags.Instance);
             await (Task)method.Invoke(_renameView, new object[] { null });
 
             // Assert
@@ -128,7 +125,7 @@ namespace SlimTests
         }
 
         /// <summary>
-        /// Tests the private method replace command action asynchronous.
+        ///     Tests the private method replace command action asynchronous.
         /// </summary>
         [TestMethod]
         public async Task TestPrivateMethod_ReplaceCommandActionAsync()
@@ -138,7 +135,8 @@ namespace SlimTests
             _renameView.Replacer = "document";
 
             // Act
-            var method = typeof(RenameView).GetMethod("ReplaceCommandActionAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var method = typeof(RenameView).GetMethod("ReplaceCommandActionAsync",
+                BindingFlags.NonPublic | BindingFlags.Instance);
             await (Task)method.Invoke(_renameView, new object[] { null });
 
             // Assert
@@ -148,7 +146,7 @@ namespace SlimTests
         }
 
         /// <summary>
-        /// Tests the private method appendages at action asynchronous.
+        ///     Tests the private method appendages at action asynchronous.
         /// </summary>
         [TestMethod]
         public async Task TestPrivateMethod_AppendagesAtActionAsync()
@@ -157,7 +155,8 @@ namespace SlimTests
             _renameView.Numbers = 4; // Remove first 4 characters
 
             // Act
-            var method = typeof(RenameView).GetMethod("AppendagesAtActionAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var method = typeof(RenameView).GetMethod("AppendagesAtActionAsync",
+                BindingFlags.NonPublic | BindingFlags.Instance);
             await (Task)method.Invoke(_renameView, new object[] { null });
 
             // Assert
@@ -167,13 +166,14 @@ namespace SlimTests
         }
 
         /// <summary>
-        /// Tests the private method reorder command action asynchronous.
+        ///     Tests the private method reorder command action asynchronous.
         /// </summary>
         [TestMethod]
         public async Task TestPrivateMethod_ReorderCommandActionAsync()
         {
             // Act
-            var method = typeof(RenameView).GetMethod("ReorderCommandActionAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var method = typeof(RenameView).GetMethod("ReorderCommandActionAsync",
+                BindingFlags.NonPublic | BindingFlags.Instance);
             await (Task)method.Invoke(_renameView, new object[] { null });
 
             // Assert

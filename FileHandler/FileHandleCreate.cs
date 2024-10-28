@@ -49,7 +49,7 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Creates the directory.
+        ///     Creates the directory.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>If path was generated </returns>

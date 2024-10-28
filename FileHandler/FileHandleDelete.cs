@@ -174,7 +174,8 @@ namespace FileHandler
         /// <param name="subdirectories">Include Sub-folders</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList, bool subdirectories)
+        public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList,
+            bool subdirectories)
         {
             if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 

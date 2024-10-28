@@ -33,9 +33,28 @@ namespace ExtendedSystemObjects
         private readonly Dictionary<TK, (string Category, TV Value)> _data;
 
         /// <summary>
-        /// The lock for thread safety
+        ///     The lock for thread safety
         /// </summary>
         private readonly ReaderWriterLockSlim _lock;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}" /> class.
+        /// </summary>
+        public CategorizedDictionary()
+        {
+            _data = new Dictionary<TK, (string Category, TV Value)>();
+            _lock = new ReaderWriterLockSlim();
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}" /> class.
+        /// </summary>
+        /// <param name="count">The count.</param>
+        public CategorizedDictionary(int count)
+        {
+            _data = new Dictionary<TK, (string Category, TV Value)>(count);
+            _lock = new ReaderWriterLockSlim();
+        }
 
         /// <summary>
         ///     Gets the number of elements contained in the CategorizedDictionary.
@@ -56,25 +75,6 @@ namespace ExtendedSystemObjects
             }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}"/> class.
-        /// </summary>
-        public CategorizedDictionary()
-        {
-            _data = new();
-            _lock = new ReaderWriterLockSlim();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CategorizedDictionary{TK, TV}"/> class.
-        /// </summary>
-        /// <param name="count">The count.</param>
-        public CategorizedDictionary(int count)
-        {
-            _data = new(count);
-            _lock = new ReaderWriterLockSlim();
-        }
-
         /// <inheritdoc />
         /// <summary>
         ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
@@ -93,25 +93,17 @@ namespace ExtendedSystemObjects
         /// <returns>True if equal, otherwise false.</returns>
         public bool Equals(CategorizedDictionary<TK, TV> other)
         {
-            if (other == null || Count != other.Count)
-            {
-                return false;
-            }
+            if (other == null || Count != other.Count) return false;
 
             foreach (var (key, category, value) in this)
             {
-                if (!other.TryGetValue(key, out var otherValue))
-                {
-                    return false;
-                }
+                if (!other.TryGetValue(key, out var otherValue)) return false;
 
                 var otherCategory = other.GetCategoryAndValue(key)?.Category ?? string.Empty;
 
                 if (!string.Equals(category, otherCategory, StringComparison.OrdinalIgnoreCase) ||
                     !EqualityComparer<TV>.Default.Equals(value, otherValue))
-                {
                     return false;
-                }
             }
 
             return true;
@@ -146,9 +138,7 @@ namespace ExtendedSystemObjects
             try
             {
                 if (_data.ContainsKey(key))
-                {
                     throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
-                }
 
                 _data[key] = (category, value);
             }
@@ -262,10 +252,7 @@ namespace ExtendedSystemObjects
             _lock.EnterWriteLock();
             try
             {
-                if (!_data.TryGetValue(key, out var entry))
-                {
-                    return false;
-                }
+                if (!_data.TryGetValue(key, out var entry)) return false;
 
                 _data[key] = (newCategory, entry.Value);
                 return true;
@@ -384,7 +371,8 @@ namespace ExtendedSystemObjects
             try
             {
                 var entries = _data.Select(entry =>
-                    string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key, entry.Value.Category,
+                    string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key,
+                        entry.Value.Category,
                         entry.Value.Value));
 
                 return string.Join(Environment.NewLine, entries);
@@ -440,9 +428,9 @@ namespace ExtendedSystemObjects
 
                 foreach (var (key, category, value) in this)
                 {
-                    hashCode = (hashCode * 23) + EqualityComparer<TK>.Default.GetHashCode(key);
-                    hashCode = (hashCode * 23) + (category?.GetHashCode() ?? 0);
-                    hashCode = (hashCode * 23) + EqualityComparer<TV>.Default.GetHashCode(value);
+                    hashCode = hashCode * 23 + EqualityComparer<TK>.Default.GetHashCode(key);
+                    hashCode = hashCode * 23 + (category?.GetHashCode() ?? 0);
+                    hashCode = hashCode * 23 + EqualityComparer<TV>.Default.GetHashCode(value);
                 }
 
                 return hashCode;

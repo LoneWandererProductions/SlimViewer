@@ -397,7 +397,7 @@ namespace SlimViews
             var currentFolder = _imageExport;
 
             var fileList =
-               FileHandleSearch.GetFilesByExtensionFullPath(currentFolder, ImagingResources.JpgExt, false);
+                FileHandleSearch.GetFilesByExtensionFullPath(currentFolder, ImagingResources.JpgExt, false);
             _ = GenerateThumbView(fileList);
         }
 
@@ -412,7 +412,7 @@ namespace SlimViews
 
             Initiate(OutputPath);
 
-            var fileList = 
+            var fileList =
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
 
             if (fileList is not { Count: < 200 })

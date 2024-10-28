@@ -41,6 +41,5 @@ namespace FileHandler
 
             return newPath;
         }
-
     }
 }
