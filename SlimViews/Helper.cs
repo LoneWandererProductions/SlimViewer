@@ -19,6 +19,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SlimViews
 {
@@ -277,6 +278,38 @@ namespace SlimViews
         {
             if (source != null) message = $"{SlimViewerResources.MeesageErrorSource}{source}\n{message}";
             MessageBox.Show(message, SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        //TODO test
+
+        /// <summary>
+        /// Darkens the specified bitmap.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>Darken Image</returns>
+        internal static Bitmap Darken(Bitmap bitmap)
+        {
+            return Render.AdjustBrightness(bitmap, 0.1f);
+        }
+
+        /// <summary>
+        /// ds the brighten.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <returns>Brighten the Image</returns>
+        internal static Bitmap DBrighten(Bitmap bitmap)
+        {
+            return Render.AdjustBrightness(bitmap, -0.1f);
+        }
+
+        /// <summary>
+        /// Exports the string into clipboard.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        internal static void ExportString(Bitmap bitmap)
+        {
+            var str =  Render.BitmapToBase64(bitmap);
+            Clipboard.SetText(str);
         }
     }
 }

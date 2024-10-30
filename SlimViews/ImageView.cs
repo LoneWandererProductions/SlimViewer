@@ -336,6 +336,11 @@ namespace SlimViews
         private ICommand _textureConfigCommand;
 
         /// <summary>
+        /// The export string command
+        /// </summary>
+        private ICommand _exportStringCommand;
+
+        /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
@@ -851,6 +856,15 @@ namespace SlimViews
             _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerWindowAction, CanExecute);
 
         /// <summary>
+        /// Gets the export string command.
+        /// </summary>
+        /// <value>
+        /// The export string command.
+        /// </value>
+        public ICommand ExportStringCommand =>
+            _exportStringCommand ??= new DelegateCommand<object>(ExportStringAction, CanExecute);
+
+        /// <summary>
         ///     Gets the resizer window command.
         /// </summary>
         /// <value>
@@ -1201,7 +1215,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void BrightenAction(object obj)
         {
-            //TODO
+            var btm = Helper.DBrighten(_btm);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1210,7 +1225,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void DarkenAction(object obj)
         {
-            //TODO
+            var btm = Helper.Darken(_btm);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1326,7 +1342,6 @@ namespace SlimViews
             GenerateView(filePath);
         }
 
-
         /// <summary>
         ///     Refresh the Control
         /// </summary>
@@ -1345,6 +1360,15 @@ namespace SlimViews
             }
 
             LoadThumbs(SlimViewerRegister.CurrentFolder);
+        }
+
+        /// <summary>
+        /// Exports the string action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ExportStringAction(object obj)
+        {
+            Helper.ExportString(_btm);
         }
 
         /// <summary>
