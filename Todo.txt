@@ -1,3 +1,7 @@
-- Add a move feature in thumbview
-- Improve the Image Analysis and the handling of data especially transparancy
-- Add a mass size increase decrease feature
+Before new release
+- add left and right side bars
+- make thumbnails hideable
+- implement selection tools and filter textures
+
+For future reference:
+- add if
