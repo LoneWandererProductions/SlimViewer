@@ -346,6 +346,17 @@ namespace SlimViews
         private bool _thumbs = true;
 
         /// <summary>
+        /// The left button visibility
+        /// </summary>
+        private bool _leftButtonVisibility;
+
+
+        /// <summary>
+        /// The right button visibility
+        /// </summary>
+        private bool _rightButtonVisibility;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
         ///     Initiates all necessary Collections as well
         /// </summary>
@@ -507,6 +518,30 @@ namespace SlimViews
         {
             get => _isActive;
             set => SetProperty(ref _isActive, value, nameof(IsActive));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [left button visibility].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [left button visibility]; otherwise, <c>false</c>.
+        /// </value>
+        public bool LeftButtonVisibility
+        {
+            get => _leftButtonVisibility;
+            set => SetProperty(ref _isActive, value, nameof(LeftButtonVisibility));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [right button visibility].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [right button visibility]; otherwise, <c>false</c>.
+        /// </value>
+        public bool RightButtonVisibility
+        {
+            get => _rightButtonVisibility;
+            set => SetProperty(ref _isActive, value, nameof(RightButtonVisibility));
         }
 
         /// <summary>
@@ -886,13 +921,13 @@ namespace SlimViews
 
         /// <summary>
         ///     Gets the apply texture command.
+        ///     TODO implement
         /// </summary>
         /// <value>
         ///     The apply texture command.
         /// </value>
         public ICommand ApplyTextureCommand =>
             _applyTextureCommand ??= new DelegateCommand<string>(ApplyTextureAction, CanExecute);
-
 
         /// <summary>
         ///     Gets the filter configuration command.
