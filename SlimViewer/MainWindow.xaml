@@ -20,18 +20,18 @@
     <Window.InputBindings>
         <KeyBinding Modifiers="Control"
                     Key="O"
-                    Command="{Binding HotkeyCommand}" CommandParameter="O" />
+                    Command="{Binding HotKeyCommand}" CommandParameter="O" />
         <KeyBinding Key="Left"
-                    Command="{Binding HotkeyCommand}" CommandParameter="Left" />
+                    Command="{Binding HotKeyCommand}" CommandParameter="Left" />
         <KeyBinding Key="Right"
-                    Command="{Binding HotkeyCommand}" CommandParameter="Right" />
+                    Command="{Binding HotKeyCommand}" CommandParameter="Right" />
         <KeyBinding Key="Delete"
-                    Command="{Binding HotkeyCommand}" CommandParameter="Delete" />
+                    Command="{Binding HotKeyCommand}" CommandParameter="Delete" />
         <KeyBinding Key="F5"
-                    Command="{Binding HotkeyCommand}" CommandParameter="F5" />
+                    Command="{Binding HotKeyCommand}" CommandParameter="F5" />
         <KeyBinding Modifiers="Control"
                     Key="S"
-                    Command="{Binding HotkeyCommand}" CommandParameter="S" />
+                    Command="{Binding HotKeyCommand}" CommandParameter="S" />
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -241,10 +241,10 @@
         <GridSplitter Grid.Row="1"  Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                       Background="Gray" />
         <Button Grid.Column="0" Grid.Row="2" Content="←" 
-                Command="{Binding HotkeyCommand}" CommandParameter="Left" 
+                Command="{Binding HotKeyCommand}" CommandParameter="Left" 
                 Visibility="{Binding LeftButtonVisibility}"/>
         <Button Grid.Column="2" Grid.Row="2"  Content="→" 
-                Command="{Binding HotkeyCommand}" CommandParameter="Right" 
+                Command="{Binding HotKeyCommand}" CommandParameter="Right" 
                 Visibility="{Binding RightButtonVisibility}"/>
         <Grid Grid.Row="2" Grid.Column="1">
             <commonControls:ImageZoom

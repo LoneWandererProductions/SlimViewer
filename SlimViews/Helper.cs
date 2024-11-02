@@ -19,7 +19,6 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SlimViews
 {

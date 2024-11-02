@@ -83,15 +83,14 @@
                                       Data="M 0 0 L 10 0 L 5 6 Z" />
                             </ToggleButton>
 
-                            <!-- Content of the ComboBox -->
+                            <!-- Content of the ComboBox, centered -->
                             <ContentPresenter Name="ContentSite"
                                               IsHitTestVisible="False"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                              Margin="5,3,23,3"
                                               VerticalAlignment="Center"
-                                              HorizontalAlignment="Left" />
+                                              HorizontalAlignment="Center" />
 
                             <!-- Popup for dropdown items -->
                             <Popup Name="Popup"
@@ -124,6 +123,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 
     <!-- Style for TextBoxes -->
     <Style TargetType="TextBox">

@@ -197,9 +197,9 @@ namespace SlimViews
         private ICommand _gifWindowCommand;
 
         /// <summary>
-        ///     The hotkey command
+        ///     The hot key command
         /// </summary>
-        private ICommand _hotkeyCommand;
+        private ICommand _hotKeyCommand;
 
         /// <summary>
         ///     The information
@@ -339,7 +339,6 @@ namespace SlimViews
         /// The export string command
         /// </summary>
         private ICommand _exportStringCommand;
-
 
         /// <summary>
         /// The thumb image clicked command
@@ -974,13 +973,13 @@ namespace SlimViews
             _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
 
         /// <summary>
-        ///     Gets the hotkey command.
+        ///     Gets the Hot key command.
         /// </summary>
         /// <value>
-        ///     The hotkey command.
+        ///     The  Hot key command.
         /// </value>
-        public ICommand HotkeyCommand =>
-            _hotkeyCommand ??= new DelegateCommand<string>(HotkeyAction, CanExecute);
+        public ICommand HotKeyCommand =>
+            _hotKeyCommand ??= new DelegateCommand<string>(HotKeyAction, CanExecute);
 
         /// <summary>
         /// Gets the thumb image clicked command.
@@ -989,7 +988,7 @@ namespace SlimViews
         /// The thumb image clicked command.
         /// </value>
         public ICommand ThumbImageClickedCommand =>
-            _thumbImageClickedCommand ??= new DelegateCommand<object>(ThumbImageClickedAction, CanExecute);
+            _thumbImageClickedCommand ??= new DelegateCommand<ImageEventArgs>(ThumbImageClickedAction, CanExecute);
 
         /// <summary>
         ///     Gets or sets the main.
@@ -1042,16 +1041,16 @@ namespace SlimViews
         /// Thumbs the image clicked action.
         /// </summary>
         /// <param name="obj">The identifier.</param>
-        private void ThumbImageClickedAction(object obj)
+        private void ThumbImageClickedAction(ImageEventArgs obj)
         {
-            ChangeImage((int)obj);
+            ChangeImage(obj.Id);
         }
 
         /// <summary>
-        ///     Hotkey actions.
+        ///     Hot key actions.
         /// </summary>
         /// <param name="key">The key.</param>
-        private void HotkeyAction(string key)
+        private void HotKeyAction(string key)
         {
             switch (key)
             {
@@ -1830,7 +1829,7 @@ namespace SlimViews
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             //get target Folder
-            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
+            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
 
             if (!Thumb.Selection.IsNullOrEmpty())
             {
@@ -1893,7 +1892,7 @@ namespace SlimViews
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             //get target Folder
-            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
+            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
 
             if (!Directory.Exists(path)) return;
 
