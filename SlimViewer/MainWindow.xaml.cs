@@ -51,16 +51,6 @@ namespace SlimViewer
         }
 
         /// <summary>
-        ///     Thumbs the image clicked. Easier to handle than in the view model.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="itemId">The <see cref="ImageEventArgs" /> instance containing the event data.</param>
-        private void Thumb_ImageClicked(object sender, ImageEventArgs itemId)
-        {
-            View.ChangeImage(itemId.Id);
-        }
-
-        /// <summary>
         ///     Zoom selected frame.
         /// </summary>
         /// <param name="frame">The frame.</param>

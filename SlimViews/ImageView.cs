@@ -340,6 +340,12 @@ namespace SlimViews
         /// </summary>
         private ICommand _exportStringCommand;
 
+
+        /// <summary>
+        /// The thumb image clicked command
+        /// </summary>
+        private ICommand _thumbImageClickedCommand;
+
         /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
@@ -355,6 +361,7 @@ namespace SlimViews
         /// The right button visibility
         /// </summary>
         private bool _rightButtonVisibility;
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -976,6 +983,15 @@ namespace SlimViews
             _hotkeyCommand ??= new DelegateCommand<string>(HotkeyAction, CanExecute);
 
         /// <summary>
+        /// Gets the thumb image clicked command.
+        /// </summary>
+        /// <value>
+        /// The thumb image clicked command.
+        /// </value>
+        public ICommand ThumbImageClickedCommand =>
+            _thumbImageClickedCommand ??= new DelegateCommand<object>(ThumbImageClickedAction, CanExecute);
+
+        /// <summary>
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
@@ -1023,6 +1039,15 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Thumbs the image clicked action.
+        /// </summary>
+        /// <param name="obj">The identifier.</param>
+        private void ThumbImageClickedAction(object obj)
+        {
+            ChangeImage((int)obj);
+        }
+
+        /// <summary>
         ///     Hotkey actions.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -1035,10 +1060,10 @@ namespace SlimViews
                     OpenAction(this);
                     break;
                 case "Left":
-                    PreviousAction(this);
+                    PreviousAction();
                     break;
                 case "Right":
-                    NextAction(this);
+                    NextAction();
                     break;
                 case "Delete":
                     DeleteAction(this);
@@ -1202,8 +1227,7 @@ namespace SlimViews
         /// <summary>
         ///     Next Image.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void NextAction(object obj)
+        private void NextAction()
         {
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
@@ -1214,8 +1238,7 @@ namespace SlimViews
         /// <summary>
         ///     Previous Image.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void PreviousAction(object obj)
+        private void PreviousAction()
         {
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
@@ -1329,7 +1352,7 @@ namespace SlimViews
 
                 Thumb.RemoveSingleItem(_currentId);
 
-                NextAction(null);
+                NextAction();
             }
         }
 
@@ -1505,7 +1528,7 @@ namespace SlimViews
             GifPath = null;
             _gifPath = null;
 
-            NextAction(null);
+            NextAction();
         }
 
         /// <summary>

@@ -285,6 +285,24 @@ namespace CommonControls
         }
 
         /// <summary>
+        /// The image clicked command property
+        /// </summary>
+        public static readonly DependencyProperty ImageClickedCommandProperty = DependencyProperty.Register(
+            nameof(ImageClickedCommand), typeof(ICommand), typeof(Thumbnails), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or sets the image clicked command.
+        /// </summary>
+        /// <value>
+        /// The image clicked command.
+        /// </value>
+        public ICommand ImageClickedCommand
+        {
+            get => (ICommand)GetValue(ImageClickedCommandProperty);
+            set => SetValue(ImageClickedCommandProperty, value);
+        }
+
+        /// <summary>
         ///     An Image was clicked <see cref="DelegateImage" />.
         /// </summary>
         public event DelegateImage ImageClicked;
@@ -771,6 +789,7 @@ namespace CommonControls
         /// <param name="args">Custom Events</param>
         private void OnImageThumbClicked(ImageEventArgs args)
         {
+            ImageClickedCommand.Execute(args.Id);
             ImageClicked?.Invoke(this, args);
         }
 

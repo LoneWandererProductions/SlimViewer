@@ -307,7 +307,7 @@
                     ThumbHeight="1"
                     SelectBox="True"
                     IsCheckBoxSelected="False"
-                    ImageClicked="Thumb_ImageClicked"
+                    ImageClickedCommand="{Binding ThumbImageClickedCommand}"
                     ImageLoaded="Thumbnail_OnImageLoaded" />
             </ScrollViewer>
         </Grid>
