@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Helper.cs
+ * FILE:        SlimViews/ImageProcessor.cs
  * PURPOSE:     Basic Helper Methods that are used across controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -25,7 +25,7 @@ namespace SlimViews
     /// <summary>
     ///     Provides utility methods for various tasks to reduce code duplication across controls.
     /// </summary>
-    internal static class Helper
+    internal static class ImageProcessor
     {
         /// <summary>
         ///     Gets the render.
@@ -118,7 +118,7 @@ namespace SlimViews
         internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne,
             string colorTwo, string similarity, Bitmap difference)
         {
-            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null);
+            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null!);
             var content = new List<string>
             {
                 informationOne,

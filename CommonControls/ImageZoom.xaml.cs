@@ -360,16 +360,12 @@ namespace CommonControls
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
                     // nothing
                     break;
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
-                {
-                }
-                    break;
-                case SelectionTools.SelectEllipse:
+                case SelectionTools.Rectangle:
+                case SelectionTools.Ellipse:
                     break;
                 case SelectionTools.FreeForm:
                     e.GetPosition(BtmImage);
@@ -399,14 +395,13 @@ namespace CommonControls
                     // nothing
                     break;
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.Erase:
+                case SelectionTools.Rectangle:
                 {
                     var frame = _selectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                 }
                     break;
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
                     var endpoint = e.GetPosition(BtmImage);
                     SelectedPoint?.Invoke(endpoint);
                     break;
@@ -458,8 +453,8 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.SelectRectangle:
-                case SelectionTools.SelectEllipse:
+                case SelectionTools.Rectangle:
+                case SelectionTools.Ellipse:
                 {
                     // Update the adorner for rectangle or ellipse selection
                     _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
@@ -475,18 +470,9 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.SelectPixel:
+                case SelectionTools.Pixel:
                     // Handle pixel selection if needed
                     break;
-
-                case SelectionTools.Erase:
-                {
-                    // Similar to rectangle selection, but intended for erasing
-                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
-
-                    break;
-                }
-
                 default:
                     // Nothing
                     return;

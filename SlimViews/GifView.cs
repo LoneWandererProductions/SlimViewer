@@ -337,7 +337,7 @@ namespace SlimViews
 
             var filePath = Observer[id];
             GifPath = null;
-            var bmp = Helper.Render.GetBitmapImage(filePath);
+            var bmp = ImageProcessor.Render.GetBitmapImage(filePath);
             Bmp = bmp;
 
             var fileName = Path.GetFileName(filePath);
@@ -393,7 +393,7 @@ namespace SlimViews
 
             //add name of the split files
             var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
-            _ = Helper.ConvertGifActionAsync(GifPath, name);
+            _ = ImageProcessor.ConvertGifActionAsync(GifPath, name);
             var currentFolder = _imageExport;
 
             var fileList =
@@ -423,7 +423,7 @@ namespace SlimViews
 
             _ = GenerateThumbView(fileList);
 
-            _gifPath = Helper.ConvertToGifAction(path, _gifPath);
+            _gifPath = ImageProcessor.ConvertToGifAction(path, _gifPath);
 
             FilePath = _gifPath;
 
@@ -471,7 +471,7 @@ namespace SlimViews
             var lst = Thumbnail.Selection.ConvertAll(id => Observer[id]);
             lst = lst.PathSort();
 
-            Helper.ConvertGifAction(lst, pathObj.FilePath);
+            ImageProcessor.ConvertGifAction(lst, pathObj.FilePath);
         }
 
         /// <summary>

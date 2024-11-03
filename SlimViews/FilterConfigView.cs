@@ -307,7 +307,7 @@ namespace SlimViews
         private void UpdateActiveProperties()
         {
             // Get the used properties for the selected filter
-            var usedProperties = Helper.Render.ImageSettings.GetUsedProperties(SelectedFilter);
+            var usedProperties = ImageProcessor.Render.ImageSettings.GetUsedProperties(SelectedFilter);
 
             // Update active state for each property based on the selected filter
             IsFactorActive = usedProperties.Contains(nameof(Factor));
@@ -317,7 +317,7 @@ namespace SlimViews
             IsScaleActive = usedProperties.Contains(nameof(Scale));
 
             // Retrieve the saved settings for the selected filter
-            var savedSettings = Helper.Render.ImageSettings.GetSettings(SelectedFilter);
+            var savedSettings = ImageProcessor.Render.ImageSettings.GetSettings(SelectedFilter);
 
             // Set the properties from the saved settings, if the property is active
             if (IsFactorActive) Factor = savedSettings.Factor;
@@ -352,7 +352,7 @@ namespace SlimViews
             var config = new ImageFilterConfig();
 
             // Update or better say reset the settings in ImageRegister
-            Helper.Render.ImageSettings.SetSettings(SelectedFilter, config);
+            ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, config);
             UpdateActiveProperties();
         }
 
@@ -364,7 +364,7 @@ namespace SlimViews
         {
             var config = new ImageFilterConfig();
             // Update the settings in ImageRegister
-            Helper.Render.ImageSettings.SetSettings(SelectedFilter, config);
+            ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, config);
         }
 
         /// <summary>

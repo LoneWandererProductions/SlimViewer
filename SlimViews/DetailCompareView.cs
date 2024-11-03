@@ -273,7 +273,7 @@ namespace SlimViews
                 return;
             }
 
-            var btm = Helper.GenerateImage(pathObj.FilePath);
+            var btm = ImageProcessor.GenerateImage(pathObj.FilePath);
             if (btm == null) return;
 
             PathOne = pathObj.FilePath;
@@ -314,7 +314,7 @@ namespace SlimViews
                 return;
             }
 
-            var btm = Helper.GenerateImage(pathObj.FilePath);
+            var btm = ImageProcessor.GenerateImage(pathObj.FilePath);
             if (btm == null) return;
 
             PathTwo = pathObj.FilePath;
@@ -378,7 +378,7 @@ namespace SlimViews
         {
             if (string.IsNullOrEmpty(_informationOne) && string.IsNullOrEmpty(_informationTwo)) return;
 
-            _ = Helper.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity,
+            _ = ImageProcessor.GenerateExportAsync(_informationOne, _informationTwo, _colorOne, _colorTwo, _similarity,
                 _difference);
         }
 

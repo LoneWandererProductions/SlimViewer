@@ -305,9 +305,14 @@ namespace SlimViews
         private ICommand _searchCommand;
 
         /// <summary>
-        ///     The selected tool
+        /// The selected tool
         /// </summary>
-        private SelectionTools _selectedTool;
+        private ImageTools _selectedTool;
+
+        /// <summary>
+        /// The selected form
+        /// </summary>
+        private SelectionTools _selectedForm;
 
         /// <summary>
         ///     The similar command
@@ -360,7 +365,6 @@ namespace SlimViews
         /// The right button visibility
         /// </summary>
         private bool _rightButtonVisibility;
-
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -432,15 +436,37 @@ namespace SlimViews
                 .Cast<SelectionTools>();
 
         /// <summary>
+        ///     Gets the selections.
+        /// </summary>
+        /// <value>
+        ///     The selections.
+        /// </value>
+        public IEnumerable<ImageTools> Tooling =>
+            Enum.GetValues(typeof(ImageTools))
+                .Cast<ImageTools>();
+
+        /// <summary>
         ///     Gets or sets the selected tool.
         /// </summary>
         /// <value>
         ///     The selected tool.
         /// </value>
-        public SelectionTools SelectedTool
+        public ImageTools SelectedTool
         {
             get => _selectedTool;
             set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected tool.
+        /// </summary>
+        /// <value>
+        ///     The selected tool.
+        /// </value>
+        public SelectionTools SelectedForm
+        {
+            get => _selectedForm;
+            set => SetProperty(ref _selectedForm, value, nameof(SelectedForm));
         }
 
         /// <summary>
@@ -1253,7 +1279,7 @@ namespace SlimViews
         {
             if (!Enum.TryParse(filterName, out ImageFilters filter)) return;
 
-            var btm = Helper.Filter(_btm, filter);
+            var btm = ImageProcessor.Filter(_btm, filter);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1272,7 +1298,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void BrightenAction(object obj)
         {
-            var btm = Helper.DBrighten(_btm);
+            var btm = ImageProcessor.DBrighten(_btm);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1282,7 +1308,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void DarkenAction(object obj)
         {
-            var btm = Helper.Darken(_btm);
+            var btm = ImageProcessor.Darken(_btm);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1292,7 +1318,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void PixelateAction(object obj)
         {
-            var btm = Helper.Pixelate(_btm, PixelWidth);
+            var btm = ImageProcessor.Pixelate(_btm, PixelWidth);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1425,7 +1451,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ExportStringAction(object obj)
         {
-            Helper.ExportString(_btm);
+            ImageProcessor.ExportString(_btm);
         }
 
         /// <summary>
@@ -1436,7 +1462,7 @@ namespace SlimViews
         {
             try
             {
-                _btm = Helper.Render.RotateImage(_btm, -90);
+                _btm = ImageProcessor.Render.RotateImage(_btm, -90);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1460,7 +1486,7 @@ namespace SlimViews
         {
             try
             {
-                _btm = Helper.Render.RotateImage(_btm, 90);
+                _btm = ImageProcessor.Render.RotateImage(_btm, 90);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1621,9 +1647,9 @@ namespace SlimViews
 
             try
             {
-                _btm = Helper.Render.BitmapScaling(_btm, SlimViewerRegister.Scaling);
-                _btm = Helper.Render.RotateImage(_btm, SlimViewerRegister.Degree);
-                _btm = Helper.Render.CropImage(_btm);
+                _btm = ImageProcessor.Render.BitmapScaling(_btm, SlimViewerRegister.Scaling);
+                _btm = ImageProcessor.Render.RotateImage(_btm, SlimViewerRegister.Degree);
+                _btm = ImageProcessor.Render.CropImage(_btm);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentException ex)
@@ -1669,7 +1695,7 @@ namespace SlimViews
                 var error = 0;
 
                 foreach (var check in from image in lst
-                         let btm = Helper.Render.GetOriginalBitmap(image)
+                         let btm = ImageProcessor.Render.GetOriginalBitmap(image)
                          select SaveImage(image, SlimViewerRegister.Target, btm))
                     if (check)
                         count++;
@@ -2030,7 +2056,7 @@ namespace SlimViews
         {
             try
             {
-                _btm = Helper.Render.CutBitmap(_btm, frame.X, frame.Y, frame.Height, frame.Width);
+                _btm = ImageProcessor.Render.CutBitmap(_btm, frame.X, frame.Y, frame.Height, frame.Width);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentNullException ex)
@@ -2048,7 +2074,7 @@ namespace SlimViews
         {
             try
             {
-                _btm = Helper.Render.EraseRectangle(_btm, frame.X, frame.Y, frame.Height, frame.Width);
+                _btm = ImageProcessor.Render.EraseRectangle(_btm, frame.X, frame.Y, frame.Height, frame.Width);
                 Bmp = _btm.ToBitmapImage();
             }
             catch (ArgumentNullException ex)
@@ -2078,9 +2104,9 @@ namespace SlimViews
             if (pathObj == null) return;
 
             _subFolders = true;
-            var folder = Helper.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
+            var folder = ImageProcessor.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
             if (!string.IsNullOrEmpty(folder)) SlimViewerRegister.CurrentFolder = folder;
-            var file = Helper.UnpackFile(folder);
+            var file = ImageProcessor.UnpackFile(folder);
 
             if (file == null) return;
 
@@ -2131,7 +2157,7 @@ namespace SlimViews
                 }
                 else
                 {
-                    _btm = Helper.Render.GetOriginalBitmap(filePath);
+                    _btm = ImageProcessor.Render.GetOriginalBitmap(filePath);
 
                     //reset gif Image
                     GifPath = null;
@@ -2261,7 +2287,7 @@ namespace SlimViews
         {
             StatusImage = _redIcon;
 
-            var check = Helper.SaveImage(path, extension, btm);
+            var check = ImageProcessor.SaveImage(path, extension, btm);
             StatusImage = _greenIcon;
 
             return check;

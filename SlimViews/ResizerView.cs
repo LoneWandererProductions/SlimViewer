@@ -334,12 +334,12 @@ namespace SlimViews
             {
                 if (!File.Exists(filePath)) continue;
 
-                var bitmap = Helper.LoadImage(filePath);
+                var bitmap = ImageProcessor.LoadImage(filePath);
 
                 if (bitmap == null) continue;
 
                 // Apply selected filter option
-                if (_selectedFilterOption != ImageFilters.None) bitmap = Helper.Filter(bitmap, _selectedFilterOption);
+                if (_selectedFilterOption != ImageFilters.None) bitmap = ImageProcessor.Filter(bitmap, _selectedFilterOption);
 
                 // Resize the image based on percentage or absolute dimensions
                 if (_isPercentagesChecked)
@@ -353,7 +353,7 @@ namespace SlimViews
 
                 if (iHeight == 0 || iWidth == 0) continue;
 
-                bitmap = Helper.Resize(bitmap, iWidth, iHeight);
+                bitmap = ImageProcessor.Resize(bitmap, iWidth, iHeight);
 
                 // Determine the file extension is set, if not use the current one
                 if (string.IsNullOrEmpty(SelectedExtension))
@@ -367,7 +367,7 @@ namespace SlimViews
                 var target = Path.Combine(_output, name);
 
                 // Save the modified image with the determined file extension
-                _ = Helper.SaveImage(target, SelectedExtension, bitmap);
+                _ = ImageProcessor.SaveImage(target, SelectedExtension, bitmap);
             }
         }
 

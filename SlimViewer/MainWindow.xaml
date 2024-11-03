@@ -230,8 +230,8 @@
             <Label Content="File Count" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" />
             <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="4" />
             <ComboBox x:Name="CmbBxSelection" Grid.Row="0" Grid.Column="6"
-                      ItemsSource="{Binding Selections}" SelectedItem="{Binding SelectedTool}" />
-            <ComboBox Grid.Row="2" Grid.Column="6" />
+                      ItemsSource="{Binding Selections}" SelectedItem="{Binding SelectedForm}" />
+            <ComboBox Grid.Row="2" Grid.Column="6"   ItemsSource="{Binding Tooling}" SelectedItem="{Binding SelectedTool}"/>
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
                                             ColorChanged="ColorPickerMenu_ColorChanged" />
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageZoom, Mode=TwoWay}"
