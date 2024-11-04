@@ -39,8 +39,15 @@ namespace FileHandler
         public static string RemoveAppendage(this string str, string appendage,
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
-            if (str == null) throw new ArgumentNullException(nameof(str));
-            if (appendage == null) throw new ArgumentNullException(nameof(appendage));
+            if (str == null)
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
+            if (appendage == null)
+            {
+                throw new ArgumentNullException(nameof(appendage));
+            }
 
             return !str.StartsWith(appendage, comparison)
                 ? str
@@ -62,8 +69,15 @@ namespace FileHandler
         public static string AddAppendage(this string str, string appendage,
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
-            if (str == null) throw new ArgumentNullException(nameof(str));
-            if (appendage == null) throw new ArgumentNullException(nameof(appendage));
+            if (str == null)
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
+            if (appendage == null)
+            {
+                throw new ArgumentNullException(nameof(appendage));
+            }
 
             return str.StartsWith(appendage, comparison) ? str : string.Concat(appendage, str);
         }
@@ -82,9 +96,15 @@ namespace FileHandler
         public static string ReplacePart(this string str, string targetStr, string update,
             StringComparison comparison = StringComparison.Ordinal)
         {
-            if (str == null) throw new ArgumentNullException(nameof(str));
+            if (str == null)
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
 
-            if (string.IsNullOrEmpty(targetStr)) return str;
+            if (string.IsNullOrEmpty(targetStr))
+            {
+                return str;
+            }
 
             return !str.Contains(targetStr, comparison) ? str : str.Replace(targetStr, update);
         }
@@ -96,7 +116,10 @@ namespace FileHandler
         /// <returns>New string</returns>
         public static string ReOrderNumbers(this string str)
         {
-            if (string.IsNullOrEmpty(str)) return str;
+            if (string.IsNullOrEmpty(str))
+            {
+                return str;
+            }
 
             var charsToRemove = Regex.Split(str);
             var numbers = string.Concat(charsToRemove);

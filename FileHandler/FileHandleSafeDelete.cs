@@ -28,10 +28,14 @@ namespace FileHandler
         public static bool DeleteFile(string path)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
             if (!File.Exists(path))
+            {
                 return false;
+            }
 
             if (!WaitForFileUnlock(path))
             {

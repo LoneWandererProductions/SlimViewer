@@ -66,9 +66,15 @@ namespace FileHandler
         /// </returns>
         public int CompareTo(FilePathStruct other)
         {
-            if (File.Equals(other.File, StringComparison.OrdinalIgnoreCase)) return 0;
+            if (File.Equals(other.File, StringComparison.OrdinalIgnoreCase))
+            {
+                return 0;
+            }
 
-            if (string.IsNullOrEmpty(File) || string.IsNullOrEmpty(other.File)) return 0;
+            if (string.IsNullOrEmpty(File) || string.IsNullOrEmpty(other.File))
+            {
+                return 0;
+            }
 
             if (!Table.TryGetValue(File, out var xBase))
             {
@@ -83,8 +89,12 @@ namespace FileHandler
             }
 
             for (var i = 0; i < xBase.Length && i < yBase.Length; i++)
+            {
                 if (xBase[i] != yBase[i])
+                {
                     return PartCompare(xBase[i], yBase[i]);
+                }
+            }
 
             return yBase.Length > xBase.Length ? 1 : -1;
         }
@@ -95,10 +105,14 @@ namespace FileHandler
         private static int PartCompare(string left, string right)
         {
             if (!int.TryParse(left, out var x))
+            {
                 return string.Compare(left, right, StringComparison.OrdinalIgnoreCase);
+            }
 
             if (!int.TryParse(right, out var y))
+            {
                 return string.Compare(left, right, StringComparison.OrdinalIgnoreCase);
+            }
 
             return x.CompareTo(y);
         }

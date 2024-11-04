@@ -38,11 +38,15 @@ namespace FileHandler
         {
             // Validate the input path
             if (string.IsNullOrEmpty(path))
+            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
             // Check if the file exists
             if (!File.Exists(path))
+            {
                 return false;
+            }
 
             var count = 0;
 
@@ -80,17 +84,19 @@ namespace FileHandler
         }
 
         /// <summary>
-        /// Deletes a File
+        ///     Deletes a File
         /// </summary>
         /// <param name="paths">The paths.</param>
         /// <returns>
-        /// Status if we encountered any problems
+        ///     Status if we encountered any problems
         /// </returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool DeleteFiles(List<string> paths)
         {
             if (paths == null || paths.Count == 0)
+            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyList);
+            }
 
             var results = new ConcurrentBag<bool>();
 
@@ -113,9 +119,12 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool DeleteCompleteFolder(string path)
         {
-            if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
-            _ = DeleteAllContents(path, true);
+            _ = DeleteAllContents(path);
 
             _ = DeleteFolder(path);
 
@@ -126,14 +135,20 @@ namespace FileHandler
         ///     Deletes the contents of a Folder, (optional) includes sub folder
         /// </summary>
         /// <param name="path">Target Folder</param>
-        /// <param name="subdirectories">Include Sub-folders</param>
+        /// <param name="subdirectories">Include Sub-folders, optional as default true</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool DeleteAllContents(string path, bool subdirectories)
+        public static bool DeleteAllContents(string path, bool subdirectories = true)
         {
-            if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
-            if (!Directory.Exists(path)) return false;
+            if (!Directory.Exists(path))
+            {
+                return false;
+            }
 
             var check = true;
 
@@ -151,9 +166,15 @@ namespace FileHandler
 
                 FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteAllContents), itm);
 
-                if (myFiles.Length == 0) return false;
+                if (myFiles.Length == 0)
+                {
+                    return false;
+                }
 
-                foreach (var file in myFiles) _ = DeleteFile(file);
+                foreach (var file in myFiles)
+                {
+                    _ = DeleteFile(file);
+                }
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
@@ -170,17 +191,26 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">Target Folder</param>
         /// <param name="fileExtList">List of file Extensions</param>
-        /// <param name="subdirectories">Include Sub-folders</param>
+        /// <param name="subdirectories">Include Sub-folders, optional, default true</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList,
-            bool subdirectories)
+            bool subdirectories = true)
         {
-            if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
-            if (!Directory.Exists(path)) return false;
+            if (!Directory.Exists(path))
+            {
+                return false;
+            }
 
-            if (fileExtList == null) return false;
+            if (fileExtList == null)
+            {
+                return false;
+            }
 
             fileExtList = FileHandlerProcessing.CleanUpExtensionList(fileExtList);
 
@@ -192,7 +222,10 @@ namespace FileHandler
                          appendix => FileHandleSearch.GetFilesByExtensionFullPath(path, appendix, subdirectories))
                     )
             {
-                if (files == null) return false;
+                if (files == null)
+                {
+                    return false;
+                }
 
                 myFiles.AddRange(files);
 
@@ -205,7 +238,10 @@ namespace FileHandler
                 FileHandlerRegister.SendOverview?.Invoke(nameof(DeleteFolderContentsByExtension), itm);
             }
 
-            if (myFiles.Count == 0) return false;
+            if (myFiles.Count == 0)
+            {
+                return false;
+            }
 
             // Asynchronously delete files
             var deletionTasks = myFiles.Select(DeleteFile).ToList();
@@ -224,9 +260,15 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static bool DeleteFolder(string path)
         {
-            if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
-            if (!Directory.Exists(path)) return true;
+            if (!Directory.Exists(path))
+            {
+                return true;
+            }
 
             try
             {
