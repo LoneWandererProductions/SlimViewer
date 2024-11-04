@@ -397,6 +397,8 @@ namespace SlimViews
 
             _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
             _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
+
+            _leftButtonVisibility = _rightButtonVisibility = true;
         }
 
         /// <summary>
@@ -545,7 +547,11 @@ namespace SlimViews
         public int Count
         {
             get => _count;
-            set => SetProperty(ref _count, value, nameof(Count));
+            set
+            {
+                SetProperty(ref _count, value, nameof(Count));
+                NavigationLogic();
+            }
         }
 
         /// <summary>
@@ -1154,11 +1160,12 @@ namespace SlimViews
         /// <summary>
         /// Selected frame.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void SelectedFrameAction(SelectionFrame obj)
+        /// <param name="frame">The selected area.</param>
+        private void SelectedFrameAction(SelectionFrame frame)
         {
-            if (SelectedForm == SelectionTools.Rectangle) CutImage(obj);
-            //if (View.SelectedTool == SelectionTools.Erase) View.EraseImage(frame);
+            if (SelectedForm == SelectionTools.Rectangle) CutImage(frame);
+
+            if (SelectedTool == ImageTools.Erase) EraseImage(frame);
         }
 
         /// <summary>
@@ -2269,25 +2276,7 @@ namespace SlimViews
                 //set Filename
                 FileName = Path.GetFileName(filePath);
             }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (NotSupportedException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
-            }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
@@ -2296,30 +2285,26 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Loads the thumbs.
+        /// Loads the thumbs.
         /// </summary>
         /// <param name="folder">The folder.</param>
-        /// <param name="filePath">The file path.</param>
-        private void LoadThumbs(string folder, string filePath)
+        /// <param name="filePath">The file path, optional.</param>
+        private void LoadThumbs(string folder, string filePath = null)
         {
             GenerateThumbView(folder);
 
-            //Get the Id of the displayed image
-            _currentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
-        }
-
-        /// <summary>
-        ///     Loads the thumbs.
-        /// </summary>
-        /// <param name="folder">The folder.</param>
-        private void LoadThumbs(string folder)
-        {
-            GenerateThumbView(folder);
-
-            //Reset the Id of the displayed image
-            _currentId = -1;
-            Bmp = null;
-            GifPath = null;
+            // If filePath is provided, get the Id of the displayed image.
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                _currentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
+            }
+            else
+            {
+                // Reset the Id of the displayed image if no file path is provided.
+                _currentId = -1;
+                Bmp = null;
+                GifPath = null;
+            }
         }
 
         /// <summary>
@@ -2370,6 +2355,22 @@ namespace SlimViews
 
             //load Thumbnails
             _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Navigation logic.
+        /// </summary>
+        private void NavigationLogic()
+        {
+            if (_count <= 1)
+            {
+                LeftButtonVisibility = RightButtonVisibility = false;
+                return;
+            }
+
+            _leftButtonVisibility = _currentId > 1;
+
+            _rightButtonVisibility = _currentId != _count;
         }
 
         /// <summary>
