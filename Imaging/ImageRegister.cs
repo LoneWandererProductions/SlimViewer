@@ -536,7 +536,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Loads settings from a JSON string.
+        ///     Loads settings from a JSON string.
         /// </summary>
         /// <param name="json">The JSON string containing settings.</param>
         public void LoadSettingsFromJson(string json)
@@ -546,12 +546,8 @@ namespace Imaging
                 var settings = JsonSerializer.Deserialize<Dictionary<ImageFilters, HashSet<string>>>(json);
 
                 if (settings != null)
-                {
                     foreach (var filter in settings)
-                    {
                         _filterPropertyMap[filter.Key] = filter.Value;
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -560,7 +556,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Retrieves the current settings as a JSON string.
+        ///     Retrieves the current settings as a JSON string.
         /// </summary>
         /// <returns>JSON representation of current settings.</returns>
         public string GetSettingsAsJson()

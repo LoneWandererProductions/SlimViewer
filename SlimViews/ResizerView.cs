@@ -339,7 +339,8 @@ namespace SlimViews
                 if (bitmap == null) continue;
 
                 // Apply selected filter option
-                if (_selectedFilterOption != ImageFilters.None) bitmap = ImageProcessor.Filter(bitmap, _selectedFilterOption);
+                if (_selectedFilterOption != ImageFilters.None)
+                    bitmap = ImageProcessor.Filter(bitmap, _selectedFilterOption);
 
                 // Resize the image based on percentage or absolute dimensions
                 if (_isPercentagesChecked)

@@ -10,7 +10,6 @@
 
 using System.ComponentModel;
 using System.Windows;
-using Imaging;
 using SlimViews;
 
 namespace SlimViewer

@@ -9,38 +9,38 @@
 namespace SlimViews
 {
     /// <summary>
-    /// Tools that are available in the gui
+    ///     Tools that are available in the gui
     /// </summary>
     public enum ImageTools
     {
         /// <summary>
-        /// The paint
+        ///     The paint
         /// </summary>
         Paint = 0,
 
         /// <summary>
-        /// The erase
+        ///     The erase
         /// </summary>
         Erase = 1,
 
         /// <summary>
-        /// The select
+        ///     The select
         /// </summary>
         Select = 2,
 
         /// <summary>
-        /// The texture
+        ///     The texture
         /// </summary>
         Texture = 3,
 
         /// <summary>
-        /// The filter
+        ///     The filter
         /// </summary>
         Filter = 4,
 
         /// <summary>
-        /// The cut
+        ///     The cut
         /// </summary>
-        Cut = 5,
+        Cut = 5
     }
 }

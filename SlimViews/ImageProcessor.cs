@@ -282,7 +282,7 @@ namespace SlimViews
         //TODO test
 
         /// <summary>
-        /// Darkens the specified bitmap.
+        ///     Darkens the specified bitmap.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Darken Image</returns>
@@ -292,7 +292,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// ds the brighten.
+        ///     ds the brighten.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Brighten the Image</returns>
@@ -302,12 +302,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Exports the string into clipboard.
+        ///     Exports the string into clipboard.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         internal static void ExportString(Bitmap bitmap)
         {
-            var str =  Render.BitmapToBase64(bitmap);
+            var str = Render.BitmapToBase64(bitmap);
             Clipboard.SetText(str);
         }
     }

@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileHandler
@@ -81,14 +80,14 @@ namespace FileHandler
         }
 
         /// <summary>
-        ///     Deletes a File
+        /// Deletes a File
         /// </summary>
         /// <param name="paths">The paths.</param>
         /// <returns>
-        ///     Status if we encountered any problems
+        /// Status if we encountered any problems
         /// </returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool DeleteFiles(List<string> paths, CancellationToken cancellationToken = default)
+        public static bool DeleteFiles(List<string> paths)
         {
             if (paths == null || paths.Count == 0)
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyList);

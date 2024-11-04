@@ -110,6 +110,11 @@ namespace SlimViews
         private ICommand _closeCommand;
 
         /// <summary>
+        ///     The color changed command
+        /// </summary>
+        private ICommand _colorChangedCommand;
+
+        /// <summary>
         ///     Check if we compress cif files.
         /// </summary>
         private bool _compress;
@@ -148,6 +153,11 @@ namespace SlimViews
         ///     The explorer command
         /// </summary>
         private ICommand _explorerCommand;
+
+        /// <summary>
+        ///     The export string command
+        /// </summary>
+        private ICommand _exportStringCommand;
 
         /// <summary>
         ///     The file list
@@ -202,6 +212,11 @@ namespace SlimViews
         private ICommand _hotKeyCommand;
 
         /// <summary>
+        ///     The image loaded command
+        /// </summary>
+        private ICommand _imageLoadedCommand;
+
+        /// <summary>
         ///     The information
         /// </summary>
         private string _information;
@@ -210,6 +225,11 @@ namespace SlimViews
         ///     Is the Menu active
         /// </summary>
         private bool _isActive;
+
+        /// <summary>
+        ///     The left button visibility
+        /// </summary>
+        private bool _leftButtonVisibility;
 
         /// <summary>
         ///     The mirror command
@@ -272,9 +292,9 @@ namespace SlimViews
         private ICommand _resizerWindowCommand;
 
         /// <summary>
-        /// The selected point command
+        ///     The right button visibility
         /// </summary>
-        private ICommand _selectedPointCommand;
+        private bool _rightButtonVisibility;
 
         /// <summary>
         ///     Gets or sets the root.
@@ -310,14 +330,24 @@ namespace SlimViews
         private ICommand _searchCommand;
 
         /// <summary>
-        /// The selected tool
-        /// </summary>
-        private ImageTools _selectedTool;
-
-        /// <summary>
-        /// The selected form
+        ///     The selected form
         /// </summary>
         private SelectionTools _selectedForm;
+
+        /// <summary>
+        ///     The selected frame command
+        /// </summary>
+        private ICommand _selectedFrameCommand;
+
+        /// <summary>
+        ///     The selected point command
+        /// </summary>
+        private ICommand _selectedPointCommand;
+
+        /// <summary>
+        ///     The selected tool
+        /// </summary>
+        private ImageTools _selectedTool;
 
         /// <summary>
         ///     The similar command
@@ -346,44 +376,14 @@ namespace SlimViews
         private ICommand _textureConfigCommand;
 
         /// <summary>
-        /// The export string command
-        /// </summary>
-        private ICommand _exportStringCommand;
-
-        /// <summary>
-        /// The thumb image clicked command
+        ///     The thumb image clicked command
         /// </summary>
         private ICommand _thumbImageClickedCommand;
-
-        /// <summary>
-        /// The image loaded command
-        /// </summary>
-        private ICommand _imageLoadedCommand;
-
-        /// <summary>
-        /// The selected frame command
-        /// </summary>
-        private ICommand _selectedFrameCommand;
-
-        /// <summary>
-        /// The color changed command
-        /// </summary>
-        private ICommand _colorChangedCommand;
 
         /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
-
-        /// <summary>
-        /// The left button visibility
-        /// </summary>
-        private bool _leftButtonVisibility;
-
-        /// <summary>
-        /// The right button visibility
-        /// </summary>
-        private bool _rightButtonVisibility;
 
 
         /// <summary>
@@ -579,10 +579,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [left button visibility].
+        ///     Gets or sets a value indicating whether [left button visibility].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [left button visibility]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [left button visibility]; otherwise, <c>false</c>.
         /// </value>
         public bool LeftButtonVisibility
         {
@@ -591,10 +591,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [right button visibility].
+        ///     Gets or sets a value indicating whether [right button visibility].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [right button visibility]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [right button visibility]; otherwise, <c>false</c>.
         /// </value>
         public bool RightButtonVisibility
         {
@@ -949,10 +949,10 @@ namespace SlimViews
             _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerWindowAction, CanExecute);
 
         /// <summary>
-        /// Gets the export string command.
+        ///     Gets the export string command.
         /// </summary>
         /// <value>
-        /// The export string command.
+        ///     The export string command.
         /// </value>
         public ICommand ExportStringCommand =>
             _exportStringCommand ??= new DelegateCommand<object>(ExportStringAction, CanExecute);
@@ -1034,46 +1034,46 @@ namespace SlimViews
             _hotKeyCommand ??= new DelegateCommand<string>(HotKeyAction, CanExecute);
 
         /// <summary>
-        /// Gets the thumb image clicked command.
+        ///     Gets the thumb image clicked command.
         /// </summary>
         /// <value>
-        /// The thumb image clicked command.
+        ///     The thumb image clicked command.
         /// </value>
         public ICommand ThumbImageClickedCommand =>
             _thumbImageClickedCommand ??= new DelegateCommand<ImageEventArgs>(ThumbImageClickedAction, CanExecute);
 
         /// <summary>
-        /// Gets the image loaded command.
+        ///     Gets the image loaded command.
         /// </summary>
         /// <value>
-        /// The image loaded command.
+        ///     The image loaded command.
         /// </value>
         public ICommand ImageLoadedCommand =>
             _imageLoadedCommand ??= new DelegateCommand<object>(ImageLoadedCommandAction, CanExecute);
 
         /// <summary>
-        /// Gets the selected point command.
+        ///     Gets the selected point command.
         /// </summary>
         /// <value>
-        /// The selected point command.
+        ///     The selected point command.
         /// </value>
         public ICommand SelectedPointCommand =>
             _selectedPointCommand ??= new DelegateCommand<Point>(SelectedPointAction, CanExecute);
 
         /// <summary>
-        /// Gets the selected frame command.
+        ///     Gets the selected frame command.
         /// </summary>
         /// <value>
-        /// The selected frame command.
+        ///     The selected frame command.
         /// </value>
         public ICommand SelectedFrameCommand =>
             _selectedFrameCommand ??= new DelegateCommand<SelectionFrame>(SelectedFrameAction, CanExecute);
 
         /// <summary>
-        /// Gets the color changed command.
+        ///     Gets the color changed command.
         /// </summary>
         /// <value>
-        /// The color changed command.
+        ///     The color changed command.
         /// </value>
         public ICommand ColorChangedCommand =>
             _colorChangedCommand ??= new DelegateCommand<ColorHsv>(ColorChangedAction, CanExecute);
@@ -1126,12 +1126,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Determines whether this instance can execute the specified object.
+        ///     Determines whether this instance can execute the specified object.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj">The object.</param>
         /// <returns>
-        ///   <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
         /// </returns>
         private bool CanExecute<T>(T obj)
         {
@@ -1140,7 +1140,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Thumbs the image clicked action.
+        ///     Thumbs the image clicked action.
         /// </summary>
         /// <param name="obj">The identifier.</param>
         private void ThumbImageClickedAction(ImageEventArgs obj)
@@ -1149,16 +1149,16 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Set the selected point.
+        ///     Set the selected point.
         /// </summary>
-        /// <param name="point">The <see cref="ImageEventArgs"/> instance containing the event data.</param>
+        /// <param name="point">The <see cref="ImageEventArgs" /> instance containing the event data.</param>
         private void SelectedPointAction(Point point)
         {
             GetPointColor(point);
         }
 
         /// <summary>
-        /// Selected frame.
+        ///     Selected frame.
         /// </summary>
         /// <param name="frame">The selected area.</param>
         private void SelectedFrameAction(SelectionFrame frame)
@@ -1169,7 +1169,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Colors the changed action.
+        ///     Colors the changed action.
         /// </summary>
         /// <param name="colorHsv">The color HSV.</param>
         private void ColorChangedAction(ColorHsv colorHsv)
@@ -1551,7 +1551,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Exports the string action.
+        ///     Exports the string action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ExportStringAction(object obj)
@@ -2276,7 +2276,8 @@ namespace SlimViews
                 //set Filename
                 FileName = Path.GetFileName(filePath);
             }
-            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException or InvalidOperationException)
+            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException
+                                           or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
@@ -2285,7 +2286,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Loads the thumbs.
+        ///     Loads the thumbs.
         /// </summary>
         /// <param name="folder">The folder.</param>
         /// <param name="filePath">The file path, optional.</param>
@@ -2358,7 +2359,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Navigation logic.
+        ///     Navigation logic.
         /// </summary>
         private void NavigationLogic()
         {

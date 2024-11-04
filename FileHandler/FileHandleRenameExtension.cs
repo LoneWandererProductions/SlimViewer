@@ -83,6 +83,7 @@ namespace FileHandler
             StringComparison comparison = StringComparison.Ordinal)
         {
             if (str == null) throw new ArgumentNullException(nameof(str));
+
             if (string.IsNullOrEmpty(targetStr)) return str;
 
             return !str.Contains(targetStr, comparison) ? str : str.Replace(targetStr, update);
