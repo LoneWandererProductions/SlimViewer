@@ -10,7 +10,6 @@
 
 using System.ComponentModel;
 using System.Windows;
-using CommonControls;
 using Imaging;
 using SlimViews;
 
@@ -51,25 +50,6 @@ namespace SlimViewer
         }
 
         /// <summary>
-        ///     Zoom selected frame.
-        /// </summary>
-        /// <param name="frame">The frame.</param>
-        private void ImageZoom_SelectedFrame(SelectionFrame frame)
-        {
-            if (View.SelectedForm == SelectionTools.Rectangle) View.CutImage(frame);
-            //if (View.SelectedTool == SelectionTools.Erase) View.EraseImage(frame);
-        }
-
-        /// <summary>
-        ///     Get Color of Selected Point
-        /// </summary>
-        /// <param name="point">The selected Point.</param>
-        private void ImageZoom_SelectedPointColor(Point point)
-        {
-            View.GetPointColor(point);
-        }
-
-        /// <summary>
         ///     Handles the Drop event of the Image control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -86,24 +66,6 @@ namespace SlimViewer
 
             if (files.Length == 1) View.ChangeImage(files[0]);
             else View.ChangeImage(files);
-        }
-
-        /// <summary>
-        ///     Colors the picker menu color changed.
-        ///     Creates a circle between ColorPicker and the Popup, to set Colors from outside
-        /// </summary>
-        /// <param name="colorHsv">The color HSV.</param>
-        private void ColorPickerMenu_ColorChanged(ColorHsv colorHsv)
-        {
-            View.Color = colorHsv;
-        }
-
-        /// <summary>
-        ///     Thumbnails the on image loaded.
-        /// </summary>
-        private void Thumbnail_OnImageLoaded()
-        {
-            View.Loaded();
         }
 
         /// <inheritdoc />

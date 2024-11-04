@@ -107,10 +107,19 @@ namespace CommonControls
             typeof(Thumbnails), new PropertyMetadata(OnItemsSourcePropertyChanged));
 
         /// <summary>
-        /// The image clicked command property
+        ///     The image clicked command property
         /// </summary>
         public static readonly DependencyProperty ImageClickedCommandProperty = DependencyProperty.Register(
             nameof(ImageClickedCommand), typeof(ICommand), typeof(Thumbnails), new PropertyMetadata(null));
+
+        /// <summary>
+        /// The image loaded command dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ImageLoadCommandProperty = DependencyProperty.Register(
+            nameof(ImageLoadedCommand),
+            typeof(ICommand),
+            typeof(Thumbnails),
+            new PropertyMetadata(null));
 
         /// <summary>
         ///     The refresh
@@ -249,15 +258,27 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets or sets the image clicked command.
+        ///     Gets or sets the image clicked command.
         /// </summary>
         /// <value>
-        /// The image clicked command.
+        ///     The image clicked command.
         /// </value>
         public ICommand ImageClickedCommand
         {
             get => (ICommand)GetValue(ImageClickedCommandProperty);
             set => SetValue(ImageClickedCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the image loaded command.
+        /// </summary>
+        /// <value>
+        /// The image loaded command.
+        /// </value>
+        public ICommand ImageLoadedCommand
+        {
+            get => (ICommand)GetValue(ImageLoadCommandProperty);
+            set => SetValue(ImageLoadCommandProperty, value);
         }
 
         /// <summary>
@@ -372,6 +393,7 @@ namespace CommonControls
             LoadImages();
 
             //All Images Loaded
+            ImageLoadedCommand?.Execute(this);
             ImageLoaded?.Invoke();
         }
 
@@ -463,7 +485,10 @@ namespace CommonControls
                 tasks.Add(LoadImageAsync(key, name, exGrid));
 
                 // Limit the number of concurrent tasks to avoid overloading
-                if (tasks.Count < 4) continue;
+                if (tasks.Count < 4)
+                {
+                    continue;
+                }
 
                 await Task.WhenAll(tasks);
                 tasks.Clear();
@@ -824,22 +849,9 @@ namespace CommonControls
         /// <summary>
         ///     Finalizes this instance.
         /// </summary>
-        /// <returns></returns>
         ~Thumbnails()
         {
             Dispose(false);
         }
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     We need the Id of the clicked Image
-    /// </summary>
-    public sealed class ImageEventArgs : EventArgs
-    {
-        /// <summary>
-        ///     The tile id.
-        /// </summary>
-        public int Id { get; internal init; }
     }
 }

@@ -77,6 +77,43 @@ namespace CommonControls
             new PropertyMetadata(1.0, OnZoomScaleChanged));
 
         /// <summary>
+        ///     The image clicked command property
+        /// </summary>
+        public static readonly DependencyProperty SelectedPointCommandProperty = DependencyProperty.Register(
+            nameof(SelectedPointCommand), typeof(ICommand), typeof(ImageZoom), new PropertyMetadata(null));
+
+
+        /// <summary>
+        /// The selected frame property
+        /// </summary>
+        public static readonly DependencyProperty SelectedFrameCommandProperty =
+            DependencyProperty.Register(nameof(SelectedFrameCommand), typeof(ICommand), typeof(ImageZoom), new PropertyMetadata(null));
+
+        /// <summary>
+        ///     Gets or sets the image clicked command.
+        /// </summary>
+        /// <value>
+        ///     The image clicked command.
+        /// </value>
+        public ICommand SelectedPointCommand
+        {
+            get => (ICommand)GetValue(SelectedPointCommandProperty);
+            set => SetValue(SelectedPointCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the selected frame.
+        /// </summary>
+        /// <value>
+        /// The selected frame.
+        /// </value>
+        public ICommand SelectedFrameCommand
+        {
+            get => (ICommand)GetValue(SelectedFrameCommandProperty);
+            set => SetValue(SelectedFrameCommandProperty, value);
+        }
+
+        /// <summary>
         ///     The lock
         /// </summary>
         private readonly object _lock = new();
@@ -180,6 +217,7 @@ namespace CommonControls
             set => SetValue(AutoplayGif, value);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Implementation of IDisposable interface.
         /// </summary>
@@ -399,10 +437,15 @@ namespace CommonControls
                 {
                     var frame = _selectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
+                    SelectedFrameCommand.Execute(frame);
                 }
                     break;
                 case SelectionTools.Pixel:
+                    SetClickedPoint(e);
+
                     var endpoint = e.GetPosition(BtmImage);
+
+
                     SelectedPoint?.Invoke(endpoint);
                     break;
                 default:
@@ -506,6 +549,17 @@ namespace CommonControls
 
             // Ensure the adorner updates with the new zoom scale
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+        }
+
+        /// <summary>
+        /// Sets the clicked point.
+        /// </summary>
+        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
+        private void SetClickedPoint(MouseEventArgs e)
+        {
+            var endpoint = e.GetPosition(BtmImage);
+            SelectedPoint?.Invoke(endpoint);
+            SelectedPointCommand.Execute(endpoint);
         }
 
 

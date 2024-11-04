@@ -272,6 +272,11 @@ namespace SlimViews
         private ICommand _resizerWindowCommand;
 
         /// <summary>
+        /// The selected point command
+        /// </summary>
+        private ICommand _selectedPointCommand;
+
+        /// <summary>
         ///     Gets or sets the root.
         /// </summary>
         /// <value>
@@ -351,6 +356,21 @@ namespace SlimViews
         private ICommand _thumbImageClickedCommand;
 
         /// <summary>
+        /// The image loaded command
+        /// </summary>
+        private ICommand _imageLoadedCommand;
+
+        /// <summary>
+        /// The selected frame command
+        /// </summary>
+        private ICommand _selectedFrameCommand;
+
+        /// <summary>
+        /// The color changed command
+        /// </summary>
+        private ICommand _colorChangedCommand;
+
+        /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
@@ -360,11 +380,11 @@ namespace SlimViews
         /// </summary>
         private bool _leftButtonVisibility;
 
-
         /// <summary>
         /// The right button visibility
         /// </summary>
         private bool _rightButtonVisibility;
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -1017,6 +1037,42 @@ namespace SlimViews
             _thumbImageClickedCommand ??= new DelegateCommand<ImageEventArgs>(ThumbImageClickedAction, CanExecute);
 
         /// <summary>
+        /// Gets the image loaded command.
+        /// </summary>
+        /// <value>
+        /// The image loaded command.
+        /// </value>
+        public ICommand ImageLoadedCommand =>
+            _imageLoadedCommand ??= new DelegateCommand<object>(ImageLoadedCommandAction, CanExecute);
+
+        /// <summary>
+        /// Gets the selected point command.
+        /// </summary>
+        /// <value>
+        /// The selected point command.
+        /// </value>
+        public ICommand SelectedPointCommand =>
+            _selectedPointCommand ??= new DelegateCommand<Point>(SelectedPointAction, CanExecute);
+
+        /// <summary>
+        /// Gets the selected frame command.
+        /// </summary>
+        /// <value>
+        /// The selected frame command.
+        /// </value>
+        public ICommand SelectedFrameCommand =>
+            _selectedFrameCommand ??= new DelegateCommand<SelectionFrame>(SelectedFrameAction, CanExecute);
+
+        /// <summary>
+        /// Gets the color changed command.
+        /// </summary>
+        /// <value>
+        /// The color changed command.
+        /// </value>
+        public ICommand ColorChangedCommand =>
+            _colorChangedCommand ??= new DelegateCommand<ColorHsv>(ColorChangedAction, CanExecute);
+
+        /// <summary>
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
@@ -1064,12 +1120,54 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Determines whether this instance can execute the specified object.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+        /// </returns>
+        private bool CanExecute<T>(T obj)
+        {
+            // check if executing is allowed, not used right now
+            return true;
+        }
+
+        /// <summary>
         /// Thumbs the image clicked action.
         /// </summary>
         /// <param name="obj">The identifier.</param>
         private void ThumbImageClickedAction(ImageEventArgs obj)
         {
             ChangeImage(obj.Id);
+        }
+
+        /// <summary>
+        /// Set the selected point.
+        /// </summary>
+        /// <param name="point">The <see cref="ImageEventArgs"/> instance containing the event data.</param>
+        private void SelectedPointAction(Point point)
+        {
+            GetPointColor(point);
+        }
+
+        /// <summary>
+        /// Selected frame.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void SelectedFrameAction(SelectionFrame obj)
+        {
+            if (SelectedForm == SelectionTools.Rectangle) CutImage(obj);
+            //if (View.SelectedTool == SelectionTools.Erase) View.EraseImage(frame);
+        }
+
+        /// <summary>
+        /// Colors the changed action.
+        /// </summary>
+        /// <param name="colorHsv">The color HSV.</param>
+        private void ColorChangedAction(ColorHsv colorHsv)
+        {
+            Color = colorHsv;
         }
 
         /// <summary>
@@ -2296,7 +2394,7 @@ namespace SlimViews
         /// <summary>
         ///     Thumbnails are loaded.
         /// </summary>
-        public void Loaded()
+        public void ImageLoadedCommandAction(object obj)
         {
             //if (Status == null) return;
             if (string.IsNullOrEmpty(StatusImage)) return;

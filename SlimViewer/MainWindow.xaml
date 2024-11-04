@@ -233,7 +233,7 @@
                       ItemsSource="{Binding Selections}" SelectedItem="{Binding SelectedForm}" />
             <ComboBox Grid.Row="2" Grid.Column="6"   ItemsSource="{Binding Tooling}" SelectedItem="{Binding SelectedTool}"/>
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
-                                            ColorChanged="ColorPickerMenu_ColorChanged" />
+                                            ColorChangedCommand ="{Binding ColorChangedCommand}"/>
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageZoom, Mode=TwoWay}"
                     Grid.Row="2" Grid.Column="2" IsEnabled="{Binding Path =IsActive}"/>
 
@@ -253,8 +253,8 @@
                 ImageGifPath="{Binding GifPath}"
                 Name="ImageZoom"
                 ZoomTool="{Binding ElementName=CmbBxSelection, Path=SelectedItem}"
-                SelectedFrame="ImageZoom_SelectedFrame"
-                SelectedPoint="ImageZoom_SelectedPointColor" />
+                SelectedFrameCommand="{Binding SelectedFrameCommand}"
+                SelectedPointCommand="{Binding SelectedPointCommand}" />
         </Grid>
         <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"  Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                       Background="Gray" />
@@ -308,7 +308,7 @@
                     SelectBox="True"
                     IsCheckBoxSelected="False"
                     ImageClickedCommand="{Binding ThumbImageClickedCommand}"
-                    ImageLoaded="Thumbnail_OnImageLoaded" />
+                    ImageLoadedCommand ="{Binding ImageLoadedCommand}"/> 
             </ScrollViewer>
         </Grid>
     </Grid>
