@@ -15,6 +15,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using CommonControls;
 using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
@@ -48,7 +49,7 @@ namespace SlimViews
 
             var targetFolder = Path.Combine(tempFolder, fileNameWithoutExt);
             if (Directory.Exists(targetFolder))
-                _ = FileHandleDelete.DeleteAllContents(targetFolder, true);
+                _ = FileHandleDelete.DeleteAllContents(targetFolder);
             else
                 _ = Directory.CreateDirectory(targetFolder);
 
@@ -65,6 +66,33 @@ namespace SlimViews
         {
             var files = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
             return files.IsNullOrEmpty() ? null : files[0];
+        }
+
+
+        internal static Bitmap HandleInputs(ImageTools selectedTool, SelectionFrame frame,
+            Bitmap btm)
+        {
+            switch (selectedTool)
+            {
+                case ImageTools.Paint:
+                    break;
+                case ImageTools.Erase:
+                    return EraseImage(frame, btm);
+                case ImageTools.Select:
+                    break;
+                case ImageTools.Texture:
+                    break;
+                case ImageTools.Filter:
+                    break;
+                case ImageTools.Cut:
+                    return CutImage(frame, btm);
+                case ImageTools.ColorPicker:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(selectedTool), selectedTool, null);
+            }
+
+            return btm;
         }
 
         /// <summary>
@@ -309,6 +337,48 @@ namespace SlimViews
         {
             var str = Render.BitmapToBase64(bitmap);
             Clipboard.SetText(str);
+        }
+
+        /// <summary>
+        /// Cuts the image.
+        /// </summary>
+        /// <param name="frame">The selection frame.</param>
+        /// <param name="btm">The bitmap.</param>
+        /// <returns>Changed bitmap or in case of error the original</returns>
+        private static Bitmap CutImage(SelectionFrame frame, Bitmap btm)
+        {
+            try
+            {
+                btm = Render.CutBitmap(btm, frame.X, frame.Y, frame.Height, frame.Width);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(CutImage)));
+            }
+
+            return btm;
+        }
+
+        /// <summary>
+        /// Erases part of the image.
+        /// </summary>
+        /// <param name="frame">The selection frame.</param>
+        /// <param name="btm">The bitmap.</param>
+        /// <returns>Changed bitmap or in case of error the original</returns>
+        private static Bitmap EraseImage(SelectionFrame frame, Bitmap btm)
+        {
+            try
+            {
+                btm = Render.EraseRectangle(btm, frame.X, frame.Y, frame.Height, frame.Width);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(EraseImage)));
+            }
+
+            return btm;
         }
     }
 }

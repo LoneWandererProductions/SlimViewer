@@ -229,7 +229,7 @@ namespace SlimViews
         /// <summary>
         ///     The left button visibility
         /// </summary>
-        private bool _leftButtonVisibility;
+        private Visibility _leftButtonVisibility;
 
         /// <summary>
         ///     The mirror command
@@ -294,7 +294,7 @@ namespace SlimViews
         /// <summary>
         ///     The right button visibility
         /// </summary>
-        private bool _rightButtonVisibility;
+        private Visibility _rightButtonVisibility;
 
         /// <summary>
         ///     Gets or sets the root.
@@ -398,7 +398,7 @@ namespace SlimViews
             _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
             _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
 
-            _leftButtonVisibility = _rightButtonVisibility = true;
+            LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -421,6 +421,8 @@ namespace SlimViews
 
             _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
             _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
+
+            LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -584,10 +586,10 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [left button visibility]; otherwise, <c>false</c>.
         /// </value>
-        public bool LeftButtonVisibility
+        public Visibility LeftButtonVisibility
         {
             get => _leftButtonVisibility;
-            set => SetProperty(ref _isActive, value, nameof(LeftButtonVisibility));
+            set => SetProperty(ref _leftButtonVisibility, value, nameof(LeftButtonVisibility));
         }
 
         /// <summary>
@@ -596,10 +598,10 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [right button visibility]; otherwise, <c>false</c>.
         /// </value>
-        public bool RightButtonVisibility
+        public Visibility RightButtonVisibility
         {
             get => _rightButtonVisibility;
-            set => SetProperty(ref _isActive, value, nameof(RightButtonVisibility));
+            set => SetProperty(ref _rightButtonVisibility, value, nameof(RightButtonVisibility));
         }
 
         /// <summary>
@@ -1163,9 +1165,10 @@ namespace SlimViews
         /// <param name="frame">The selected area.</param>
         private void SelectedFrameAction(SelectionFrame frame)
         {
-            if (SelectedForm == SelectionTools.Rectangle) CutImage(frame);
+            if(SelectedForm == SelectionTools.Move) return;
 
-            if (SelectedTool == ImageTools.Erase) EraseImage(frame);
+            _btm = ImageProcessor.HandleInputs(SelectedTool, frame, _btm);
+            Bmp = _btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1337,17 +1340,7 @@ namespace SlimViews
                 var check = SaveImage(pathObj.FilePath, pathObj.Extension, btm);
                 if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
             }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(SaveAction)));
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(SaveAction)));
-            }
-            catch (ExternalException ex)
+            catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(SaveAction)));
@@ -1363,6 +1356,8 @@ namespace SlimViews
             if (lst.IsNullOrEmpty()) return;
 
             ChangeImage(Utility.GetNextElement(_currentId, lst));
+
+            NavigationLogic();
         }
 
         /// <summary>
@@ -1374,6 +1369,8 @@ namespace SlimViews
             if (lst.IsNullOrEmpty()) return;
 
             ChangeImage(Utility.GetPreviousElement(_currentId, lst));
+
+            NavigationLogic();
         }
 
         /// <summary>
@@ -1570,14 +1567,9 @@ namespace SlimViews
                 _btm = ImageProcessor.Render.RotateImage(_btm, -90);
                 Bmp = _btm.ToBitmapImage();
             }
-            catch (ArgumentException ex)
+            catch (Exception ex) when (ex is ArgumentException or OverflowException)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RotateBackwardAction)));
-            }
-            catch (OverflowException ex)
-            {
                 _ = MessageBox.Show(ex.ToString(),
                     string.Concat(SlimViewerResources.MessageError, nameof(RotateBackwardAction)));
             }
@@ -1594,13 +1586,7 @@ namespace SlimViews
                 _btm = ImageProcessor.Render.RotateImage(_btm, 90);
                 Bmp = _btm.ToBitmapImage();
             }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RotateForwardAction)));
-            }
-            catch (OverflowException ex)
+            catch (Exception ex) when (ex is ArgumentException or OverflowException)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
@@ -2056,6 +2042,7 @@ namespace SlimViews
             if (!Observer.ContainsKey(id)) return;
 
             _currentId = id;
+            NavigationLogic();
 
             var filePath = Observer[id];
             GenerateView(filePath);
@@ -2151,42 +2138,6 @@ namespace SlimViews
 
             //set new Information
             Information = info;
-        }
-
-        /// <summary>
-        ///     Cuts the image.
-        /// </summary>
-        /// <param name="frame">The selection frame.</param>
-        public void CutImage(SelectionFrame frame)
-        {
-            try
-            {
-                _btm = ImageProcessor.Render.CutBitmap(_btm, frame.X, frame.Y, frame.Height, frame.Width);
-                Bmp = _btm.ToBitmapImage();
-            }
-            catch (ArgumentNullException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(CutImage)));
-            }
-        }
-
-        /// <summary>
-        ///     Erases part of the image.
-        /// </summary>
-        /// <param name="frame">The selection frame.</param>
-        public void EraseImage(SelectionFrame frame)
-        {
-            try
-            {
-                _btm = ImageProcessor.Render.EraseRectangle(_btm, frame.X, frame.Y, frame.Height, frame.Width);
-                Bmp = _btm.ToBitmapImage();
-            }
-            catch (ArgumentNullException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(EraseImage)));
-            }
         }
 
         /// <summary>
@@ -2331,6 +2282,8 @@ namespace SlimViews
                 return;
             }
 
+            NavigationLogic();
+
             // ReSharper disable once PossibleNullReferenceException, already checked
             Count = _fileList.Count;
 
@@ -2356,6 +2309,8 @@ namespace SlimViews
 
             //load Thumbnails
             _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
+
+            NavigationLogic();
         }
 
         /// <summary>
@@ -2365,14 +2320,15 @@ namespace SlimViews
         {
             if (_count <= 1)
             {
-                LeftButtonVisibility = RightButtonVisibility = false;
+                LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
                 return;
             }
 
-            _leftButtonVisibility = _currentId > 1;
-
-            _rightButtonVisibility = _currentId != _count;
+            // Set visibility based on _currentId and _count
+            RightButtonVisibility = _currentId == _count -1 ? Visibility.Hidden : Visibility.Visible;
+            LeftButtonVisibility = _currentId <= 0 ? Visibility.Hidden : Visibility.Visible;
         }
+
 
         /// <summary>
         ///     Saves the image.
