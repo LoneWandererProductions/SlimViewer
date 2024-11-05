@@ -1167,7 +1167,14 @@ namespace SlimViews
         {
             if(SelectedForm == SelectionTools.Move) return;
 
+            if (SelectedTool == ImageTools.ColorPicker)
+            {
+                //Todo add color select
+            }
+
+            //todo rework move switch here and return the bitmap
             _btm = ImageProcessor.HandleInputs(SelectedTool, frame, _btm);
+
             Bmp = _btm.ToBitmapImage();
         }
 
@@ -1562,17 +1569,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void RotateBackwardAction(object obj)
         {
-            try
-            {
-                _btm = ImageProcessor.Render.RotateImage(_btm, -90);
-                Bmp = _btm.ToBitmapImage();
-            }
-            catch (Exception ex) when (ex is ArgumentException or OverflowException)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RotateBackwardAction)));
-            }
+            _btm = ImageProcessor.RotateImage(_btm, -90);
+            Bmp = _btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1581,17 +1579,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void RotateForwardAction(object obj)
         {
-            try
-            {
-                _btm = ImageProcessor.Render.RotateImage(_btm, 90);
-                Bmp = _btm.ToBitmapImage();
-            }
-            catch (Exception ex) when (ex is ArgumentException or OverflowException)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RotateForwardAction)));
-            }
+            _btm = ImageProcessor.RotateImage(_btm, 90);
+            Bmp = _btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1736,25 +1725,11 @@ namespace SlimViews
             };
             scaleWindow.ShowDialog();
 
-            try
-            {
-                _btm = ImageProcessor.Render.BitmapScaling(_btm, SlimViewerRegister.Scaling);
-                _btm = ImageProcessor.Render.RotateImage(_btm, SlimViewerRegister.Degree);
-                _btm = ImageProcessor.Render.CropImage(_btm);
-                Bmp = _btm.ToBitmapImage();
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(ScaleWindowAction)));
-            }
-            catch (OverflowException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(ScaleWindowAction)));
-            }
+            //_btm = ImageProcessor.Render.BitmapScaling(_btm, SlimViewerRegister.Scaling);
+            _btm = ImageProcessor.BitmapScaling(_btm, SlimViewerRegister.Scaling);
+            _btm = ImageProcessor.RotateImage(_btm, SlimViewerRegister.Degree);
+            _btm = ImageProcessor.CropImage(_btm);
+            Bmp = _btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1775,45 +1750,10 @@ namespace SlimViews
             if (string.IsNullOrEmpty(SlimViewerRegister.Target) ||
                 string.IsNullOrEmpty(SlimViewerRegister.Source)) return;
 
-            try
-            {
-                //do not sear in the folder but instead we use the _observer
-                var lst = new List<string>();
-                lst.AddRange(_observer.Values.Where(element =>
-                    Path.GetExtension(element) == SlimViewerRegister.Source));
+            //TODO implement a viewmodel
 
-                var count = 0;
-                var error = 0;
 
-                foreach (var check in from image in lst
-                         let btm = ImageProcessor.Render.GetOriginalBitmap(image)
-                         select SaveImage(image, SlimViewerRegister.Target, btm))
-                    if (check)
-                        count++;
-                    else
-                        error++;
-
-                _ = MessageBox.Show(string.Concat(SlimViewerResources.InformationConverted, count, Environment.NewLine,
-                    SlimViewerResources.InformationErrors, error));
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertWindowAction)));
-            }
-            catch (IOException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertWindowAction)));
-            }
-            catch (ExternalException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvertWindowAction)));
-            }
+            ImageProcessor.FolderConvert(SlimViewerRegister.Target, SlimViewerRegister.Source, _observer);
         }
 
         /// <summary>
@@ -1945,6 +1885,7 @@ namespace SlimViews
             //Initiate Folder
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
             //get target Folder
             var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
 

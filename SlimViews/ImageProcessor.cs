@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,6 +21,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using Point = System.Drawing.Point;
 
 namespace SlimViews
 {
@@ -35,6 +37,14 @@ namespace SlimViews
         ///     The render.
         /// </value>
         internal static ImageRender Render { get; } = new();
+
+        /// <summary>
+        /// Gets the generator.
+        /// </summary>
+        /// <value>
+        /// The generator.
+        /// </value>
+        private static TextureGenerator Generator { get; } = new();
 
         /// <summary>
         ///     Unpacks the specified folder.
@@ -68,26 +78,36 @@ namespace SlimViews
             return files.IsNullOrEmpty() ? null : files[0];
         }
 
-
+        /// <summary>
+        ///     Handle selected Image areas and process commands.
+        /// </summary>
+        /// <param name="selectedTool">The selection Tool</param>
+        /// <param name="frame">The selected area.</param>
+        /// <param name="btm">The bitmap to we manipulate.</param>
+        /// <returns>The path of the first image found, or null if none found.</returns>
+        /// <returns>Changed bitmap or in case of error the original</returns>
         internal static Bitmap HandleInputs(ImageTools selectedTool, SelectionFrame frame,
             Bitmap btm)
         {
+            //todo converter Tool Form to enum
+            var point = new Point(frame.X, frame.Y);
+
             switch (selectedTool)
             {
                 case ImageTools.Paint:
+                    Render.SetPixel(btm, point, Color.AliceBlue);
                     break;
                 case ImageTools.Erase:
                     return EraseImage(frame, btm);
-                case ImageTools.Select:
-                    break;
                 case ImageTools.Texture:
+                    Generator.GenerateTexture(frame.Width, frame.Height, TextureType.Clouds, TextureShape.Circle,
+                        point);
                     break;
                 case ImageTools.Filter:
+                    //todo generate a filtered Image, and cut it into form
                     break;
                 case ImageTools.Cut:
                     return CutImage(frame, btm);
-                case ImageTools.ColorPicker:
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(selectedTool), selectedTool, null);
             }
@@ -147,6 +167,9 @@ namespace SlimViews
             string colorTwo, string similarity, Bitmap difference)
         {
             var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null!);
+
+            if (pathObj == null) return;
+
             var content = new List<string>
             {
                 informationOne,
@@ -221,10 +244,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Pixelates the specified bitmap.
+        ///     Pixelate the specified bitmap.
         /// </summary>
         /// <param name="bitmap">The bitmap to pixelate.</param>
-        /// <param name="pixelWidth">The width of the pixelation.</param>
+        /// <param name="pixelWidth">The width of the pixelate.</param>
         /// <returns>The pixelated bitmap.</returns>
         public static Bitmap Pixelate(Bitmap bitmap, int pixelWidth)
         {
@@ -286,8 +309,7 @@ namespace SlimViews
             {
                 return Render.GetOriginalBitmap(filePath);
             }
-            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException
-                                           or InvalidOperationException)
+            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
                 ShowError(ex.ToString(), nameof(GenerateImage));
@@ -306,8 +328,6 @@ namespace SlimViews
             if (source != null) message = $"{SlimViewerResources.MeesageErrorSource}{source}\n{message}";
             MessageBox.Show(message, SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        //TODO test
 
         /// <summary>
         ///     Darkens the specified bitmap.
@@ -379,6 +399,108 @@ namespace SlimViews
             }
 
             return btm;
+        }
+
+        /// <summary>
+        /// Rotates the image.
+        /// </summary>
+        /// <param name="btm">The bitmap.</param>
+        /// <param name="degree">The degree.</param>
+        /// <returns>Changed bitmap or in case of error the original</returns>
+        public static Bitmap RotateImage(Bitmap btm, int degree)
+        {
+            try
+            {
+                btm = Render.RotateImage(btm, degree);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OverflowException)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(RotateImage)));
+            }
+
+            return btm;
+        }
+
+        /// <summary>
+        /// Bitmaps the scaling.
+        /// </summary>
+        /// <param name="btm">The bitmap.</param>
+        /// <param name="scaling">The scaling.</param>
+        /// <returns>Changed bitmap or in case of error the original</returns>
+        internal static Bitmap BitmapScaling(Bitmap btm, float scaling)
+        {
+            try
+            {
+                btm = Render.BitmapScaling(btm, scaling);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OverflowException)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(RotateImage)));
+            }
+
+            return btm;
+        }
+
+        /// <summary>
+        /// Crops the image.
+        /// </summary>
+        /// <param name="btm">The bitmap.</param>
+        /// <returns>Changed bitmap or in case of error the original</returns>
+        public static Bitmap CropImage(Bitmap btm)
+        {
+            try
+            {
+                btm = Render.CropImage(btm);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OverflowException)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(RotateImage)));
+            }
+
+            return btm;
+        }
+
+        /// <summary>
+        /// Folders the convert.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="observer">The observer.</param>
+        public static void FolderConvert(string target, string source, Dictionary<int, string> observer)
+        {
+            try
+            {
+                //do not sear in the folder but instead we use the _observer
+                var lst = new List<string>();
+                lst.AddRange(observer.Values.Where(element =>
+                    Path.GetExtension(element) == source));
+
+                var count = 0;
+                var error = 0;
+
+                foreach (var check in from image in lst
+                    let btm = Render.GetOriginalBitmap(image)
+                    select SaveImage(image, target, btm))
+                    if (check)
+                        count++;
+                    else
+                        error++;
+
+                _ = MessageBox.Show(string.Concat(SlimViewerResources.InformationConverted, count, Environment.NewLine,
+                    SlimViewerResources.InformationErrors, error));
+            }
+            catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(),
+                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvert)));
+            }
         }
     }
 }

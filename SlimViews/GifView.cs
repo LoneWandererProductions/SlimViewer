@@ -337,8 +337,8 @@ namespace SlimViews
 
             var filePath = Observer[id];
             GifPath = null;
-            var bmp = ImageProcessor.Render.GetBitmapImage(filePath);
-            Bmp = bmp;
+            var bmp = ImageProcessor.LoadImage(filePath);
+            Bmp = bmp.ToBitmapImage();
 
             var fileName = Path.GetFileName(filePath);
 
@@ -351,7 +351,7 @@ namespace SlimViews
             }
 
             //set Infos
-            Information = SlimViewerResources.BuildImageInformation(filePath, fileName, bmp);
+            Information = SlimViewerResources.BuildImageInformation(filePath, fileName, Bmp);
         }
 
         /// <summary>

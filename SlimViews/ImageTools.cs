@@ -24,28 +24,23 @@ namespace SlimViews
         Erase = 1,
 
         /// <summary>
-        ///     The select
-        /// </summary>
-        Select = 2,
-
-        /// <summary>
         ///     The texture
         /// </summary>
-        Texture = 3,
+        Texture = 2,
 
         /// <summary>
         ///     The filter
         /// </summary>
-        Filter = 4,
+        Filter = 3,
 
         /// <summary>
         ///     The cut
         /// </summary>
-        Cut = 5,
+        Cut = 4,
 
         /// <summary>
         /// The color picker
         /// </summary>
-        ColorPicker = 6
+        ColorPicker = 5
     }
 }
