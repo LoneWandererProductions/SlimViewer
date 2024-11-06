@@ -1165,15 +1165,28 @@ namespace SlimViews
         /// <param name="frame">The selected area.</param>
         private void SelectedFrameAction(SelectionFrame frame)
         {
-            if(SelectedForm == SelectionTools.Move) return;
+            if (SelectedForm == SelectionTools.Move)
+                return;
 
-            if (SelectedTool == ImageTools.ColorPicker)
+            var point = new System.Drawing.Point(frame.X, frame.Y);
+
+            switch (SelectedTool)
             {
-                //Todo add color select
-            }
+                case ImageTools.Erase:
+                    _btm = ImageProcessor.CutImage(frame, _btm);
+                    break;
+                case ImageTools.Cut:
+                    _btm = ImageProcessor.EraseImage(frame, _btm);
+                    break;
 
-            //todo rework move switch here and return the bitmap
-            _btm = ImageProcessor.HandleInputs(SelectedTool, frame, _btm);
+                case ImageTools.Paint:
+                    ImageProcessor.SetPixel(_btm, point, Color.GetDrawingColor());
+                    return;
+
+                case ImageTools.ColorPicker:
+                    Color = ImageProcessor.GetPixel(_btm, point);
+                    return;
+            }
 
             Bmp = _btm.ToBitmapImage();
         }

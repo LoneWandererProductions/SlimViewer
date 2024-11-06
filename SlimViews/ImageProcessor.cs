@@ -99,10 +99,6 @@ namespace SlimViews
                     break;
                 case ImageTools.Erase:
                     return EraseImage(frame, btm);
-                case ImageTools.Texture:
-                    Generator.GenerateTexture(frame.Width, frame.Height, TextureType.Clouds, TextureShape.Circle,
-                        point);
-                    break;
                 case ImageTools.Filter:
                     //todo generate a filtered Image, and cut it into form
                     break;
@@ -158,6 +154,32 @@ namespace SlimViews
         internal static void ConvertGifAction(List<string> images, string filePath)
         {
             Render.CreateGif(images, filePath);
+        }
+
+        /// <summary>
+        /// Sets the pixel.
+        /// </summary>
+        /// <param name="btm">The bitmap.</param>
+        /// <param name="point">The point.</param>
+        /// <param name="color">The color.</param>
+        /// <param name="frame">The optional frame.</param>
+        internal static void SetPixel(Bitmap btm, Point point, Color color, SelectionFrame frame = null)
+        {
+            Render.SetPixel(btm, point, color);
+        }
+
+        /// <summary>
+        /// Gets the color.
+        /// </summary>
+        /// <param name="btm">The bitmap.</param>
+        /// <param name="point">The point.</param>
+        /// <param name="radius">The optional radius.</param>
+        /// <returns>The clicked color.</returns>
+        internal static ColorHsv GetPixel(Bitmap btm, Point point, int radius = 1)
+        {
+            var color = Render.GetPixel(btm, point, radius);
+
+            return new ColorHsv(color.R, color.G, color.B, color.A);
         }
 
         /// <summary>
@@ -254,7 +276,7 @@ namespace SlimViews
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                var btm= Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, TextureShape.Rectangle);
+                var btm = Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, TextureShape.Rectangle);
                 //overlay both images
                 bitmap = Render.CombineBitmap(bitmap, btm, 0, 0);
             }
@@ -389,7 +411,7 @@ namespace SlimViews
         /// <param name="frame">The selection frame.</param>
         /// <param name="btm">The bitmap.</param>
         /// <returns>Changed bitmap or in case of error the original</returns>
-        private static Bitmap CutImage(SelectionFrame frame, Bitmap btm)
+        internal static Bitmap CutImage(SelectionFrame frame, Bitmap btm)
         {
             try
             {
@@ -410,7 +432,7 @@ namespace SlimViews
         /// <param name="frame">The selection frame.</param>
         /// <param name="btm">The bitmap.</param>
         /// <returns>Changed bitmap or in case of error the original</returns>
-        private static Bitmap EraseImage(SelectionFrame frame, Bitmap btm)
+        internal static Bitmap EraseImage(SelectionFrame frame, Bitmap btm)
         {
             try
             {
@@ -496,7 +518,7 @@ namespace SlimViews
         /// <param name="target">The target.</param>
         /// <param name="source">The source.</param>
         /// <param name="observer">The observer.</param>
-        public static void FolderConvert(string target, string source, Dictionary<int, string> observer)
+        internal static void FolderConvert(string target, string source, Dictionary<int, string> observer)
         {
             try
             {
