@@ -1398,7 +1398,10 @@ namespace SlimViews
         /// <param name="textureName">The name of the texture.</param>
         private void ApplyTextureAction(string textureName)
         {
-            //TODO
+            if (!Enum.TryParse(textureName, out TextureType texture)) return;
+
+            var btm = ImageProcessor.Texture(_btm, texture);
+            Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>

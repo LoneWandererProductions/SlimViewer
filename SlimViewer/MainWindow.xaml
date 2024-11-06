@@ -150,7 +150,22 @@
                         </MenuItem>
                     </MenuItem>
                     <MenuItem Header="Texture">
-                        <MenuItem Header="Configure Filter" Command="{Binding TextureConfigCommand}" />
+                        <MenuItem Header="Texture">
+                            <MenuItem Header="Configure Texture" Command="{Binding TextureConfigCommand}" />
+                            <Separator />
+                            <MenuItem Header="Noise" Command="{Binding ApplyTextureCommand}" CommandParameter="Noise"
+                                      IsEnabled="{Binding Path=IsActive}" />
+                            <MenuItem Header="Clouds" Command="{Binding ApplyTextureCommand}" CommandParameter="Clouds"
+                                      IsEnabled="{Binding Path=IsActive}" />
+                            <MenuItem Header="Marble" Command="{Binding ApplyTextureCommand}" CommandParameter="Marble"
+                                      IsEnabled="{Binding Path=IsActive}" />
+                            <MenuItem Header="Wood" Command="{Binding ApplyTextureCommand}" CommandParameter="Wood"
+                                      IsEnabled="{Binding Path=IsActive}" />
+                            <MenuItem Header="Wave" Command="{Binding ApplyTextureCommand}" CommandParameter="Wave"
+                                      IsEnabled="{Binding Path=IsActive}" />
+                            <MenuItem Header="Crosshatch" Command="{Binding ApplyTextureCommand}" CommandParameter="Crosshatch"
+                                      IsEnabled="{Binding Path=IsActive}" />
+                        </MenuItem>
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path=IsActive}" />

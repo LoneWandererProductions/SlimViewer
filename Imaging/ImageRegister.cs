@@ -546,10 +546,14 @@ namespace Imaging
                 var settings = JsonSerializer.Deserialize<Dictionary<ImageFilters, HashSet<string>>>(json);
 
                 if (settings != null)
-                    foreach (var filter in settings)
-                        _filterPropertyMap[filter.Key] = filter.Value;
+                {
+                    foreach (var (imageFilters, filter) in settings)
+                    {
+                        _filterPropertyMap[imageFilters] = filter;
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is ArgumentNullException or JsonException or NotSupportedException)
             {
                 ErrorLog.Add(DateTime.MinValue, $"{ImagingResources.ErrorLoadSettings} {ex.Message}");
             }

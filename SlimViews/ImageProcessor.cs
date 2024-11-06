@@ -244,6 +244,27 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Textures the specified bitmap.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <param name="texture">The texture.</param>
+        /// <returns>The textured bitmap.</returns>
+        internal static Bitmap Texture(Bitmap bitmap, TextureType texture)
+        {
+            try
+            {
+                //return Generator.GenerateTexture(bitmap, texture);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
+            {
+                Trace.WriteLine(ex);
+                ShowError(ex.ToString(), SlimViewerResources.MessageError);
+            }
+
+            return bitmap;
+        }
+
+        /// <summary>
         ///     Pixelate the specified bitmap.
         /// </summary>
         /// <param name="bitmap">The bitmap to pixelate.</param>
