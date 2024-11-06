@@ -253,7 +253,10 @@ namespace SlimViews
         {
             try
             {
-                //return Generator.GenerateTexture(bitmap, texture);
+                //just overlay the whole image with the texture, will be changed later
+                var btm= Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, TextureShape.Rectangle);
+                //overlay both images
+                bitmap = Render.CombineBitmap(bitmap, btm, 0, 0);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
