@@ -1188,8 +1188,9 @@ namespace SlimViews
             {
                 case ImageTools.Paint:
                     if (Color == null) return;
+                    var color = Color.GetDrawingColor();
 
-                    _btm = ImageProcessor.SetPixel(_btm, point, Color.GetDrawingColor());
+                    _btm = ImageProcessor.SetPixel(_btm, point, color);
 
                     Bmp = _btm.ToBitmapImage();
                     return;
@@ -1226,8 +1227,9 @@ namespace SlimViews
 
                 case ImageTools.Paint:
                     if (Color == null) return;
+                    var color = Color.GetDrawingColor();
 
-                    _btm = ImageProcessor.SetPixel(_btm, point, Color.GetDrawingColor());
+                    _btm = ImageProcessor.SetPixel(_btm, point, color);
                     return;
 
                 case ImageTools.ColorPicker:
