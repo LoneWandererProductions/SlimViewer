@@ -96,7 +96,9 @@ namespace Imaging
                 case TextureType.Wave:
                     textureBitmap = Texture.GenerateWaveBitmap(width, height, settings.Alpha);
                     break;
-
+                case TextureType.Crosshatch:
+                    textureBitmap = Texture.GenerateCrosshatchBitmap(width, height, settings.Alpha);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(filter), filter, null);
             }

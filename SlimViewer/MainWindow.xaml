@@ -150,7 +150,6 @@
                         </MenuItem>
                     </MenuItem>
                     <MenuItem Header="Texture">
-                        <MenuItem Header="Texture">
                             <MenuItem Header="Configure Texture" Command="{Binding TextureConfigCommand}" />
                             <Separator />
                             <MenuItem Header="Noise" Command="{Binding ApplyTextureCommand}" CommandParameter="Noise"
@@ -165,7 +164,6 @@
                                       IsEnabled="{Binding Path=IsActive}" />
                             <MenuItem Header="Crosshatch" Command="{Binding ApplyTextureCommand}" CommandParameter="Crosshatch"
                                       IsEnabled="{Binding Path=IsActive}" />
-                        </MenuItem>
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path=IsActive}" />
