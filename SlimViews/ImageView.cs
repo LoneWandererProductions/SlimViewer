@@ -90,11 +90,6 @@ namespace SlimViews
         private ICommand _brightenCommand;
 
         /// <summary>
-        ///     The Bitmap
-        /// </summary>
-        private Bitmap _btm;
-
-        /// <summary>
         ///     Clean the temporary folder
         /// </summary>
         private ICommand _cleanTempFolder;
@@ -227,6 +222,11 @@ namespace SlimViews
         private bool _isActive;
 
         /// <summary>
+        /// The is image active
+        /// </summary>
+        private bool _isImageActive;
+
+        /// <summary>
         ///     The left button visibility
         /// </summary>
         private Visibility _leftButtonVisibility;
@@ -292,24 +292,6 @@ namespace SlimViews
         private ICommand _resizerWindowCommand;
 
         /// <summary>
-        ///     The right button visibility
-        /// </summary>
-        private Visibility _rightButtonVisibility;
-
-        /// <summary>
-        /// The thumbnail visibility
-        /// </summary>
-        private Visibility _thumbnailVisibility;
-
-        /// <summary>
-        ///     Gets or sets the root.
-        /// </summary>
-        /// <value>
-        ///     The root.
-        /// </value>
-        private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        /// <summary>
         ///     The rotate backward command
         /// </summary>
         private ICommand _rotateBackwardCommandCommand;
@@ -360,6 +342,16 @@ namespace SlimViews
         private ICommand _similarCommand;
 
         /// <summary>
+        ///     The texture configuration command
+        /// </summary>
+        private ICommand _textureConfigCommand;
+
+        /// <summary>
+        ///     The thumb image clicked command
+        /// </summary>
+        private ICommand _thumbImageClickedCommand;
+
+        /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
         ///     Configured from Register
         /// </summary>
@@ -376,19 +368,45 @@ namespace SlimViews
         private bool _subFolders;
 
         /// <summary>
-        ///     The texture configuration command
+        /// The Bitmap
         /// </summary>
-        private ICommand _textureConfigCommand;
-
-        /// <summary>
-        ///     The thumb image clicked command
-        /// </summary>
-        private ICommand _thumbImageClickedCommand;
+        private Bitmap _btm;
 
         /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
+
+        /// <summary>
+        ///     The right button visibility
+        /// </summary>
+        private Visibility _rightButtonVisibility;
+
+        /// <summary>
+        /// The thumbnail visibility
+        /// </summary>
+        private Visibility _thumbnailVisibility;
+
+        /// <summary>
+        ///     Gets or sets the root.
+        /// </summary>
+        /// <value>
+        ///     The root.
+        /// </value>
+        private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
+        ///     The Bitmap
+        /// </summary>
+        private Bitmap Btm
+        {
+            get => _btm;
+            set
+            {
+                _btm = value;
+                NavigationLogic(); // Call a method whenever the property is set
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -404,6 +422,7 @@ namespace SlimViews
 
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
+            IsImageActive = false;
         }
 
         /// <summary>
@@ -429,6 +448,7 @@ namespace SlimViews
 
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
+            IsImageActive = false;
         }
 
         /// <summary>
@@ -584,6 +604,18 @@ namespace SlimViews
         {
             get => _isActive;
             set => SetProperty(ref _isActive, value, nameof(IsActive));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is image active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is image active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsImageActive
+        {
+            get => _isImageActive;
+            set => SetProperty(ref _isImageActive, value, nameof(IsImageActive));
         }
 
         /// <summary>
@@ -1190,13 +1222,13 @@ namespace SlimViews
                     if (Color == null) return;
                     var color = Color.GetDrawingColor();
 
-                    _btm = ImageProcessor.SetPixel(_btm, point, color);
+                    Btm = ImageProcessor.SetPixel(Btm, point, color);
 
-                    Bmp = _btm.ToBitmapImage();
+                    Bmp = Btm.ToBitmapImage();
                     return;
 
                 case ImageTools.ColorPicker:
-                    Color = ImageProcessor.GetPixel(_btm, point);
+                    Color = ImageProcessor.GetPixel(Btm, point);
                     Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
                     Color = Picker.Colors;
                     return;
@@ -1219,25 +1251,25 @@ namespace SlimViews
             switch (SelectedTool)
             {
                 case ImageTools.Erase:
-                    _btm = ImageProcessor.EraseImage(frame, _btm);
+                    Btm = ImageProcessor.EraseImage(frame, Btm);
                     break;
                 case ImageTools.Cut:
-                    _btm = ImageProcessor.CutImage(frame, _btm);
+                    Btm = ImageProcessor.CutImage(frame, Btm);
                     break;
 
                 case ImageTools.Paint:
                     if (Color == null) return;
                     var color = Color.GetDrawingColor();
 
-                    _btm = ImageProcessor.SetPixel(_btm, point, color);
+                    Btm = ImageProcessor.SetPixel(Btm, point, color);
                     return;
 
                 case ImageTools.ColorPicker:
-                    Color = ImageProcessor.GetPixel(_btm, point);
+                    Color = ImageProcessor.GetPixel(Btm, point);
                     return;
             }
 
-            Bmp = _btm.ToBitmapImage();
+            Bmp = Btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1357,14 +1389,14 @@ namespace SlimViews
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            _btm = _cif.GetImageFromCif(pathObj.FilePath);
+            Btm = _cif.GetImageFromCif(pathObj.FilePath);
 
-            if (_btm == null) return;
+            if (Btm == null) return;
 
             //activate Menus
             if (_bmp != null) IsActive = true;
 
-            Bmp = _btm.ToBitmapImage();
+            Bmp = Btm.ToBitmapImage();
 
             //set Filename
             FileName = Path.GetFileName(_filePath);
@@ -1383,8 +1415,8 @@ namespace SlimViews
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            if (Compress) _cif.GenerateCifCompressedFromBitmap(_btm, pathObj.FilePath);
-            else _cif.GenerateBitmapToCifFile(_btm, pathObj.FilePath);
+            if (Compress) _cif.GenerateCifCompressedFromBitmap(Btm, pathObj.FilePath);
+            else _cif.GenerateBitmapToCifFile(Btm, pathObj.FilePath);
         }
 
         /// <summary>
@@ -1450,7 +1482,7 @@ namespace SlimViews
         {
             if (!Enum.TryParse(filterName, out ImageFilters filter)) return;
 
-            var btm = ImageProcessor.Filter(_btm, filter);
+            var btm = ImageProcessor.Filter(Btm, filter);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1462,7 +1494,7 @@ namespace SlimViews
         {
             if (!Enum.TryParse(textureName, out TextureType texture)) return;
 
-            var btm = ImageProcessor.Texture(_btm, texture);
+            var btm = ImageProcessor.Texture(Btm, texture);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1472,7 +1504,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void BrightenAction(object obj)
         {
-            var btm = ImageProcessor.DBrighten(_btm);
+            var btm = ImageProcessor.DBrighten(Btm);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1482,7 +1514,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void DarkenAction(object obj)
         {
-            var btm = ImageProcessor.Darken(_btm);
+            var btm = ImageProcessor.Darken(Btm);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1492,7 +1524,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void PixelateAction(object obj)
         {
-            var btm = ImageProcessor.Pixelate(_btm, PixelWidth);
+            var btm = ImageProcessor.Pixelate(Btm, PixelWidth);
             Bmp = btm.ToBitmapImage();
         }
 
@@ -1531,7 +1563,7 @@ namespace SlimViews
             else
             {
                 Bmp = null;
-                _btm = null;
+                Btm = null;
                 GifPath = null;
                 _gifPath = null;
 
@@ -1625,7 +1657,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ExportStringAction(object obj)
         {
-            ImageProcessor.ExportString(_btm);
+            ImageProcessor.ExportString(Btm);
         }
 
         /// <summary>
@@ -1634,8 +1666,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void RotateBackwardAction(object obj)
         {
-            _btm = ImageProcessor.RotateImage(_btm, -90);
-            Bmp = _btm.ToBitmapImage();
+            Btm = ImageProcessor.RotateImage(Btm, -90);
+            Bmp = Btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1644,8 +1676,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void RotateForwardAction(object obj)
         {
-            _btm = ImageProcessor.RotateImage(_btm, 90);
-            Bmp = _btm.ToBitmapImage();
+            Btm = ImageProcessor.RotateImage(Btm, 90);
+            Bmp = Btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1654,10 +1686,10 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void MirrorAction(object obj)
         {
-            if (_btm == null) return;
+            if (Btm == null) return;
 
-            _btm.RotateFlip(RotateFlipType.RotateNoneFlipX);
-            Bmp = _btm.ToBitmapImage();
+            Btm.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            Bmp = Btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -1693,7 +1725,7 @@ namespace SlimViews
             //decrease File Count
             if (Count > 0) Count--;
 
-            _btm = null;
+            Btm = null;
             Bmp = null;
             GifPath = null;
             _gifPath = null;
@@ -1791,10 +1823,10 @@ namespace SlimViews
             scaleWindow.ShowDialog();
 
             //_btm = ImageProcessor.Render.BitmapScaling(_btm, SlimViewerRegister.Scaling);
-            _btm = ImageProcessor.BitmapScaling(_btm, SlimViewerRegister.Scaling);
-            _btm = ImageProcessor.RotateImage(_btm, SlimViewerRegister.Degree);
-            _btm = ImageProcessor.CropImage(_btm);
-            Bmp = _btm.ToBitmapImage();
+            Btm = ImageProcessor.BitmapScaling(Btm, SlimViewerRegister.Scaling);
+            Btm = ImageProcessor.RotateImage(Btm, SlimViewerRegister.Degree);
+            Btm = ImageProcessor.CropImage(Btm);
+            Bmp = Btm.ToBitmapImage();
         }
 
         /// <summary>
@@ -2208,12 +2240,12 @@ namespace SlimViews
                 }
                 else
                 {
-                    _btm = ImageProcessor.Render.GetOriginalBitmap(filePath);
+                    Btm = ImageProcessor.Render.GetOriginalBitmap(filePath);
 
                     //reset gif Image
                     GifPath = null;
 
-                    Bmp = _btm.ToBitmapImage();
+                    Bmp = Btm.ToBitmapImage();
                     //set Infos
                     Information = SlimViewerResources.BuildImageInformation(filePath, FileName, Bmp);
                 }
@@ -2326,6 +2358,9 @@ namespace SlimViews
 
             // show or hide the Thumbnail Bar
             ThumbnailVisibility = Thumbs ? Visibility.Visible : Visibility.Hidden;
+
+            //show or hide image edit
+            IsImageActive = Btm != null;
         }
 
 
