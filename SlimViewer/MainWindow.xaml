@@ -276,8 +276,8 @@
         </Grid>
         <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
-                      Background="Gray" />
-        <Grid Grid.Row="4" Grid.Column="0" ColumnSpan="3">
+                      Background="Gray"  Visibility="{Binding ThumbnailVisibility}" />
+        <Grid Grid.Row="4" Grid.Column="0" ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25" />
                 <RowDefinition Height="5" />
@@ -319,15 +319,14 @@
             <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Row="4"
                           Focusable="False" Grid.ColumnSpan="6" Grid.Column="0">
                 <!--Well not really that clean, but it works for now, events can't be transmitted without some hassle-->
-                <commonControls:Thumbnails
-                    Name="Thumbnail"
-                    ItemsSource="{Binding Observer}"
-                    ThumbCellSize="100"
-                    ThumbHeight="1"
-                    SelectBox="True"
-                    IsCheckBoxSelected="False"
-                    ImageClickedCommand="{Binding ThumbImageClickedCommand}"
-                    ImageLoadedCommand="{Binding ImageLoadedCommand}" />
+                <commonControls:Thumbnails Name="Thumbnail"
+                                           ItemsSource="{Binding Observer}"
+                                           ThumbCellSize="100"
+                                           ThumbHeight="1"
+                                           SelectBox="True"
+                                           IsCheckBoxSelected="False"
+                                           ImageClickedCommand="{Binding ThumbImageClickedCommand}"
+                                           ImageLoadedCommand="{Binding ImageLoadedCommand}" />
             </ScrollViewer>
         </Grid>
     </Grid>

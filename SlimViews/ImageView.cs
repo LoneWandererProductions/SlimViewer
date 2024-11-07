@@ -297,6 +297,11 @@ namespace SlimViews
         private Visibility _rightButtonVisibility;
 
         /// <summary>
+        /// The thumbnail visibility
+        /// </summary>
+        private Visibility _thumbnailVisibility;
+
+        /// <summary>
         ///     Gets or sets the root.
         /// </summary>
         /// <value>
@@ -385,7 +390,6 @@ namespace SlimViews
         /// </summary>
         private bool _thumbs = true;
 
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
         ///     Initiates all necessary Collections as well
@@ -399,6 +403,7 @@ namespace SlimViews
             _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
 
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
+            ThumbnailVisibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -423,6 +428,7 @@ namespace SlimViews
             _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
 
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
+            ThumbnailVisibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -605,6 +611,19 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Gets or sets the thumbnail visibility.
+        /// </summary>
+        /// <value>
+        /// The thumbnail visibility.
+        /// </value>
+        public Visibility ThumbnailVisibility
+        {
+            get => _thumbnailVisibility;
+            set => SetProperty(ref _thumbnailVisibility, value, nameof(ThumbnailVisibility));
+        }
+
+
+        /// <summary>
         ///     Gets or sets a value indicating whether [sub folders].
         /// </summary>
         /// <value>
@@ -645,7 +664,11 @@ namespace SlimViews
         public bool Thumbs
         {
             get => _thumbs;
-            set => SetProperty(ref _thumbs, value, nameof(Thumbs));
+            set
+            {
+                SetProperty(ref _thumbs, value, nameof(Thumbs));
+                NavigationLogic();
+            }
         }
 
         /// <summary>
@@ -1151,12 +1174,32 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Set the selected point.
+        /// Set the selected point.
         /// </summary>
-        /// <param name="point">The <see cref="ImageEventArgs" /> instance containing the event data.</param>
-        private void SelectedPointAction(Point point)
+        /// <param name="wPoint">The w point.</param>
+        private void SelectedPointAction(Point wPoint)
         {
-            GetPointColor(point);
+            if (SelectedForm != SelectionTools.Pixel)
+                return;
+
+            var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
+
+            switch (SelectedTool)
+            {
+                case ImageTools.Paint:
+                    if (Color == null) return;
+
+                    _btm = ImageProcessor.SetPixel(_btm, point, Color.GetDrawingColor());
+
+                    Bmp = _btm.ToBitmapImage();
+                    return;
+
+                case ImageTools.ColorPicker:
+                    Color = ImageProcessor.GetPixel(_btm, point);
+                    Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
+                    Color = Picker.Colors;
+                    return;
+            }
         }
 
         /// <summary>
@@ -1167,20 +1210,24 @@ namespace SlimViews
         {
             if (SelectedForm == SelectionTools.Move)
                 return;
+            if (SelectedForm == SelectionTools.Pixel)
+                return;
 
             var point = new System.Drawing.Point(frame.X, frame.Y);
 
             switch (SelectedTool)
             {
                 case ImageTools.Erase:
-                    _btm = ImageProcessor.CutImage(frame, _btm);
+                    _btm = ImageProcessor.EraseImage(frame, _btm);
                     break;
                 case ImageTools.Cut:
-                    _btm = ImageProcessor.EraseImage(frame, _btm);
+                    _btm = ImageProcessor.CutImage(frame, _btm);
                     break;
 
                 case ImageTools.Paint:
-                    ImageProcessor.SetPixel(_btm, point, Color.GetDrawingColor());
+                    if (Color == null) return;
+
+                    _btm = ImageProcessor.SetPixel(_btm, point, Color.GetDrawingColor());
                     return;
 
                 case ImageTools.ColorPicker:
@@ -1376,7 +1423,7 @@ namespace SlimViews
             if (lst.IsNullOrEmpty()) return;
 
             ChangeImage(Utility.GetNextElement(_currentId, lst));
-
+            Thumb.Next();
             NavigationLogic();
         }
 
@@ -1389,7 +1436,7 @@ namespace SlimViews
             if (lst.IsNullOrEmpty()) return;
 
             ChangeImage(Utility.GetPreviousElement(_currentId, lst));
-
+            Thumb.Previous();
             NavigationLogic();
         }
 
@@ -2098,17 +2145,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the color of the point.
-        /// </summary>
-        /// <param name="point">The point.</param>
-        public void GetPointColor(Point point)
-        {
-            var color = _btm.GetPixel((int)point.X, (int)point.Y);
-            Picker.SetColors(color.R, color.G, color.B, color.A);
-            Color = Picker.Colors;
-        }
-
-        /// <summary>
         ///     Generates the CBR view.
         /// </summary>
         /// <param name="pathObj">The path object.</param>
@@ -2278,12 +2314,16 @@ namespace SlimViews
             if (_count <= 1)
             {
                 LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
-                return;
+            }
+            else
+            {
+                // Set visibility based on _currentId and _count
+                RightButtonVisibility = _currentId == _count - 1 ? Visibility.Hidden : Visibility.Visible;
+                LeftButtonVisibility = _currentId <= 0 ? Visibility.Hidden : Visibility.Visible;
             }
 
-            // Set visibility based on _currentId and _count
-            RightButtonVisibility = _currentId == _count -1 ? Visibility.Hidden : Visibility.Visible;
-            LeftButtonVisibility = _currentId <= 0 ? Visibility.Hidden : Visibility.Visible;
+            // show or hide the Thumbnail Bar
+            ThumbnailVisibility = Thumbs ? Visibility.Visible : Visibility.Hidden;
         }
 
 

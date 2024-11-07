@@ -163,9 +163,9 @@ namespace SlimViews
         /// <param name="point">The point.</param>
         /// <param name="color">The color.</param>
         /// <param name="frame">The optional frame.</param>
-        internal static void SetPixel(Bitmap btm, Point point, Color color, SelectionFrame frame = null)
+        internal static Bitmap SetPixel(Bitmap btm, Point point, Color color, SelectionFrame frame = null)
         {
-            Render.SetPixel(btm, point, color);
+            return Render.SetPixel(btm, point, color);
         }
 
         /// <summary>
