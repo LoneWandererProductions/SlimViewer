@@ -47,17 +47,17 @@ namespace SlimViews
         /// <summary>
         ///     The render
         /// </summary>
-        private readonly CustomImageFormat _cif;
+        private CustomImageFormat _cif;
 
         /// <summary>
         ///     The green icon
         /// </summary>
-        private readonly string _greenIcon;
+        private string _greenIcon;
 
         /// <summary>
         ///     The red icon
         /// </summary>
-        private readonly string _redIcon;
+        private string _redIcon;
 
         /// <summary>
         ///     The analyzer window command
@@ -202,14 +202,17 @@ namespace SlimViews
         private ICommand _gifWindowCommand;
 
         /// <summary>
-        ///     The hot key command
-        /// </summary>
-        private ICommand _hotKeyCommand;
-
-        /// <summary>
         ///     The image loaded command
         /// </summary>
         private ICommand _imageLoadedCommand;
+
+        /// <summary>
+        /// Gets the command bindings.
+        /// </summary>
+        /// <value>
+        /// The command bindings.
+        /// </value>
+        public Dictionary<Key, ICommand> CommandBindings { get; set; }
 
         /// <summary>
         ///     The information
@@ -396,8 +399,21 @@ namespace SlimViews
         private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
-        ///     The Bitmap
+        /// The next command
         /// </summary>
+        private ICommand _nextCommand;
+
+        /// <summary>
+        /// The previous command
+        /// </summary>
+        private ICommand _previousCommand;
+
+        /// <summary>
+        /// The Bitmap
+        /// </summary>
+        /// <value>
+        /// The BTM.
+        /// </value>
         private Bitmap Btm
         {
             get => _btm;
@@ -414,15 +430,7 @@ namespace SlimViews
         /// </summary>
         public ImageView()
         {
-            _cif = new CustomImageFormat();
-            Observer = new Dictionary<int, string>();
-
-            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
-            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
-
-            LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
-            ThumbnailVisibility = Visibility.Visible;
-            IsImageActive = false;
+            Initialize();
         }
 
         /// <summary>
@@ -440,6 +448,14 @@ namespace SlimViews
             Similarity = similarity;
             AutoClean = autoClean;
 
+            Initialize();
+        }
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        private void Initialize()
+        {
             _cif = new CustomImageFormat();
             Observer = new Dictionary<int, string>();
 
@@ -449,6 +465,17 @@ namespace SlimViews
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
             IsImageActive = false;
+
+            // Initialize key bindings using DelegateCommand<T>
+            CommandBindings = new Dictionary<Key, ICommand>
+            {
+                { Key.O, OpenCommand },
+                { Key.S, SaveCommand },
+                { Key.Delete, DeleteCommand },
+                { Key.F5, RefreshCommand },
+                { Key.Left, PreviousCommand },
+                { Key.Right, NextCommand }
+            };
         }
 
         /// <summary>
@@ -773,15 +800,6 @@ namespace SlimViews
             _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
 
         /// <summary>
-        ///     Gets the open command.
-        /// </summary>
-        /// <value>
-        ///     The open command.
-        /// </value>
-        public ICommand OpenCommand =>
-            _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
-
-        /// <summary>
         ///     Gets the open CBZ command.
         /// </summary>
         /// <value>
@@ -794,11 +812,39 @@ namespace SlimViews
         ///     Gets the open command.
         /// </summary>
         /// <value>
+        ///     The open command.
+        /// </value>
+        public ICommand OpenCommand =>
+            _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the open command.
+        /// </summary>
+        /// <value>
         ///     s
         ///     The open command.
         /// </value>
         public ICommand SaveCommand =>
             _saveCommand ??= new DelegateCommand<object>(SaveAction, CanExecute);
+
+
+        /// <summary>
+        ///     Gets the delete command.
+        /// </summary>
+        /// <value>
+        ///     The delete command.
+        /// </value>
+        public ICommand DeleteCommand =>
+            _deleteCommand ??= new DelegateCommand<object>(DeleteAction, CanExecute);
+
+        /// <summary>
+        ///     Gets the refresh command.
+        /// </summary>
+        /// <value>
+        ///     The refresh command.
+        /// </value>
+        public ICommand RefreshCommand =>
+            _refreshCommand ??= new DelegateCommand<object>(RefreshAction, CanExecute);
 
         /// <summary>
         ///     Gets the pixelate.
@@ -826,24 +872,6 @@ namespace SlimViews
         /// </value>
         public ICommand DuplicateCommand =>
             _duplicateCommand ??= new DelegateCommand<object>(DuplicateWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the delete command.
-        /// </summary>
-        /// <value>
-        ///     The delete command.
-        /// </value>
-        public ICommand DeleteCommand =>
-            _deleteCommand ??= new DelegateCommand<object>(DeleteAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the refresh command.
-        /// </summary>
-        /// <value>
-        ///     The refresh command.
-        /// </value>
-        public ICommand RefreshCommand =>
-            _refreshCommand ??= new DelegateCommand<object>(RefreshAction, CanExecute);
 
         /// <summary>
         ///     Gets the rename command.
@@ -1082,15 +1110,6 @@ namespace SlimViews
             _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
 
         /// <summary>
-        ///     Gets the Hot key command.
-        /// </summary>
-        /// <value>
-        ///     The  Hot key command.
-        /// </value>
-        public ICommand HotKeyCommand =>
-            _hotKeyCommand ??= new DelegateCommand<string>(HotKeyAction, CanExecute);
-
-        /// <summary>
         ///     Gets the thumb image clicked command.
         /// </summary>
         /// <value>
@@ -1136,6 +1155,24 @@ namespace SlimViews
             _colorChangedCommand ??= new DelegateCommand<ColorHsv>(ColorChangedAction, CanExecute);
 
         /// <summary>
+        /// Gets the next command.
+        /// </summary>
+        /// <value>
+        /// The next command.
+        /// </value>
+        public ICommand NextCommand =>
+            _nextCommand ??= new DelegateCommand<object>(NextAction, CanExecute);
+
+        /// <summary>
+        /// Gets the previous command.
+        /// </summary>
+        /// <value>
+        /// The previous command.
+        /// </value>
+        public ICommand PreviousCommand =>
+            _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
+
+        /// <summary> 
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
@@ -1281,35 +1318,6 @@ namespace SlimViews
             Color = colorHsv;
         }
 
-        /// <summary>
-        ///     Hot key actions.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        private void HotKeyAction(string key)
-        {
-            switch (key)
-            {
-                case "O":
-
-                    OpenAction(this);
-                    break;
-                case "Left":
-                    PreviousAction();
-                    break;
-                case "Right":
-                    NextAction();
-                    break;
-                case "Delete":
-                    DeleteAction(this);
-                    break;
-                case "F5":
-                    RefreshAction(this);
-                    break;
-                case "S":
-                    SaveAction(this);
-                    break;
-            }
-        }
 
         /// <summary>
         ///     Closes the app
@@ -1406,7 +1414,6 @@ namespace SlimViews
 
         /// <summary>
         ///     Convert the cif Format.
-        ///     Todo TEST
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ConvertCifAction(object obj)
@@ -1449,9 +1456,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Next Image.
+        /// Next Image.
         /// </summary>
-        private void NextAction()
+        /// <param name="obj">The object.</param>
+        private void NextAction(object obj)
         {
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
@@ -1462,9 +1470,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Previous Image.
+        /// Previous Image.
         /// </summary>
-        private void PreviousAction()
+        /// <param name="obj">The object.</param>
+        private void PreviousAction(object obj)
         {
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
@@ -1583,7 +1592,7 @@ namespace SlimViews
 
                 Thumb.RemoveSingleItem(_currentId);
 
-                NextAction();
+                NextAction(this);
             }
         }
 
@@ -1730,7 +1739,7 @@ namespace SlimViews
             GifPath = null;
             _gifPath = null;
 
-            NextAction();
+            NextAction(this);
         }
 
         /// <summary>
