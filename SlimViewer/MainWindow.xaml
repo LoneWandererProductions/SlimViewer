@@ -11,7 +11,7 @@
     mc:Ignorable="d"
     Title="Slim Viewer"
     Height="450"
-    Width="1000"
+    Width="1200"
     Drop="Image_Drop"
     AllowDrop="True"
     UseLayoutRounding="True" Loaded="Window_Loaded">
@@ -21,7 +21,7 @@
     <Grid external:GlobalKeyHandler.Attach="True"
           external:GlobalKeyHandler.CommandBindings="{Binding CommandBindings}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="55" />
+            <RowDefinition Height="65" />
             <RowDefinition Height="5" />
             <RowDefinition Height="*" />
             <RowDefinition Height="5" />
@@ -34,21 +34,24 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0" ColumnSpan="3" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400*" />
+                <ColumnDefinition Width="200*" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="120" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="100*" />
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="25" />
+                <RowDefinition Height="30" />
                 <RowDefinition Height="5" />
-                <RowDefinition Height="25" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <Menu>
                 <MenuItem Header="Menu">
@@ -235,6 +238,9 @@
                       SelectedItem="{Binding SelectedTool}" />
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
+            <ContentControl Grid.Row="0" Grid.Column="10" Content="{Binding SelectedTool}" 
+                            ContentTemplateSelector="{DynamicResource  ToolOptionsTemplateSelector}" Grid.RowSpan="3" 
+                           />
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageZoom, Mode=TwoWay}"
                     Grid.Row="2" Grid.Column="2" IsEnabled="{Binding Path =IsActive}" />
 
@@ -243,10 +249,10 @@
                       VerticalAlignment="Center"
                       Background="Gray" />
         <Button Grid.Column="0" Grid.Row="2" Content="←"
-                Command="{Binding HotKeyCommand}" CommandParameter="Left"
-                Visibility="{Binding LeftButtonVisibility}" />
+                Command="{Binding NextCommand}" 
+                Visibility="{Binding PreviousCommand}" />
         <Button Grid.Column="2" Grid.Row="2" Content="→"
-                Command="{Binding HotKeyCommand}" CommandParameter="Right"
+                Command="{Binding NextCommand}"
                 Visibility="{Binding RightButtonVisibility}" />
         <Grid Grid.Row="2" Grid.Column="1">
             <commonControls:ImageZoom
@@ -316,9 +322,11 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml" />
+                <!-- Existing Generic.xaml resource dictionary -->
+                <ResourceDictionary Source="pack://application:,,,/Themes/Generic.xaml" />
+                <!-- ToolOptionsTemplates.xaml resource dictionary -->
+                <ResourceDictionary Source="pack://application:,,,/SlimViews;component/Templates/ToolOptionsTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <!-- Apply the Behavior to the Window -->
 </Window>

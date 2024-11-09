@@ -39,8 +39,13 @@ namespace SlimViews
         Cut = 4,
 
         /// <summary>
-        /// The color picker
+        /// The color select
         /// </summary>
-        ColorPicker = 5
+        ColorSelect = 5,
+
+        /// <summary>
+        /// The area
+        /// </summary>
+        Area = 6
     }
 }

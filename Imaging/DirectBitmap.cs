@@ -135,6 +135,10 @@ namespace Imaging
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
             Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
                 BitsHandle.AddrOfPinnedObject());
+
+            // Make the background transparent
+            using var g = Graphics.FromImage(Bitmap);
+            g.Clear(Color.Transparent);
         }
 
         /// <summary>

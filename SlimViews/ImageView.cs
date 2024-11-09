@@ -34,6 +34,9 @@ using Point = System.Windows.Point;
 // TODO improve Image Compare Interface
 // TODO add Zoom lock and rotate as it's own Control
 // TODO add more User Feedback
+// TODO add layer functions
+// TODO improve tooling
+// Todo improve textures and filters
 
 namespace SlimViews
 {
@@ -1264,7 +1267,7 @@ namespace SlimViews
                     Bmp = Btm.ToBitmapImage();
                     return;
 
-                case ImageTools.ColorPicker:
+                case ImageTools.ColorSelect:
                     Color = ImageProcessor.GetPixel(Btm, point);
                     Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
                     Color = Picker.Colors;
@@ -1301,7 +1304,7 @@ namespace SlimViews
                     Btm = ImageProcessor.SetPixel(Btm, point, color);
                     return;
 
-                case ImageTools.ColorPicker:
+                case ImageTools.ColorSelect:
                     Color = ImageProcessor.GetPixel(Btm, point);
                     return;
             }

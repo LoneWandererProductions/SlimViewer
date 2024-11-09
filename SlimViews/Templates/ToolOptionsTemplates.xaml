@@ -1,0 +1,47 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:slimViews="clr-namespace:SlimViews">
+
+
+    <!-- Paint Tool Options -->
+    <DataTemplate x:Key="PaintToolOptions">
+        <StackPanel>
+            <TextBlock Text="Paint Tool Options" FontWeight="Bold"/>
+            <Label Content="Brush Size:"/>
+            <Slider Minimum="1" Maximum="20"/>
+            <Label Content="Opacity:"/>
+            <Slider Minimum="0" Maximum="100"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- Color Select Tool Options -->
+    <DataTemplate x:Key="ColorSelectToolOptions">
+        <StackPanel>
+            <TextBlock Text="Color Select Options" FontWeight="Bold"/>
+            <Label Content="Tolerance:"/>
+            <Slider Minimum="0" Maximum="100"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- Area Select Tool Options -->
+    <DataTemplate x:Key="AreaSelectToolOptions">
+        <StackPanel>
+            <TextBlock Text="Area Select Options" FontWeight="Bold"/>
+            <Label Content="Selection Mode:"/>
+            <ComboBox>
+                <ComboBoxItem Content="Rectangle"/>
+                <ComboBoxItem Content="Ellipse"/>
+            </ComboBox>
+            <Label Content="Fill Color:"/>
+            <Button Content="Choose Color"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- Template Selector for Tool Options -->
+    <slimViews:ToolOptionsTemplateSelector x:Key="ToolOptionsTemplateSelector"
+                                        PaintToolTemplate="{StaticResource PaintToolOptions}"
+                                        ColorSelectToolTemplate="{StaticResource ColorSelectToolOptions}"
+                                        AreaSelectToolTemplate="{StaticResource AreaSelectToolOptions}"/>
+
+</ResourceDictionary>

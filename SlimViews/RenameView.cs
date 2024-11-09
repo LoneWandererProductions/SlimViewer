@@ -169,7 +169,7 @@ namespace SlimViews
         /// <value>
         ///     The observer.
         /// </value>
-        internal ConcurrentDictionary<int, string> Observer { get; set; }
+        public ConcurrentDictionary<int, string> Observer { get; set; }
 
         /// <summary>
         ///     Sets the property.
