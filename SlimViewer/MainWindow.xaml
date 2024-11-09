@@ -21,7 +21,7 @@
     <Grid external:GlobalKeyHandler.Attach="True"
           external:GlobalKeyHandler.CommandBindings="{Binding CommandBindings}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="65" />
+            <RowDefinition Height="115" />
             <RowDefinition Height="5" />
             <RowDefinition Height="*" />
             <RowDefinition Height="5" />
@@ -52,6 +52,7 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="5" />
                 <RowDefinition Height="30" />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Menu>
                 <MenuItem Header="Menu">
@@ -239,7 +240,7 @@
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
             <ContentControl Grid.Row="0" Grid.Column="10" Content="{Binding SelectedTool}" 
-                            ContentTemplateSelector="{DynamicResource  ToolOptionsTemplateSelector}" Grid.RowSpan="3" 
+                            ContentTemplateSelector="{DynamicResource  ToolOptionsTemplateSelector}" Grid.RowSpan="4" Grid.ColumnSpan="2"  
                            />
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageZoom, Mode=TwoWay}"
                     Grid.Row="2" Grid.Column="2" IsEnabled="{Binding Path =IsActive}" />
