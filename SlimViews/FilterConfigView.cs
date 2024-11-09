@@ -173,7 +173,7 @@ namespace SlimViews
         public ImageFilterConfig CurrentConfig
         {
             get => _currentConfig;
-            set
+            init
             {
                 _currentConfig = value;
                 OnPropertyChanged(nameof(CurrentConfig));

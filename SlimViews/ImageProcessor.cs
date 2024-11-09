@@ -39,10 +39,10 @@ namespace SlimViews
         internal static ImageRender Render { get; } = new();
 
         /// <summary>
-        /// Gets the generator.
+        ///     Gets the generator.
         /// </summary>
         /// <value>
-        /// The generator.
+        ///     The generator.
         /// </value>
         private static TextureGenerator Generator { get; } = new();
 
@@ -76,39 +76,6 @@ namespace SlimViews
         {
             var files = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
             return files.IsNullOrEmpty() ? null : files[0];
-        }
-
-        /// <summary>
-        ///     Handle selected Image areas and process commands.
-        /// </summary>
-        /// <param name="selectedTool">The selection Tool</param>
-        /// <param name="frame">The selected area.</param>
-        /// <param name="btm">The bitmap to we manipulate.</param>
-        /// <returns>The path of the first image found, or null if none found.</returns>
-        /// <returns>Changed bitmap or in case of error the original</returns>
-        internal static Bitmap HandleInputs(ImageTools selectedTool, SelectionFrame frame,
-            Bitmap btm)
-        {
-            //todo converter Tool Form to enum
-            var point = new Point(frame.X, frame.Y);
-
-            switch (selectedTool)
-            {
-                case ImageTools.Paint:
-                    Render.SetPixel(btm, point, Color.AliceBlue);
-                    break;
-                case ImageTools.Erase:
-                    return EraseImage(frame, btm);
-                case ImageTools.Filter:
-                    //todo generate a filtered Image, and cut it into form
-                    break;
-                case ImageTools.Cut:
-                    return CutImage(frame, btm);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(selectedTool), selectedTool, null);
-            }
-
-            return btm;
         }
 
         /// <summary>
@@ -157,7 +124,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Sets the pixel.
+        ///     Sets the pixel.
         /// </summary>
         /// <param name="btm">The bitmap.</param>
         /// <param name="point">The point.</param>
@@ -169,7 +136,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets the color.
+        ///     Gets the color.
         /// </summary>
         /// <param name="btm">The bitmap.</param>
         /// <param name="point">The point.</param>
@@ -266,7 +233,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Textures the specified bitmap.
+        ///     Textures the specified bitmap.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="texture">The texture.</param>
@@ -355,7 +322,8 @@ namespace SlimViews
             {
                 return Render.GetOriginalBitmap(filePath);
             }
-            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException or InvalidOperationException)
+            catch (Exception ex) when (ex is IOException or ArgumentException or NotSupportedException
+                                           or InvalidOperationException)
             {
                 Trace.WriteLine(ex);
                 ShowError(ex.ToString(), nameof(GenerateImage));
@@ -406,7 +374,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Cuts the image.
+        ///     Cuts the image.
         /// </summary>
         /// <param name="frame">The selection frame.</param>
         /// <param name="btm">The bitmap.</param>
@@ -427,7 +395,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Erases part of the image.
+        ///     Erases part of the image.
         /// </summary>
         /// <param name="frame">The selection frame.</param>
         /// <param name="btm">The bitmap.</param>
@@ -448,7 +416,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Rotates the image.
+        ///     Rotates the image.
         /// </summary>
         /// <param name="btm">The bitmap.</param>
         /// <param name="degree">The degree.</param>
@@ -470,7 +438,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Bitmaps the scaling.
+        ///     Bitmaps the scaling.
         /// </summary>
         /// <param name="btm">The bitmap.</param>
         /// <param name="scaling">The scaling.</param>
@@ -492,7 +460,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Crops the image.
+        ///     Crops the image.
         /// </summary>
         /// <param name="btm">The bitmap.</param>
         /// <returns>Changed bitmap or in case of error the original</returns>
@@ -513,7 +481,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Folders the convert.
+        ///     Folders the convert.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="source">The source.</param>
@@ -531,8 +499,8 @@ namespace SlimViews
                 var error = 0;
 
                 foreach (var check in from image in lst
-                    let btm = Render.GetOriginalBitmap(image)
-                    select SaveImage(image, target, btm))
+                         let btm = Render.GetOriginalBitmap(image)
+                         select SaveImage(image, target, btm))
                     if (check)
                         count++;
                     else

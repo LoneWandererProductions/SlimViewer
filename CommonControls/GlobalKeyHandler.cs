@@ -13,7 +13,7 @@ using System.Windows.Input;
 namespace CommonControls
 {
     /// <summary>
-    /// A static class that provides global key handling functionality to attach key-command mappings to UI elements.
+    ///     A static class that provides global key handling functionality to attach key-command mappings to UI elements.
     /// </summary>
     public static class GlobalKeyHandler
     {
@@ -30,8 +30,8 @@ namespace CommonControls
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// Sets the Attach property, enabling or disabling key handling on the specified UIElement.
-        /// When set to true, key events are registered; when false, they are unregistered.
+        ///     Sets the Attach property, enabling or disabling key handling on the specified UIElement.
+        ///     When set to true, key events are registered; when false, they are unregistered.
         /// </summary>
         public static void SetAttach(UIElement element, bool value)
         {
@@ -39,7 +39,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets the current value of the Attach property for a UIElement.
+        ///     Gets the current value of the Attach property for a UIElement.
         /// </summary>
         public static bool GetAttach(UIElement element)
         {
@@ -47,9 +47,9 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Sets the dictionary of key-command bindings for the specified UIElement.
-        /// This dictionary maps specific keys to ICommand instances, allowing the element to handle
-        /// those keys by executing the associated commands.
+        ///     Sets the dictionary of key-command bindings for the specified UIElement.
+        ///     This dictionary maps specific keys to ICommand instances, allowing the element to handle
+        ///     those keys by executing the associated commands.
         /// </summary>
         public static void SetCommandBindings(UIElement element, Dictionary<Key, ICommand> value)
         {
@@ -57,7 +57,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets the dictionary of key-command bindings associated with the specified UIElement.
+        ///     Gets the dictionary of key-command bindings associated with the specified UIElement.
         /// </summary>
         public static Dictionary<Key, ICommand> GetCommandBindings(UIElement element)
         {
@@ -65,25 +65,21 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Called whenever the Attach property changes. Attaches or detaches key event handling based on the new value.
+        ///     Called whenever the Attach property changes. Attaches or detaches key event handling based on the new value.
         /// </summary>
         private static void OnAttachChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not UIElement element) return;
 
             if ((bool)e.NewValue) // If Attach is set to true
-            {
                 element.PreviewKeyDown += OnPreviewKeyDown; // Attach the key-down handler
-            }
             else // If Attach is set to false
-            {
                 element.PreviewKeyDown -= OnPreviewKeyDown; // Detach the key-down handler
-            }
         }
 
         /// <summary>
-        /// Handles the PreviewKeyDown event on the attached UIElement.
-        /// This method checks if there is a command bound to the pressed key and executes it if allowed.
+        ///     Handles the PreviewKeyDown event on the attached UIElement.
+        ///     This method checks if there is a command bound to the pressed key and executes it if allowed.
         /// </summary>
         private static void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {

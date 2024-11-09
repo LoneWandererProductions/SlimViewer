@@ -301,7 +301,7 @@ namespace CommonControls
         private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; }
 
         /// <summary>
-        /// The border
+        ///     The border
         /// </summary>
         private ConcurrentDictionary<int, Border> Border { get; set; }
 
@@ -634,7 +634,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Next Border of this instance.
+        ///     Next Border of this instance.
         /// </summary>
         public void Next()
         {
@@ -646,7 +646,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Previous Border of this instance.
+        ///     Previous Border of this instance.
         /// </summary>
         public void Previous()
         {
@@ -658,7 +658,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Centers the ScrollViewer on a specific item by its ID.
+        ///     Centers the ScrollViewer on a specific item by its ID.
         /// </summary>
         /// <param name="id">The ID of the item to center on.</param>
         public void CenterOnItem(int id)
@@ -669,12 +669,14 @@ namespace CommonControls
             if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
             {
                 // Get the position of the target element relative to the ScrollViewer
-                GeneralTransform itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
-                Point itemPosition = itemTransform.Transform(new Point(0, 0));
+                var itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
+                var itemPosition = itemTransform.Transform(new Point(0, 0));
 
                 // Calculate the offsets needed to center the item
-                double centerOffsetX = itemPosition.X - (MainScrollViewer.ViewportWidth / 2) + (targetElement.RenderSize.Width / 2);
-                double centerOffsetY = itemPosition.Y - (MainScrollViewer.ViewportHeight / 2) + (targetElement.RenderSize.Height / 2);
+                var centerOffsetX = itemPosition.X - MainScrollViewer.ViewportWidth / 2 +
+                                    targetElement.RenderSize.Width / 2;
+                var centerOffsetY = itemPosition.Y - MainScrollViewer.ViewportHeight / 2 +
+                                    targetElement.RenderSize.Height / 2;
 
                 // Set the ScrollViewer's offset to center the item
                 MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
@@ -779,7 +781,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets the index of the current.
+        ///     Gets the index of the current.
         /// </summary>
         /// <param name="name">The key.</param>
         /// <returns>Index of Border</returns>
@@ -793,7 +795,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Selects the index of the image at.
+        ///     Selects the index of the image at.
         /// </summary>
         /// <param name="index">The index.</param>
         private void SelectImageAtIndex(int index)
@@ -807,7 +809,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Updates the selected border.
+        ///     Updates the selected border.
         /// </summary>
         /// <param name="newSelectedBorder">The new selected border.</param>
         private void UpdateSelectedBorder(Border newSelectedBorder)
@@ -820,7 +822,7 @@ namespace CommonControls
             }
 
             // Set the new border as selected
-            newSelectedBorder.BorderBrush = Brushes.Blue;  // Set a color for the border
+            newSelectedBorder.BorderBrush = Brushes.Blue; // Set a color for the border
             newSelectedBorder.BorderThickness = new Thickness(2); // Set thickness to highlight
 
             // Update the current selected border reference

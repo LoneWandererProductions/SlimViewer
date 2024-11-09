@@ -122,7 +122,8 @@
                         <MenuItem Header="Supersampling Antialiasing" Command="{Binding ApplyFilterCommand}"
                                   CommandParameter="SupersamplingAntialiasing" IsEnabled="{Binding Path=IsImageActive}" />
                         <MenuItem Header="Post Processing Antialiasing" Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="PostProcessingAntialiasing" IsEnabled="{Binding Path=IsImageActive}" />
+                                  CommandParameter="PostProcessingAntialiasing"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
                         <MenuItem Header="Pencil Sketch Effect" Command="{Binding ApplyFilterCommand}"
                                   CommandParameter="PencilSketchEffect" IsEnabled="{Binding Path=IsImageActive}" />
                         <Separator />
@@ -140,32 +141,37 @@
                         </MenuItem>
                     </MenuItem>
                     <MenuItem Header="Texture">
-                            <MenuItem Header="Configure Texture" Command="{Binding TextureConfigCommand}" />
-                            <Separator />
-                            <MenuItem Header="Noise" Command="{Binding ApplyTextureCommand}" CommandParameter="Noise"
-                                      IsEnabled="{Binding Path=IsImageActive}" />
-                            <MenuItem Header="Clouds" Command="{Binding ApplyTextureCommand}" CommandParameter="Clouds"
-                                      IsEnabled="{Binding Path=IsImageActive}" />
-                            <MenuItem Header="Marble" Command="{Binding ApplyTextureCommand}" CommandParameter="Marble"
-                                      IsEnabled="{Binding Path=IsImageActive}" />
-                            <MenuItem Header="Wood" Command="{Binding ApplyTextureCommand}" CommandParameter="Wood"
-                                      IsEnabled="{Binding Path=IsImageActive}" />
-                            <MenuItem Header="Wave" Command="{Binding ApplyTextureCommand}" CommandParameter="Wave"
-                                      IsEnabled="{Binding Path=IsImageActive}" />
-                            <MenuItem Header="Crosshatch" Command="{Binding ApplyTextureCommand}" CommandParameter="Crosshatch"
-                                      IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Configure Texture" Command="{Binding TextureConfigCommand}" />
+                        <Separator />
+                        <MenuItem Header="Noise" Command="{Binding ApplyTextureCommand}" CommandParameter="Noise"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Clouds" Command="{Binding ApplyTextureCommand}" CommandParameter="Clouds"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Marble" Command="{Binding ApplyTextureCommand}" CommandParameter="Marble"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Wood" Command="{Binding ApplyTextureCommand}" CommandParameter="Wood"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Wave" Command="{Binding ApplyTextureCommand}" CommandParameter="Wave"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Crosshatch" Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="Crosshatch"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Mirror" Command="{Binding MirrorCommand}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Mirror" Command="{Binding MirrorCommand}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
                     <MenuItem Header="Rotate 90°" Command="{Binding RotateForwardCommand}"
                               IsEnabled="{Binding Path=IsImageActive}" />
                     <MenuItem Header="Rotate -90°" Command="{Binding RotateBackwardCommand}"
                               IsEnabled="{Binding Path=IsImageActive}" />
                     <Separator />
-                    <MenuItem Header="Brighten" Command="{Binding BrightenCommand}" IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Darken" Command="{Binding DarkenCommand}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Brighten" Command="{Binding BrightenCommand}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Darken" Command="{Binding DarkenCommand}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
                     <Separator />
-                    <MenuItem Header="Scale Image" Command="{Binding ScaleCommand}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Scale Image" Command="{Binding ScaleCommand}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
                 </MenuItem>
                 <MenuItem Header="Folder">
                     <MenuItem Header="Open Folder" Command="{Binding FolderCommand}" />
@@ -239,9 +245,9 @@
                       SelectedItem="{Binding SelectedTool}" />
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
-            <ContentControl Grid.Row="0" Grid.Column="10" Content="{Binding SelectedTool}" 
-                            ContentTemplateSelector="{DynamicResource  ToolOptionsTemplateSelector}" Grid.RowSpan="4" Grid.ColumnSpan="2"  
-                           />
+            <ContentControl Grid.Row="0" Grid.Column="10" Content="{Binding SelectedTool}"
+                            ContentTemplateSelector="{DynamicResource  ToolOptionsTemplateSelector}" Grid.RowSpan="4"
+                            Grid.ColumnSpan="2" />
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageZoom, Mode=TwoWay}"
                     Grid.Row="2" Grid.Column="2" IsEnabled="{Binding Path =IsActive}" />
 
@@ -250,7 +256,7 @@
                       VerticalAlignment="Center"
                       Background="Gray" />
         <Button Grid.Column="0" Grid.Row="2" Content="←"
-                Command="{Binding NextCommand}" 
+                Command="{Binding NextCommand}"
                 Visibility="{Binding PreviousCommand}" />
         <Button Grid.Column="2" Grid.Row="2" Content="→"
                 Command="{Binding NextCommand}"
@@ -267,7 +273,7 @@
         </Grid>
         <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
-                      Background="Gray"  Visibility="{Binding ThumbnailVisibility}" />
+                      Background="Gray" Visibility="{Binding ThumbnailVisibility}" />
         <Grid Grid.Row="4" Grid.Column="0" ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25" />
@@ -308,16 +314,16 @@
                 </TextBox.InputBindings>
             </TextBox>
 
-                <!--Well not really that clean, but it works for now, events can't be transmitted without some hassle-->
-                <commonControls:Thumbnails Name="Thumbnail" Grid.Row="4"
-                                           Grid.ColumnSpan="6" Grid.Column="0"
-                                           ItemsSource="{Binding Observer}"
-                                           ThumbCellSize="100"
-                                           ThumbHeight="1"
-                                           SelectBox="True"
-                                           IsCheckBoxSelected="False"
-                                           ImageClickedCommand="{Binding ThumbImageClickedCommand}"
-                                           ImageLoadedCommand="{Binding ImageLoadedCommand}" />
+            <!--Well not really that clean, but it works for now, events can't be transmitted without some hassle-->
+            <commonControls:Thumbnails Name="Thumbnail" Grid.Row="4"
+                                       Grid.ColumnSpan="6" Grid.Column="0"
+                                       ItemsSource="{Binding Observer}"
+                                       ThumbCellSize="100"
+                                       ThumbHeight="1"
+                                       SelectBox="True"
+                                       IsCheckBoxSelected="False"
+                                       ImageClickedCommand="{Binding ThumbImageClickedCommand}"
+                                       ImageLoadedCommand="{Binding ImageLoadedCommand}" />
         </Grid>
     </Grid>
     <Window.Resources>
@@ -326,7 +332,8 @@
                 <!-- Existing Generic.xaml resource dictionary -->
                 <ResourceDictionary Source="pack://application:,,,/Themes/Generic.xaml" />
                 <!-- ToolOptionsTemplates.xaml resource dictionary -->
-                <ResourceDictionary Source="pack://application:,,,/SlimViews;component/Templates/ToolOptionsTemplates.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/SlimViews;component/Templates/ToolOptionsTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

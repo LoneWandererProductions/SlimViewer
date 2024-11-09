@@ -230,7 +230,9 @@ namespace CommonDialogs
                 Log = string.Concat(Log, ConnectionStringDb, Environment.NewLine);
             }
 
-            Log = string.Concat(Log, check ? ComCtlResources.DbLogConnectionStringBuild : ComCtlResources.DbLogConnectionStringBuildError, Environment.NewLine);
+            Log = string.Concat(Log,
+                check ? ComCtlResources.DbLogConnectionStringBuild : ComCtlResources.DbLogConnectionStringBuildError,
+                Environment.NewLine);
         }
 
         /// <summary>

@@ -9,7 +9,7 @@
 namespace SlimViews
 {
     /// <summary>
-    /// Tools that are available in the gui
+    ///     Tools that are available in the gui
     /// </summary>
     public enum ImageTools
     {
@@ -39,12 +39,12 @@ namespace SlimViews
         Cut = 4,
 
         /// <summary>
-        /// The color select
+        ///     The color select
         /// </summary>
         ColorSelect = 5,
 
         /// <summary>
-        /// The area
+        ///     The area
         /// </summary>
         Area = 6
     }

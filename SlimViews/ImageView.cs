@@ -48,21 +48,6 @@ namespace SlimViews
     public sealed class ImageView : ViewModelBase
     {
         /// <summary>
-        ///     The render
-        /// </summary>
-        private CustomImageFormat _cif;
-
-        /// <summary>
-        ///     The green icon
-        /// </summary>
-        private string _greenIcon;
-
-        /// <summary>
-        ///     The red icon
-        /// </summary>
-        private string _redIcon;
-
-        /// <summary>
         ///     The analyzer window command
         /// </summary>
         private ICommand _analyzerWindowCommand;
@@ -91,6 +76,16 @@ namespace SlimViews
         ///     The brighten command
         /// </summary>
         private ICommand _brightenCommand;
+
+        /// <summary>
+        ///     The Bitmap
+        /// </summary>
+        private Bitmap _btm;
+
+        /// <summary>
+        ///     The render
+        /// </summary>
+        private CustomImageFormat _cif;
 
         /// <summary>
         ///     Clean the temporary folder
@@ -205,17 +200,14 @@ namespace SlimViews
         private ICommand _gifWindowCommand;
 
         /// <summary>
+        ///     The green icon
+        /// </summary>
+        private string _greenIcon;
+
+        /// <summary>
         ///     The image loaded command
         /// </summary>
         private ICommand _imageLoadedCommand;
-
-        /// <summary>
-        /// Gets the command bindings.
-        /// </summary>
-        /// <value>
-        /// The command bindings.
-        /// </value>
-        public Dictionary<Key, ICommand> CommandBindings { get; set; }
 
         /// <summary>
         ///     The information
@@ -228,7 +220,7 @@ namespace SlimViews
         private bool _isActive;
 
         /// <summary>
-        /// The is image active
+        ///     The is image active
         /// </summary>
         private bool _isImageActive;
 
@@ -251,6 +243,11 @@ namespace SlimViews
         ///     The move command
         /// </summary>
         private ICommand _moveCommand;
+
+        /// <summary>
+        ///     The next command
+        /// </summary>
+        private ICommand _nextCommand;
 
         /// <summary>
         ///     The observer
@@ -283,6 +280,16 @@ namespace SlimViews
         private int _pixelWidth;
 
         /// <summary>
+        ///     The previous command
+        /// </summary>
+        private ICommand _previousCommand;
+
+        /// <summary>
+        ///     The red icon
+        /// </summary>
+        private string _redIcon;
+
+        /// <summary>
         ///     The refresh command
         /// </summary>
         private ICommand _refreshCommand;
@@ -296,6 +303,19 @@ namespace SlimViews
         ///     The resizer window command
         /// </summary>
         private ICommand _resizerWindowCommand;
+
+        /// <summary>
+        ///     The right button visibility
+        /// </summary>
+        private Visibility _rightButtonVisibility;
+
+        /// <summary>
+        ///     Gets or sets the root.
+        /// </summary>
+        /// <value>
+        ///     The root.
+        /// </value>
+        private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
         ///     The rotate backward command
@@ -348,16 +368,6 @@ namespace SlimViews
         private ICommand _similarCommand;
 
         /// <summary>
-        ///     The texture configuration command
-        /// </summary>
-        private ICommand _textureConfigCommand;
-
-        /// <summary>
-        ///     The thumb image clicked command
-        /// </summary>
-        private ICommand _thumbImageClickedCommand;
-
-        /// <summary>
         ///     The similarity in Percent for a Image, Start value is 90
         ///     Configured from Register
         /// </summary>
@@ -374,58 +384,24 @@ namespace SlimViews
         private bool _subFolders;
 
         /// <summary>
-        /// The Bitmap
+        ///     The texture configuration command
         /// </summary>
-        private Bitmap _btm;
+        private ICommand _textureConfigCommand;
+
+        /// <summary>
+        ///     The thumb image clicked command
+        /// </summary>
+        private ICommand _thumbImageClickedCommand;
+
+        /// <summary>
+        ///     The thumbnail visibility
+        /// </summary>
+        private Visibility _thumbnailVisibility;
 
         /// <summary>
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
-
-        /// <summary>
-        ///     The right button visibility
-        /// </summary>
-        private Visibility _rightButtonVisibility;
-
-        /// <summary>
-        /// The thumbnail visibility
-        /// </summary>
-        private Visibility _thumbnailVisibility;
-
-        /// <summary>
-        ///     Gets or sets the root.
-        /// </summary>
-        /// <value>
-        ///     The root.
-        /// </value>
-        private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        /// <summary>
-        /// The next command
-        /// </summary>
-        private ICommand _nextCommand;
-
-        /// <summary>
-        /// The previous command
-        /// </summary>
-        private ICommand _previousCommand;
-
-        /// <summary>
-        /// The Bitmap
-        /// </summary>
-        /// <value>
-        /// The BTM.
-        /// </value>
-        private Bitmap Btm
-        {
-            get => _btm;
-            set
-            {
-                _btm = value;
-                NavigationLogic(); // Call a method whenever the property is set
-            }
-        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -455,30 +431,27 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Initializes this instance.
+        ///     Gets the command bindings.
         /// </summary>
-        private void Initialize()
+        /// <value>
+        ///     The command bindings.
+        /// </value>
+        public Dictionary<Key, ICommand> CommandBindings { get; set; }
+
+        /// <summary>
+        ///     The Bitmap
+        /// </summary>
+        /// <value>
+        ///     The BTM.
+        /// </value>
+        private Bitmap Btm
         {
-            _cif = new CustomImageFormat();
-            Observer = new Dictionary<int, string>();
-
-            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
-            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
-
-            LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
-            ThumbnailVisibility = Visibility.Visible;
-            IsImageActive = false;
-
-            // Initialize key bindings using DelegateCommand<T>
-            CommandBindings = new Dictionary<Key, ICommand>
+            get => _btm;
+            set
             {
-                { Key.O, OpenCommand },
-                { Key.S, SaveCommand },
-                { Key.Delete, DeleteCommand },
-                { Key.F5, RefreshCommand },
-                { Key.Left, PreviousCommand },
-                { Key.Right, NextCommand }
-            };
+                _btm = value;
+                NavigationLogic(); // Call a method whenever the property is set
+            }
         }
 
         /// <summary>
@@ -637,10 +610,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is image active.
+        ///     Gets or sets a value indicating whether this instance is image active.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is image active; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is image active; otherwise, <c>false</c>.
         /// </value>
         public bool IsImageActive
         {
@@ -673,10 +646,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the thumbnail visibility.
+        ///     Gets or sets the thumbnail visibility.
         /// </summary>
         /// <value>
-        /// The thumbnail visibility.
+        ///     The thumbnail visibility.
         /// </value>
         public Visibility ThumbnailVisibility
         {
@@ -1158,24 +1131,24 @@ namespace SlimViews
             _colorChangedCommand ??= new DelegateCommand<ColorHsv>(ColorChangedAction, CanExecute);
 
         /// <summary>
-        /// Gets the next command.
+        ///     Gets the next command.
         /// </summary>
         /// <value>
-        /// The next command.
+        ///     The next command.
         /// </value>
         public ICommand NextCommand =>
             _nextCommand ??= new DelegateCommand<object>(NextAction, CanExecute);
 
         /// <summary>
-        /// Gets the previous command.
+        ///     Gets the previous command.
         /// </summary>
         /// <value>
-        /// The previous command.
+        ///     The previous command.
         /// </value>
         public ICommand PreviousCommand =>
             _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
 
-        /// <summary> 
+        /// <summary>
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
@@ -1190,6 +1163,33 @@ namespace SlimViews
         ///     The image zoom.
         /// </value>
         public ImageZoom ImageZoom { get; init; }
+
+        /// <summary>
+        ///     Initializes this instance.
+        /// </summary>
+        private void Initialize()
+        {
+            _cif = new CustomImageFormat();
+            Observer = new Dictionary<int, string>();
+
+            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
+            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
+
+            LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
+            ThumbnailVisibility = Visibility.Visible;
+            IsImageActive = false;
+
+            // Initialize key bindings using DelegateCommand<T>
+            CommandBindings = new Dictionary<Key, ICommand>
+            {
+                { Key.O, OpenCommand },
+                { Key.S, SaveCommand },
+                { Key.Delete, DeleteCommand },
+                { Key.F5, RefreshCommand },
+                { Key.Left, PreviousCommand },
+                { Key.Right, NextCommand }
+            };
+        }
 
         /// <summary>
         ///     Sets the property.
@@ -1246,7 +1246,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Set the selected point.
+        ///     Set the selected point.
         /// </summary>
         /// <param name="wPoint">The w point.</param>
         private void SelectedPointAction(Point wPoint)
@@ -1260,6 +1260,7 @@ namespace SlimViews
             {
                 case ImageTools.Paint:
                     if (Color == null) return;
+
                     var color = Color.GetDrawingColor();
 
                     Btm = ImageProcessor.SetPixel(Btm, point, color);
@@ -1299,6 +1300,7 @@ namespace SlimViews
 
                 case ImageTools.Paint:
                     if (Color == null) return;
+
                     var color = Color.GetDrawingColor();
 
                     Btm = ImageProcessor.SetPixel(Btm, point, color);
@@ -1459,7 +1461,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Next Image.
+        ///     Next Image.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void NextAction(object obj)
@@ -1473,7 +1475,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Previous Image.
+        ///     Previous Image.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void PreviousAction(object obj)
@@ -1968,7 +1970,7 @@ namespace SlimViews
 
             try
             {
-                _ = FileHandleDelete.DeleteAllContents(root, true);
+                _ = FileHandleDelete.DeleteAllContents(root);
             }
             catch (FileHandlerException ex)
             {
