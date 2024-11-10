@@ -24,16 +24,6 @@ namespace SlimViews
         Erase = 1,
 
         /// <summary>
-        ///     The texture
-        /// </summary>
-        Texture = 2,
-
-        /// <summary>
-        ///     The filter
-        /// </summary>
-        Filter = 3,
-
-        /// <summary>
         ///     The cut
         /// </summary>
         Cut = 4,
@@ -41,11 +31,11 @@ namespace SlimViews
         /// <summary>
         ///     The color select
         /// </summary>
-        ColorSelect = 5,
+        ColorSelect = 2,
 
         /// <summary>
         ///     The area
         /// </summary>
-        Area = 6
+        Area = 3
     }
 }

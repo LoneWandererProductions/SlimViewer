@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/TextureConfigView.cs
+ * FILE:        SlimViews/Templates/TextureConfigView.cs
  * PURPOSE:     The view for Texture Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -9,7 +9,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SlimViews
+namespace SlimViews.Templates
 {
     /// <inheritdoc />
     /// <summary>
@@ -25,6 +25,14 @@ namespace SlimViews
         ///     The paint tool template.
         /// </value>
         public DataTemplate PaintToolTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the erase tool options.
+        /// </summary>
+        /// <value>
+        /// The erase tool options.
+        /// </value>
+        public DataTemplate EraseToolTemplate { get; set; }
 
         /// <summary>
         ///     Gets or sets the color select tool template.
@@ -58,6 +66,7 @@ namespace SlimViews
                 return toolType switch
                 {
                     ImageTools.Paint => PaintToolTemplate,
+                    ImageTools.Erase => EraseToolTemplate,
                     ImageTools.ColorSelect => ColorSelectToolTemplate,
                     ImageTools.Area => AreaSelectToolTemplate,
                     _ => null

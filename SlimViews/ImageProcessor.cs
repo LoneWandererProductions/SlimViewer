@@ -243,7 +243,7 @@ namespace SlimViews
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                var btm = Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, TextureShape.Rectangle);
+                var btm = Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, MaskShape.Rectangle);
                 //overlay both images
                 bitmap = Render.CombineBitmap(bitmap, btm, 0, 0);
             }
