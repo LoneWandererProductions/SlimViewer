@@ -180,7 +180,7 @@ namespace Imaging
 
         /// <inheritdoc />
         /// <summary>
-        /// Cuts the bitmap.
+        ///     Cuts the bitmap.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="width">The width.</param>
@@ -190,9 +190,10 @@ namespace Imaging
         /// <param name="startPoint">The start point.</param>
         /// <returns>The selected Image area.</returns>
         /// <exception cref="T:System.ArgumentOutOfRangeException">shape - null</exception>
-        public Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object shapeParams = null, Point? startPoint = null)
+        public Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object shapeParams = null,
+            Point? startPoint = null)
         {
-            var btm= ImageStream.CutBitmap(image, 0, 0, image.Height, image.Width);
+            var btm = ImageStream.CutBitmap(image, 0, 0, image.Height, image.Width);
 
             // If no start point is provided, default to (0, 0)
             var actualStartPoint = startPoint ?? new Point(0, 0);

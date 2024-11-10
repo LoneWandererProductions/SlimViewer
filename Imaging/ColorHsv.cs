@@ -348,6 +348,7 @@ namespace Imaging
         {
             if (ReferenceEquals(left, right)) return true; // Same reference
             if (left is null || right is null) return false; // One is null
+
             return left.Equals(right);
         }
 

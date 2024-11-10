@@ -10,7 +10,6 @@ namespace SlimViews
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is int selectedIndex && parameter is string targetFillType)
-            {
                 switch (targetFillType)
                 {
                     case "SolidColor":
@@ -20,7 +19,6 @@ namespace SlimViews
                     case "Filter":
                         return selectedIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
                 }
-            }
 
             return Visibility.Collapsed;
         }

@@ -41,7 +41,7 @@ namespace SlimViews
         /// <summary>
         ///     The current configuration
         /// </summary>
-        private ImageFilterConfig _currentConfig;
+        private readonly ImageFilterConfig _currentConfig;
 
         /// <summary>
         ///     The factor

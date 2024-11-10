@@ -5,25 +5,25 @@
     xmlns:templates="clr-namespace:SlimViews.Templates">
 
     <slimViews:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
-    <templates:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter"/>
+    <templates:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter" />
 
     <!-- Paint Tool Options -->
     <DataTemplate x:Key="PaintToolOptions">
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Paint Tool Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
-                <Label Content="Brush Size:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <Label Content="Brush Size:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
                 <Slider Minimum="1" Maximum="20" Grid.Row="1" Grid.Column="1"
                         Value="{Binding BrushSize, Mode=TwoWay}" />
             </Grid>
@@ -35,18 +35,18 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Erase Tool Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
-                <Label Content="Brush Size:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <Label Content="Brush Size:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
                 <Slider Minimum="1" Maximum="20" Grid.Row="1" Grid.Column="1"
                         Value="{Binding BrushSize, Mode=TwoWay}" />
             </Grid>
@@ -58,17 +58,17 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Color Select Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
-                <Label Content="Tolerance:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <Label Content="Tolerance:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
                 <Slider Minimum="0" Maximum="100" Grid.Row="1" Grid.Column="1"
                         Value="{Binding Tolerance, Mode=TwoWay}" />
             </Grid>
@@ -80,23 +80,23 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <!-- Title -->
                 <TextBlock Text="Area Select Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
 
                 <!-- Selection Mode -->
-                <Label Content="Selection Mode:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <Label Content="Selection Mode:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
                 <ComboBox x:Name="ToolTypeComboBox" Grid.Row="1" Grid.Column="1"
                           SelectedItem="{Binding SelectedToolType, Mode=TwoWay}">
                     <ComboBoxItem Content="Rectangle" />
@@ -106,8 +106,9 @@
 
                 <!-- Fill Type -->
                 <Label Content="Fill Type:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"
-                       Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}"/>
-                <ComboBox x:Name="FillTypeComboBox" Grid.Row="2" Grid.Column="1" SelectedIndex="{Binding SelectedFillTypeIndex, Mode=TwoWay}"
+                       Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}" />
+                <ComboBox x:Name="FillTypeComboBox" Grid.Row="2" Grid.Column="1"
+                          SelectedIndex="{Binding SelectedFillTypeIndex, Mode=TwoWay}"
                           Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}">
                     <ComboBoxItem Content="Solid Color" />
                     <ComboBoxItem Content="Texture" />
@@ -118,8 +119,9 @@
 
                 <!-- Texture Selection (Visible when Fill Type is Texture) -->
                 <Label Content="Texture:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"
-                       Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"/>
-                <ComboBox Grid.Row="4" Grid.Column="1" Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"
+                       Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}" />
+                <ComboBox Grid.Row="4" Grid.Column="1"
+                          Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"
                           SelectedItem="{Binding SelectedTexture, Mode=TwoWay}">
                     <ComboBoxItem Content="Brick" />
                     <ComboBoxItem Content="Wood" />
@@ -129,8 +131,9 @@
 
                 <!-- Filter Selection (Visible when Fill Type is Filter) -->
                 <Label Content="Filter:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"
-                       Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"/>
-                <ComboBox Grid.Row="5" Grid.Column="1" Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
+                       Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}" />
+                <ComboBox Grid.Row="5" Grid.Column="1"
+                          Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
                           SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
                     <ComboBoxItem Content="Grayscale" />
                     <ComboBoxItem Content="Sepia" />

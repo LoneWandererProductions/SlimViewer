@@ -78,62 +78,62 @@ namespace Imaging
             switch (filter)
             {
                 case ImageFilters.GrayScale:
-                    atr.SetColorMatrix(_imageSettings.grayScale);
+                    atr.SetColorMatrix(_imageSettings.GrayScale);
                     break;
                 case ImageFilters.Invert:
-                    atr.SetColorMatrix(_imageSettings.invert);
+                    atr.SetColorMatrix(_imageSettings.Invert);
                     break;
                 case ImageFilters.Sepia:
-                    atr.SetColorMatrix(_imageSettings.sepia);
+                    atr.SetColorMatrix(_imageSettings.Sepia);
                     break;
                 case ImageFilters.BlackAndWhite:
-                    atr.SetColorMatrix(_imageSettings.blackAndWhite);
+                    atr.SetColorMatrix(_imageSettings.BlackAndWhite);
                     break;
                 case ImageFilters.Polaroid:
-                    atr.SetColorMatrix(_imageSettings.polaroid);
+                    atr.SetColorMatrix(_imageSettings.Polaroid);
                     break;
                 case ImageFilters.Contour:
                     return ApplySobel(image);
                 case ImageFilters.Brightness:
-                    atr.SetColorMatrix(_imageSettings.brightness);
+                    atr.SetColorMatrix(_imageSettings.Brightness);
                     break;
                 case ImageFilters.Contrast:
-                    atr.SetColorMatrix(_imageSettings.contrast);
+                    atr.SetColorMatrix(_imageSettings.Contrast);
                     break;
                 case ImageFilters.HueShift:
-                    atr.SetColorMatrix(_imageSettings.hueShift);
+                    atr.SetColorMatrix(_imageSettings.HueShift);
                     break;
                 case ImageFilters.ColorBalance:
-                    atr.SetColorMatrix(_imageSettings.colorBalance);
+                    atr.SetColorMatrix(_imageSettings.ColorBalance);
                     break;
                 case ImageFilters.Vintage:
-                    atr.SetColorMatrix(_imageSettings.vintage);
+                    atr.SetColorMatrix(_imageSettings.Vintage);
                     break;
                 // New convolution-based filters
                 case ImageFilters.Sharpen:
                     settings = _imageSettings?.GetSettings(ImageFilters.Sharpen);
-                    return ApplyFilter(image, _imageSettings?.sharpenFilter, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.SharpenFilter, settings.Factor, settings.Bias);
                 case ImageFilters.GaussianBlur:
                     settings = _imageSettings?.GetSettings(ImageFilters.GaussianBlur);
-                    return ApplyFilter(image, _imageSettings?.gaussianBlur, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.GaussianBlur, settings.Factor, settings.Bias);
                 case ImageFilters.Emboss:
                     settings = _imageSettings?.GetSettings(ImageFilters.Emboss);
-                    return ApplyFilter(image, _imageSettings?.embossFilter, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.EmbossFilter, settings.Factor, settings.Bias);
                 case ImageFilters.BoxBlur:
                     settings = _imageSettings?.GetSettings(ImageFilters.BoxBlur);
-                    return ApplyFilter(image, _imageSettings?.boxBlur, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.BoxBlur, settings.Factor, settings.Bias);
                 case ImageFilters.Laplacian:
                     settings = _imageSettings?.GetSettings(ImageFilters.Laplacian);
-                    return ApplyFilter(image, _imageSettings?.laplacianFilter, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.LaplacianFilter, settings.Factor, settings.Bias);
                 case ImageFilters.EdgeEnhance:
                     settings = _imageSettings?.GetSettings(ImageFilters.EdgeEnhance);
-                    return ApplyFilter(image, _imageSettings?.edgeEnhance, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.EdgeEnhance, settings.Factor, settings.Bias);
                 case ImageFilters.MotionBlur:
                     settings = _imageSettings?.GetSettings(ImageFilters.MotionBlur);
-                    return ApplyFilter(image, _imageSettings?.motionBlur, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.MotionBlur, settings.Factor, settings.Bias);
                 case ImageFilters.UnsharpMask:
                     settings = _imageSettings?.GetSettings(ImageFilters.UnsharpMask);
-                    return ApplyFilter(image, _imageSettings?.unsharpMask, settings.Factor, settings.Bias);
+                    return ApplyFilter(image, _imageSettings?.UnsharpMask, settings.Factor, settings.Bias);
                 // custom Filter
                 case ImageFilters.DifferenceOfGaussians:
                     return ApplyDifferenceOfGaussians(image);
@@ -334,8 +334,8 @@ namespace Imaging
                     var pixel = dbmBase.GetPixel(x + i, y + j);
                     int grayValue = pixel.R; // Since it's a greyscale image, R=G=B
                     // Sobel masks for gradient calculation
-                    gx += _imageSettings.sobelX[i + 1, j + 1] * grayValue;
-                    gy += _imageSettings.sobelY[i + 1, j + 1] * grayValue;
+                    gx += _imageSettings.SobelX[i + 1, j + 1] * grayValue;
+                    gy += _imageSettings.SobelY[i + 1, j + 1] * grayValue;
                 }
 
                 // Calculate gradient magnitude
@@ -394,8 +394,8 @@ namespace Imaging
         private static Bitmap ApplyCrosshatch(Image image)
         {
             // Apply the 45-degree and 135-degree filters
-            var hatch45 = ApplyFilter(image, _imageSettings.kernel45Degrees);
-            var hatch135 = ApplyFilter(image, _imageSettings.kernel135Degrees);
+            var hatch45 = ApplyFilter(image, _imageSettings.Kernel45Degrees);
+            var hatch135 = ApplyFilter(image, _imageSettings.Kernel135Degrees);
 
             // Combine the two hatching directions
             return ImageOverlays.AddImages(hatch45, hatch135);
@@ -616,8 +616,8 @@ namespace Imaging
             out int regionWidth, out int regionHeight)
         {
             // Compute gradient magnitude using Sobel operators
-            var gradientX = ApplyKernel(dbmBase, x, y, _imageSettings.sobelX);
-            var gradientY = ApplyKernel(dbmBase, x, y, _imageSettings.sobelY);
+            var gradientX = ApplyKernel(dbmBase, x, y, _imageSettings.SobelX);
+            var gradientY = ApplyKernel(dbmBase, x, y, _imageSettings.SobelY);
             var gradientMagnitude = Math.Sqrt(gradientX * gradientX + gradientY * gradientY);
 
             // Compute local variance

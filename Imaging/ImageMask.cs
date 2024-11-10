@@ -11,7 +11,7 @@ using System.Drawing;
 namespace Imaging
 {
     /// <summary>
-    /// Handle all the possible selections on an Image
+    ///     Handle all the possible selections on an Image
     /// </summary>
     internal static class ImageMask
     {

@@ -27,10 +27,10 @@ namespace SlimViews.Templates
         public DataTemplate PaintToolTemplate { get; set; }
 
         /// <summary>
-        /// Gets or sets the erase tool options.
+        ///     Gets or sets the erase tool options.
         /// </summary>
         /// <value>
-        /// The erase tool options.
+        ///     The erase tool options.
         /// </value>
         public DataTemplate EraseToolTemplate { get; set; }
 
