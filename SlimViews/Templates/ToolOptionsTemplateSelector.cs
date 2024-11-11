@@ -74,5 +74,33 @@ namespace SlimViews.Templates
 
             return null;
         }
+
+        public enum ImageTools
+        {
+            /// <summary>
+            ///     The paint
+            /// </summary>
+            Paint = 0,
+
+            /// <summary>
+            ///     The erase
+            /// </summary>
+            Erase = 1,
+
+            /// <summary>
+            ///     The cut
+            /// </summary>
+            Cut = 4,
+
+            /// <summary>
+            ///     The color select
+            /// </summary>
+            ColorSelect = 2,
+
+            /// <summary>
+            ///     The area
+            /// </summary>
+            Area = 3
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace SlimViews.Templates
     /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public sealed class SelectionToVisibilityConverter : IValueConverter
     {
+        /// <inheritdoc />
         /// <summary>
         ///     Converts a value.
         /// </summary>
@@ -35,6 +36,7 @@ namespace SlimViews.Templates
             return value != null ? Visibility.Visible : Visibility.Collapsed;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Converts a value.
         /// </summary>

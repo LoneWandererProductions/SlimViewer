@@ -394,7 +394,7 @@ namespace CommonControls
             switch (ZoomTool)
             {
                 case SelectionTools.Move:
-                case SelectionTools.Pixel:
+                case SelectionTools.Trace:
                     // nothing
                     break;
 
@@ -442,7 +442,7 @@ namespace CommonControls
                     SelectedFrameCommand.Execute(frame);
                 }
                     break;
-                case SelectionTools.Pixel:
+                case SelectionTools.Trace:
                     SetClickedPoint(e);
 
                     var endpoint = e.GetPosition(BtmImage);
@@ -512,7 +512,7 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.Pixel:
+                case SelectionTools.Trace:
                     // Handle pixel selection if needed
                     break;
                 default:

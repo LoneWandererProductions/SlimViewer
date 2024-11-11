@@ -169,7 +169,7 @@ namespace CommonControls
                             selectionRect.Height / 2);
                         break;
 
-                    case SelectionTools.Pixel:
+                    case SelectionTools.Trace:
                         // Select a single pixel (this can be visualized as a very small rectangle)
                         drawingContext.DrawRectangle(Brushes.Red, dashedPen,
                             new Rect(_startPoint.Value, new Size(1, 1)));

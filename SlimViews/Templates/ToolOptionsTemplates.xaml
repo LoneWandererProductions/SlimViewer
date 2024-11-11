@@ -2,10 +2,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:slimViews="clr-namespace:SlimViews"
-    xmlns:templates="clr-namespace:SlimViews.Templates">
+    xmlns:templates="clr-namespace:SlimViews.Templates"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
 
     <slimViews:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
     <templates:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter" />
+
+    <sys:String x:Key="RectangleText">Rectangle</sys:String>
+    <sys:String x:Key="EllipseText">Ellipse</sys:String>
+    <sys:String x:Key="FreeFormText">Free Form</sys:String>
 
     <!-- Paint Tool Options -->
     <DataTemplate x:Key="PaintToolOptions">
@@ -86,6 +91,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -98,15 +104,23 @@
                 <!-- Selection Mode -->
                 <Label Content="Selection Mode:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
                 <ComboBox x:Name="ToolTypeComboBox" Grid.Row="1" Grid.Column="1"
-                          SelectedItem="{Binding SelectedToolType, Mode=TwoWay}">
-                    <ComboBoxItem Content="Rectangle" />
-                    <ComboBoxItem Content="Ellipse" />
-                    <ComboBoxItem Content="Free Form" />
+                          SelectedValue="{Binding SelectedToolType, Mode=TwoWay}"
+                          SelectedValuePath="Content">
+                    <ComboBox.DataContext>
+                        <!-- Set the DataContext for the ComboBox -->
+                        <slimViews:ImageView />
+                        <!-- Example for setting local DataContext -->
+                    </ComboBox.DataContext>
+                    <ComboBoxItem Content="{StaticResource RectangleText}" />
+                    <ComboBoxItem Content="{StaticResource EllipseText}" />
+                    <ComboBoxItem Content="{StaticResource FreeFormText}" />
                 </ComboBox>
+
 
                 <!-- Fill Type -->
                 <Label Content="Fill Type:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}" />
+                
                 <ComboBox x:Name="FillTypeComboBox" Grid.Row="2" Grid.Column="1"
                           SelectedIndex="{Binding SelectedFillTypeIndex, Mode=TwoWay}"
                           Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}">
@@ -140,6 +154,7 @@
                     <ComboBoxItem Content="Blur" />
                     <!-- Add more filter options here -->
                 </ComboBox>
+                <TextBlock Text="{Binding SelectedToolType}" Grid.Row="6" Grid.Column="1" />
             </Grid>
         </ScrollViewer>
     </DataTemplate>

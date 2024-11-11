@@ -26,6 +26,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using SlimViews.Templates;
 using ViewModel;
 using Point = System.Windows.Point;
 
@@ -360,7 +361,7 @@ namespace SlimViews
         /// <summary>
         ///     The selected tool
         /// </summary>
-        private ImageTools _selectedTool;
+        private ToolOptionsTemplateSelector.ImageTools _selectedTool;
 
         /// <summary>
         ///     The similar command
@@ -402,6 +403,11 @@ namespace SlimViews
         ///     Check if we show thumbnails.
         /// </summary>
         private bool _thumbs = true;
+
+        /// <summary>
+        /// The selected tool type
+        /// </summary>
+        private string _selectedToolType;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -494,9 +500,9 @@ namespace SlimViews
         /// <value>
         ///     The selections.
         /// </value>
-        public IEnumerable<ImageTools> Tooling =>
-            Enum.GetValues(typeof(ImageTools))
-                .Cast<ImageTools>();
+        public IEnumerable<ToolOptionsTemplateSelector.ImageTools> Tooling =>
+            Enum.GetValues(typeof(ToolOptionsTemplateSelector.ImageTools))
+                .Cast<ToolOptionsTemplateSelector.ImageTools>();
 
         /// <summary>
         ///     Gets or sets the selected tool.
@@ -504,7 +510,7 @@ namespace SlimViews
         /// <value>
         ///     The selected tool.
         /// </value>
-        public ImageTools SelectedTool
+        public ToolOptionsTemplateSelector.ImageTools SelectedTool
         {
             get => _selectedTool;
             set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
@@ -520,6 +526,19 @@ namespace SlimViews
         {
             get => _selectedForm;
             set => SetProperty(ref _selectedForm, value, nameof(SelectedForm));
+        }
+
+        public string SelectedToolType
+        {
+            get => _selectedToolType;
+            set
+            {
+                if (_selectedToolType != value)
+                {
+                    _selectedToolType = value;
+                    OnPropertyChanged(nameof(SelectedToolType));
+                }
+            }
         }
 
         /// <summary>
@@ -1251,14 +1270,14 @@ namespace SlimViews
         /// <param name="wPoint">The w point.</param>
         private void SelectedPointAction(Point wPoint)
         {
-            if (SelectedForm != SelectionTools.Pixel)
+            if (SelectedForm != SelectionTools.Trace)
                 return;
 
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
             switch (SelectedTool)
             {
-                case ImageTools.Paint:
+                case ToolOptionsTemplateSelector.ImageTools.Paint:
                     if (Color == null) return;
 
                     var color = Color.GetDrawingColor();
@@ -1268,7 +1287,7 @@ namespace SlimViews
                     Bmp = Btm.ToBitmapImage();
                     return;
 
-                case ImageTools.ColorSelect:
+                case ToolOptionsTemplateSelector.ImageTools.ColorSelect:
                     Color = ImageProcessor.GetPixel(Btm, point);
                     Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
                     Color = Picker.Colors;
@@ -1284,21 +1303,21 @@ namespace SlimViews
         {
             if (SelectedForm == SelectionTools.Move)
                 return;
-            if (SelectedForm == SelectionTools.Pixel)
+            if (SelectedForm == SelectionTools.Trace)
                 return;
 
             var point = new System.Drawing.Point(frame.X, frame.Y);
 
             switch (SelectedTool)
             {
-                case ImageTools.Erase:
+                case ToolOptionsTemplateSelector.ImageTools.Erase:
                     Btm = ImageProcessor.EraseImage(frame, Btm);
                     break;
-                case ImageTools.Cut:
+                case ToolOptionsTemplateSelector.ImageTools.Cut:
                     Btm = ImageProcessor.CutImage(frame, Btm);
                     break;
 
-                case ImageTools.Paint:
+                case ToolOptionsTemplateSelector.ImageTools.Paint:
                     if (Color == null) return;
 
                     var color = Color.GetDrawingColor();
@@ -1306,7 +1325,7 @@ namespace SlimViews
                     Btm = ImageProcessor.SetPixel(Btm, point, color);
                     return;
 
-                case ImageTools.ColorSelect:
+                case ToolOptionsTemplateSelector.ImageTools.ColorSelect:
                     Color = ImageProcessor.GetPixel(Btm, point);
                     return;
             }
