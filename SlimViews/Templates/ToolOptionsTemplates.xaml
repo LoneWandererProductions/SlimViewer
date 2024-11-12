@@ -26,6 +26,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.DataContext>
+                    <!-- Set the DataContext for the ComboBox -->
+                    <slimViews:ImageView />
+                </Grid.DataContext>
 
                 <TextBlock Text="Paint Tool Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
                 <Label Content="Brush Size:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
@@ -49,6 +53,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.DataContext>
+                    <!-- Set the DataContext for the ComboBox -->
+                    <slimViews:ImageView />
+                </Grid.DataContext>
 
                 <TextBlock Text="Erase Tool Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
                 <Label Content="Brush Size:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
@@ -71,11 +79,16 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.DataContext>
+                    <!-- Set the DataContext for the ComboBox -->
+                    <slimViews:ImageView />
+                </Grid.DataContext>
 
                 <TextBlock Text="Color Select Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
                 <Label Content="Tolerance:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
                 <Slider Minimum="0" Maximum="100" Grid.Row="1" Grid.Column="1"
                         Value="{Binding Tolerance, Mode=TwoWay}" />
+
             </Grid>
         </ScrollViewer>
     </DataTemplate>
@@ -97,6 +110,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.DataContext>
+                    <!-- Set the DataContext for the ComboBox -->
+                    <slimViews:ImageView />
+                </Grid.DataContext>
 
                 <!-- Title -->
                 <TextBlock Text="Area Select Options" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
@@ -106,11 +123,6 @@
                 <ComboBox x:Name="ToolTypeComboBox" Grid.Row="1" Grid.Column="1"
                           SelectedValue="{Binding SelectedToolType, Mode=TwoWay}"
                           SelectedValuePath="Content">
-                    <ComboBox.DataContext>
-                        <!-- Set the DataContext for the ComboBox -->
-                        <slimViews:ImageView />
-                        <!-- Example for setting local DataContext -->
-                    </ComboBox.DataContext>
                     <ComboBoxItem Content="{StaticResource RectangleText}" />
                     <ComboBoxItem Content="{StaticResource EllipseText}" />
                     <ComboBoxItem Content="{StaticResource FreeFormText}" />
@@ -120,7 +132,7 @@
                 <!-- Fill Type -->
                 <Label Content="Fill Type:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}" />
-                
+
                 <ComboBox x:Name="FillTypeComboBox" Grid.Row="2" Grid.Column="1"
                           SelectedIndex="{Binding SelectedFillTypeIndex, Mode=TwoWay}"
                           Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}">
