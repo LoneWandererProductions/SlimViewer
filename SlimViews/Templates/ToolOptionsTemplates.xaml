@@ -8,9 +8,48 @@
     <slimViews:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
     <templates:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter" />
 
+    <!-- Selection Tool Strings -->
     <sys:String x:Key="RectangleText">Rectangle</sys:String>
     <sys:String x:Key="EllipseText">Ellipse</sys:String>
     <sys:String x:Key="FreeFormText">Free Form</sys:String>
+
+    <!-- Texture Strings -->
+    <sys:String x:Key="TextureNoise">Noise</sys:String>
+    <sys:String x:Key="TextureClouds">Clouds</sys:String>
+    <sys:String x:Key="TextureMarble">Marble</sys:String>
+    <sys:String x:Key="TextureWood">Wood</sys:String>
+    <sys:String x:Key="TextureWave">Wave</sys:String>
+    <sys:String x:Key="TextureCrosshatch">Crosshatch</sys:String>
+
+    <!-- Filter Strings -->
+    <sys:String x:Key="FilterNone">None</sys:String>
+    <sys:String x:Key="FilterGrayScale">GrayScale</sys:String>
+    <sys:String x:Key="FilterInvert">Invert</sys:String>
+    <sys:String x:Key="FilterSepia">Sepia</sys:String>
+    <sys:String x:Key="FilterBlackAndWhite">Black and White</sys:String>
+    <sys:String x:Key="FilterPolaroid">Polaroid</sys:String>
+    <sys:String x:Key="FilterContour">Contour</sys:String>
+    <sys:String x:Key="FilterBrightness">Brightness</sys:String>
+    <sys:String x:Key="FilterContrast">Contrast</sys:String>
+    <sys:String x:Key="FilterHueShift">Hue Shift</sys:String>
+    <sys:String x:Key="FilterColorBalance">Color Balance</sys:String>
+    <sys:String x:Key="FilterVintage">Vintage</sys:String>
+    <sys:String x:Key="FilterSharpen">Sharpen</sys:String>
+    <sys:String x:Key="FilterGaussianBlur">Gaussian Blur</sys:String>
+    <sys:String x:Key="FilterEmboss">Emboss</sys:String>
+    <sys:String x:Key="FilterBoxBlur">Box Blur</sys:String>
+    <sys:String x:Key="FilterLaplacian">Laplacian</sys:String>
+    <sys:String x:Key="FilterEdgeEnhance">Edge Enhance</sys:String>
+    <sys:String x:Key="FilterMotionBlur">Motion Blur</sys:String>
+    <sys:String x:Key="FilterUnsharpMask">Unsharp Mask</sys:String>
+    <sys:String x:Key="FilterDifferenceOfGaussians">Difference of Gaussians</sys:String>
+    <sys:String x:Key="FilterCrosshatch">Crosshatch</sys:String>
+    <sys:String x:Key="FilterFloydSteinbergDithering">Floyd Steinberg Dithering</sys:String>
+    <sys:String x:Key="FilterAnisotropicKuwahara">Anisotropic Kuwahara</sys:String>
+    <sys:String x:Key="FilterSupersamplingAntialiasing">Supersampling Antialiasing</sys:String>
+    <sys:String x:Key="FilterPostProcessingAntialiasing">Post Processing Antialiasing</sys:String>
+    <sys:String x:Key="FilterPencilSketchEffect">Pencil Sketch Effect</sys:String>
+
 
     <!-- Paint Tool Options -->
     <DataTemplate x:Key="PaintToolOptions">
@@ -149,9 +188,12 @@
                 <ComboBox Grid.Row="4" Grid.Column="1"
                           Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"
                           SelectedValue="{Binding SelectedTexture, Mode=TwoWay}" SelectedValuePath="Content">
-                    <ComboBoxItem Content="Brick" />
-                    <ComboBoxItem Content="Wood" />
-                    <ComboBoxItem Content="Marble" />
+                    <ComboBoxItem Content="{StaticResource TextureClouds}" />
+                    <ComboBoxItem Content="{StaticResource TextureCrosshatch}" />
+                    <ComboBoxItem Content="{StaticResource TextureMarble}" />
+                    <ComboBoxItem Content="{StaticResource TextureNoise}" />
+                    <ComboBoxItem Content="{StaticResource TextureWave}" />
+                    <ComboBoxItem Content="{StaticResource TextureWood}" />
                     <!-- Add more texture options here -->
                 </ComboBox>
 
@@ -159,13 +201,38 @@
                 <Label Content="Filter:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}" />
                 <ComboBox Grid.Row="5" Grid.Column="1"
-                          Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
-                          SelectedValue="{Binding SelectedFilter, Mode=TwoWay}" SelectedValuePath="Content">
-                    <ComboBoxItem Content="Grayscale" />
-                    <ComboBoxItem Content="Sepia" />
-                    <ComboBoxItem Content="Blur" />
-                    <!-- Add more filter options here -->
+                Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
+                SelectedValue="{Binding SelectedFilter, Mode=TwoWay}" SelectedValuePath="Content">
+                    <ComboBoxItem Content="{StaticResource FilterNone}" />
+                    <ComboBoxItem Content="{StaticResource FilterGrayScale}" />
+                    <ComboBoxItem Content="{StaticResource FilterInvert}" />
+                    <ComboBoxItem Content="{StaticResource FilterSepia}" />
+                    <ComboBoxItem Content="{StaticResource FilterBlackAndWhite}" />
+                    <ComboBoxItem Content="{StaticResource FilterPolaroid}" />
+                    <ComboBoxItem Content="{StaticResource FilterContour}" />
+                    <ComboBoxItem Content="{StaticResource FilterBrightness}" />
+                    <ComboBoxItem Content="{StaticResource FilterContrast}" />
+                    <ComboBoxItem Content="{StaticResource FilterHueShift}" />
+                    <ComboBoxItem Content="{StaticResource FilterColorBalance}" />
+                    <ComboBoxItem Content="{StaticResource FilterVintage}" />
+                    <ComboBoxItem Content="{StaticResource FilterSharpen}" />
+                    <ComboBoxItem Content="{StaticResource FilterGaussianBlur}" />
+                    <ComboBoxItem Content="{StaticResource FilterEmboss}" />
+                    <ComboBoxItem Content="{StaticResource FilterBoxBlur}" />
+                    <ComboBoxItem Content="{StaticResource FilterLaplacian}" />
+                    <ComboBoxItem Content="{StaticResource FilterEdgeEnhance}" />
+                    <ComboBoxItem Content="{StaticResource FilterMotionBlur}" />
+                    <ComboBoxItem Content="{StaticResource FilterUnsharpMask}" />
+                    <ComboBoxItem Content="{StaticResource FilterDifferenceOfGaussians}" />
+                    <ComboBoxItem Content="{StaticResource FilterCrosshatch}" />
+                    <ComboBoxItem Content="{StaticResource FilterFloydSteinbergDithering}" />
+                    <ComboBoxItem Content="{StaticResource FilterAnisotropicKuwahara}" />
+                    <ComboBoxItem Content="{StaticResource FilterSupersamplingAntialiasing}" />
+                    <ComboBoxItem Content="{StaticResource FilterPostProcessingAntialiasing}" />
+                    <ComboBoxItem Content="{StaticResource FilterPencilSketchEffect}" />
+                    <!-- Add more filter options if needed -->
                 </ComboBox>
+
             </Grid>
         </ScrollViewer>
     </DataTemplate>
