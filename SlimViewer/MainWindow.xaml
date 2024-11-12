@@ -7,6 +7,7 @@
     xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
     xmlns:local="clr-namespace:SlimViews;assembly=SlimViews"
     xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
+    xmlns:templates="clr-namespace:SlimViews.Templates;assembly=SlimViews"
     x:Class="SlimViewer.MainWindow"
     mc:Ignorable="d"
     Title="Slim Viewer"
@@ -142,17 +143,17 @@
                     <MenuItem Header="Texture">
                         <MenuItem Header="Configure Texture" Command="{Binding TextureConfigCommand}" />
                         <Separator />
-                        <MenuItem Header="Noise" Command="{Binding ApplyTextureCommand}" CommandParameter="Noise"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureNoise'}" Command="{Binding ApplyTextureCommand}" CommandParameter="Noise"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="Clouds" Command="{Binding ApplyTextureCommand}" CommandParameter="Clouds"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureClouds'}" Command="{Binding ApplyTextureCommand}" CommandParameter="Clouds"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="Marble" Command="{Binding ApplyTextureCommand}" CommandParameter="Marble"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureMarble'}" Command="{Binding ApplyTextureCommand}" CommandParameter="Marble"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="Wood" Command="{Binding ApplyTextureCommand}" CommandParameter="Wood"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureWood'}" Command="{Binding ApplyTextureCommand}" CommandParameter="Wood"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="Wave" Command="{Binding ApplyTextureCommand}" CommandParameter="Wave"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureWave'}" Command="{Binding ApplyTextureCommand}" CommandParameter="Wave"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="Crosshatch" Command="{Binding ApplyTextureCommand}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureCrosshatch'}" Command="{Binding ApplyTextureCommand}"
                                   CommandParameter="Crosshatch"
                                   IsEnabled="{Binding Path=IsImageActive}" />
                     </MenuItem>
