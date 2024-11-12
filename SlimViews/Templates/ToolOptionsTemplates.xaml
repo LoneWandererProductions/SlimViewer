@@ -23,34 +23,33 @@
     <templates:ConstantStringExtension Key="TextureCrosshatch" x:Key="TextureCrosshatch" />
 
     <!-- Filter Strings -->
-    <sys:String x:Key="FilterNone">None</sys:String>
-    <sys:String x:Key="FilterGrayScale">GrayScale</sys:String>
-    <sys:String x:Key="FilterInvert">Invert</sys:String>
-    <sys:String x:Key="FilterSepia">Sepia</sys:String>
-    <sys:String x:Key="FilterBlackAndWhite">Black and White</sys:String>
-    <sys:String x:Key="FilterPolaroid">Polaroid</sys:String>
-    <sys:String x:Key="FilterContour">Contour</sys:String>
-    <sys:String x:Key="FilterBrightness">Brightness</sys:String>
-    <sys:String x:Key="FilterContrast">Contrast</sys:String>
-    <sys:String x:Key="FilterHueShift">Hue Shift</sys:String>
-    <sys:String x:Key="FilterColorBalance">Color Balance</sys:String>
-    <sys:String x:Key="FilterVintage">Vintage</sys:String>
-    <sys:String x:Key="FilterSharpen">Sharpen</sys:String>
-    <sys:String x:Key="FilterGaussianBlur">Gaussian Blur</sys:String>
-    <sys:String x:Key="FilterEmboss">Emboss</sys:String>
-    <sys:String x:Key="FilterBoxBlur">Box Blur</sys:String>
-    <sys:String x:Key="FilterLaplacian">Laplacian</sys:String>
-    <sys:String x:Key="FilterEdgeEnhance">Edge Enhance</sys:String>
-    <sys:String x:Key="FilterMotionBlur">Motion Blur</sys:String>
-    <sys:String x:Key="FilterUnsharpMask">Unsharp Mask</sys:String>
-    <sys:String x:Key="FilterDifferenceOfGaussians">Difference of Gaussians</sys:String>
-    <sys:String x:Key="FilterCrosshatch">Crosshatch</sys:String>
-    <sys:String x:Key="FilterFloydSteinbergDithering">Floyd Steinberg Dithering</sys:String>
-    <sys:String x:Key="FilterAnisotropicKuwahara">Anisotropic Kuwahara</sys:String>
-    <sys:String x:Key="FilterSupersamplingAntialiasing">Supersampling Antialiasing</sys:String>
-    <sys:String x:Key="FilterPostProcessingAntialiasing">Post Processing Antialiasing</sys:String>
-    <sys:String x:Key="FilterPencilSketchEffect">Pencil Sketch Effect</sys:String>
-
+    <templates:ConstantStringExtension Key="FilterNone" x:Key="FilterNone" />
+    <templates:ConstantStringExtension Key="FilterGrayScale" x:Key="FilterGrayScale" />
+    <templates:ConstantStringExtension Key="FilterInvert" x:Key="FilterInvert" />
+    <templates:ConstantStringExtension Key="FilterSepia" x:Key="FilterSepia" />
+    <templates:ConstantStringExtension Key="FilterBlackAndWhite" x:Key="FilterBlackAndWhite" />
+    <templates:ConstantStringExtension Key="FilterPolaroid" x:Key="FilterPolaroid" />
+    <templates:ConstantStringExtension Key="FilterContour" x:Key="FilterContour" />
+    <templates:ConstantStringExtension Key="FilterBrightness" x:Key="FilterBrightness" />
+    <templates:ConstantStringExtension Key="FilterContrast" x:Key="FilterContrast" />
+    <templates:ConstantStringExtension Key="FilterHueShift" x:Key="FilterHueShift" />
+    <templates:ConstantStringExtension Key="FilterColorBalance" x:Key="FilterColorBalance" />
+    <templates:ConstantStringExtension Key="FilterVintage" x:Key="FilterVintage" />
+    <templates:ConstantStringExtension Key="FilterSharpen" x:Key="FilterSharpen" />
+    <templates:ConstantStringExtension Key="FilterGaussianBlur" x:Key="FilterGaussianBlur" />
+    <templates:ConstantStringExtension Key="FilterEmboss" x:Key="FilterEmboss" />
+    <templates:ConstantStringExtension Key="FilterBoxBlur" x:Key="FilterBoxBlur" />
+    <templates:ConstantStringExtension Key="FilterLaplacian" x:Key="FilterLaplacian" />
+    <templates:ConstantStringExtension Key="FilterEdgeEnhance" x:Key="FilterEdgeEnhance" />
+    <templates:ConstantStringExtension Key="FilterMotionBlur" x:Key="FilterMotionBlur" />
+    <templates:ConstantStringExtension Key="FilterUnsharpMask" x:Key="FilterUnsharpMask" />
+    <templates:ConstantStringExtension Key="FilterDifferenceOfGaussians" x:Key="FilterDifferenceOfGaussians" />
+    <templates:ConstantStringExtension Key="FilterCrosshatch" x:Key="FilterCrosshatch" />
+    <templates:ConstantStringExtension Key="FilterFloydSteinbergDithering" x:Key="FilterFloydSteinbergDithering" />
+    <templates:ConstantStringExtension Key="FilterAnisotropicKuwahara" x:Key="FilterAnisotropicKuwahara" />
+    <templates:ConstantStringExtension Key="FilterSupersamplingAntialiasing" x:Key="FilterSupersamplingAntialiasing" />
+    <templates:ConstantStringExtension Key="FilterPostProcessingAntialiasing" x:Key="FilterPostProcessingAntialiasing" />
+    <templates:ConstantStringExtension Key="FilterPencilSketchEffect" x:Key="FilterPencilSketchEffect" />
 
     <!-- Paint Tool Options -->
     <DataTemplate x:Key="PaintToolOptions">
