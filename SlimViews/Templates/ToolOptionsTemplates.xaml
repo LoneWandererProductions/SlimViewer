@@ -8,18 +8,19 @@
     <slimViews:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
     <templates:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter" />
 
+
     <!-- Selection Tool Strings -->
-    <sys:String x:Key="RectangleText">Rectangle</sys:String>
-    <sys:String x:Key="EllipseText">Ellipse</sys:String>
-    <sys:String x:Key="FreeFormText">Free Form</sys:String>
+    <templates:ConstantStringExtension Key="RectangleText" x:Key="RectangleText" />
+    <templates:ConstantStringExtension Key="EllipseText" x:Key="EllipseText" />
+    <templates:ConstantStringExtension Key="FreeFormText" x:Key="FreeFormText" />
 
     <!-- Texture Strings -->
-    <sys:String x:Key="TextureNoise">Noise</sys:String>
-    <sys:String x:Key="TextureClouds">Clouds</sys:String>
-    <sys:String x:Key="TextureMarble">Marble</sys:String>
-    <sys:String x:Key="TextureWood">Wood</sys:String>
-    <sys:String x:Key="TextureWave">Wave</sys:String>
-    <sys:String x:Key="TextureCrosshatch">Crosshatch</sys:String>
+    <templates:ConstantStringExtension Key="TextureNoise" x:Key="TextureNoise" />
+    <templates:ConstantStringExtension Key="TextureClouds" x:Key="TextureClouds" />
+    <templates:ConstantStringExtension Key="TextureMarble" x:Key="TextureMarble" />
+    <templates:ConstantStringExtension Key="TextureWood" x:Key="TextureWood" />
+    <templates:ConstantStringExtension Key="TextureWave" x:Key="TextureWave" />
+    <templates:ConstantStringExtension Key="TextureCrosshatch" x:Key="TextureCrosshatch" />
 
     <!-- Filter Strings -->
     <sys:String x:Key="FilterNone">None</sys:String>
