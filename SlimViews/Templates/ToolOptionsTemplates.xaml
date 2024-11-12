@@ -134,7 +134,7 @@
                        Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}" />
 
                 <ComboBox x:Name="FillTypeComboBox" Grid.Row="2" Grid.Column="1"
-                          SelectedIndex="{Binding SelectedFillTypeIndex, Mode=TwoWay}"
+                          SelectedValue="{Binding SelectedFillType, Mode=TwoWay}" SelectedValuePath="Content"
                           Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}">
                     <ComboBoxItem Content="Solid Color" />
                     <ComboBoxItem Content="Texture" />
@@ -148,7 +148,7 @@
                        Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}" />
                 <ComboBox Grid.Row="4" Grid.Column="1"
                           Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"
-                          SelectedItem="{Binding SelectedTexture, Mode=TwoWay}">
+                          SelectedValue="{Binding SelectedTexture, Mode=TwoWay}" SelectedValuePath="Content">
                     <ComboBoxItem Content="Brick" />
                     <ComboBoxItem Content="Wood" />
                     <ComboBoxItem Content="Marble" />
@@ -160,13 +160,12 @@
                        Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}" />
                 <ComboBox Grid.Row="5" Grid.Column="1"
                           Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
-                          SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
+                          SelectedValue="{Binding SelectedFilter, Mode=TwoWay}" SelectedValuePath="Content">
                     <ComboBoxItem Content="Grayscale" />
                     <ComboBoxItem Content="Sepia" />
                     <ComboBoxItem Content="Blur" />
                     <!-- Add more filter options here -->
                 </ComboBox>
-                <TextBlock Text="{Binding SelectedToolType}" Grid.Row="6" Grid.Column="1" />
             </Grid>
         </ScrollViewer>
     </DataTemplate>

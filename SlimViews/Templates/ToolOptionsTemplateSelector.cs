@@ -16,7 +16,7 @@ namespace SlimViews.Templates
     ///     Tool Template Selector
     /// </summary>
     /// <seealso cref="T:System.Windows.Controls.DataTemplateSelector" />
-    public sealed class ToolOptionsTemplateSelector : DataTemplateSelector
+    public sealed partial class ToolOptionsTemplateSelector : DataTemplateSelector
     {
         /// <summary>
         ///     Gets or sets the paint tool template.
@@ -73,34 +73,6 @@ namespace SlimViews.Templates
                 };
 
             return null;
-        }
-
-        public enum ImageTools
-        {
-            /// <summary>
-            ///     The paint
-            /// </summary>
-            Paint = 0,
-
-            /// <summary>
-            ///     The erase
-            /// </summary>
-            Erase = 1,
-
-            /// <summary>
-            ///     The cut
-            /// </summary>
-            Cut = 4,
-
-            /// <summary>
-            ///     The color select
-            /// </summary>
-            ColorSelect = 2,
-
-            /// <summary>
-            ///     The area
-            /// </summary>
-            Area = 3
         }
     }
 }
