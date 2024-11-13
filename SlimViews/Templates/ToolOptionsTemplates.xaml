@@ -21,6 +21,8 @@
     <templates:ConstantStringExtension Key="TextureWood" x:Key="TextureWood" />
     <templates:ConstantStringExtension Key="TextureWave" x:Key="TextureWave" />
     <templates:ConstantStringExtension Key="TextureCrosshatch" x:Key="TextureCrosshatch" />
+    <templates:ConstantStringExtension Key="TextureConcrete" x:Key="TextureConcrete" />
+    <templates:ConstantStringExtension Key="TextureCanvas" x:Key="TextureCanvas" />
 
     <!-- Filter Strings -->
     <templates:ConstantStringExtension Key="FilterNone" x:Key="FilterNone" />
@@ -194,6 +196,8 @@
                     <ComboBoxItem Content="{StaticResource TextureNoise}" />
                     <ComboBoxItem Content="{StaticResource TextureWave}" />
                     <ComboBoxItem Content="{StaticResource TextureWood}" />
+                    <ComboBoxItem Content="{StaticResource TextureConcrete}" />
+                    <ComboBoxItem Content="{StaticResource TextureCanvas}" />
                     <!-- Add more texture options here -->
                 </ComboBox>
 

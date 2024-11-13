@@ -14,6 +14,12 @@ namespace SlimViews
     public static class SlimViewerGuiResources
     {
         // Selection Tool Strings
+
+        /// <summary>
+        ///     The text for the Move selection tool. Value: "Move".
+        /// </summary>
+        public const string MoveText = "Move";
+
         /// <summary>
         ///     The text for the Rectangle selection tool. Value: "Rectangle".
         /// </summary>
@@ -59,6 +65,16 @@ namespace SlimViews
         ///     The text for the Crosshatch texture. Value: "Crosshatch".
         /// </summary>
         public const string TextureCrosshatch = "Crosshatch";
+
+        /// <summary>
+        ///     The text for the Concrete texture. Value: "Concrete".
+        /// </summary>
+        public const string TextureConcrete = "Concrete";
+
+        /// <summary>
+        ///     The text for the Canvas texture. Value: "Canvas".
+        /// </summary>
+        public const string TextureCanvas = "Canvas";
 
         // Filter Strings
         /// <summary>
