@@ -49,193 +49,6 @@ namespace SlimViews
     public sealed class ImageView : ViewModelBase
     {
         /// <summary>
-        ///     The automatic clean
-        /// </summary>
-        private bool _autoClean;
-
-        /// <summary>
-        ///     The BitmapImage
-        /// </summary>
-        private BitmapImage _bmp;
-
-        /// <summary>
-        ///     The Bitmap
-        /// </summary>
-        private Bitmap _btm;
-
-        /// <summary>
-        ///     The render
-        /// </summary>
-        private CustomImageFormat _cif;
-
-        /// <summary>
-        ///     Check if we compress cif files.
-        /// </summary>
-        private bool _compress;
-
-        /// <summary>
-        ///     The File count
-        /// </summary>
-        private int _count;
-
-        /// <summary>
-        ///     The current identifier of the Image
-        /// </summary>
-        private int _currentId;
-
-        /// <summary>
-        ///     The file list
-        ///     Holds the current List of Files we are viewing.
-        ///     Needed for Move Files
-        /// </summary>
-        private List<string> _fileList;
-
-        /// <summary>
-        ///     The file name
-        /// </summary>
-        private string _fileName;
-
-        /// <summary>
-        ///     The current path
-        /// </summary>
-        private string _filePath;
-
-        /// <summary>
-        ///     The GIF path
-        /// </summary>
-        private string _gifPath;
-
-        /// <summary>
-        ///     The green icon
-        /// </summary>
-        private string _greenIcon;
-
-        /// <summary>
-        ///     The information
-        /// </summary>
-        private string _information;
-
-        /// <summary>
-        ///     Is the Menu active
-        /// </summary>
-        private bool _isActive;
-
-        /// <summary>
-        ///     The is image active
-        /// </summary>
-        private bool _isImageActive;
-
-        /// <summary>
-        ///     The red icon
-        /// </summary>
-        private string _redIcon;
-
-        /// <summary>
-        ///     The right button visibility
-        /// </summary>
-        private Visibility _rightButtonVisibility;
-
-        /// <summary>
-        ///     Gets or sets the root.
-        /// </summary>
-        /// <value>
-        ///     The root.
-        /// </value>
-        private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        /// <summary>
-        ///     The similarity in Percent for a Image, Start value is 90
-        ///     Configured from Register
-        /// </summary>
-        private int _similarity;
-
-        /// <summary>
-        ///     The status image
-        /// </summary>
-        private string _statusImage;
-
-        /// <summary>
-        ///     Check if Subfolders should be used too
-        /// </summary>
-        private bool _subFolders;
-
-        /// <summary>
-        ///     The thumbnail visibility
-        /// </summary>
-        private Visibility _thumbnailVisibility;
-
-        /// <summary>
-        ///     Check if we show thumbnails.
-        /// </summary>
-        private bool _thumbs = true;
-
-        /// <summary>
-        /// The selected tool type
-        /// </summary>
-        private string _selectedToolType;
-
-        /// <summary>
-        /// The selected fill type
-        /// </summary>
-        private string _selectedFillType;
-
-        /// <summary>
-        /// The brush size
-        /// </summary>
-        private double _brushSize;
-
-        /// <summary>
-        /// The tolerance
-        /// </summary>
-        private double _tolerance;
-
-        /// <summary>
-        /// The selected texture
-        /// </summary>
-        private string _selectedTexture;
-
-        /// <summary>
-        /// The selected filter
-        /// </summary>
-        private string _selectedFilter;
-
-        /// <summary>
-        ///     The left button visibility
-        /// </summary>
-        private Visibility _leftButtonVisibility;
-
-        /// <summary>
-        ///     The observer
-        /// </summary>
-        private Dictionary<int, string> _observer;
-
-        /// <summary>
-        ///     The pixel width
-        /// </summary>
-        private int _pixelWidth;
-
-        /// <summary>
-        /// Gets or sets the current filter.
-        /// </summary>
-        /// <value>
-        /// The current filter.
-        /// </value>
-        private ImageFilters CurrentFilter { get; set; }
-
-        /// <summary>
-        /// Gets or sets the current texture.
-        /// </summary>
-        /// <value>
-        /// The current texture.
-        /// </value>
-        private TextureType CurrentTexture { get; set; }
-
-        /// <summary>
-        ///     The selected form
-        /// </summary>
-        private SelectionTools _selectedForm;
-
-        /// <summary>
         ///     The analyzer window command
         /// </summary>
         private ICommand _analyzerWindowCommand;
@@ -249,6 +62,76 @@ namespace SlimViews
         ///     The apply texture command
         /// </summary>
         private ICommand _applyTextureCommand;
+
+        /// <summary>
+        ///     The automatic clean
+        /// </summary>
+        private bool _autoClean;
+
+        /// <summary>
+        ///     The BitmapImage
+        /// </summary>
+        private BitmapImage _bmp;
+
+        /// <summary>
+        ///     The brighten command
+        /// </summary>
+        private ICommand _brightenCommand;
+
+        /// <summary>
+        ///     The brush size
+        /// </summary>
+        private double _brushSize;
+
+        /// <summary>
+        ///     The Bitmap
+        /// </summary>
+        private Bitmap _btm;
+
+        /// <summary>
+        ///     The render
+        /// </summary>
+        private CustomImageFormat _cif;
+
+        /// <summary>
+        ///     Clean the temporary folder
+        /// </summary>
+        private ICommand _cleanTempFolder;
+
+        /// <summary>
+        ///     The clear command.
+        /// </summary>
+        private ICommand _clearCommand;
+
+        /// <summary>
+        ///     The close command.
+        /// </summary>
+        private ICommand _closeCommand;
+
+        /// <summary>
+        ///     The color changed command
+        /// </summary>
+        private ICommand _colorChangedCommand;
+
+        /// <summary>
+        ///     Check if we compress cif files.
+        /// </summary>
+        private bool _compress;
+
+        /// <summary>
+        ///     The convert cif command.
+        /// </summary>
+        private ICommand _convertCommandCif;
+
+        /// <summary>
+        ///     The File count
+        /// </summary>
+        private int _count;
+
+        /// <summary>
+        ///     The current identifier of the Image
+        /// </summary>
+        private int _currentId;
 
         /// <summary>
         ///     The darken command
@@ -276,34 +159,21 @@ namespace SlimViews
         private ICommand _exportStringCommand;
 
         /// <summary>
-        ///     The brighten command
+        ///     The file list
+        ///     Holds the current List of Files we are viewing.
+        ///     Needed for Move Files
         /// </summary>
-        private ICommand _brightenCommand;
+        private List<string> _fileList;
 
         /// <summary>
-        ///     Clean the temporary folder
+        ///     The file name
         /// </summary>
-        private ICommand _cleanTempFolder;
+        private string _fileName;
 
         /// <summary>
-        ///     The clear command.
+        ///     The current path
         /// </summary>
-        private ICommand _clearCommand;
-
-        /// <summary>
-        ///     The close command.
-        /// </summary>
-        private ICommand _closeCommand;
-
-        /// <summary>
-        ///     The color changed command
-        /// </summary>
-        private ICommand _colorChangedCommand;
-
-        /// <summary>
-        ///     The convert cif command.
-        /// </summary>
-        private ICommand _convertCommandCif;
+        private string _filePath;
 
         /// <summary>
         ///     The filter configuration command
@@ -326,14 +196,44 @@ namespace SlimViews
         private ICommand _folderRenameCommand;
 
         /// <summary>
+        ///     The GIF path
+        /// </summary>
+        private string _gifPath;
+
+        /// <summary>
         ///     The GIF window command
         /// </summary>
         private ICommand _gifWindowCommand;
 
         /// <summary>
+        ///     The green icon
+        /// </summary>
+        private string _greenIcon;
+
+        /// <summary>
         ///     The image loaded command
         /// </summary>
         private ICommand _imageLoadedCommand;
+
+        /// <summary>
+        ///     The information
+        /// </summary>
+        private string _information;
+
+        /// <summary>
+        ///     Is the Menu active
+        /// </summary>
+        private bool _isActive;
+
+        /// <summary>
+        ///     The is image active
+        /// </summary>
+        private bool _isImageActive;
+
+        /// <summary>
+        ///     The left button visibility
+        /// </summary>
+        private Visibility _leftButtonVisibility;
 
         /// <summary>
         ///     The mirror command
@@ -356,6 +256,11 @@ namespace SlimViews
         private ICommand _nextCommand;
 
         /// <summary>
+        ///     The observer
+        /// </summary>
+        private Dictionary<int, string> _observer;
+
+        /// <summary>
         ///     The open CBZ command.
         /// </summary>
         private ICommand _openCbzCommand;
@@ -376,9 +281,19 @@ namespace SlimViews
         private ICommand _pixelateCommand;
 
         /// <summary>
+        ///     The pixel width
+        /// </summary>
+        private int _pixelWidth;
+
+        /// <summary>
         ///     The previous command
         /// </summary>
         private ICommand _previousCommand;
+
+        /// <summary>
+        ///     The red icon
+        /// </summary>
+        private string _redIcon;
 
         /// <summary>
         ///     The refresh command
@@ -394,6 +309,19 @@ namespace SlimViews
         ///     The resizer window command
         /// </summary>
         private ICommand _resizerWindowCommand;
+
+        /// <summary>
+        ///     The right button visibility
+        /// </summary>
+        private Visibility _rightButtonVisibility;
+
+        /// <summary>
+        ///     Gets or sets the root.
+        /// </summary>
+        /// <value>
+        ///     The root.
+        /// </value>
+        private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
         ///     The rotate backward command
@@ -421,6 +349,21 @@ namespace SlimViews
         private ICommand _searchCommand;
 
         /// <summary>
+        ///     The selected fill type
+        /// </summary>
+        private string _selectedFillType;
+
+        /// <summary>
+        ///     The selected filter
+        /// </summary>
+        private string _selectedFilter;
+
+        /// <summary>
+        ///     The selected form
+        /// </summary>
+        private SelectionTools _selectedForm;
+
+        /// <summary>
         ///     The selected frame command
         /// </summary>
         private ICommand _selectedFrameCommand;
@@ -431,14 +374,40 @@ namespace SlimViews
         private ICommand _selectedPointCommand;
 
         /// <summary>
+        ///     The selected texture
+        /// </summary>
+        private string _selectedTexture;
+
+        /// <summary>
         ///     The selected tool
         /// </summary>
         private ImageTools _selectedTool;
 
         /// <summary>
+        ///     The selected tool type
+        /// </summary>
+        private string _selectedToolType;
+
+        /// <summary>
         ///     The similar command
         /// </summary>
         private ICommand _similarCommand;
+
+        /// <summary>
+        ///     The similarity in Percent for a Image, Start value is 90
+        ///     Configured from Register
+        /// </summary>
+        private int _similarity;
+
+        /// <summary>
+        ///     The status image
+        /// </summary>
+        private string _statusImage;
+
+        /// <summary>
+        ///     Check if Subfolders should be used too
+        /// </summary>
+        private bool _subFolders;
 
         /// <summary>
         ///     The texture configuration command
@@ -449,6 +418,21 @@ namespace SlimViews
         ///     The thumb image clicked command
         /// </summary>
         private ICommand _thumbImageClickedCommand;
+
+        /// <summary>
+        ///     The thumbnail visibility
+        /// </summary>
+        private Visibility _thumbnailVisibility;
+
+        /// <summary>
+        ///     Check if we show thumbnails.
+        /// </summary>
+        private bool _thumbs = true;
+
+        /// <summary>
+        ///     The tolerance
+        /// </summary>
+        private double _tolerance;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
@@ -476,6 +460,22 @@ namespace SlimViews
 
             Initialize();
         }
+
+        /// <summary>
+        ///     Gets or sets the current filter.
+        /// </summary>
+        /// <value>
+        ///     The current filter.
+        /// </value>
+        private ImageFilters CurrentFilter { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the current texture.
+        /// </summary>
+        /// <value>
+        ///     The current texture.
+        /// </value>
+        private TextureType CurrentTexture { get; set; }
 
         /// <summary>
         ///     Gets the command bindings.
@@ -570,10 +570,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the type of the selected tool.
+        ///     Gets or sets the type of the selected tool.
         /// </summary>
         /// <value>
-        /// The type of the selected tool.
+        ///     The type of the selected tool.
         /// </value>
         public string SelectedToolType
         {
@@ -582,10 +582,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the size of the brush.
+        ///     Gets or sets the size of the brush.
         /// </summary>
         /// <value>
-        /// The size of the brush.
+        ///     The size of the brush.
         /// </value>
         public double BrushSize
         {
@@ -594,10 +594,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the tolerance.
+        ///     Gets or sets the tolerance.
         /// </summary>
         /// <value>
-        /// The tolerance.
+        ///     The tolerance.
         /// </value>
         public double Tolerance
         {
@@ -606,10 +606,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the type of the selected fill.
+        ///     Gets or sets the type of the selected fill.
         /// </summary>
         /// <value>
-        /// The type of the selected fill.
+        ///     The type of the selected fill.
         /// </value>
         public string SelectedFillType
         {
@@ -618,10 +618,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the selected texture.
+        ///     Gets or sets the selected texture.
         /// </summary>
         /// <value>
-        /// The selected texture.
+        ///     The selected texture.
         /// </value>
         public string SelectedTexture
         {
@@ -630,10 +630,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the selected filter.
+        ///     Gets or sets the selected filter.
         /// </summary>
         /// <value>
-        /// The selected filter.
+        ///     The selected filter.
         /// </value>
         public string SelectedFilter
         {
@@ -1313,10 +1313,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Called when [property changed].
+        ///     Called when [property changed].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="PropertyChangedEventArgs" /> instance containing the event data.</param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

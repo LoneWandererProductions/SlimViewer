@@ -34,7 +34,7 @@ namespace ViewModel
         }
 
         /// <summary>
-        /// Sets the property and raises PropertyChanged if the value changes.
+        ///     Sets the property and raises PropertyChanged if the value changes.
         /// </summary>
         /// <typeparam name="T">Type of the property.</typeparam>
         /// <param name="field">Reference to the field storing the property value.</param>

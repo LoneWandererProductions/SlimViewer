@@ -24,6 +24,11 @@ namespace SlimViews
     public sealed class FilterConfigView : INotifyPropertyChanged
     {
         /// <summary>
+        ///     The current configuration
+        /// </summary>
+        private readonly ImageFilterConfig _currentConfig;
+
+        /// <summary>
         ///     The base window size
         /// </summary>
         private int _baseWindowSize;
@@ -37,11 +42,6 @@ namespace SlimViews
         ///     The cancel command
         /// </summary>
         private ICommand _cancelCommand;
-
-        /// <summary>
-        ///     The current configuration
-        /// </summary>
-        private readonly ImageFilterConfig _currentConfig;
 
         /// <summary>
         ///     The factor

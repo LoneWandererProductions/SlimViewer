@@ -68,32 +68,110 @@
                     <MenuItem Header="Filter">
                         <MenuItem Header="Configure Filter" Command="{Binding FilterConfigCommand}" />
                         <Separator />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterSepia'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterSepia'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterGrayScale'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterGrayScale'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterBlackAndWhite'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterBlackAndWhite'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterInvert'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterInvert'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterPolaroid'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterPolaroid'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterContour'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterContour'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterBrightness'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterBrightness'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterContrast'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterContrast'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterHueShift'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterHueShift'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterColorBalance'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterColorBalance'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterVintage'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterVintage'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterSharpen'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterSharpen'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterGaussianBlur'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterGaussianBlur'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterEmboss'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterEmboss'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterBoxBlur'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterBoxBlur'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterLaplacian'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterLaplacian'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterEdgeEnhance'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterEdgeEnhance'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterMotionBlur'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterMotionBlur'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterUnsharpMask'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterUnsharpMask'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterDifferenceOfGaussians'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterDifferenceOfGaussians'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterCrosshatch'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterCrosshatch'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterFloydSteinbergDithering'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterFloydSteinbergDithering'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterAnisotropicKuwahara'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterAnisotropicKuwahara'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterSupersamplingAntialiasing'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterSupersamplingAntialiasing'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}" IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterPencilSketchEffect'}" Command="{Binding ApplyFilterCommand}" CommandParameter="{templates:ConstantStringExtension Key='FilterPencilSketchEffect'}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterSepia'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterSepia'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterGrayScale'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterGrayScale'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterBlackAndWhite'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterBlackAndWhite'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterInvert'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterInvert'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterPolaroid'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterPolaroid'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterContour'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterContour'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterBrightness'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterBrightness'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterContrast'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterContrast'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterHueShift'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterHueShift'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterColorBalance'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterColorBalance'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterVintage'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterVintage'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterSharpen'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterSharpen'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterGaussianBlur'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterGaussianBlur'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterEmboss'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterEmboss'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterBoxBlur'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterBoxBlur'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterLaplacian'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterLaplacian'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterEdgeEnhance'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterEdgeEnhance'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterMotionBlur'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterMotionBlur'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterUnsharpMask'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterUnsharpMask'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterDifferenceOfGaussians'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterDifferenceOfGaussians'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterCrosshatch'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterCrosshatch'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterFloydSteinbergDithering'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterFloydSteinbergDithering'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterAnisotropicKuwahara'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterAnisotropicKuwahara'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterSupersamplingAntialiasing'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterSupersamplingAntialiasing'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="{templates:ConstantStringExtension Key='FilterPencilSketchEffect'}"
+                                  Command="{Binding ApplyFilterCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='FilterPencilSketchEffect'}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
                         <Separator />
                         <MenuItem Header="Pixelate Image">
                             <Grid>
@@ -111,21 +189,37 @@
                     <MenuItem Header="Texture">
                         <MenuItem Header="Configure Texture" Command="{Binding TextureConfigCommand}" />
                         <Separator />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureNoise'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureNoise'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureNoise'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureNoise'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureClouds'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureClouds'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureClouds'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureClouds'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureMarble'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureMarble'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureMarble'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureMarble'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureWood'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureWood'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureWood'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureWood'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureWave'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureWave'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureWave'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureWave'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureCrosshatch'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureCrosshatch'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureCrosshatch'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureCrosshatch'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureConcrete'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureConcrete'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureConcrete'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureConcrete'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureCanvas'}" Command="{Binding ApplyTextureCommand}" CommandParameter="{templates:ConstantStringExtension Key='TextureCanvas'}"
+                        <MenuItem Header="{templates:ConstantStringExtension Key='TextureCanvas'}"
+                                  Command="{Binding ApplyTextureCommand}"
+                                  CommandParameter="{templates:ConstantStringExtension Key='TextureCanvas'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
                     </MenuItem>
                     <Separator />
