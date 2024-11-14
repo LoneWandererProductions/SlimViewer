@@ -46,12 +46,12 @@ namespace Imaging
         Crosshatch,
 
         /// <summary>
-        ///     The concrete
+        /// The concrete
         /// </summary>
         Concrete,
 
         /// <summary>
-        ///     The canvas
+        /// The canvas
         /// </summary>
         Canvas
     }

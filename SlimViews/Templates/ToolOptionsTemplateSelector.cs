@@ -16,7 +16,7 @@ namespace SlimViews.Templates
     ///     Tool Template Selector
     /// </summary>
     /// <seealso cref="T:System.Windows.Controls.DataTemplateSelector" />
-    public sealed class ToolOptionsTemplateSelector : DataTemplateSelector
+    public sealed partial class ToolOptionsTemplateSelector : DataTemplateSelector
     {
         /// <summary>
         ///     Gets or sets the paint tool template.

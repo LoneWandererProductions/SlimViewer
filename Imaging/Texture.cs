@@ -427,23 +427,27 @@ namespace Imaging
 
 
             //no Simd for now
-            using (var g = Graphics.FromImage(canvasBitmap.Bitmap))
+            using (Graphics g = Graphics.FromImage(canvasBitmap.Bitmap))
             {
                 g.Clear(Color.White);
 
                 // Draw vertical fibers
-                for (var x = 0; x < width; x += lineSpacing)
+                for (int x = 0; x < width; x += lineSpacing)
+                {
                     using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
                     {
                         g.FillRectangle(fiberBrush, x, 0, lineThickness, height);
                     }
+                }
 
                 // Draw horizontal fibers
-                for (var y = 0; y < height; y += lineSpacing)
+                for (int y = 0; y < height; y += lineSpacing)
+                {
                     using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
                     {
                         g.FillRectangle(fiberBrush, 0, y, width, lineThickness);
                     }
+                }
             }
 
             return canvasBitmap.Bitmap;
@@ -506,7 +510,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Adds a minor random variation to an integer value within a given range.
+        /// Adds a minor random variation to an integer value within a given range.
         /// </summary>
         private static int RandomVariation(int min, int max)
         {

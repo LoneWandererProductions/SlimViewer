@@ -13,12 +13,12 @@ using Imaging;
 namespace SlimViews
 {
     /// <summary>
-    ///     Converts string to enums
+    /// Converts string to enums
     /// </summary>
     internal static class Translator
     {
         /// <summary>
-        ///     Gets the tools from string.
+        /// Gets the tools from string.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>SelectionTools enum</returns>
@@ -30,12 +30,12 @@ namespace SlimViews
                 SlimViewerGuiResources.RectangleText => SelectionTools.Rectangle,
                 SlimViewerGuiResources.EllipseText => SelectionTools.Ellipse,
                 SlimViewerGuiResources.FreeFormText => SelectionTools.FreeForm,
-                _ => SelectionTools.Move
+                _ => SelectionTools.Move,
             };
         }
 
         /// <summary>
-        ///     Gets the texture from string.
+        /// Gets the texture from string.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>TextureType enum</returns>
@@ -51,12 +51,12 @@ namespace SlimViews
                 SlimViewerGuiResources.TextureCrosshatch => TextureType.Crosshatch,
                 SlimViewerGuiResources.TextureConcrete => TextureType.Concrete,
                 SlimViewerGuiResources.TextureCanvas => TextureType.Canvas,
-                _ => TextureType.Noise
+                _ => TextureType.Noise,
             };
         }
 
         /// <summary>
-        ///     Gets the filter from string.
+        /// Gets the filter from string.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>ImageFilters enum</returns>
@@ -91,7 +91,7 @@ namespace SlimViews
                 SlimViewerGuiResources.FilterSupersamplingAntialiasing => ImageFilters.SupersamplingAntialiasing,
                 SlimViewerGuiResources.FilterPostProcessingAntialiasing => ImageFilters.PostProcessingAntialiasing,
                 SlimViewerGuiResources.FilterPencilSketchEffect => ImageFilters.PencilSketchEffect,
-                _ => ImageFilters.None
+                _ => ImageFilters.None,
             };
         }
     }

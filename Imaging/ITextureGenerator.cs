@@ -79,7 +79,7 @@ namespace Imaging
             int height);
 
         /// <summary>
-        ///     Generates the concrete bitmap.
+        /// Generates the concrete bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -89,7 +89,7 @@ namespace Imaging
             int height);
 
         /// <summary>
-        ///     Generates the canvas bitmap.
+        /// Generates the canvas bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -117,5 +117,7 @@ namespace Imaging
             MaskShape shape,
             Point? startPoint = null,
             object shapeParams = null);
+
+
     }
 }
