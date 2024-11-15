@@ -172,21 +172,6 @@ namespace SlimViews
         public ConcurrentDictionary<int, string> Observer { get; set; }
 
         /// <summary>
-        ///     Sets the property.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
         ///     Gets a value indicating whether this instance can execute.
         /// </summary>
         /// <param name="obj">The object.</param>

@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -23,71 +22,72 @@ namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Search View Model
+    ///     Search View Model responsible for handling search operations 
+    ///     including text-based and color-based image searches.
     /// </summary>
-    /// <seealso cref="T:ViewModel.ViewModelBase" />
+    /// <seealso cref="ViewModel.ViewModelBase" />
     internal sealed class SearchView : ViewModelBase
     {
         /// <summary>
-        ///     The analysis
+        ///     Image analysis utility for performing color-based searches.
         /// </summary>
-        private readonly ImageAnalysis _analysis = new();
+        private readonly ImageAnalysis _imageAnalysis = new();
 
         /// <summary>
-        ///     The b
-        /// </summary>
-        private int _b;
-
-        /// <summary>
-        ///     The current folder
+        ///     Current folder being searched.
         /// </summary>
         private string _currentFolder;
 
         /// <summary>
-        ///     The g
-        /// </summary>
-        private int _g;
-
-        /// <summary>
-        ///     The r
-        /// </summary>
-        private int _r;
-
-        /// <summary>
-        ///     The range
-        /// </summary>
-        private int _range;
-
-        /// <summary>
-        ///     The search color command
-        /// </summary>
-        private ICommand _searchColorCommand;
-
-        /// <summary>
-        ///     The search string
+        ///     Text to search for in file names.
         /// </summary>
         private string _searchString;
 
         /// <summary>
-        ///     The search string command
+        ///     Search range for color comparison.
         /// </summary>
-        private ICommand _searchStringCommand;
+        private int _range = 3;
 
         /// <summary>
-        ///     The sub folders
+        ///     Red component for color comparison.
         /// </summary>
-        private bool _subFolders;
+        private int _red;
 
         /// <summary>
-        ///     The view
+        ///     Green component for color comparison.
         /// </summary>
-        private ImageView _view;
+        private int _green;
 
         /// <summary>
-        ///     Gets or sets the range.
+        ///     Blue component for color comparison.
+        /// </summary>
+        private int _blue;
+
+        /// <summary>
+        ///     Indicates whether subfolders should be included in the search.
+        /// </summary>
+        private bool _includeSubfolders;
+
+        /// <summary>
+        ///     ImageView instance for updating search results.
+        /// </summary>
+        private ImageView _imageView;
+
+        /// <summary>
+        ///     Command for performing text-based searches.
+        /// </summary>
+        private ICommand _searchByTextCommand;
+
+        /// <summary>
+        ///     Command for performing color-based searches.
+        /// </summary>
+        private ICommand _searchByColorCommand;
+
+        /// <summary>
+        ///     Gets or sets the search range for color comparison.
         /// </summary>
         /// <value>
-        ///     The range.
+        ///     The range of allowable color difference.
         /// </value>
         public int Range
         {
@@ -96,43 +96,43 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the r.
+        ///     Gets or sets the red component for color comparison.
         /// </summary>
         /// <value>
-        ///     The r.
+        ///     The red component of the target color.
         /// </value>
-        public int R
+        public int Red
         {
-            get => _r;
-            set => SetProperty(ref _r, value, nameof(R));
+            get => _red;
+            set => SetProperty(ref _red, value, nameof(Red));
         }
 
         /// <summary>
-        ///     Gets or sets the g.
+        ///     Gets or sets the green component for color comparison.
         /// </summary>
         /// <value>
-        ///     The g.
+        ///     The green component of the target color.
         /// </value>
-        public int G
+        public int Green
         {
-            get => _g;
-            set => SetProperty(ref _g, value, nameof(G));
+            get => _green;
+            set => SetProperty(ref _green, value, nameof(Green));
         }
 
         /// <summary>
-        ///     Gets or sets the b.
+        ///     Gets or sets the blue component for color comparison.
         /// </summary>
         /// <value>
-        ///     The b.
+        ///     The blue component of the target color.
         /// </value>
-        public int B
+        public int Blue
         {
-            get => _b;
-            set => SetProperty(ref _b, value, nameof(B));
+            get => _blue;
+            set => SetProperty(ref _blue, value, nameof(Blue));
         }
 
         /// <summary>
-        ///     Gets or sets the search string.
+        ///     Gets or sets the text to search for in file names.
         /// </summary>
         /// <value>
         ///     The search string.
@@ -144,118 +144,98 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the search string command.
+        ///     Command for performing text-based searches.
         /// </summary>
         /// <value>
-        ///     The search string command.
+        ///     A command that triggers the text-based search action.
         /// </value>
-        public ICommand SearchStringCommand =>
-            _searchStringCommand ??= new DelegateCommand<object>(StringAction, CanExecute);
+        public ICommand SearchByTextCommand =>
+            _searchByTextCommand ??= new DelegateCommand<object>(ExecuteTextSearch, CanExecute);
 
         /// <summary>
-        ///     Gets the search color command.
+        ///     Command for performing color-based searches.
         /// </summary>
         /// <value>
-        ///     The search color command.
+        ///     A command that triggers the color-based search action.
         /// </value>
-        public ICommand SearchColorCommand =>
-            _searchColorCommand ??= new DelegateCommand<object>(ColorAction, CanExecute);
+        public ICommand SearchByColorCommand =>
+            _searchByColorCommand ??= new DelegateCommand<object>(ExecuteColorSearch, CanExecute);
 
         /// <summary>
-        ///     Sets the property.
+        ///     Initializes the SearchView with the specified parameters.
         /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
+        /// <param name="includeSubfolders">Whether to include subfolders in the search.</param>
+        /// <param name="currentFolder">The folder to search within.</param>
+        /// <param name="imageView">The ImageView instance to update with search results.</param>
+        /// <param name="initialColor">Optional initial color for color-based searches.</param>
+        /// <exception cref="ArgumentNullException">Thrown if currentFolder or imageView is null.</exception>
+        public void Initialize(bool includeSubfolders, string currentFolder, ImageView imageView, ColorHsv initialColor = null)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            _includeSubfolders = includeSubfolders;
+            _currentFolder = currentFolder ?? throw new ArgumentNullException(nameof(currentFolder));
+            _imageView = imageView ?? throw new ArgumentNullException(nameof(imageView));
 
-            field = value;
-            OnPropertyChanged(propertyName);
+            if (initialColor != null)
+            {
+                Red = initialColor.R;
+                Green = initialColor.G;
+                Blue = initialColor.B;
+            }
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this instance can execute.
+        ///     Validates whether commands can execute.
         /// </summary>
-        /// <param name="obj">The object.</param>
+        /// <param name="obj">Optional command parameter.</param>
         /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
+        ///     <c>true</c> if the command can execute; otherwise, <c>false</c>.
         /// </returns>
-        /// <value>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-        /// </value>
-        private bool CanExecute(object obj)
+        private bool CanExecute(object obj) => true;
+
+        /// <summary>
+        ///     Executes the text-based search action.
+        /// </summary>
+        /// <param name="obj">Optional command parameter.</param>
+        private void ExecuteTextSearch(object obj)
         {
-            // check if executing is allowed, not used right now
-            return true;
+            if (string.IsNullOrWhiteSpace(SearchString)) return;
+
+            var files = FileHandleSearch.GetFilesWithSubString(
+                _currentFolder,
+                ImagingResources.Appendix,
+                _includeSubfolders,
+                SearchString,
+                true);
+
+            if (files.IsNullOrEmpty()) return;
+
+            _imageView.ChangeImage(files);
         }
 
         /// <summary>
-        ///     Initiates the specified sub folders.
+        ///     Executes the color-based search action.
         /// </summary>
-        /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
-        /// <param name="currentFolder">The current folder.</param>
-        /// <param name="imageView">The image view.</param>
-        /// <param name="colorHsv">The color HSV.</param>
-        internal void Initiate(bool subFolders, string currentFolder, ImageView imageView, ColorHsv colorHsv)
-        {
-            _subFolders = subFolders;
-            _currentFolder = currentFolder;
-            _view = imageView;
-            //just a start value
-            Range = 3;
-
-            if (colorHsv is null) return;
-
-            R = colorHsv.R;
-            G = colorHsv.G;
-            B = colorHsv.B;
-        }
-
-        /// <summary>
-        ///     String Search action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void StringAction(object obj)
-        {
-            if (string.IsNullOrEmpty(SearchString)) return;
-
-            var lst = FileHandleSearch.GetFilesWithSubString(_currentFolder, ImagingResources.Appendix, _subFolders,
-                SearchString, true);
-
-            if (lst.IsNullOrEmpty()) return;
-
-            _view.ChangeImage(lst);
-        }
-
-        /// <summary>
-        ///     Colors Search action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <exception cref="ArgumentException">Argument Exception</exception>
-        /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        private void ColorAction(object obj)
+        /// <param name="obj">Optional command parameter.</param>
+        private void ExecuteColorSearch(object obj)
         {
             try
             {
-                var lst = _analysis.FindImagesInColorRange(R, G, B, Range, _currentFolder, _subFolders,
-                    ImagingResources.Appendix);
+                var files = _imageAnalysis.FindImagesInColorRange(
+                    Red, Green, Blue, Range, _currentFolder, _includeSubfolders, ImagingResources.Appendix);
 
-                if (lst.IsNullOrEmpty()) return;
+                if (files.IsNullOrEmpty()) return;
 
-                _view.ChangeImage(lst);
+                _imageView.ChangeImage(files);
             }
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.Message,nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (InvalidOperationException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.Message, nameof(InvalidOperationException), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

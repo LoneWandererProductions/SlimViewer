@@ -114,6 +114,11 @@ namespace SlimViews
         internal const string ErrorSerializer = "Could not Serialize: ";
 
         /// <summary>
+        ///     The error with Values that are not positive (const). Value: "Value must be positive.".
+        /// </summary>
+        internal const string ErrrorMeasures = "Value must be positive: ";
+
+        /// <summary>
         ///     The Error Image not supported (const). Value: " "Unsupported image format."
         /// </summary>
         internal const string ErrorNotSupported = "Unsupported image format.";

@@ -31,7 +31,7 @@ namespace SlimViews
     ///     Gif Viewer
     /// </summary>
     /// <seealso cref="INotifyPropertyChanged" />
-    public sealed class GifView : INotifyPropertyChanged
+    public sealed class GifView : ViewModelBase
     {
         /// <summary>
         ///     The automatic clear
@@ -281,36 +281,6 @@ namespace SlimViews
         /// </value>
         internal Thumbnails Thumbnail { private get; set; }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     Sets the property.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
         /// </summary>
@@ -375,7 +345,7 @@ namespace SlimViews
             if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, SlimViewerResources.CbzExt,
                     StringComparison.OrdinalIgnoreCase)) return;
 
-            Initiate(OutputPath);
+            _ = InitiateAsync(OutputPath);
 
             GifPath = pathObj.FilePath;
 
@@ -410,7 +380,7 @@ namespace SlimViews
             //get target Folder
             var path = FileIoHandler.ShowFolder(null);
 
-            Initiate(OutputPath);
+            _ = InitiateAsync(OutputPath);
 
             var fileList =
                 FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
@@ -493,26 +463,20 @@ namespace SlimViews
         /// <summary>
         ///     Initiates this instance.
         /// </summary>
-        /// <param name="path"></param>
-        private void Initiate(string path)
+        /// <param name="path">Target Path</param>
+        private async Task InitiateAsync(string path)
         {
-            _ = Directory.CreateDirectory(path);
-
-            OutputPath = path;
-
-            _imageExport = Path.Combine(path, SlimViewerResources.ImagesPath);
+            await Task.Run(() =>
             {
-                //if exists, clean up
-                if (Directory.Exists(_imageExport)) Directory.Delete(_imageExport, true);
-                Directory.CreateDirectory(_imageExport);
-            }
+                if (Directory.Exists(path))
+                    Directory.Delete(path, true);
 
-            _gifExport = Path.Combine(path, SlimViewerResources.NewGifPath);
-            {
-                //if exists, clean up
-                if (Directory.Exists(_gifExport)) Directory.Delete(_gifExport, true);
-                Directory.CreateDirectory(_gifExport);
-            }
+                Directory.CreateDirectory(path);
+
+                OutputPath = path;
+                _imageExport = Path.Combine(path, SlimViewerResources.ImagesPath);
+                _gifExport = Path.Combine(path, SlimViewerResources.NewGifPath);
+            });
 
             IsActive = true;
         }

@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
@@ -21,8 +20,8 @@ namespace SlimViews
     /// <summary>
     ///     Main View for texture Configuration
     /// </summary>
-    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
-    public sealed class TextureConfigView : INotifyPropertyChanged
+    /// <seealso cref="ViewModel.ViewModelBase" />
+    public sealed class TextureConfigView : ViewModelBase
     {
         /// <summary>
         ///     The alpha
@@ -574,35 +573,6 @@ namespace SlimViews
         ///     The cancel command.
         /// </value>
         public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
-
-        /// <summary>
-        ///     Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="name">The name.</param>
-        private void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        /// <summary>
-        ///     Sets the property.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
 
         /// <summary>
         ///     Gets the command.

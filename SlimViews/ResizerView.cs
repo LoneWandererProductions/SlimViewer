@@ -32,7 +32,7 @@ namespace SlimViews
     ///     Add optional Filters
     ///     Add File Converter
     /// </summary>
-    internal sealed class ResizerView : INotifyPropertyChanged
+    internal sealed class ResizerView : ViewModelBase
     {
         /// <summary>
         ///     The cancel command
@@ -87,7 +87,7 @@ namespace SlimViews
         /// <summary>
         ///     The selected filter option
         /// </summary>
-        private ImageFilters _selectedFilterOption;
+        private ImageFilters _selectedFilterOption = ImageFilters.None;
 
         /// <summary>
         ///     The width
@@ -151,7 +151,15 @@ namespace SlimViews
         public int Height
         {
             get => _height;
-            set => SetProperty(ref _height, value, nameof(Height));
+            set
+            {
+                if (value < 0)
+                {
+                    MessageBox.Show(string.Concat(SlimViewerResources.ErrrorMeasures, nameof(Height)), SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                SetProperty(ref _height, value, nameof(Height));
+            }
         }
 
         /// <summary>
@@ -163,7 +171,15 @@ namespace SlimViews
         public int Width
         {
             get => _width;
-            set => SetProperty(ref _width, value, nameof(Width));
+            set
+            {
+                if (value < 0)
+                {
+                    MessageBox.Show(string.Concat(SlimViewerResources.ErrrorMeasures, nameof(Width)), SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                SetProperty(ref _width, value, nameof(Width));
+            }
         }
 
         /// <summary>
@@ -242,27 +258,6 @@ namespace SlimViews
         ///     The file extensions.
         /// </value>
         public IEnumerable<string> FileExtensions => ImagingResources.Appendix;
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     Sets the property.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
@@ -370,15 +365,6 @@ namespace SlimViews
                 // Save the modified image with the determined file extension
                 _ = ImageProcessor.SaveImage(target, SelectedExtension, bitmap);
             }
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

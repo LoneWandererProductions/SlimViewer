@@ -20,8 +20,8 @@ namespace SlimViews
     /// <summary>
     ///     Set Input Fields active or Inactive based on the used Filter
     /// </summary>
-    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
-    public sealed class FilterConfigView : INotifyPropertyChanged
+    /// <seealso cref="ViewModel.ViewModelBase" />
+    public sealed class FilterConfigView : ViewModelBase
     {
         /// <summary>
         ///     The current configuration
@@ -245,35 +245,6 @@ namespace SlimViews
         ///     The cancel command.
         /// </value>
         public ICommand CancelCommand => GetCommand(ref _cancelCommand, CancelAction);
-
-        /// <summary>
-        ///     Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     Sets the property.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="field">The field.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         /// <summary>
         ///     Gets the command.

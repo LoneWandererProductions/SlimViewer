@@ -234,17 +234,6 @@ namespace SlimViews
         public ICommand ExportCommand { get; }
 
         /// <summary>
-        ///     Sets the property and raises the PropertyChanged event.
-        /// </summary>
-        private void SetProperty<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
         ///     Determines whether the commands can execute.
         /// </summary>
         public bool CanExecute(object obj)
