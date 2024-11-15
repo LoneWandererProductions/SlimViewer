@@ -4,7 +4,7 @@
     xmlns:slimViews="clr-namespace:SlimViews"
     xmlns:templates="clr-namespace:SlimViews.Templates">
 
-    <slimViews:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
+    <templates:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
     <templates:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter" />
 
 
@@ -149,6 +149,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.DataContext>
                     <!-- Set the DataContext for the ComboBox -->
@@ -187,6 +188,7 @@
                 <Label Content="Texture:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}" />
                 <ComboBox Grid.Row="4" Grid.Column="1"
+                          Name="TextureCombobox"
                           Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"
                           SelectedValue="{Binding SelectedTexture, Mode=TwoWay}" SelectedValuePath="Content">
                     <ComboBoxItem Content="{StaticResource TextureClouds}" />
@@ -200,10 +202,16 @@
                     <!-- Add more texture options here -->
                 </ComboBox>
 
+                <!-- Visibility based on selected texture -->
+                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2"
+                        Visibility="{Binding SelectedIndex, ElementName=TextureCombobox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=TextureConfig}" />
+
+
                 <!-- Filter Selection (Visible when Fill Type is Filter) -->
                 <Label Content="Filter:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}" />
                 <ComboBox Grid.Row="5" Grid.Column="1"
+                          Name="FilterCombobox"
                           Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
                           SelectedValue="{Binding SelectedFilter, Mode=TwoWay}" SelectedValuePath="Content">
                     <ComboBoxItem Content="{StaticResource FilterNone}" />
@@ -235,6 +243,8 @@
                     <ComboBoxItem Content="{StaticResource FilterPencilSketchEffect}" />
                     <!-- Add more filter options if needed -->
                 </ComboBox>
+
+                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2" Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"/>
 
             </Grid>
         </ScrollViewer>

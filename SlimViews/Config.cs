@@ -89,27 +89,27 @@ namespace SlimViews
             }
             catch (InvalidOperationException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (XmlException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (NullReferenceException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (UnauthorizedAccessException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (ArgumentException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (IOException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
         }
 
@@ -130,27 +130,27 @@ namespace SlimViews
             }
             catch (InvalidOperationException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (XmlException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (NullReferenceException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (UnauthorizedAccessException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (ArgumentException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
             catch (IOException ex)
             {
-                Trace.WriteLine(string.Concat(SlimViewerResources.ErrorSerializer, ex));
+                Trace.WriteLine(string.Concat(ViewResources.ErrorSerializer, ex));
             }
 
             return null;

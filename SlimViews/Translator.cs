@@ -26,10 +26,10 @@ namespace SlimViews
         {
             return command switch
             {
-                SlimViewerGuiResources.MoveText => SelectionTools.Move,
-                SlimViewerGuiResources.RectangleText => SelectionTools.Rectangle,
-                SlimViewerGuiResources.EllipseText => SelectionTools.Ellipse,
-                SlimViewerGuiResources.FreeFormText => SelectionTools.FreeForm,
+                ViewGuiResources.MoveText => SelectionTools.Move,
+                ViewGuiResources.RectangleText => SelectionTools.Rectangle,
+                ViewGuiResources.EllipseText => SelectionTools.Ellipse,
+                ViewGuiResources.FreeFormText => SelectionTools.FreeForm,
                 _ => SelectionTools.Move
             };
         }
@@ -43,14 +43,14 @@ namespace SlimViews
         {
             return command switch
             {
-                SlimViewerGuiResources.TextureNoise => TextureType.Noise,
-                SlimViewerGuiResources.TextureClouds => TextureType.Clouds,
-                SlimViewerGuiResources.TextureMarble => TextureType.Marble,
-                SlimViewerGuiResources.TextureWood => TextureType.Wood,
-                SlimViewerGuiResources.TextureWave => TextureType.Wave,
-                SlimViewerGuiResources.TextureCrosshatch => TextureType.Crosshatch,
-                SlimViewerGuiResources.TextureConcrete => TextureType.Concrete,
-                SlimViewerGuiResources.TextureCanvas => TextureType.Canvas,
+                ViewGuiResources.TextureNoise => TextureType.Noise,
+                ViewGuiResources.TextureClouds => TextureType.Clouds,
+                ViewGuiResources.TextureMarble => TextureType.Marble,
+                ViewGuiResources.TextureWood => TextureType.Wood,
+                ViewGuiResources.TextureWave => TextureType.Wave,
+                ViewGuiResources.TextureCrosshatch => TextureType.Crosshatch,
+                ViewGuiResources.TextureConcrete => TextureType.Concrete,
+                ViewGuiResources.TextureCanvas => TextureType.Canvas,
                 _ => TextureType.Noise
             };
         }
@@ -64,33 +64,33 @@ namespace SlimViews
         {
             return command switch
             {
-                SlimViewerGuiResources.FilterNone => ImageFilters.None,
-                SlimViewerGuiResources.FilterGrayScale => ImageFilters.GrayScale,
-                SlimViewerGuiResources.FilterInvert => ImageFilters.Invert,
-                SlimViewerGuiResources.FilterSepia => ImageFilters.Sepia,
-                SlimViewerGuiResources.FilterBlackAndWhite => ImageFilters.BlackAndWhite,
-                SlimViewerGuiResources.FilterPolaroid => ImageFilters.Polaroid,
-                SlimViewerGuiResources.FilterContour => ImageFilters.Contour,
-                SlimViewerGuiResources.FilterBrightness => ImageFilters.Brightness,
-                SlimViewerGuiResources.FilterContrast => ImageFilters.Contrast,
-                SlimViewerGuiResources.FilterHueShift => ImageFilters.HueShift,
-                SlimViewerGuiResources.FilterColorBalance => ImageFilters.ColorBalance,
-                SlimViewerGuiResources.FilterVintage => ImageFilters.Vintage,
-                SlimViewerGuiResources.FilterSharpen => ImageFilters.Sharpen,
-                SlimViewerGuiResources.FilterGaussianBlur => ImageFilters.GaussianBlur,
-                SlimViewerGuiResources.FilterEmboss => ImageFilters.Emboss,
-                SlimViewerGuiResources.FilterBoxBlur => ImageFilters.BoxBlur,
-                SlimViewerGuiResources.FilterLaplacian => ImageFilters.Laplacian,
-                SlimViewerGuiResources.FilterEdgeEnhance => ImageFilters.EdgeEnhance,
-                SlimViewerGuiResources.FilterMotionBlur => ImageFilters.MotionBlur,
-                SlimViewerGuiResources.FilterUnsharpMask => ImageFilters.UnsharpMask,
-                SlimViewerGuiResources.FilterDifferenceOfGaussians => ImageFilters.DifferenceOfGaussians,
-                SlimViewerGuiResources.FilterCrosshatch => ImageFilters.Crosshatch,
-                SlimViewerGuiResources.FilterFloydSteinbergDithering => ImageFilters.FloydSteinbergDithering,
-                SlimViewerGuiResources.FilterAnisotropicKuwahara => ImageFilters.AnisotropicKuwahara,
-                SlimViewerGuiResources.FilterSupersamplingAntialiasing => ImageFilters.SupersamplingAntialiasing,
-                SlimViewerGuiResources.FilterPostProcessingAntialiasing => ImageFilters.PostProcessingAntialiasing,
-                SlimViewerGuiResources.FilterPencilSketchEffect => ImageFilters.PencilSketchEffect,
+                ViewGuiResources.FilterNone => ImageFilters.None,
+                ViewGuiResources.FilterGrayScale => ImageFilters.GrayScale,
+                ViewGuiResources.FilterInvert => ImageFilters.Invert,
+                ViewGuiResources.FilterSepia => ImageFilters.Sepia,
+                ViewGuiResources.FilterBlackAndWhite => ImageFilters.BlackAndWhite,
+                ViewGuiResources.FilterPolaroid => ImageFilters.Polaroid,
+                ViewGuiResources.FilterContour => ImageFilters.Contour,
+                ViewGuiResources.FilterBrightness => ImageFilters.Brightness,
+                ViewGuiResources.FilterContrast => ImageFilters.Contrast,
+                ViewGuiResources.FilterHueShift => ImageFilters.HueShift,
+                ViewGuiResources.FilterColorBalance => ImageFilters.ColorBalance,
+                ViewGuiResources.FilterVintage => ImageFilters.Vintage,
+                ViewGuiResources.FilterSharpen => ImageFilters.Sharpen,
+                ViewGuiResources.FilterGaussianBlur => ImageFilters.GaussianBlur,
+                ViewGuiResources.FilterEmboss => ImageFilters.Emboss,
+                ViewGuiResources.FilterBoxBlur => ImageFilters.BoxBlur,
+                ViewGuiResources.FilterLaplacian => ImageFilters.Laplacian,
+                ViewGuiResources.FilterEdgeEnhance => ImageFilters.EdgeEnhance,
+                ViewGuiResources.FilterMotionBlur => ImageFilters.MotionBlur,
+                ViewGuiResources.FilterUnsharpMask => ImageFilters.UnsharpMask,
+                ViewGuiResources.FilterDifferenceOfGaussians => ImageFilters.DifferenceOfGaussians,
+                ViewGuiResources.FilterCrosshatch => ImageFilters.Crosshatch,
+                ViewGuiResources.FilterFloydSteinbergDithering => ImageFilters.FloydSteinbergDithering,
+                ViewGuiResources.FilterAnisotropicKuwahara => ImageFilters.AnisotropicKuwahara,
+                ViewGuiResources.FilterSupersamplingAntialiasing => ImageFilters.SupersamplingAntialiasing,
+                ViewGuiResources.FilterPostProcessingAntialiasing => ImageFilters.PostProcessingAntialiasing,
+                ViewGuiResources.FilterPencilSketchEffect => ImageFilters.PencilSketchEffect,
                 _ => ImageFilters.None
             };
         }

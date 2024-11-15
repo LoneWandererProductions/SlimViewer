@@ -11,7 +11,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -155,7 +154,7 @@ namespace SlimViews
             {
                 if (value < 0)
                 {
-                    MessageBox.Show(string.Concat(SlimViewerResources.ErrrorMeasures, nameof(Height)), SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show(string.Concat(ViewResources.ErrorMeasures, nameof(Height)), ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 SetProperty(ref _height, value, nameof(Height));
@@ -175,7 +174,7 @@ namespace SlimViews
             {
                 if (value < 0)
                 {
-                    MessageBox.Show(string.Concat(SlimViewerResources.ErrrorMeasures, nameof(Width)), SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show(string.Concat(ViewResources.ErrorMeasures, nameof(Width)), ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 SetProperty(ref _width, value, nameof(Width));

@@ -54,7 +54,7 @@ namespace SlimViews
         /// <returns>The path to the target folder.</returns>
         internal static string UnpackFolder(string path, string fileNameWithoutExt)
         {
-            var tempFolder = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
+            var tempFolder = Path.Combine(Directory.GetCurrentDirectory(), ViewResources.TempFolder);
             Directory.CreateDirectory(tempFolder);
 
             var targetFolder = Path.Combine(tempFolder, fileNameWithoutExt);
@@ -91,7 +91,7 @@ namespace SlimViews
                 try
                 {
                     var success = SaveImage(imageExport, ImagingResources.JpgExt, image);
-                    if (!success) ShowError(SlimViewerResources.ErrorCouldNotSaveFile);
+                    if (!success) ShowError(ViewResources.ErrorCouldNotSaveFile);
                 }
                 catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
                 {
@@ -108,7 +108,7 @@ namespace SlimViews
         /// <returns>The path to the newly created GIF file.</returns>
         internal static string ConvertToGifAction(string folder, string gifPath)
         {
-            var targetGifPath = Path.Combine(gifPath, SlimViewerResources.NewGif);
+            var targetGifPath = Path.Combine(gifPath, ViewResources.NewGif);
             Render.CreateGif(folder, targetGifPath);
             return targetGifPath;
         }
@@ -155,7 +155,7 @@ namespace SlimViews
         internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne,
             string colorTwo, string similarity, Bitmap difference)
         {
-            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenTxt, null!);
+            var pathObj = FileIoHandler.HandleFileSave(ViewResources.FileOpenTxt, null!);
 
             if (pathObj == null) return;
 
@@ -226,7 +226,7 @@ namespace SlimViews
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
                 Trace.WriteLine(ex);
-                ShowError(ex.ToString(), SlimViewerResources.MessageError);
+                ShowError(ex.ToString(), ViewResources.ErrorMessage);
             }
 
             return bitmap;
@@ -250,7 +250,7 @@ namespace SlimViews
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
                 Trace.WriteLine(ex);
-                ShowError(ex.ToString(), SlimViewerResources.MessageError);
+                ShowError(ex.ToString(), ViewResources.ErrorMessage);
             }
 
             return bitmap;
@@ -284,7 +284,7 @@ namespace SlimViews
                 ImagingResources.BmpExt => ImageFormat.Bmp,
                 ImagingResources.GifExt => ImageFormat.Gif,
                 ImagingResources.TifExt => ImageFormat.Tiff,
-                _ => throw new ArgumentException(SlimViewerResources.ErrorNotSupported) // Handle unsupported formats
+                _ => throw new ArgumentException(ViewResources.ErrorNotSupported) // Handle unsupported formats
             };
 
             Render.SaveBitmap(bitmap, path, format);
@@ -339,8 +339,8 @@ namespace SlimViews
         /// <param name="source">The source of the error (optional).</param>
         private static void ShowError(string message, string source = null)
         {
-            if (source != null) message = $"{SlimViewerResources.MeesageErrorSource}{source}\n{message}";
-            MessageBox.Show(message, SlimViewerResources.MessageErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            if (source != null) message = $"{ViewResources.ErrorSourceMessage}{source}\n{message}";
+            MessageBox.Show(message, ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         /// <summary>
@@ -388,7 +388,7 @@ namespace SlimViews
             catch (ArgumentNullException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(CutImage)));
+                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(CutImage)));
             }
 
             return btm;
@@ -409,7 +409,7 @@ namespace SlimViews
             catch (ArgumentNullException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(EraseImage)));
+                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(EraseImage)));
             }
 
             return btm;
@@ -431,7 +431,7 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RotateImage)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(RotateImage)));
             }
 
             return btm;
@@ -453,7 +453,7 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RotateImage)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(RotateImage)));
             }
 
             return btm;
@@ -474,7 +474,7 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RotateImage)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(RotateImage)));
             }
 
             return btm;
@@ -506,14 +506,14 @@ namespace SlimViews
                     else
                         error++;
 
-                _ = MessageBox.Show(string.Concat(SlimViewerResources.InformationConverted, count, Environment.NewLine,
-                    SlimViewerResources.InformationErrors, error));
+                _ = MessageBox.Show(string.Concat(ViewResources.InformationConverted, count, Environment.NewLine,
+                    ViewResources.InformationErrors, error));
             }
             catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(FolderConvert)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(FolderConvert)));
             }
         }
     }

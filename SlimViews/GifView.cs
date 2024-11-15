@@ -316,12 +316,12 @@ namespace SlimViews
 
             if (info == null)
             {
-                Information = string.Concat(SlimViewerResources.MessageErrorFileNotFound, filePath);
+                Information = string.Concat(ViewResources.ErrorFileNotFoundMessage, filePath);
                 return;
             }
 
             //set Infos
-            Information = SlimViewerResources.BuildImageInformation(filePath, fileName, Bmp);
+            Information = ViewResources.BuildImageInformation(filePath, fileName, Bmp);
         }
 
         /// <summary>
@@ -340,9 +340,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenGif, null);
+            var pathObj = FileIoHandler.HandleFileOpen(ViewResources.FileOpenGif, null);
 
-            if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, SlimViewerResources.CbzExt,
+            if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, ViewResources.CbzExt,
                     StringComparison.OrdinalIgnoreCase)) return;
 
             _ = InitiateAsync(OutputPath);
@@ -354,15 +354,15 @@ namespace SlimViews
             var info = ImageGifHandler.GetImageInfo(GifPath);
             if (info == null)
             {
-                Information = string.Concat(SlimViewerResources.MessageErrorFileNotFound, FilePath);
+                Information = string.Concat(ViewResources.ErrorFileNotFoundMessage, FilePath);
                 return;
             }
 
             //set Infos
-            Information = SlimViewerResources.BuildGifInformation(GifPath, info);
+            Information = ViewResources.BuildGifInformation(GifPath, info);
 
             //add name of the split files
-            var name = Path.Combine(_imageExport, SlimViewerResources.ImagesPath);
+            var name = Path.Combine(_imageExport, ViewResources.ImagesPath);
             _ = ImageProcessor.ConvertGifActionAsync(GifPath, name);
             var currentFolder = _imageExport;
 
@@ -387,7 +387,7 @@ namespace SlimViews
 
             if (fileList is not { Count: < 200 })
             {
-                _ = MessageBox.Show(SlimViewerResources.MessageFiles, SlimViewerResources.MessageInformation);
+                _ = MessageBox.Show(ViewResources.MessageFiles, ViewResources.MessageInformation);
                 return;
             }
 
@@ -400,12 +400,12 @@ namespace SlimViews
             var info = ImageGifHandler.GetImageInfo(_gifPath);
             if (info == null)
             {
-                Information = string.Concat(SlimViewerResources.MessageErrorFileNotFound, FilePath);
+                Information = string.Concat(ViewResources.ErrorFileNotFoundMessage, FilePath);
                 return;
             }
 
             //set Infos
-            Information = SlimViewerResources.BuildGifInformation(_gifPath, info);
+            Information = ViewResources.BuildGifInformation(_gifPath, info);
         }
 
         /// <summary>
@@ -434,7 +434,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SaveGifAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpenGif, OutputPath);
+            var pathObj = FileIoHandler.HandleFileSave(ViewResources.FileOpenGif, OutputPath);
 
             if (pathObj == null) return;
 
@@ -474,8 +474,8 @@ namespace SlimViews
                 Directory.CreateDirectory(path);
 
                 OutputPath = path;
-                _imageExport = Path.Combine(path, SlimViewerResources.ImagesPath);
-                _gifExport = Path.Combine(path, SlimViewerResources.NewGifPath);
+                _imageExport = Path.Combine(path, ViewResources.ImagesPath);
+                _gifExport = Path.Combine(path, ViewResources.NewGifPath);
             });
 
             IsActive = true;

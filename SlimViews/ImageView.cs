@@ -1291,8 +1291,8 @@ namespace SlimViews
             _cif = new CustomImageFormat();
             Observer = new Dictionary<int, string>();
 
-            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
-            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
+            _greenIcon = Path.Combine(_root, ViewResources.IconPathGreen);
+            _redIcon = Path.Combine(_root, ViewResources.IconPathRed);
 
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
@@ -1472,14 +1472,14 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, SlimViewerRegister.CurrentFolder);
+            var pathObj = FileIoHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
             SlimViewerRegister.CurrentFolder = pathObj.Folder;
 
             //handle cbz files
-            if (string.Equals(pathObj.Extension, SlimViewerResources.CbzExt, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(pathObj.Extension, ViewResources.CbzExt, StringComparison.OrdinalIgnoreCase))
             {
                 GenerateCbrView(pathObj);
                 return;
@@ -1488,8 +1488,8 @@ namespace SlimViews
             //check if file extension is supported
             if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
             {
-                _ = MessageBox.Show(string.Concat(SlimViewerResources.MessageFileNotSupported, pathObj.Extension),
-                    SlimViewerResources.MessageError);
+                _ = MessageBox.Show(string.Concat(ViewResources.ErrorFileNotSupported, pathObj.Extension),
+                    ViewResources.ErrorMessage);
                 return;
             }
 
@@ -1507,7 +1507,7 @@ namespace SlimViews
         private void OpenCbzAction(object obj)
         {
             var pathObj =
-                FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
+                FileIoHandler.HandleFileOpen(ViewResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1525,7 +1525,7 @@ namespace SlimViews
         private void OpenCifAction(object obj)
         {
             var pathObj =
-                FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
+                FileIoHandler.HandleFileOpen(ViewResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1541,7 +1541,7 @@ namespace SlimViews
             //set Filename
             FileName = Path.GetFileName(_filePath);
             //set Infos
-            Information = SlimViewerResources.BuildImageInformation(_filePath, FileName, Bmp);
+            Information = ViewResources.BuildImageInformation(_filePath, FileName, Bmp);
         }
 
         /// <summary>
@@ -1550,7 +1550,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ConvertCifAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen, SlimViewerRegister.CurrentFolder);
+            var pathObj = FileIoHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1568,7 +1568,7 @@ namespace SlimViews
 
             var btm = Bmp.ToBitmap();
 
-            var pathObj = FileIoHandler.HandleFileSave(SlimViewerResources.FileOpen, SlimViewerRegister.CurrentFolder);
+            var pathObj = FileIoHandler.HandleFileSave(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null) return;
 
@@ -1578,12 +1578,12 @@ namespace SlimViews
             try
             {
                 var check = SaveImage(pathObj.FilePath, pathObj.Extension, btm);
-                if (!check) _ = MessageBox.Show(SlimViewerResources.ErrorCouldNotSaveFile);
+                if (!check) _ = MessageBox.Show(ViewResources.ErrorCouldNotSaveFile);
             }
             catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(SlimViewerResources.MessageError, nameof(SaveAction)));
+                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(SaveAction)));
             }
         }
 
@@ -1693,13 +1693,13 @@ namespace SlimViews
                     {
                         Trace.WriteLine(ex);
                         _ = MessageBox.Show(ex.ToString(),
-                            string.Concat(SlimViewerResources.MessageError, nameof(DeleteAction)));
+                            string.Concat(ViewResources.ErrorMessage, nameof(DeleteAction)));
                     }
 
                 LoadThumbs(SlimViewerRegister.CurrentFolder);
 
-                _ = MessageBox.Show(string.Concat(SlimViewerResources.MessageCount, count),
-                    SlimViewerResources.MessageSuccess, MessageBoxButton.OK);
+                _ = MessageBox.Show(string.Concat(ViewResources.MessageCount, count),
+                    ViewResources.MessageSuccess, MessageBoxButton.OK);
             }
             else
             {
@@ -1719,7 +1719,7 @@ namespace SlimViews
                 {
                     Trace.WriteLine(ex);
                     _ = MessageBox.Show(ex.ToString(),
-                        string.Concat(SlimViewerResources.MessageError, nameof(DeleteAction)));
+                        string.Concat(ViewResources.ErrorMessage, nameof(DeleteAction)));
                 }
 
                 Thumb.RemoveSingleItem(_currentId);
@@ -1749,8 +1749,8 @@ namespace SlimViews
             if (File.Exists(filePath))
             {
                 var dialogResult = await Task.Run(() =>
-                    MessageBox.Show(SlimViewerResources.MessageFileAlreadyExists,
-                        SlimViewerResources.CaptionFileAlreadyExists,
+                    _ = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
+                        ViewResources.CaptionFileAlreadyExists,
                         MessageBoxButton.YesNo));
 
                 if (dialogResult == MessageBoxResult.No) return;
@@ -1765,7 +1765,7 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(RenameAction)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(RenameAction)));
             }
 
             Observer[_currentId] = filePath;
@@ -1885,8 +1885,8 @@ namespace SlimViews
 
             var argument = !File.Exists(_filePath)
                 ? SlimViewerRegister.CurrentFolder
-                : string.Concat(SlimViewerResources.Select, _filePath, SlimViewerResources.Close);
-            _ = Process.Start(SlimViewerResources.Explorer, argument);
+                : string.Concat(ViewResources.Select, _filePath, ViewResources.Close);
+            _ = Process.Start(ViewResources.Explorer, argument);
         }
 
         /// <summary>
@@ -2093,7 +2093,7 @@ namespace SlimViews
 
             if (obj != null) check = (bool)obj;
 
-            var root = Path.Combine(Directory.GetCurrentDirectory(), SlimViewerResources.TempFolder);
+            var root = Path.Combine(Directory.GetCurrentDirectory(), ViewResources.TempFolder);
 
             try
             {
@@ -2103,12 +2103,12 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(CleanTempAction)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(CleanTempAction)));
                 return;
             }
 
             if (!check)
-                _ = MessageBox.Show(SlimViewerResources.StatusDone, SlimViewerResources.CaptionDone,
+                _ = MessageBox.Show(ViewResources.StatusDone, ViewResources.CaptionDone,
                     MessageBoxButton.OK,
                     MessageBoxImage.Exclamation);
         }
@@ -2144,8 +2144,8 @@ namespace SlimViews
 
                     if (File.Exists(target))
                     {
-                        var dialogResult = MessageBox.Show(SlimViewerResources.MessageFileAlreadyExists,
-                            SlimViewerResources.CaptionFileAlreadyExists,
+                        var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
+                            ViewResources.CaptionFileAlreadyExists,
                             MessageBoxButton.YesNo);
                         if (dialogResult == MessageBoxResult.No) continue;
                     }
@@ -2154,8 +2154,8 @@ namespace SlimViews
                     count++;
                 }
 
-                _ = MessageBox.Show(string.Concat(SlimViewerResources.MessageMoved, count),
-                    SlimViewerResources.MessageSuccess, MessageBoxButton.OK);
+                _ = MessageBox.Show(string.Concat(ViewResources.MessageMoved, count),
+                    ViewResources.MessageSuccess, MessageBoxButton.OK);
             }
             else
             {
@@ -2167,8 +2167,8 @@ namespace SlimViews
 
                 if (File.Exists(target))
                 {
-                    var dialogResult = MessageBox.Show(SlimViewerResources.MessageFileAlreadyExists,
-                        SlimViewerResources.CaptionFileAlreadyExists,
+                    var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
+                        ViewResources.CaptionFileAlreadyExists,
                         MessageBoxButton.YesNo);
                     if (dialogResult == MessageBoxResult.No) return;
                 }
@@ -2202,8 +2202,8 @@ namespace SlimViews
 
             if (i.Any())
             {
-                var dialogResult = MessageBox.Show(SlimViewerResources.MessageFileAlreadyExists,
-                    SlimViewerResources.CaptionFileAlreadyExists,
+                var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
+                    ViewResources.CaptionFileAlreadyExists,
                     MessageBoxButton.YesNo);
                 if (dialogResult == MessageBoxResult.No) return;
             }
@@ -2246,14 +2246,14 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), SlimViewerResources.MessageError);
+                _ = MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
                 return;
             }
             catch (PathTooLongException ex)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(ChangeImage)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(ChangeImage)));
                 return;
             }
 
@@ -2263,7 +2263,7 @@ namespace SlimViews
             _currentId = -1;
 
             _ = GenerateThumbView(lst);
-            _information = string.Concat(SlimViewerResources.DisplayImages, lst.Count);
+            _information = string.Concat(ViewResources.DisplayImages, lst.Count);
         }
 
         /// <summary>
@@ -2377,7 +2377,7 @@ namespace SlimViews
                     var info = ImageGifHandler.GetImageInfo(filePath);
 
                     //set Infos
-                    Information = SlimViewerResources.BuildGifInformation(filePath, info);
+                    Information = ViewResources.BuildGifInformation(filePath, info);
                 }
                 else
                 {
@@ -2388,7 +2388,7 @@ namespace SlimViews
 
                     Bmp = Btm.ToBitmapImage();
                     //set Infos
-                    Information = SlimViewerResources.BuildImageInformation(filePath, FileName, Bmp);
+                    Information = ViewResources.BuildImageInformation(filePath, FileName, Bmp);
                 }
 
                 _filePath = filePath;
@@ -2400,7 +2400,7 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(SlimViewerResources.MessageError, nameof(GenerateImage)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(GenerateImage)));
             }
         }
 

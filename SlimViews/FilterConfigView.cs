@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Imaging;
@@ -146,12 +145,11 @@ namespace SlimViews
             get => _selectedFilter;
             set
             {
-                if (_selectedFilter != value)
-                {
-                    _selectedFilter = value;
-                    OnPropertyChanged(nameof(SelectedFilter));
-                    UpdateActiveProperties();
-                }
+                if (_selectedFilter == value) return;
+
+                _selectedFilter = value;
+                OnPropertyChanged(nameof(SelectedFilter));
+                UpdateActiveProperties();
             }
         }
 

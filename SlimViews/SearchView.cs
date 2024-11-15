@@ -172,15 +172,28 @@ namespace SlimViews
         public void Initialize(bool includeSubfolders, string currentFolder, ImageView imageView, ColorHsv initialColor = null)
         {
             _includeSubfolders = includeSubfolders;
-            _currentFolder = currentFolder ?? throw new ArgumentNullException(nameof(currentFolder));
-            _imageView = imageView ?? throw new ArgumentNullException(nameof(imageView));
 
-            if (initialColor != null)
+            if (_currentFolder == null)
             {
-                Red = initialColor.R;
-                Green = initialColor.G;
-                Blue = initialColor.B;
+                _ = MessageBox.Show(ViewResources.ErrorDirectoryMessage, nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
+
+            _currentFolder = currentFolder;
+
+            if (imageView == null)
+            {
+                _ = MessageBox.Show(ViewResources.ErrorObjectMessage, nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            _imageView = imageView;
+
+            if (initialColor == null) return;
+
+            Red = initialColor.R;
+            Green = initialColor.G;
+            Blue = initialColor.B;
         }
 
         /// <summary>
@@ -230,12 +243,12 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                MessageBox.Show(ex.Message,nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show(ex.Message,nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (InvalidOperationException ex)
             {
                 Trace.WriteLine(ex);
-                MessageBox.Show(ex.Message, nameof(InvalidOperationException), MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(ex.Message, nameof(InvalidOperationException), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

@@ -39,7 +39,7 @@ namespace SlimViews
         {
             InitializeComponent();
 
-            View.Initiate(subFolders, currentFolder, imageView, color);
+            View.Initialize(subFolders, currentFolder, imageView, color);
         }
     }
 }

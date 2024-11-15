@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/SlimViewerResources.cs
+ * FILE:        SlimViews/ViewResources.cs
  * PURPOSE:     Resources for the SlimViewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -15,7 +15,7 @@ namespace SlimViews
     /// <summary>
     ///     SlimViewer Resources
     /// </summary>
-    internal static class SlimViewerResources
+    internal static class ViewResources
     {
         /// <summary>
         ///     The file open Options (const). Value: "Image Files(*.png)|*.png|Image Files(*.jpg)|*.jpg|Image
@@ -79,14 +79,55 @@ namespace SlimViews
         internal const string CaptionDone = "Cleaning done";
 
         /// <summary>
-        ///     The Information Converted (const). Value: "Converted: "
-        /// </summary>
-        internal const string InformationConverted = "Converted: ";
-
-        /// <summary>
         ///     The Display Images (const). Value: "New Images loaded: "
         /// </summary>
         internal const string DisplayImages = "New Images loaded: ";
+
+
+        /// <summary>
+        ///     The Message Box Message (const). Value: "Shall we overwrite the file?."
+        /// </summary>
+        internal const string MessageFileAlreadyExists = "Shall we overwrite the file?";
+
+        /// <summary>
+        ///     The Message Box Header (const). Value: "File already exists"
+        /// </summary>
+        internal const string CaptionFileAlreadyExists = "File already exists";
+
+        /// <summary>
+        ///     The Icon Path Green (const). Value: @"System\green.png"
+        /// </summary>
+        internal const string IconPathGreen = @"System\green.png";
+
+        /// <summary>
+        ///     The Icon Path Red (const). Value:  @"System\red.png"
+        /// </summary>
+        internal const string IconPathRed = @"System\red.png";
+
+        /// <summary>
+        ///     The Cbz Extension (const). Value: ".cbz"
+        /// </summary>
+        internal const string CbzExt = ".cbz";
+
+        /// <summary>
+        ///     The MessageBox caption Success (const). Value: "Success"
+        /// </summary>
+        internal const string MessageSuccess = "Success";
+
+        /// <summary>
+        ///     The MessageBox Count Text (const). Value: "Files deleted: "
+        /// </summary>
+        internal const string MessageCount = "Files deleted: ";
+
+        /// <summary>
+        ///     The MessageBox Moved Text (const). Value: "Files moved: "
+        /// </summary>
+        internal const string MessageMoved = "Files moved: ";
+
+        /// <summary>
+        ///     The Information Converted (const). Value: "Converted: "
+        /// </summary>
+        internal const string InformationConverted = "Converted: ";
 
         /// <summary>
         ///     The Information Converted (const). Value: "Errors: "
@@ -116,7 +157,7 @@ namespace SlimViews
         /// <summary>
         ///     The error with Values that are not positive (const). Value: "Value must be positive.".
         /// </summary>
-        internal const string ErrrorMeasures = "Value must be positive: ";
+        internal const string ErrorMeasures = "Value must be positive: ";
 
         /// <summary>
         ///     The Error Image not supported (const). Value: " "Unsupported image format."
@@ -124,69 +165,39 @@ namespace SlimViews
         internal const string ErrorNotSupported = "Unsupported image format.";
 
         /// <summary>
-        ///     The Message Box Message (const). Value: "Shall we overwrite the file?."
-        /// </summary>
-        internal const string MessageFileAlreadyExists = "Shall we overwrite the file?";
-
-        /// <summary>
-        ///     The Message Box Header (const). Value: "File already exists"
-        /// </summary>
-        internal const string CaptionFileAlreadyExists = "File already exists";
-
-        /// <summary>
-        ///     The Icon Path Green (const). Value: @"System\green.png"
-        /// </summary>
-        internal const string IconPathGreen = @"System\green.png";
-
-        /// <summary>
-        ///     The Icon Path Red (const). Value:  @"System\red.png"
-        /// </summary>
-        internal const string IconPathRed = @"System\red.png";
-
-        /// <summary>
-        ///     The Cbz Extension (const). Value: ".cbz"
-        /// </summary>
-        internal const string CbzExt = ".cbz";
-
-        /// <summary>
         ///     The MessageBox caption Error (const). Value: "Error"
         /// </summary>
-        internal const string MessageError = "Error: ";
-
-        /// <summary>
-        ///     The MessageBox caption Success (const). Value: "Success"
-        /// </summary>
-        internal const string MessageSuccess = "Success";
-
-        /// <summary>
-        ///     The MessageBox Count Text (const). Value: "Files deleted: "
-        /// </summary>
-        internal const string MessageCount = "Files deleted: ";
-
-        /// <summary>
-        ///     The MessageBox Moved Text (const). Value: "Files moved: "
-        /// </summary>
-        internal const string MessageMoved = "Files moved: ";
+        internal const string ErrorMessage = "Error: ";
 
         /// <summary>
         ///     The error File not Found Text (const). Value: "File not found: "
         /// </summary>
-        internal const string MessageErrorFileNotFound = "File not found: ";
+        internal const string ErrorFileNotFoundMessage = "File not found: ";
 
         /// <summary>
         ///     The error source (const). Value:  "Error Source: "
         /// </summary>
-        internal const string MeesageErrorSource = "Error Source: ";
+        internal const string ErrorSourceMessage = "Error Source: ";
+
+        /// <summary>
+        ///     The directory error message (const). Value: "Error Dictionary not found.".
+        /// </summary>
+        internal const string ErrorDirectoryMessage = "Error Dictionary not found.";
+
+        /// <summary>
+        ///     The object error message (const). Value:  "Error Source: "
+        /// </summary>
+        internal const string ErrorObjectMessage = "Error with the loaded object.";
 
         /// <summary>
         ///     The error title (const). Value:  "Error Source: "
         /// </summary>
-        internal const string MessageErrorTitle = "An error occured.";
+        internal const string ErrorTitle = "An error occured.";
 
         /// <summary>
         ///     The error Message extension not supported (const). Value: "Extension not yet supported: "
         /// </summary>
-        internal const string MessageFileNotSupported = "Extension not yet supported: ";
+        internal const string ErrorFileNotSupported = "Extension not yet supported: ";
 
         /// <summary>
         ///     The Status Compare started (const). Value: "Compare started."

@@ -36,7 +36,7 @@ namespace SlimViews.Templates
         /// </returns>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return typeof(SlimViewerGuiResources).GetField(Key)?.GetValue(null);
+            return typeof(ViewGuiResources).GetField(Key)?.GetValue(null);
         }
     }
 }

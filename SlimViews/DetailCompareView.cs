@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -149,8 +148,8 @@ namespace SlimViews
         public DetailCompareView()
         {
             _analysis = new ImageAnalysis();
-            _greenIcon = Path.Combine(_root, SlimViewerResources.IconPathGreen);
-            _redIcon = Path.Combine(_root, SlimViewerResources.IconPathRed);
+            _greenIcon = Path.Combine(_root, ViewResources.IconPathGreen);
+            _redIcon = Path.Combine(_root, ViewResources.IconPathRed);
 
             // Initialize commands in the constructor
             OpenOneCommand = new DelegateCommand<object>(OpenOneAction, CanExecute);
@@ -257,8 +256,8 @@ namespace SlimViews
             // Check if file extension is supported
             if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
             {
-                MessageBox.Show($"{SlimViewerResources.MessageFileNotSupported}{pathObj.Extension}",
-                    SlimViewerResources.MessageError);
+                _ = MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}",
+                    ViewResources.ErrorMessage);
                 return;
             }
 
@@ -270,7 +269,7 @@ namespace SlimViews
             _btmOne = btm;
             BmpOne = btm.ToBitmapImage();
 
-            _informationOne = SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpOne);
+            _informationOne = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpOne);
 
             Compare();
 
@@ -298,8 +297,8 @@ namespace SlimViews
             // Check if file extension is supported
             if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
             {
-                MessageBox.Show($"{SlimViewerResources.MessageFileNotSupported}{pathObj.Extension}",
-                    SlimViewerResources.MessageError);
+                _ = MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}",
+                    ViewResources.ErrorMessage);
                 return;
             }
 
@@ -310,7 +309,7 @@ namespace SlimViews
             _btmTwo = btm;
             BmpTwo = btm.ToBitmapImage();
 
-            _informationTwo = SlimViewerResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo);
+            _informationTwo = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo);
             RtBoxInformation.AppendText(_informationTwo);
             RtBoxInformation.ScrollToEnd();
 
@@ -381,7 +380,7 @@ namespace SlimViews
             {
                 foreach (var (color, count) in _analysis.GetColors(btm))
                     str.AppendLine(
-                        $"{SlimViewerResources.InformationColor}{color}{SlimViewerResources.InformationCount}{count}");
+                        $"{ViewResources.InformationColor}{color}{ViewResources.InformationCount}{count}");
             });
             StatusImage = _greenIcon;
             return str.ToString();
@@ -396,7 +395,7 @@ namespace SlimViews
 
             var data = _analysis.CompareImages(_btmOne, _btmTwo);
 
-            _similarity = $"{SlimViewerResources.Similarity}{data.Similarity}{Environment.NewLine}";
+            _similarity = $"{ViewResources.Similarity}{data.Similarity}{Environment.NewLine}";
             RtBoxInformation.AppendText(_similarity);
             RtBoxInformation.ScrollToEnd();
         }
@@ -406,7 +405,7 @@ namespace SlimViews
         /// </summary>
         private static PathObject OpenFile()
         {
-            return FileIoHandler.HandleFileOpen(SlimViewerResources.FileOpen);
+            return FileIoHandler.HandleFileOpen(ViewResources.FileOpen);
         }
     }
 }

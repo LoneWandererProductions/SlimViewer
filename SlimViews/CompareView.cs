@@ -306,7 +306,7 @@ namespace SlimViews
         {
             _imageView = imageView;
 
-            Status = SlimViewerResources.StatusCompareStart;
+            Status = ViewResources.StatusCompareStart;
 
             //no specified difference lvl, so Duplicates
             if (similarity == 0)
@@ -322,7 +322,7 @@ namespace SlimViews
 
             if (Duplicates == null)
             {
-                Status = SlimViewerResources.StatusCompareFinished;
+                Status = ViewResources.StatusCompareFinished;
                 return;
             }
 
@@ -333,7 +333,7 @@ namespace SlimViews
 
             GenerateView();
 
-            Status = SlimViewerResources.StatusCompareFinished;
+            Status = ViewResources.StatusCompareFinished;
         }
 
         /// <summary>

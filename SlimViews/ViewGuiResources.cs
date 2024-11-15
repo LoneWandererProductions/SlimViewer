@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/SlimViewerGuiResources.cs
+ * FILE:        SlimViews/ViewGuiResources.cs
  * PURPOSE:     Central place for all future Gui Strings
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@
 
 namespace SlimViews
 {
-    public static class SlimViewerGuiResources
+    public static class ViewGuiResources
     {
         // Selection Tool Strings
 
