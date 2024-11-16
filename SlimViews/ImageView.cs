@@ -226,7 +226,12 @@ namespace SlimViews
         private bool _isActive;
 
         /// <summary>
-        ///     The is image active
+        /// The is input focused
+        /// </summary>
+        private bool _isInputFocused;
+
+        /// <summary>
+        /// The is image active
         /// </summary>
         private bool _isImageActive;
 
@@ -715,6 +720,19 @@ namespace SlimViews
             get => _fileName;
             set => SetProperty(ref _fileName, value, nameof(FileName));
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is input focused.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is input focused; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsInputFocused
+        {
+            get => _isInputFocused;
+            set => SetProperty(ref _isInputFocused, value, nameof(IsInputFocused));
+        }
+
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is active.
@@ -1298,6 +1316,8 @@ namespace SlimViews
             ThumbnailVisibility = Visibility.Visible;
             IsImageActive = false;
 
+            //TODO check if textbox is selected
+
             // Initialize key bindings using DelegateCommand<T>
             CommandBindings = new Dictionary<Key, ICommand>
             {
@@ -1472,6 +1492,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
+            if (IsInputFocused) return;
+
             var pathObj = FileIoHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
@@ -1564,6 +1586,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SaveAction(object obj)
         {
+            if (IsInputFocused) return;
+
             if (Bmp == null) return;
 
             var btm = Bmp.ToBitmap();
@@ -1593,6 +1617,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void NextAction(object obj)
         {
+            if (IsInputFocused) return;
+
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
 
@@ -1607,6 +1633,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void PreviousAction(object obj)
         {
+            if (IsInputFocused) return;
+
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
 

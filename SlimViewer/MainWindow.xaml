@@ -343,7 +343,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="25" />
                 <RowDefinition Height="5" />
-                <RowDefinition Height="25" />
+                <RowDefinition Height="30" />
                 <RowDefinition Height="5" />
                 <RowDefinition />
             </Grid.RowDefinitions>
@@ -373,6 +373,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Auto" />
             <TextBox TextWrapping="Wrap"
                      Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2"
+                     IsFocused="{Binding Path=IsInputFocused, Mode=TwoWay}"
                      Grid.Column="2">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding RenameCommand}" Key="Enter" />

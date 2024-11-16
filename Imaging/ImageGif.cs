@@ -113,6 +113,9 @@ namespace Imaging
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Occurs when [image loaded].
+        /// </summary>
         public event EventHandler ImageLoaded;
 
         /// <summary>
@@ -122,82 +125,66 @@ namespace Imaging
         {
             // Check if the image exists
             if (!File.Exists(GifSource))
+            {
                 // Log or show an error message
                 return;
+            }
 
             try
             {
-                var info = ImageGifHandler.GetImageInfo(GifSource);
+                // Extract GIF metadata using ImageGifMetadataExtractor
+                var metadata = ImageGifMetadataExtractor.ExtractGifMetadata(GifSource);
 
-                // Handle possible error
-                if (info is not { IsAnimated: true }) return;
+                // Handle possible error if GIF is not animated
+                if (metadata.Frames.Count == 0) return;
 
+                // Load the GIF frames using the handler
                 _imageList = await ImageGifHandler.LoadGif(GifSource);
                 Source = _imageList[0];
 
-                var time = Math.Max(1, info.Frames / 10);
-                _animation = new Int32Animation(0, info.Frames - 1,
-                    new Duration(new TimeSpan(0, 0, 0, time))) { RepeatBehavior = RepeatBehavior.Forever };
+                // Create a storyboard to animate each frame with its own duration
+                var storyboard = new Storyboard();
+
+                // Create an animation for each frame with individual delays
+                for (int i = 0; i < metadata.Frames.Count; i++)
+                {
+                    var frame = metadata.Frames[i];
+
+                    // Create an Int32Animation for each frame (change the frame index)
+                    var frameAnimation = new Int32Animation
+                    {
+                        From = i,
+                        To = i,
+                        Duration = new Duration(TimeSpan.FromSeconds(frame.DelayTime)), // Set the delay for each frame
+                        BeginTime = TimeSpan.FromSeconds(i * frame.DelayTime) // Ensure frames follow each other sequentially
+                    };
+
+                    // Add the animation to the storyboard
+                    Storyboard.SetTarget(frameAnimation, this); // Target the object to animate (in this case, the object containing the Source)
+                    Storyboard.SetTargetProperty(frameAnimation, new PropertyPath("CurrentFrameIndex")); // The property to animate (you may need to create this in your class)
+
+                    storyboard.Children.Add(frameAnimation); // Add this frame animation to the storyboard
+                }
+
+                // Set the repeat behavior for the entire animation (if looping is needed)
+                storyboard.RepeatBehavior = RepeatBehavior.Forever;
+
+                // Start the storyboard animation
+                storyboard.Begin();
 
                 _isInitialized = true;
 
                 // Fire the ImageLoaded event to notify that the GIF is ready
                 ImageLoaded?.Invoke(this, EventArgs.Empty);
 
+                // Optionally start the animation automatically if AutoStart is true
                 if (AutoStart) StartAnimation();
             }
             catch (Exception ex)
             {
-                Trace.Write(ex);
+                Trace.Write(ex); // Log the error
             }
         }
-
-
-        //private async Task InitializeAsync()
-        //{
-        //    if (!File.Exists(GifSource))
-        //    {
-        //        return;  // Log or show an error if needed
-        //    }
-
-        //    try
-        //    {
-        //        // Run both operations in parallel
-        //        var infoTask = Task.Run(() => ImageGifHandler.GetImageInfo(GifSource));
-        //        var imagesTask = Task.Run(() => ImageGifHandler.LoadGif(GifSource));
-
-        //        // Await the tasks and get the results
-        //        var info = await infoTask;
-        //        _imageList = await imagesTask;
-
-        //        // Check if the GIF is animated
-        //        if (info is not { IsAnimated: true })
-        //        {
-        //            return;
-        //        }
-
-        //        // Set the source to the first frame
-        //        Source = _imageList[0];
-
-        //        // Calculate animation timing
-        //        var time = Math.Max(1, info.Frames / 10);
-        //        _animation = new Int32Animation(0, info.Frames - 1,
-        //            new Duration(new TimeSpan(0, 0, time)))
-        //        { RepeatBehavior = RepeatBehavior.Forever };
-
-        //        _isInitialized = true;
-
-        //        if (AutoStart)
-        //        {
-        //            StartAnimation();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Trace.Write(ex);
-        //    }
-        //}
-
 
         /// <summary>
         ///     Visibilities the property changed.

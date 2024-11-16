@@ -203,8 +203,7 @@
                 </ComboBox>
 
                 <!-- Visibility based on selected texture -->
-                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2"
-                        Visibility="{Binding SelectedIndex, ElementName=TextureCombobox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=TextureConfig}" />
+                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2" Visibility="{Binding SelectedIndex, ElementName=TextureCombobox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=TextureConfig}"/>
 
 
                 <!-- Filter Selection (Visible when Fill Type is Filter) -->
@@ -244,7 +243,7 @@
                     <!-- Add more filter options if needed -->
                 </ComboBox>
 
-                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2" Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"/>
+                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2" Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=FilterConfig}"/>
 
             </Grid>
         </ScrollViewer>

@@ -20,23 +20,18 @@ namespace SlimViews.Templates
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is int selectedIndex && parameter is string targetFillType)
-            {
-                switch (targetFillType)
-                {
-                    case "SolidColor":
-                        return selectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
-                    case "Texture":
-                        return selectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
-                    case "Filter":
-                        return selectedIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
-                    case "TextureConfig":
-                        // Check if a texture is selected in the TextureCombobox
-                        return selectedIndex >= 0 ? Visibility.Visible : Visibility.Collapsed;
-                }
-            }
+            if (value is not int selectedIndex || parameter is not string expectedType) return Visibility.Collapsed;
 
-            return Visibility.Collapsed;
+            switch (expectedType)
+            {
+                case "Texture" when selectedIndex == 1:
+                case "Filter" when selectedIndex == 2:
+                case "TextureConfig" when selectedIndex != -1:
+                case "FilterConfig" when selectedIndex != -1:
+                    return Visibility.Visible;
+                default:
+                    return Visibility.Collapsed;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
