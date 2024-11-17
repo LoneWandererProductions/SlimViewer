@@ -8,6 +8,7 @@
 
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace CommonControls
@@ -87,6 +88,14 @@ namespace CommonControls
 
             if (sender is not UIElement element) return;
 
+            // Get the currently focused element using Keyboard.FocusedElement
+            var focusedElement = Keyboard.FocusedElement;
+
+            if (focusedElement is TextBox or RichTextBox)
+            {
+                return; // Skip key handling if focus is inside a TextBox or RichTextBox
+            }
+
             // Retrieve the dictionary of key-command bindings for this element
             var bindings = GetCommandBindings(element);
 
@@ -97,5 +106,6 @@ namespace CommonControls
             command.Execute(null);
             e.Handled = true;
         }
+
     }
 }

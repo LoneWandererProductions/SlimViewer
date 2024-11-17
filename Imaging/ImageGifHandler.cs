@@ -25,7 +25,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ExtendedSystemObjects;
 using FileHandler;
-using Size = System.Drawing.Size;
 
 namespace Imaging
 {
@@ -49,7 +48,11 @@ namespace Imaging
                 Trace.WriteLine(ex.Message);
                 //TODo fill up
             }
-
+            catch (InvalidDataException ex)
+            {
+                Trace.WriteLine(ex.Message);
+                //TODo fill up
+            }
 
             return info;
         }

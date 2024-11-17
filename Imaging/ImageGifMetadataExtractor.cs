@@ -55,61 +55,120 @@ namespace Imaging
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var blockId = reader.ReadByte();
-                switch (blockId)
-                {
-                    case 0x21: // Extension Introducer
-                        var extensionLabel = reader.ReadByte();
-                        if (extensionLabel == 0xFF) // Application Extension
-                        {
-                            var blockSize = reader.ReadByte();
-                            var appIdentifier = new string(reader.ReadChars(8));
-                            var appAuthCode = new string(reader.ReadChars(3));
 
-                            if (appIdentifier == "NETSCAPE")
+                // Skip padding or sub-block terminator
+                if (blockId == 0x00)
+                {
+                    Console.WriteLine("Skipping padding or sub-block terminator (0x00)");
+                    continue;
+                }
+
+                Console.WriteLine($"Processing block: 0x{blockId:X2}");
+
+                byte packed;
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    blockId = reader.ReadByte();
+
+                    // Skip padding or sub-block terminator
+                    if (blockId == 0x00)
+                    {
+                        Console.WriteLine("Skipping padding or sub-block terminator (0x00)");
+                        continue;
+                    }
+
+                    Console.WriteLine($"Processing block: 0x{blockId:X2}");
+
+                    switch (blockId)
+                    {
+                        case 0x21: // Extension Introducer
+                            var extensionLabel = reader.ReadByte();
+                            if (extensionLabel == 0xFF) // Application Extension
                             {
-                                var subBlockSize = reader.ReadByte();
-                                var loopFlag = reader.ReadByte();
-                                metadata.LoopCount = reader.ReadInt16();
+                                var blockSize = reader.ReadByte(); // Block Size
+                                var appIdentifier = new string(reader.ReadChars(8));
+                                var appAuthCode = new string(reader.ReadChars(3));
+
+                                if (appIdentifier == "NETSCAPE")
+                                {
+                                    var subBlockSize = reader.ReadByte();
+                                    var loopFlag = reader.ReadByte();
+                                    metadata.LoopCount = reader.ReadInt16();
+                                }
+                                else
+                                {
+                                    SkipExtensionBlocks(reader);
+                                }
+                            }
+                            else if (extensionLabel == 0xF9) // Graphics Control Extension
+                            {
+                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Block Size
+                                packed = reader.ReadByte();
+                                var delay = reader.ReadInt16();
+                                lastFrameDelay = delay / 100.0;
+                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Transparent Color Index
                             }
                             else
                             {
                                 SkipExtensionBlocks(reader);
                             }
-                        }
-                        else if (extensionLabel == 0xF9) // Graphics Control Extension
-                        {
-                            reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Block Size
-                            var packed = reader.ReadByte(); // Packed Fields (ignored for now)
-                            var delay = reader.ReadInt16(); // Delay time in hundredths of a second
-                            lastFrameDelay = delay / 100.0; // Convert to seconds
-                            reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Transparent Color Index
-                        }
-                        else // Other extensions
-                        {
-                            SkipExtensionBlocks(reader);
-                        }
+                            break;
 
-                        break;
+                        case 0x2C: // Image Descriptor
+                            metadata.Frames.Add(new FrameInfo
+                            {
+                                Description = "Image Frame",
+                                DelayTime = lastFrameDelay
+                            });
 
-                    case 0x2C: // Image Descriptor
-                        metadata.Frames.Add(new FrameInfo
-                        {
-                            Description = "Image Frame",
-                            DelayTime = lastFrameDelay
-                        });
-                        reader.BaseStream.Seek(9, SeekOrigin.Current); // Skip image descriptor
-                        break;
+                            // Handle Image Descriptor and Local Color Table
+                            reader.BaseStream.Seek(9, SeekOrigin.Current);
+                            packed = reader.ReadByte();
+                            if ((packed & 0x80) != 0) // Local Color Table present
+                            {
+                                var tableSize = 3 * (1 << ((packed & 0x07) + 1));
+                                reader.BaseStream.Seek(tableSize, SeekOrigin.Current);
+                            }
 
-                    case 0x3B: // Trailer
-                        return metadata;
+                            // Skip image data sub-blocks
+                            while (true)
+                            {
+                                var subBlockSize = reader.ReadByte();
+                                if (subBlockSize == 0x00) break;
+                                reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
+                            }
 
-                    default:
-                        throw new InvalidDataException($"Unknown block: 0x{blockId:X2}");
+                            break;
+
+                        case 0x3B: // Trailer
+                            Console.WriteLine("GIF Trailer found, parsing complete.");
+                            return metadata;
+
+                        default:
+                            Console.WriteLine($"Unknown block encountered: 0x{blockId:X2}. Skipping.");
+                            SkipUnknownBlock(reader, blockId);
+                            break;
+                    }
                 }
+
+
             }
+
 
             return metadata;
         }
+
+        private static void SkipUnknownBlock(BinaryReader reader, byte blockId)
+        {
+            Console.WriteLine($"Skipping unknown block: 0x{blockId:X2}");
+            while (true)
+            {
+                var subBlockSize = reader.ReadByte();
+                if (subBlockSize == 0x00) break; // End of sub-blocks
+                reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
+            }
+        }
+
 
         /// <summary>
         /// Skips the extension blocks.
@@ -119,10 +178,14 @@ namespace Imaging
         {
             while (true)
             {
-                var subBlockSize = reader.ReadByte();
-                if (subBlockSize == 0) break; // Block terminator
-                reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current); // Skip the sub-block
+                var blockSize = reader.ReadByte();
+                if (blockSize == 0x00) // Terminator
+                    break;
+
+                Console.WriteLine($"Skipping extension block of size: {blockSize}");
+                reader.BaseStream.Seek(blockSize, SeekOrigin.Current);
             }
         }
+
     }
 }
