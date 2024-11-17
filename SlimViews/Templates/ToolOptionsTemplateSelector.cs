@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Templates/TextureConfigView.cs
- * PURPOSE:     The view for Texture Configuration
+ * FILE:        SlimViews/Templates/ToolOptionsTemplateSelector.cs
+ * PURPOSE:     A bit of helper to handle the dynamic Menu.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 

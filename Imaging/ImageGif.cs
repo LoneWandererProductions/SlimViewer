@@ -66,6 +66,11 @@ namespace Imaging
         /// </summary>
         private bool _isInitialized;
 
+        /// <summary>
+        /// The storyboard
+        /// </summary>
+        private Storyboard _storyboard;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes the <see cref="ImageGif" /> class.
@@ -142,35 +147,33 @@ namespace Imaging
                 _imageList = await ImageGifHandler.LoadGif(GifSource);
                 Source = _imageList[0];
 
-                // Create a storyboard to animate each frame with its own duration
-                var storyboard = new Storyboard();
+                // Create a new storyboard for the GIF animation
+                _storyboard = new Storyboard();
 
-                // Create an animation for each frame with individual delays
+                // Create an animation for each frame
                 for (int i = 0; i < info.Frames.Count; i++)
                 {
                     var frame = info.Frames[i];
 
-                    // Create an Int32Animation for each frame (change the frame index)
+                    // Create an Int32Animation for the frame index
                     var frameAnimation = new Int32Animation
                     {
                         From = i,
                         To = i,
-                        Duration = new Duration(TimeSpan.FromSeconds(frame.DelayTime)), // Set the delay for each frame
-                        BeginTime = TimeSpan.FromSeconds(i * frame.DelayTime) // Ensure frames follow each other sequentially
+                        Duration = new Duration(TimeSpan.FromSeconds(frame.DelayTime)),
+                        BeginTime = TimeSpan.FromSeconds(i * frame.DelayTime)
                     };
 
-                    // Add the animation to the storyboard
-                    Storyboard.SetTarget(frameAnimation, this); // Target the object to animate (in this case, the object containing the Source)
-                    Storyboard.SetTargetProperty(frameAnimation, new PropertyPath("CurrentFrameIndex")); // The property to animate (you may need to create this in your class)
+                    // Set the target property for the animation
+                    Storyboard.SetTarget(frameAnimation, this);
+                    Storyboard.SetTargetProperty(frameAnimation, new PropertyPath(FrameIndexProperty));
 
-                    storyboard.Children.Add(frameAnimation); // Add this frame animation to the storyboard
+                    // Add the frame animation to the storyboard
+                    _storyboard.Children.Add(frameAnimation);
                 }
 
-                // Set the repeat behavior for the entire animation (if looping is needed)
-                storyboard.RepeatBehavior = RepeatBehavior.Forever;
-
-                // Start the storyboard animation
-                storyboard.Begin();
+                // Set the storyboard to loop indefinitely
+                _storyboard.RepeatBehavior = RepeatBehavior.Forever;
 
                 _isInitialized = true;
 
@@ -202,12 +205,11 @@ namespace Imaging
         /// </summary>
         private static void ChangingFrameIndex(DependencyObject obj, DependencyPropertyChangedEventArgs ev)
         {
-            if (obj is ImageGif { AutoStart: true } gifImage)
-            {
-                var newIndex = (int)ev.NewValue;
-                if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
-                    gifImage.Source = gifImage._imageList[newIndex];
-            }
+            if (obj is not ImageGif {AutoStart: true} gifImage) return;
+
+            var newIndex = (int)ev.NewValue;
+            if (newIndex >= 0 && newIndex < gifImage._imageList.Count)
+                gifImage.Source = gifImage._imageList[newIndex];
         }
 
         /// <summary>
@@ -231,17 +233,26 @@ namespace Imaging
         /// </summary>
         private void StartAnimation()
         {
-            if (!_isInitialized) _ = InitializeAsync();
+            if (!_isInitialized)
+            {
+                _ = InitializeAsync();
+                return;
+            }
 
-            BeginAnimation(FrameIndexProperty, _animation);
+            // Start the storyboard
+            _storyboard?.Begin(this, true);
         }
 
         /// <summary>
         ///     Stops the animation.
         /// </summary>
+        /// <summary>
+        ///     Stops the animation.
+        /// </summary>
         public void StopAnimation()
         {
-            BeginAnimation(FrameIndexProperty, null);
+            // Stop the storyboard
+            _storyboard?.Stop(this);
         }
 
         /// <summary>
