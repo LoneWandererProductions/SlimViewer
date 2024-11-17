@@ -6,6 +6,7 @@
 
     <templates:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
     <templates:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter" />
+    <templates:ComboBoxVisibilityAndSelectionConverter x:Key="ComboBoxVisibilityAndSelectionConverter" />
 
 
     <!-- Selection Tool Strings -->
@@ -203,13 +204,24 @@
                 </ComboBox>
 
                 <!-- Visibility based on selected texture -->
-                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2" Visibility="{Binding SelectedIndex, ElementName=TextureCombobox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=TextureConfig}"/>
+                <Button Content="Texture Config" 
+                        Grid.Row="4" 
+                        Grid.Column="2">
+                    <Button.Visibility>
+                        <MultiBinding Converter="{StaticResource ComboBoxVisibilityAndSelectionConverter}">
+                            <!-- Bind to the ComboBox's Visibility -->
+                            <Binding Path="Visibility" ElementName="TextureCombobox" />
+                            <!-- Bind to the ComboBox's SelectedIndex -->
+                            <Binding Path="SelectedIndex" ElementName="TextureCombobox" />
+                        </MultiBinding>
+                    </Button.Visibility>
+                </Button>
 
 
                 <!-- Filter Selection (Visible when Fill Type is Filter) -->
-                <Label Content="Filter:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"
+                <Label Content="Filter:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}" />
-                <ComboBox Grid.Row="5" Grid.Column="1"
+                <ComboBox Grid.Row="4" Grid.Column="1"
                           Name="FilterCombobox"
                           Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
                           SelectedValue="{Binding SelectedFilter, Mode=TwoWay}" SelectedValuePath="Content">
@@ -243,7 +255,20 @@
                     <!-- Add more filter options if needed -->
                 </ComboBox>
 
-                <Button Content="Texture Config" Grid.Row="4" Grid.Column="2" Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=FilterConfig}"/>
+                <Button Name="FilterConfig" 
+                        Content="Filter Config" 
+                        Grid.Row="4" 
+                        Grid.Column="2">
+                    <Button.Visibility>
+                        <MultiBinding Converter="{StaticResource ComboBoxVisibilityAndSelectionConverter}">
+                            <!-- Bind to the ComboBox's Visibility -->
+                            <Binding Path="Visibility" ElementName="FilterCombobox" />
+                            <!-- Bind to the ComboBox's SelectedIndex -->
+                            <Binding Path="SelectedIndex" ElementName="FilterCombobox" />
+                        </MultiBinding>
+                    </Button.Visibility>
+                </Button>
+
 
             </Grid>
         </ScrollViewer>

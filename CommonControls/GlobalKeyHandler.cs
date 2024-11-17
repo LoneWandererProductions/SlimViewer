@@ -72,7 +72,7 @@ namespace CommonControls
         {
             if (d is not UIElement element) return;
 
-            if ((bool)e.NewValue) // If Attach is set to true
+            if ((bool) e.NewValue) // If Attach is set to true
                 element.PreviewKeyDown += OnPreviewKeyDown; // Attach the key-down handler
             else // If Attach is set to false
                 element.PreviewKeyDown -= OnPreviewKeyDown; // Detach the key-down handler
@@ -106,6 +106,5 @@ namespace CommonControls
             command.Execute(null);
             e.Handled = true;
         }
-
     }
 }

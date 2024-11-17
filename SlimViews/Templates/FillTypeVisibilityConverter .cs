@@ -26,8 +26,6 @@ namespace SlimViews.Templates
             {
                 case "Texture" when selectedIndex == 1:
                 case "Filter" when selectedIndex == 2:
-                case "TextureConfig" when selectedIndex != -1:
-                case "FilterConfig" when selectedIndex != -1:
                     return Visibility.Visible;
                 default:
                     return Visibility.Collapsed;
