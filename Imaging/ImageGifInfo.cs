@@ -3,7 +3,10 @@ using System.Linq;
 
 namespace Imaging
 {
-    public class GifMetadata
+    /// <summary>
+    /// Gif Information
+    /// </summary>
+    public sealed class ImageGifInfo
     {
         public string Header { get; set; }
         public int Width { get; set; }
@@ -15,7 +18,17 @@ namespace Imaging
         public int PixelAspectRatio { get; set; }
         public int? LoopCount { get; set; } // Nullable, since not all GIFs have this
         public List<FrameInfo> Frames { get; set; } = new List<FrameInfo>();
+
+        /// <summary>
+        /// Gets the total duration.
+        /// </summary>
+        /// <value>
+        /// The total duration.
+        /// </value>
         public double TotalDuration => Frames.Sum(f => f.DelayTime); // In seconds
+
+        public string Name { get; set; }
+        public long Size { get; set; }
     }
 
     public class FrameInfo

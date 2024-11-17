@@ -38,43 +38,18 @@ namespace Imaging
         /// <returns>gif Infos</returns>
         public static ImageGifInfo GetImageInfo(string path)
         {
-            var info = new ImageGifInfo();
+            ImageGifInfo info = null;
 
             try
             {
-                using var image = Image.FromFile(path);
-                info.Height = image.Height;
-                info.Width = image.Width;
-                info.Name = Path.GetFileName(path);
-                info.Size = image.Size;
-
-                if (!image.RawFormat.Equals(ImageFormat.Gif)) return null;
-
-                if (!ImageAnimator.CanAnimate(image)) return info;
-
-                var frameDimension = new FrameDimension(image.FrameDimensionsList[0]);
-
-                var frameCount = image.GetFrameCount(frameDimension);
-
-                info.AnimationLength = frameCount / 10 * frameCount;
-
-                info.IsAnimated = true;
-
-                info.IsLooped = BitConverter.ToInt16(image.GetPropertyItem(20737)?.Value!, 0) != 1;
-
-                info.Frames = frameCount;
+                info = ImageGifMetadataExtractor.ExtractGifMetadata(path);
             }
-            catch (OutOfMemoryException ex)
+            catch (FileNotFoundException ex)
             {
-                var currentProcess = Process.GetCurrentProcess();
-                var memorySize = currentProcess.PrivateMemorySize64;
-
-                Trace.WriteLine(string.Concat(ex, ImagingResources.Separator, ImagingResources.ErrorMemory,
-                    memorySize));
-
-                //enforce clean up and hope for the best
-                GC.Collect();
+                Trace.WriteLine(ex.Message);
+                //TODo fill up
             }
+
 
             return info;
         }
@@ -228,75 +203,5 @@ namespace Imaging
             newBytes.AddRange(fileBytes.Skip(13));
             File.WriteAllBytes(target, newBytes.ToArray());
         }
-    }
-
-    /// <summary>
-    ///     The infos about the gif
-    /// </summary>
-    public sealed class ImageGifInfo
-    {
-        /// <summary>
-        ///     Gets the height.
-        /// </summary>
-        /// <value>
-        ///     The height.
-        /// </value>
-        public int Height { get; internal set; }
-
-        /// <summary>
-        ///     Gets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
-        public int Width { get; internal set; }
-
-        /// <summary>
-        ///     Gets the length of the animation.
-        /// </summary>
-        /// <value>
-        ///     The length of the animation.
-        /// </value>
-        public int AnimationLength { get; internal set; }
-
-        /// <summary>
-        ///     Gets a value indicating whether this instance is animated.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is animated; otherwise, <c>false</c>.
-        /// </value>
-        internal bool IsAnimated { get; set; }
-
-        /// <summary>
-        ///     Gets a value indicating whether this instance is looped.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is looped; otherwise, <c>false</c>.
-        /// </value>
-        internal bool IsLooped { get; set; }
-
-        /// <summary>
-        ///     Gets the frames.
-        /// </summary>
-        /// <value>
-        ///     The frames.
-        /// </value>
-        public int Frames { get; internal set; }
-
-        /// <summary>
-        ///     Gets the name.
-        /// </summary>
-        /// <value>
-        ///     The name.
-        /// </value>
-        public string Name { get; internal set; }
-
-        /// <summary>
-        ///     Gets the size.
-        /// </summary>
-        /// <value>
-        ///     The size.
-        /// </value>
-        public Size Size { get; internal set; }
     }
 }

@@ -133,10 +133,10 @@ namespace Imaging
             try
             {
                 // Extract GIF metadata using ImageGifMetadataExtractor
-                var metadata = ImageGifMetadataExtractor.ExtractGifMetadata(GifSource);
+                var info = ImageGifMetadataExtractor.ExtractGifMetadata(GifSource);
 
                 // Handle possible error if GIF is not animated
-                if (metadata.Frames.Count == 0) return;
+                if (info.Frames.Count == 0) return;
 
                 // Load the GIF frames using the handler
                 _imageList = await ImageGifHandler.LoadGif(GifSource);
@@ -146,9 +146,9 @@ namespace Imaging
                 var storyboard = new Storyboard();
 
                 // Create an animation for each frame with individual delays
-                for (int i = 0; i < metadata.Frames.Count; i++)
+                for (int i = 0; i < info.Frames.Count; i++)
                 {
-                    var frame = metadata.Frames[i];
+                    var frame = info.Frames[i];
 
                     // Create an Int32Animation for each frame (change the frame index)
                     var frameAnimation = new Int32Animation

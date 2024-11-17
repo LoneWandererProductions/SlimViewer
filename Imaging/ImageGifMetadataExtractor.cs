@@ -11,14 +11,19 @@ using System.IO;
 
 namespace Imaging
 {
-    public class ImageGifMetadataExtractor
+    internal static class ImageGifMetadataExtractor
     {
-        public static GifMetadata ExtractGifMetadata(string filePath)
+        internal static ImageGifInfo ExtractGifMetadata(string filePath)
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("File not found.", filePath);
 
-            var metadata = new GifMetadata();
+            var metadata = new ImageGifInfo
+            {
+                Name = Path.GetFileName(filePath),
+                Size = new FileInfo(filePath).Length
+            };
+
             double lastFrameDelay = 0;
 
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
@@ -26,7 +31,7 @@ namespace Imaging
 
             // Read GIF Header (6 bytes)
             metadata.Header = new string(reader.ReadChars(6)); // "GIF87a" or "GIF89a"
-            if (!metadata.Header.StartsWith("GIF"))
+            if (!metadata.Header.StartsWith("GIF", StringComparison.Ordinal))
                 throw new InvalidDataException("Not a valid GIF file.");
 
             // Logical Screen Descriptor (7 bytes)
@@ -106,6 +111,10 @@ namespace Imaging
             return metadata;
         }
 
+        /// <summary>
+        /// Skips the extension blocks.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
         private static void SkipExtensionBlocks(BinaryReader reader)
         {
             while (true)
