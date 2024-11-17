@@ -373,7 +373,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Auto" />
             <TextBox TextWrapping="Wrap"
                      Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2"
-                     IsFocused="{Binding Path=IsInputFocused, Mode=TwoWay}"
+                     commonControls:FocusExtension.IsInputFocused="{Binding IsInputFocused}"
                      Grid.Column="2">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding RenameCommand}" Key="Enter" />
