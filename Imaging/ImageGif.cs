@@ -67,7 +67,7 @@ namespace Imaging
         private bool _isInitialized;
 
         /// <summary>
-        /// The storyboard
+        ///     The storyboard
         /// </summary>
         private Storyboard _storyboard;
 
@@ -119,7 +119,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Occurs when [image loaded].
+        ///     Occurs when [image loaded].
         /// </summary>
         public event EventHandler ImageLoaded;
 
@@ -130,10 +130,8 @@ namespace Imaging
         {
             // Check if the image exists
             if (!File.Exists(GifSource))
-            {
                 // Log or show an error message
                 return;
-            }
 
             try
             {
@@ -151,7 +149,7 @@ namespace Imaging
                 _storyboard = new Storyboard();
 
                 // Create an animation for each frame
-                for (int i = 0; i < info.Frames.Count; i++)
+                for (var i = 0; i < info.Frames.Count; i++)
                 {
                     var frame = info.Frames[i];
 
@@ -205,7 +203,7 @@ namespace Imaging
         /// </summary>
         private static void ChangingFrameIndex(DependencyObject obj, DependencyPropertyChangedEventArgs ev)
         {
-            if (obj is not ImageGif {AutoStart: true} gifImage) return;
+            if (obj is not ImageGif { AutoStart: true } gifImage) return;
 
             var newIndex = (int)ev.NewValue;
             if (newIndex >= 0 && newIndex < gifImage._imageList.Count)

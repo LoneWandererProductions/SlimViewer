@@ -226,7 +226,7 @@ namespace SlimViews
         private bool _isActive;
 
         /// <summary>
-        /// The is image active
+        ///     The is image active
         /// </summary>
         private bool _isImageActive;
 

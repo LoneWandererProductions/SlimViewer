@@ -22,7 +22,7 @@ namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Search View Model responsible for handling search operations 
+    ///     Search View Model responsible for handling search operations
     ///     including text-based and color-based image searches.
     /// </summary>
     /// <seealso cref="ViewModel.ViewModelBase" />
@@ -34,14 +34,29 @@ namespace SlimViews
         private readonly ImageAnalysis _imageAnalysis = new();
 
         /// <summary>
+        ///     Blue component for color comparison.
+        /// </summary>
+        private int _blue;
+
+        /// <summary>
         ///     Current folder being searched.
         /// </summary>
         private string _currentFolder;
 
         /// <summary>
-        ///     Text to search for in file names.
+        ///     Green component for color comparison.
         /// </summary>
-        private string _searchString;
+        private int _green;
+
+        /// <summary>
+        ///     ImageView instance for updating search results.
+        /// </summary>
+        private ImageView _imageView;
+
+        /// <summary>
+        ///     Indicates whether subfolders should be included in the search.
+        /// </summary>
+        private bool _includeSubfolders;
 
         /// <summary>
         ///     Search range for color comparison.
@@ -54,24 +69,9 @@ namespace SlimViews
         private int _red;
 
         /// <summary>
-        ///     Green component for color comparison.
+        ///     Command for performing color-based searches.
         /// </summary>
-        private int _green;
-
-        /// <summary>
-        ///     Blue component for color comparison.
-        /// </summary>
-        private int _blue;
-
-        /// <summary>
-        ///     Indicates whether subfolders should be included in the search.
-        /// </summary>
-        private bool _includeSubfolders;
-
-        /// <summary>
-        ///     ImageView instance for updating search results.
-        /// </summary>
-        private ImageView _imageView;
+        private ICommand _searchByColorCommand;
 
         /// <summary>
         ///     Command for performing text-based searches.
@@ -79,9 +79,9 @@ namespace SlimViews
         private ICommand _searchByTextCommand;
 
         /// <summary>
-        ///     Command for performing color-based searches.
+        ///     Text to search for in file names.
         /// </summary>
-        private ICommand _searchByColorCommand;
+        private string _searchString;
 
         /// <summary>
         ///     Gets or sets the search range for color comparison.
@@ -169,13 +169,15 @@ namespace SlimViews
         /// <param name="imageView">The ImageView instance to update with search results.</param>
         /// <param name="initialColor">Optional initial color for color-based searches.</param>
         /// <exception cref="ArgumentNullException">Thrown if currentFolder or imageView is null.</exception>
-        public void Initialize(bool includeSubfolders, string currentFolder, ImageView imageView, ColorHsv initialColor = null)
+        public void Initialize(bool includeSubfolders, string currentFolder, ImageView imageView,
+            ColorHsv initialColor = null)
         {
             _includeSubfolders = includeSubfolders;
 
             if (_currentFolder == null)
             {
-                _ = MessageBox.Show(ViewResources.ErrorDirectoryMessage, nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show(ViewResources.ErrorDirectoryMessage, nameof(ArgumentException), MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -183,7 +185,8 @@ namespace SlimViews
 
             if (imageView == null)
             {
-                _ = MessageBox.Show(ViewResources.ErrorObjectMessage, nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show(ViewResources.ErrorObjectMessage, nameof(ArgumentException), MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -203,7 +206,10 @@ namespace SlimViews
         /// <returns>
         ///     <c>true</c> if the command can execute; otherwise, <c>false</c>.
         /// </returns>
-        private bool CanExecute(object obj) => true;
+        private bool CanExecute(object obj)
+        {
+            return true;
+        }
 
         /// <summary>
         ///     Executes the text-based search action.
@@ -243,12 +249,14 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.Message,nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show(ex.Message, nameof(ArgumentException), MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
             catch (InvalidOperationException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.Message, nameof(InvalidOperationException), MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(ex.Message, nameof(InvalidOperationException), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
     }

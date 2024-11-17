@@ -2,7 +2,7 @@
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     Imaging
 * FILE:        Imaging/ImageGifMetadataExtractor.cs
-* PURPOSE:     Get all the infos of a gif
+* PURPOSE:     Get all the info of a gif
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
@@ -11,8 +11,18 @@ using System.IO;
 
 namespace Imaging
 {
+    /// <summary>
+    /// IInfos about the gif
+    /// </summary>
     internal static class ImageGifMetadataExtractor
     {
+        /// <summary>
+        /// Extracts the GIF metadata.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException">File not found.</exception>
+        /// <exception cref="InvalidDataException">Not a valid GIF file.</exception>
         internal static ImageGifInfo ExtractGifMetadata(string filePath)
         {
             if (!File.Exists(filePath))
@@ -65,7 +75,6 @@ namespace Imaging
 
                 Console.WriteLine($"Processing block: 0x{blockId:X2}");
 
-                byte packed;
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
                     blockId = reader.ReadByte();
@@ -79,39 +88,48 @@ namespace Imaging
 
                     Console.WriteLine($"Processing block: 0x{blockId:X2}");
 
+                    byte packed;
                     switch (blockId)
                     {
                         case 0x21: // Extension Introducer
                             var extensionLabel = reader.ReadByte();
-                            if (extensionLabel == 0xFF) // Application Extension
+                            switch (extensionLabel)
                             {
-                                var blockSize = reader.ReadByte(); // Block Size
-                                var appIdentifier = new string(reader.ReadChars(8));
-                                var appAuthCode = new string(reader.ReadChars(3));
+                                // Application Extension
+                                case 0xFF:
+                                {
+                                    var blockSize = reader.ReadByte(); // Block Size
+                                    var appIdentifier = new string(reader.ReadChars(8));
+                                    var appAuthCode = new string(reader.ReadChars(3));
 
-                                if (appIdentifier == "NETSCAPE")
-                                {
-                                    var subBlockSize = reader.ReadByte();
-                                    var loopFlag = reader.ReadByte();
-                                    metadata.LoopCount = reader.ReadInt16();
+                                    if (appIdentifier == "NETSCAPE")
+                                    {
+                                        var subBlockSize = reader.ReadByte();
+                                        var loopFlag = reader.ReadByte();
+                                        metadata.LoopCount = reader.ReadInt16();
+                                    }
+                                    else
+                                    {
+                                        SkipExtensionBlocks(reader);
+                                    }
+
+                                    break;
                                 }
-                                else
+                                // Graphics Control Extension
+                                case 0xF9:
                                 {
+                                    reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Block Size
+                                    packed = reader.ReadByte();
+                                    var delay = reader.ReadInt16();
+                                    lastFrameDelay = delay / 100.0;
+                                    reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Transparent Color Index
+                                    break;
+                                }
+                                default:
                                     SkipExtensionBlocks(reader);
-                                }
+                                    break;
                             }
-                            else if (extensionLabel == 0xF9) // Graphics Control Extension
-                            {
-                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Block Size
-                                packed = reader.ReadByte();
-                                var delay = reader.ReadInt16();
-                                lastFrameDelay = delay / 100.0;
-                                reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Transparent Color Index
-                            }
-                            else
-                            {
-                                SkipExtensionBlocks(reader);
-                            }
+
                             break;
 
                         case 0x2C: // Image Descriptor
@@ -135,6 +153,7 @@ namespace Imaging
                             {
                                 var subBlockSize = reader.ReadByte();
                                 if (subBlockSize == 0x00) break;
+
                                 reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
                             }
 
@@ -150,14 +169,17 @@ namespace Imaging
                             break;
                     }
                 }
-
-
             }
 
 
             return metadata;
         }
 
+        /// <summary>
+        /// Skips the unknown block.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
+        /// <param name="blockId">The block identifier.</param>
         private static void SkipUnknownBlock(BinaryReader reader, byte blockId)
         {
             Console.WriteLine($"Skipping unknown block: 0x{blockId:X2}");
@@ -165,13 +187,14 @@ namespace Imaging
             {
                 var subBlockSize = reader.ReadByte();
                 if (subBlockSize == 0x00) break; // End of sub-blocks
+
                 reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
             }
         }
 
 
         /// <summary>
-        /// Skips the extension blocks.
+        ///     Skips the extension blocks.
         /// </summary>
         /// <param name="reader">The reader.</param>
         private static void SkipExtensionBlocks(BinaryReader reader)
@@ -186,6 +209,5 @@ namespace Imaging
                 reader.BaseStream.Seek(blockSize, SeekOrigin.Current);
             }
         }
-
     }
 }

@@ -4,36 +4,131 @@ using System.Linq;
 namespace Imaging
 {
     /// <summary>
-    /// Gif Information
+    ///     Gif Information
     /// </summary>
     public sealed class ImageGifInfo
     {
-        public string Header { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public bool HasGlobalColorTable { get; set; }
-        public int GlobalColorTableSize { get; set; }
-        public int ColorResolution { get; set; }
-        public int BackgroundColorIndex { get; set; }
-        public int PixelAspectRatio { get; set; }
-        public int? LoopCount { get; set; } // Nullable, since not all GIFs have this
-        public List<FrameInfo> Frames { get; set; } = new List<FrameInfo>();
-
         /// <summary>
-        /// Gets the total duration.
+        /// Gets or sets the header.
         /// </summary>
         /// <value>
-        /// The total duration.
+        /// The header.
+        /// </value>
+        public string Header { get; set; }
+
+        /// <summary>
+        /// Gets or sets the width.
+        /// </summary>
+        /// <value>
+        /// The width.
+        /// </value>
+        public int Width { get; set; }
+
+        /// <summary>
+        /// Gets or sets the height.
+        /// </summary>
+        /// <value>
+        /// The height.
+        /// </value>
+        public int Height { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has global color table.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance has global color table; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasGlobalColorTable { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the global color table.
+        /// </summary>
+        /// <value>
+        /// The size of the global color table.
+        /// </value>
+        public int GlobalColorTableSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the color resolution.
+        /// </summary>
+        /// <value>
+        /// The color resolution.
+        /// </value>
+        public int ColorResolution { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index of the background color.
+        /// </summary>
+        /// <value>
+        /// The index of the background color.
+        /// </value>
+        public int BackgroundColorIndex { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pixel aspect ratio.
+        /// </summary>
+        /// <value>
+        /// The pixel aspect ratio.
+        /// </value>
+        public int PixelAspectRatio { get; set; }
+
+        /// <summary>
+        /// Gets or sets the loop count.
+        /// </summary>
+        /// <value>
+        /// The loop count.
+        /// </value>
+        public int? LoopCount { get; set; } // Nullable, since not all GIFs have this
+
+        /// <summary>
+        /// Gets or sets the frames.
+        /// </summary>
+        /// <value>
+        /// The frames.
+        /// </value>
+        public List<FrameInfo> Frames { get; set; } = new();
+
+        /// <summary>
+        ///     Gets the total duration.
+        /// </summary>
+        /// <value>
+        ///     The total duration.
         /// </value>
         public double TotalDuration => Frames.Sum(f => f.DelayTime); // In seconds
 
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size.
+        /// </summary>
+        /// <value>
+        /// The size.
+        /// </value>
         public long Size { get; set; }
     }
 
     public class FrameInfo
     {
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delay time.
+        /// </summary>
+        /// <value>
+        /// The delay time.
+        /// </value>
         public double DelayTime { get; set; } // Delay time in seconds
     }
 }

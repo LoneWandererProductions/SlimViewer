@@ -154,9 +154,11 @@ namespace SlimViews
             {
                 if (value < 0)
                 {
-                    _ = MessageBox.Show(string.Concat(ViewResources.ErrorMeasures, nameof(Height)), ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show(string.Concat(ViewResources.ErrorMeasures, nameof(Height)),
+                        ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+
                 SetProperty(ref _height, value, nameof(Height));
             }
         }
@@ -174,9 +176,11 @@ namespace SlimViews
             {
                 if (value < 0)
                 {
-                    _ = MessageBox.Show(string.Concat(ViewResources.ErrorMeasures, nameof(Width)), ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show(string.Concat(ViewResources.ErrorMeasures, nameof(Width)),
+                        ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+
                 SetProperty(ref _width, value, nameof(Width));
             }
         }

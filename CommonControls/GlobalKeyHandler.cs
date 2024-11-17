@@ -72,7 +72,7 @@ namespace CommonControls
         {
             if (d is not UIElement element) return;
 
-            if ((bool) e.NewValue) // If Attach is set to true
+            if ((bool)e.NewValue) // If Attach is set to true
                 element.PreviewKeyDown += OnPreviewKeyDown; // Attach the key-down handler
             else // If Attach is set to false
                 element.PreviewKeyDown -= OnPreviewKeyDown; // Detach the key-down handler
@@ -92,9 +92,7 @@ namespace CommonControls
             var focusedElement = Keyboard.FocusedElement;
 
             if (focusedElement is TextBox or RichTextBox)
-            {
                 return; // Skip key handling if focus is inside a TextBox or RichTextBox
-            }
 
             // Retrieve the dictionary of key-command bindings for this element
             var bindings = GetCommandBindings(element);

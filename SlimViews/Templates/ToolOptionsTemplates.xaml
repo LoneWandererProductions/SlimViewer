@@ -204,8 +204,8 @@
                 </ComboBox>
 
                 <!-- Visibility based on selected texture -->
-                <Button Content="Texture Config" 
-                        Grid.Row="4" 
+                <Button Content="Texture Config"
+                        Grid.Row="4"
                         Grid.Column="2">
                     <Button.Visibility>
                         <MultiBinding Converter="{StaticResource ComboBoxVisibilityAndSelectionConverter}">
@@ -255,9 +255,9 @@
                     <!-- Add more filter options if needed -->
                 </ComboBox>
 
-                <Button Name="FilterConfig" 
-                        Content="Filter Config" 
-                        Grid.Row="4" 
+                <Button Name="FilterConfig"
+                        Content="Filter Config"
+                        Grid.Row="4"
                         Grid.Column="2">
                     <Button.Visibility>
                         <MultiBinding Converter="{StaticResource ComboBoxVisibilityAndSelectionConverter}">
