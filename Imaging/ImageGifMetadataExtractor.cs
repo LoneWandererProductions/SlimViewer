@@ -86,7 +86,9 @@ namespace Imaging
                     switch (blockId)
                     {
                         case ImagingResources.ExtensionIntroducer:
+
                             var extensionLabel = reader.ReadByte();
+
                             switch (extensionLabel)
                             {
                                 case ImagingResources.ApplicationExtensionLabel:
@@ -139,6 +141,7 @@ namespace Imaging
                             {
                                 var subBlockSize = reader.ReadByte();
                                 if (subBlockSize == ImagingResources.TerminatorBlockId) break;
+
                                 reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
                             }
                             break;
@@ -170,6 +173,7 @@ namespace Imaging
             {
                 var subBlockSize = reader.ReadByte();
                 if (subBlockSize == ImagingResources.TerminatorBlockId) break;
+
                 reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
             }
         }

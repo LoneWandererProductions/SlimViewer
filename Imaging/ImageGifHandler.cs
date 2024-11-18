@@ -28,6 +28,9 @@ using FileHandler;
 
 namespace Imaging
 {
+    /// <summary>
+    /// Central Entry class for all things related to gifs
+    /// </summary>
     public static class ImageGifHandler
     {
         /// <summary>
@@ -118,7 +121,6 @@ namespace Imaging
             return lst;
         }
 
-
         /// <summary>
         ///     Loads the GIF.
         /// </summary>
@@ -132,7 +134,6 @@ namespace Imaging
             // Convert each Bitmap to ImageSource and return the list
             return bitmapList.Select(image => image.ToBitmapImage()).Cast<ImageSource>().ToList();
         }
-
 
         /// <summary>
         ///     Creates the gif.
@@ -154,7 +155,7 @@ namespace Imaging
 
             if (btm.IsNullOrEmpty()) return;
 
-            CreateGif(btm, target);
+            GifCreator(btm, target);
         }
 
         /// <summary>
@@ -169,7 +170,19 @@ namespace Imaging
 
             if (btm.IsNullOrEmpty()) return;
 
-            CreateGif(btm, target);
+            GifCreator(btm, target);
+        }
+
+        /// <summary>
+        /// Creates the GIF.
+        /// </summary>
+        /// <param name="frames">The frames.</param>
+        /// <param name="target">The target.</param>
+        internal static void CreateGif(IEnumerable<FrameInfo> frames, string target)
+        {
+            if (frames== null) return;
+
+            GifCreator(frames, target);
         }
 
         /// <summary>
@@ -177,13 +190,9 @@ namespace Imaging
         /// </summary>
         /// <param name="btm">A list of Bitmaps.</param>
         /// <param name="target">The target.</param>
-        private static void CreateGif(IEnumerable<Bitmap> btm, string target)
+        private static void GifCreator(IEnumerable<Bitmap> btm, string target)
         {
             var gEnc = new GifBitmapEncoder();
-
-            //TODO encode and change to one size, add more sanity checks
-            //TODO possible Thumbnail
-            //TODO add more encoding
 
             foreach (var src in btm.Select(bmpImage => bmpImage.GetHbitmap()).Select(bmp =>
                          System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
@@ -205,6 +214,40 @@ namespace Imaging
             newBytes.AddRange(applicationExtension);
             newBytes.AddRange(fileBytes.Skip(13));
             File.WriteAllBytes(target, newBytes.ToArray());
+        }
+
+        /// <summary>
+        /// Creates the GIF.
+        /// </summary>
+        /// <param name="frames">The frames.</param>
+        /// <param name="target">The target.</param>
+        private static void GifCreator(IEnumerable<FrameInfo> frames, string target)
+        {
+            var gEnc = new GifBitmapEncoder();
+
+            foreach (var frameInfo in frames)
+            {
+                var bitmapSource = BitmapFrame.Create(
+                    BitmapSource.Create(
+                        frameInfo.Image.Width,
+                        frameInfo.Image.Height,
+                        96, 96, // DPI
+                        PixelFormats.Bgra32, // Or appropriate format
+                        null, // No palette for Bgra32
+                        frameInfo.Image.LockBits(new Rectangle(0, 0, frameInfo.Image.Width, frameInfo.Image.Height),
+                            ImageLockMode.ReadOnly,
+                            System.Drawing.Imaging.PixelFormat.Format32bppArgb).Scan0,
+                        frameInfo.Image.Height * frameInfo.Image.Width * 4, // Image byte size
+                        frameInfo.Image.Width * 4)); // Bytes per row
+
+                var metadata = new BitmapMetadata("gif");
+                metadata.SetQuery("/grctlext/Delay", (ushort)(frameInfo.DelayTime * 100)); // Delay in hundredths of seconds
+
+                gEnc.Frames.Add(BitmapFrame.Create(bitmapSource, null, metadata, null));
+            }
+
+            using var fs = new FileStream(target, FileMode.Create, FileAccess.Write);
+            gEnc.Save(fs);
         }
     }
 }

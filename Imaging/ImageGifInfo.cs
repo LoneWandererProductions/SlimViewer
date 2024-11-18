@@ -11,6 +11,7 @@
 
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Imaging
@@ -145,5 +146,14 @@ namespace Imaging
         /// The delay time.
         /// </value>
         public double DelayTime { get; set; } // Delay time in seconds
+
+
+        /// <summary>
+        /// Gets or sets the image.
+        /// </summary>
+        /// <value>
+        /// The image.
+        /// </value>
+        public Bitmap Image { get; set; } // Image of the frame
     }
 }
