@@ -1,4 +1,16 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Imaging
+ * FILE:        Imaging/ImageGifInfo.cs
+ * PURPOSE:     Class Container that holds all informations about the gif in question.
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * SOURCES:     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
+ *              https://debugandrelease.blogspot.com/2018/12/creating-gifs-in-c.html
+ *              http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
+ */
+
+
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Imaging
@@ -113,7 +125,10 @@ namespace Imaging
         public long Size { get; set; }
     }
 
-    public class FrameInfo
+    /// <summary>
+    /// Infos about the frame and timing
+    /// </summary>
+    public sealed class FrameInfo
     {
         /// <summary>
         /// Gets or sets the description.

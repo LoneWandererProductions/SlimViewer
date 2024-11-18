@@ -12,7 +12,7 @@ using System.IO;
 namespace Imaging
 {
     /// <summary>
-    /// IInfos about the gif
+    /// Information about the gif
     /// </summary>
     internal static class ImageGifMetadataExtractor
     {
@@ -26,7 +26,7 @@ namespace Imaging
         internal static ImageGifInfo ExtractGifMetadata(string filePath)
         {
             if (!File.Exists(filePath))
-                throw new FileNotFoundException("File not found.", filePath);
+                throw new FileNotFoundException(ImagingResources.FileNotFoundMessage, filePath);
 
             var metadata = new ImageGifInfo
             {
@@ -39,70 +39,62 @@ namespace Imaging
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             using var reader = new BinaryReader(stream);
 
-            // Read GIF Header (6 bytes)
-            metadata.Header = new string(reader.ReadChars(6)); // "GIF87a" or "GIF89a"
-            if (!metadata.Header.StartsWith("GIF", StringComparison.Ordinal))
-                throw new InvalidDataException("Not a valid GIF file.");
+            // Read GIF Header
+            metadata.Header = new string(reader.ReadChars(ImagingResources.GifHeaderLength));
+            if (!metadata.Header.StartsWith(ImagingResources.GifHeaderStart, StringComparison.Ordinal))
+                throw new InvalidDataException(ImagingResources.InvalidGifMessage);
 
-            // Logical Screen Descriptor (7 bytes)
-            metadata.Width = reader.ReadInt16(); // Logical Screen Width
-            metadata.Height = reader.ReadInt16(); // Logical Screen Height
-            var packedFields = reader.ReadByte(); // Packed fields
-            metadata.BackgroundColorIndex = reader.ReadByte(); // Background Color Index
-            metadata.PixelAspectRatio = reader.ReadByte(); // Pixel Aspect Ratio
+            // Logical Screen Descriptor
+            metadata.Width = reader.ReadInt16();
+            metadata.Height = reader.ReadInt16();
+            var packedFields = reader.ReadByte();
+            metadata.BackgroundColorIndex = reader.ReadByte();
+            metadata.PixelAspectRatio = reader.ReadByte();
 
-            // Check for Global Color Table
-            metadata.HasGlobalColorTable = (packedFields & 0x80) != 0;
-            metadata.ColorResolution = ((packedFields & 0x70) >> 4) + 1; // Color Resolution
+            metadata.HasGlobalColorTable = (packedFields & ImagingResources.GlobalColorTableFlag) != 0;
+            metadata.ColorResolution = ((packedFields & ImagingResources.ColorResolutionMask) >> 4) + 1;
             metadata.GlobalColorTableSize = metadata.HasGlobalColorTable
-                ? 3 * (1 << ((packedFields & 0x07) + 1))
+                ? 3 * (1 << ((packedFields & ImagingResources.TableSizeMask) + 1))
                 : 0;
 
             if (metadata.HasGlobalColorTable)
-                reader.BaseStream.Seek(metadata.GlobalColorTableSize, SeekOrigin.Current); // Skip global color table
+                reader.BaseStream.Seek(metadata.GlobalColorTableSize, SeekOrigin.Current);
 
-            // Read Extensions and Frames
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var blockId = reader.ReadByte();
-
-                // Skip padding or sub-block terminator
-                if (blockId == 0x00)
+                if (blockId == ImagingResources.PaddingBlockId)
                 {
-                    Console.WriteLine("Skipping padding or sub-block terminator (0x00)");
+                    Console.WriteLine(ImagingResources.SkipPaddingMessage);
                     continue;
                 }
 
-                Console.WriteLine($"Processing block: 0x{blockId:X2}");
+                Console.WriteLine(string.Format(ImagingResources.ProcessingBlockMessage, blockId));
 
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
                     blockId = reader.ReadByte();
-
-                    // Skip padding or sub-block terminator
-                    if (blockId == 0x00)
+                    if (blockId == ImagingResources.PaddingBlockId)
                     {
-                        Console.WriteLine("Skipping padding or sub-block terminator (0x00)");
+                        Console.WriteLine(ImagingResources.SkipPaddingMessage);
                         continue;
                     }
 
-                    Console.WriteLine($"Processing block: 0x{blockId:X2}");
+                    Console.WriteLine(string.Format(ImagingResources.ProcessingBlockMessage, blockId));
 
                     byte packed;
                     switch (blockId)
                     {
-                        case 0x21: // Extension Introducer
+                        case ImagingResources.ExtensionIntroducer:
                             var extensionLabel = reader.ReadByte();
                             switch (extensionLabel)
                             {
-                                // Application Extension
-                                case 0xFF:
-                                {
-                                    var blockSize = reader.ReadByte(); // Block Size
-                                    var appIdentifier = new string(reader.ReadChars(8));
-                                    var appAuthCode = new string(reader.ReadChars(3));
+                                case ImagingResources.ApplicationExtensionLabel:
+                                    var blockSize = reader.ReadByte();
+                                    var appIdentifier = new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
+                                    var appAuthCode = new string(reader.ReadChars(ImagingResources.AppAuthCodeLength));
 
-                                    if (appIdentifier == "NETSCAPE")
+                                    if (appIdentifier == ImagingResources.NetScapeIdentifier)
                                     {
                                         var subBlockSize = reader.ReadByte();
                                         var loopFlag = reader.ReadByte();
@@ -112,65 +104,56 @@ namespace Imaging
                                     {
                                         SkipExtensionBlocks(reader);
                                     }
-
                                     break;
-                                }
-                                // Graphics Control Extension
-                                case 0xF9:
-                                {
-                                    reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Block Size
+
+                                case ImagingResources.GraphicsControlExtensionLabel:
+                                    reader.BaseStream.Seek(1, SeekOrigin.Current);
                                     packed = reader.ReadByte();
                                     var delay = reader.ReadInt16();
-                                    lastFrameDelay = delay / 100.0;
-                                    reader.BaseStream.Seek(1, SeekOrigin.Current); // Skip Transparent Color Index
+                                    lastFrameDelay = delay / ImagingResources.DelayDivisor;
+                                    reader.BaseStream.Seek(1, SeekOrigin.Current);
                                     break;
-                                }
+
                                 default:
                                     SkipExtensionBlocks(reader);
                                     break;
                             }
-
                             break;
 
-                        case 0x2C: // Image Descriptor
+                        case ImagingResources.ImageDescriptorId:
                             metadata.Frames.Add(new FrameInfo
                             {
-                                Description = "Image Frame",
+                                Description = ImagingResources.ImageFrameDescription,
                                 DelayTime = lastFrameDelay
                             });
 
-                            // Handle Image Descriptor and Local Color Table
-                            reader.BaseStream.Seek(9, SeekOrigin.Current);
+                            reader.BaseStream.Seek(ImagingResources.ImageDescriptorLength, SeekOrigin.Current);
                             packed = reader.ReadByte();
-                            if ((packed & 0x80) != 0) // Local Color Table present
+                            if ((packed & ImagingResources.LocalColorTableFlag) != 0)
                             {
-                                var tableSize = 3 * (1 << ((packed & 0x07) + 1));
+                                var tableSize = 3 * (1 << ((packed & ImagingResources.TableSizeMask) + 1));
                                 reader.BaseStream.Seek(tableSize, SeekOrigin.Current);
                             }
 
-                            // Skip image data sub-blocks
                             while (true)
                             {
                                 var subBlockSize = reader.ReadByte();
-                                if (subBlockSize == 0x00) break;
-
+                                if (subBlockSize == ImagingResources.TerminatorBlockId) break;
                                 reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
                             }
-
                             break;
 
-                        case 0x3B: // Trailer
-                            Console.WriteLine("GIF Trailer found, parsing complete.");
+                        case ImagingResources.TrailerBlockId:
+                            Console.WriteLine(ImagingResources.GifTrailerMessage);
                             return metadata;
 
                         default:
-                            Console.WriteLine($"Unknown block encountered: 0x{blockId:X2}. Skipping.");
+                            Console.WriteLine(string.Format(ImagingResources.UnknownBlockMessage, blockId));
                             SkipUnknownBlock(reader, blockId);
                             break;
                     }
                 }
             }
-
 
             return metadata;
         }
@@ -182,19 +165,17 @@ namespace Imaging
         /// <param name="blockId">The block identifier.</param>
         private static void SkipUnknownBlock(BinaryReader reader, byte blockId)
         {
-            Console.WriteLine($"Skipping unknown block: 0x{blockId:X2}");
+            Console.WriteLine(string.Format(ImagingResources.SkipUnknownBlockMessage, blockId));
             while (true)
             {
                 var subBlockSize = reader.ReadByte();
-                if (subBlockSize == 0x00) break; // End of sub-blocks
-
+                if (subBlockSize == ImagingResources.TerminatorBlockId) break;
                 reader.BaseStream.Seek(subBlockSize, SeekOrigin.Current);
             }
         }
 
-
         /// <summary>
-        ///     Skips the extension blocks.
+        /// Skips the extension blocks.
         /// </summary>
         /// <param name="reader">The reader.</param>
         private static void SkipExtensionBlocks(BinaryReader reader)
@@ -202,10 +183,10 @@ namespace Imaging
             while (true)
             {
                 var blockSize = reader.ReadByte();
-                if (blockSize == 0x00) // Terminator
+                if (blockSize == ImagingResources.TerminatorBlockId)
                     break;
 
-                Console.WriteLine($"Skipping extension block of size: {blockSize}");
+                Console.WriteLine(string.Format(ImagingResources.SkipExtensionBlockMessage, blockSize));
                 reader.BaseStream.Seek(blockSize, SeekOrigin.Current);
             }
         }
