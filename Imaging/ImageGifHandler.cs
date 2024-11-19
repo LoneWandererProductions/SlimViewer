@@ -240,8 +240,8 @@ namespace Imaging
                         frameInfo.Image.Height * frameInfo.Image.Width * 4, // Image byte size
                         frameInfo.Image.Width * 4)); // Bytes per row
 
-                var metadata = new BitmapMetadata("gif");
-                metadata.SetQuery("/grctlext/Delay", (ushort)(frameInfo.DelayTime * 100)); // Delay in hundredths of seconds
+                var metadata = new BitmapMetadata(ImagingResources.GifMetadata);
+                metadata.SetQuery(ImagingResources.GifMetadataQueryDelay, (ushort)(frameInfo.DelayTime * 100)); // Delay in hundredths of seconds
 
                 gEnc.Frames.Add(BitmapFrame.Create(bitmapSource, null, metadata, null));
             }

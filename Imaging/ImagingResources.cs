@@ -80,6 +80,16 @@ namespace Imaging
         internal const string GifHeaderStart = "GIF";
 
         /// <summary>
+        /// The meta data needed for a valid GIF header. Value: "gif"
+        /// </summary>
+        internal const string GifMetadata = "gif";
+
+        /// <summary>
+        /// The GIF metadata query delay. Value: "/grctlext/Delay"
+        /// </summary>
+        internal const string GifMetadataQueryDelay = "/grctlext/Delay";
+
+        /// <summary>
         /// The flag indicating the presence of a global color table in the GIF file. Value: 0x80
         /// </summary>
         internal const int GlobalColorTableFlag = 0x80;
