@@ -6,19 +6,35 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Windows;
+using Imaging;
+
 namespace SlimViews
-{
-    /// <summary>
-    ///     Configuration for our Filters
-    /// </summary>
+{    
+    /// <inheritdoc cref="Window" />
+     /// <summary>
+     ///     Configuration for our Filters
+     /// </summary>
     public partial class FilterConfig
     {
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FilterConfig" /> class.
+        ///     Initializes a new instance of the <see cref="T:SlimViews.FilterConfig" /> class.
         /// </summary>
         public FilterConfig()
         {
             InitializeComponent();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilterConfig"/> class.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        public FilterConfig(ImageFilters filter)
+        {
+            InitializeComponent();
+            FilterView.SelectedFilter = filter;
         }
     }
 }

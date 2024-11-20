@@ -20,6 +20,7 @@
         <local:ImageView x:Name="View" />
     </Window.DataContext>
     <Grid external:GlobalKeyHandler.Attach="True"
+          external:GlobalKeyHandler.SkipTextControls="True"
           external:GlobalKeyHandler.CommandBindings="{Binding CommandBindings}">
         <Grid.RowDefinitions>
             <RowDefinition Height="115" />
@@ -401,5 +402,6 @@
                     Source="pack://application:,,,/SlimViews;component/Templates/ToolOptionsTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+        
     </Window.Resources>
 </Window>

@@ -6,19 +6,35 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Windows;
+using Imaging;
+
 namespace SlimViews
 {
+    /// <inheritdoc cref="Window" />
     /// <summary>
     ///     Texture config
     /// </summary>
-    public partial class TextureConfig
+    public sealed partial class TextureConfig
     {
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TextureConfig" /> class.
+        ///     Initializes a new instance of the <see cref="T:SlimViews.TextureConfig" /> class.
         /// </summary>
         public TextureConfig()
         {
             InitializeComponent();
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextureConfig"/> class.
+        /// </summary>
+        /// <param name="texture">The texture.</param>
+        public TextureConfig(TextureType texture)
+        {
+            InitializeComponent();
+            TextureView.SelectedTexture = texture;
         }
     }
 }

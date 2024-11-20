@@ -18,17 +18,51 @@ namespace CommonControls
     /// </summary>
     public static class GlobalKeyHandler
     {
-        // DependencyProperty to enable or disable global key handling on a specific UIElement.
+        /// <summary>
+        /// DependencyProperty to enable or disable global key handling on a specific UIElement.
+        /// </summary>
         public static readonly DependencyProperty AttachProperty =
             DependencyProperty.RegisterAttached(
                 ComCtlResources.GlobalKeyAttach, typeof(bool), typeof(GlobalKeyHandler),
                 new PropertyMetadata(false, OnAttachChanged));
 
-        // DependencyProperty to store a dictionary of key-command pairs for a UIElement.
+
+        /// <summary>
+        /// DependencyProperty to store a dictionary of key-command pairs for a UIElement.
+        /// </summary>
         public static readonly DependencyProperty CommandBindingsProperty =
             DependencyProperty.RegisterAttached(
                 ComCtlResources.GlobalKeyCommandBindings, typeof(Dictionary<Key, ICommand>), typeof(GlobalKeyHandler),
                 new PropertyMetadata(null));
+
+
+        /// <summary>
+        /// Skip text controls property
+        /// </summary>
+        public static readonly DependencyProperty SkipTextControlsProperty =
+            DependencyProperty.RegisterAttached(
+                ComCtlResources.GlobalKeySkipTextControls, typeof(bool), typeof(GlobalKeyHandler),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Sets the skip text controls.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="value">if set to <c>true</c> [value].</param>
+        public static void SetSkipTextControls(UIElement element, bool value)
+        {
+            element.SetValue(SkipTextControlsProperty, value);
+        }
+
+        /// <summary>
+        /// Gets the skip text controls.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>Returns if we skip control.</returns>
+        public static bool GetSkipTextControls(UIElement element)
+        {
+            return (bool)element.GetValue(SkipTextControlsProperty);
+        }
 
         /// <summary>
         ///     Sets the Attach property, enabling or disabling key handling on the specified UIElement.
@@ -91,8 +125,9 @@ namespace CommonControls
             // Get the currently focused element using Keyboard.FocusedElement
             var focusedElement = Keyboard.FocusedElement;
 
-            if (focusedElement is TextBox or RichTextBox)
-                return; // Skip key handling if focus is inside a TextBox or RichTextBox
+            // Check if skipping text controls is enabled
+            if (GetSkipTextControls(element) && focusedElement is TextBox or RichTextBox)
+                return;
 
             // Retrieve the dictionary of key-command bindings for this element
             var bindings = GetCommandBindings(element);

@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Texture Config" Height="800" Width="450">
     <Window.DataContext>
-        <local:TextureConfigView />
+        <local:TextureConfigView  x:Name ="TextureView" />
     </Window.DataContext>
 
     <Grid Margin="5">
@@ -66,7 +66,7 @@
         <!-- Texture Type Selection ComboBox -->
         <TextBlock Grid.Row="0" FontWeight="Bold" Text="Texture Type" Margin="0,5" />
         <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding TextureOptions}"
-                  SelectedItem="{Binding SelectedTexture}" Width="200" Margin="0,5" />
+                  SelectedItem="{Binding SelectedTexture}" Grid.ColumnSpan="2" />
 
         <!-- General Settings -->
         <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Text="General Settings" Margin="0,10,0,5" />

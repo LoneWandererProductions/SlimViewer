@@ -1897,11 +1897,24 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void FilterConfigWindowAction(string obj)
         {
-            var filterConfig = new FilterConfig
+            var filterConfig = new FilterConfig()
             {
                 Topmost = true,
                 Owner = Main
             };
+
+            if (!string.IsNullOrEmpty(obj))
+            {
+                var filter = Translator.GetFilterFromString(obj);
+
+                // Reassign the TextureConfig to initialize with texture if needed
+                filterConfig = new FilterConfig(filter)
+                {
+                    Topmost = true,
+                    Owner = Main
+                };
+            }
+
             filterConfig.Show();
         }
 
@@ -1916,6 +1929,19 @@ namespace SlimViews
                 Topmost = true,
                 Owner = Main
             };
+
+            if (!string.IsNullOrEmpty(obj))
+            {
+                var texture = Translator.GetTextureFromString(obj);
+
+                // Reassign the TextureConfig to initialize with texture if needed
+                textureConfig = new TextureConfig(texture)
+                {
+                    Topmost = true,
+                    Owner = Main
+                };
+            }
+
             textureConfig.Show();
         }
 
