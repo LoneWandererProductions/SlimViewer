@@ -55,9 +55,9 @@ namespace CommonControls
             typeof(ImageZoom), new PropertyMetadata(OnImageGifSourcePropertyChanged));
 
         /// <summary>
-        ///     The zoom tools
+        ///     The tools
         /// </summary>
-        public static readonly DependencyProperty ZoomTools = DependencyProperty.Register(nameof(ZoomTool),
+        public static readonly DependencyProperty Tools = DependencyProperty.Register(nameof(SelectionTool),
             typeof(SelectionTools),
             typeof(ImageZoom), null);
 
@@ -198,10 +198,10 @@ namespace CommonControls
         /// <value>
         ///     The zoom.
         /// </value>
-        public SelectionTools ZoomTool
+        public SelectionTools SelectionTool
         {
-            get => (SelectionTools)GetValue(ZoomTools);
-            set => SetValue(ZoomTools, value);
+            get => (SelectionTools)GetValue(Tools);
+            set => SetValue(Tools, value);
         }
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace CommonControls
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 
             // Reattach adorner for the new image (ensures correct behavior)
-            AttachAdorner(ZoomTool);
+            AttachAdorner(SelectionTool);
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace CommonControls
             _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 
             // Reattach adorner for new image (this ensures correct behavior for the new image)
-            AttachAdorner(ZoomTool);
+            AttachAdorner(SelectionTool);
         }
 
         /// <summary>
@@ -389,9 +389,9 @@ namespace CommonControls
             _originPoint.Y = BtmImage.RenderTransform.Value.OffsetY;
             _ = MainCanvas.CaptureMouse();
 
-            AttachAdorner(ZoomTool); // Attach Adorner based on current tool
+            AttachAdorner(SelectionTool); // Attach Adorner based on current tool
 
-            switch (ZoomTool)
+            switch (SelectionTool)
             {
                 case SelectionTools.Move:
                 case SelectionTools.Trace:
@@ -429,7 +429,7 @@ namespace CommonControls
 
             //clicked Endpoint
 
-            switch (ZoomTool)
+            switch (SelectionTool)
             {
                 case SelectionTools.Move:
                     // nothing
@@ -481,7 +481,7 @@ namespace CommonControls
             // Get the mouse position relative to the image instead of the canvas
             var mousePos = e.GetPosition(BtmImage);
 
-            switch (ZoomTool)
+            switch (SelectionTool)
             {
                 case SelectionTools.Move:
                 {

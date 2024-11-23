@@ -11,28 +11,29 @@ namespace SlimViews
     public enum ImageTools
     {
         /// <summary>
+        /// The move
+        /// </summary>
+        Move = 0, 
+
+        /// <summary>
         ///     The paint
         /// </summary>
-        Paint = 0,
+        Paint = 1,
 
         /// <summary>
         ///     The erase
         /// </summary>
-        Erase = 1,
+        Erase = 2,
 
         /// <summary>
         ///     The color select
         /// </summary>
-        ColorSelect = 2,
+        ColorSelect = 3,
 
         /// <summary>
         ///     The area
         /// </summary>
-        Area = 3,
+        Area = 4
 
-        /// <summary>
-        ///     The cut
-        /// </summary>
-        Cut = 4
     }
 }

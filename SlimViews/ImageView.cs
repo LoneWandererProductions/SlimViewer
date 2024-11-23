@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBePrivate.Global, if we make it private the Property Changed event will not be triggered in the Window
 // ReSharper disable MemberCanBeInternal, must be public, else the View Model won't work
+// ReSharper disable BadBracesSpaces
 
 using System;
 using System.Collections.Generic;
@@ -306,9 +307,9 @@ namespace SlimViews
         private ICommand _renameCommand;
 
         /// <summary>
-        ///     The resizer window command
+        ///     The resize window command
         /// </summary>
-        private ICommand _resizerWindowCommand;
+        private ICommand _resizeWindowCommand;
 
         /// <summary>
         ///     The right button visibility
@@ -357,11 +358,6 @@ namespace SlimViews
         ///     The selected filter
         /// </summary>
         private string _selectedFilter;
-
-        /// <summary>
-        ///     The selected form
-        /// </summary>
-        private SelectionTools _selectedForm;
 
         /// <summary>
         ///     The selected frame command
@@ -435,8 +431,13 @@ namespace SlimViews
         private double _tolerance;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ImageView" /> class.
-        ///     Initiates all necessary Collections as well
+        /// The image zoom tool
+        /// </summary>
+        private SelectionTools _imageZoomTool;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageView" /> class.
+        /// Initiates all necessary Collections as well
         /// </summary>
         public ImageView()
         {
@@ -531,16 +532,6 @@ namespace SlimViews
         /// <value>
         ///     The selections.
         /// </value>
-        public IEnumerable<SelectionTools> Selections =>
-            Enum.GetValues(typeof(SelectionTools))
-                .Cast<SelectionTools>();
-
-        /// <summary>
-        ///     Gets the selections.
-        /// </summary>
-        /// <value>
-        ///     The selections.
-        /// </value>
         public IEnumerable<ImageTools> Tooling =>
             Enum.GetValues(typeof(ImageTools))
                 .Cast<ImageTools>();
@@ -558,16 +549,17 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the selected tool.
+        /// Gets or sets the image zoom tool.
         /// </summary>
         /// <value>
-        ///     The selected tool.
+        /// The image zoom tool.
         /// </value>
-        public SelectionTools SelectedForm
+        public SelectionTools ImageZoomTool
         {
-            get => _selectedForm;
-            set => SetProperty(ref _selectedForm, value, nameof(SelectedForm));
+            get => _imageZoomTool;
+            set => SetProperty(ref _imageZoomTool, value, nameof(ImageZoomTool));
         }
+
 
         /// <summary>
         ///     Gets or sets the type of the selected tool.
@@ -1144,7 +1136,7 @@ namespace SlimViews
         ///     The resizer window command.
         /// </value>
         public ICommand ResizerWindowCommand =>
-            _resizerWindowCommand ??= new DelegateCommand<object>(ResizerWindowAction, CanExecute);
+            _resizeWindowCommand ??= new DelegateCommand<object>(ResizerWindowAction, CanExecute);
 
 
         /// <summary>
@@ -1298,8 +1290,6 @@ namespace SlimViews
             ThumbnailVisibility = Visibility.Visible;
             IsImageActive = false;
 
-            //TODO check if textbox is selected
-
             // Initialize key bindings using DelegateCommand<T>
             CommandBindings = new Dictionary<Key, ICommand>
             {
@@ -1321,10 +1311,24 @@ namespace SlimViews
         /// <param name="e">The <see cref="PropertyChangedEventArgs" /> instance containing the event data.</param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            //here we handle the Selection of Image Zoom tools, as well as filters as textures
             switch (e.PropertyName)
             {
-                case nameof(SelectedToolType):
-                    SelectedForm = Translator.GetToolsFromString(SelectedToolType);
+                case nameof(SelectedTool):
+                    switch (SelectedTool)
+                    {
+                        case ImageTools.Move:
+                            ImageZoomTool = SelectionTools.Move;
+                            break;
+                        case ImageTools.Paint:
+                        case ImageTools.Erase:
+                        case ImageTools.ColorSelect:
+                            ImageZoomTool = SelectionTools.Trace;
+                            break;
+                        case ImageTools.Area:
+                            break;
+                    }
+
                     break;
                 case nameof(SelectedTexture):
                     CurrentTexture = Translator.GetTextureFromString(SelectedTexture);
@@ -1333,36 +1337,6 @@ namespace SlimViews
                     CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
                     break;
             }
-        }
-
-        /// <summary>
-        ///     Gets a value indicating whether this instance can execute.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-        /// </returns>
-        /// <value>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-        /// </value>
-        private bool CanExecute(object obj)
-        {
-            // check if executing is allowed, not used right now
-            return true;
-        }
-
-        /// <summary>
-        ///     Determines whether this instance can execute the specified object.
-        /// </summary>
-        /// <typeparam name="T">Generic Parameter</typeparam>
-        /// <param name="obj">The object.</param>
-        /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-        /// </returns>
-        private bool CanExecute<T>(T obj)
-        {
-            // check if executing is allowed, not used right now
-            return true;
         }
 
         /// <summary>
@@ -1380,7 +1354,7 @@ namespace SlimViews
         /// <param name="wPoint">The w point.</param>
         private void SelectedPointAction(Point wPoint)
         {
-            if (SelectedForm != SelectionTools.Trace)
+            if (ImageZoomTool != SelectionTools.Trace)
                 return;
 
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
@@ -1411,9 +1385,9 @@ namespace SlimViews
         /// <param name="frame">The selected area.</param>
         private void SelectedFrameAction(SelectionFrame frame)
         {
-            if (SelectedForm == SelectionTools.Move)
+            if (ImageZoomTool == SelectionTools.Move)
                 return;
-            if (SelectedForm == SelectionTools.Trace)
+            if (ImageZoomTool == SelectionTools.Trace)
                 return;
 
             var point = new System.Drawing.Point(frame.X, frame.Y);
@@ -1422,9 +1396,6 @@ namespace SlimViews
             {
                 case ImageTools.Erase:
                     Btm = ImageProcessor.EraseImage(frame, Btm);
-                    break;
-                case ImageTools.Cut:
-                    Btm = ImageProcessor.CutImage(frame, Btm);
                     break;
 
                 case ImageTools.Paint:

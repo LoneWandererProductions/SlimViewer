@@ -305,9 +305,7 @@
                     Command="{Binding ClearCommand}" IsEnabled="{Binding Path =IsActive}" />
             <Label Content="File Count" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" />
             <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="4" />
-            <ComboBox x:Name="CmbBxSelection" Grid.Row="0" Grid.Column="6"
-                      ItemsSource="{Binding Selections}" SelectedItem="{Binding SelectedForm}" />
-            <ComboBox Grid.Row="2" Grid.Column="6" ItemsSource="{Binding Tooling}"
+            <ComboBox Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Tooling}"
                       SelectedItem="{Binding SelectedTool}" />
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
@@ -322,8 +320,8 @@
                       VerticalAlignment="Center"
                       Background="Gray" />
         <Button Grid.Column="0" Grid.Row="2" Content="←"
-                Command="{Binding NextCommand}"
-                Visibility="{Binding PreviousCommand}" />
+                Command="{Binding PreviousCommand}"
+                Visibility="{Binding LeftButtonVisibility}" />
         <Button Grid.Column="2" Grid.Row="2" Content="→"
                 Command="{Binding NextCommand}"
                 Visibility="{Binding RightButtonVisibility}" />
@@ -333,7 +331,7 @@
                 ItemsSource="{Binding Bmp}"
                 ImageGifPath="{Binding GifPath}"
                 Name="ImageZoom"
-                ZoomTool="{Binding ElementName=CmbBxSelection, Path=SelectedItem}"
+                SelectionTool="{Binding ImageZoomTool}"
                 SelectedFrameCommand="{Binding SelectedFrameCommand}"
                 SelectedPointCommand="{Binding SelectedPointCommand}" />
         </Grid>
