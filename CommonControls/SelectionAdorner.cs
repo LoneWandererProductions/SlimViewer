@@ -6,10 +6,13 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable BadBracesSpaces
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace CommonControls
@@ -24,7 +27,12 @@ namespace CommonControls
         /// <summary>
         ///     The free form points
         /// </summary>
-        private readonly List<Point> _freeFormPoints = new();
+        public List<Point> FreeFormPoints { get; set; } = new();
+
+        /// <summary>
+        /// The is tracing
+        /// </summary>
+        public bool IsTracing { get; set; }
 
         /// <summary>
         ///     The end point
@@ -55,6 +63,11 @@ namespace CommonControls
             Tool = tool;
             _imageTransform =
                 transform ?? Transform.Identity; // Use the provided transform, or default to Identity if none provided
+
+            // Hook into mouse events
+            adornedElement.PreviewMouseDown += OnMouseDown;
+            adornedElement.PreviewMouseMove += OnMouseMove;
+            adornedElement.PreviewMouseUp += OnMouseUp;
         }
 
         /// <summary>
@@ -93,7 +106,7 @@ namespace CommonControls
         /// <param name="point">The free form point.</param>
         public void AddFreeFormPoint(Point point)
         {
-            _freeFormPoints.Add(_imageTransform.Transform(point));
+            FreeFormPoints.Add(_imageTransform.Transform(point));
             InvalidateVisual();
         }
 
@@ -102,7 +115,7 @@ namespace CommonControls
         /// </summary>
         public void ClearFreeFormPoints()
         {
-            _freeFormPoints.Clear();
+            FreeFormPoints.Clear();
             InvalidateVisual();
         }
 
@@ -115,6 +128,51 @@ namespace CommonControls
             _imageTransform =
                 transform ?? Transform.Identity; // Use the provided transform, or default to Identity if none provided
             InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Called when [mouse down].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Tool == SelectionTools.Trace && e.LeftButton == MouseButtonState.Pressed)
+            {
+                IsTracing = true;
+                FreeFormPoints.Clear(); // Clear existing points for a new trace
+                FreeFormPoints.Add(_imageTransform.Transform(e.GetPosition(this)));
+                CaptureMouse(); // Ensure we capture all mouse events
+            }
+        }
+
+        /// <summary>
+        /// Called when [mouse move].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (IsTracing && e.LeftButton == MouseButtonState.Pressed)
+            {
+                var currentPoint = _imageTransform.Transform(e.GetPosition(this));
+                FreeFormPoints.Add(currentPoint);
+                InvalidateVisual(); // Redraw to show the updated trace
+            }
+        }
+
+        /// <summary>
+        /// Called when [mouse up].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (IsTracing && e.LeftButton == MouseButtonState.Released)
+            {
+                IsTracing = false;
+                ReleaseMouseCapture(); // Release mouse capture
+            }
         }
 
         /// <inheritdoc />
@@ -169,21 +227,21 @@ namespace CommonControls
                             selectionRect.Height / 2);
                         break;
 
-                    case SelectionTools.Trace:
+                    case SelectionTools.Dot:
                         // Select a single pixel (this can be visualized as a very small rectangle)
                         drawingContext.DrawRectangle(Brushes.Red, dashedPen,
                             new Rect(_startPoint.Value, new Size(1, 1)));
                         break;
 
                     case SelectionTools.FreeForm:
-                        if (_freeFormPoints.Count > 1)
+                        if (FreeFormPoints.Count > 1)
                         {
                             var geometry = new StreamGeometry();
 
                             using (var ctx = geometry.Open())
                             {
-                                ctx.BeginFigure(_freeFormPoints[0], false, false);
-                                ctx.PolyLineTo(_freeFormPoints.Skip(1).ToArray(), true, false);
+                                ctx.BeginFigure(FreeFormPoints[0], false, false);
+                                ctx.PolyLineTo(FreeFormPoints.Skip(1).ToArray(), true, false);
                             }
 
                             drawingContext.DrawGeometry(null, dashedPen, geometry);

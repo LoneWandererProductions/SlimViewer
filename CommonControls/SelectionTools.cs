@@ -36,13 +36,18 @@ namespace CommonControls
         Trace = 2,
 
         /// <summary>
+        ///     The select Dot tool
+        /// </summary>
+        Dot = 3,
+
+        /// <summary>
         ///     The select ellipse tool
         /// </summary>
-        Ellipse = 3,
+        Ellipse = 4,
 
         /// <summary>
         ///     The free form selection tool
         /// </summary>
-        FreeForm = 4
+        FreeForm = 5
     }
 }

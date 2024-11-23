@@ -57,7 +57,7 @@ namespace CommonControls
         /// <summary>
         ///     The tools
         /// </summary>
-        public static readonly DependencyProperty Tools = DependencyProperty.Register(nameof(SelectionTool),
+        public static readonly DependencyProperty SelectionToolProperty = DependencyProperty.Register(nameof(SelectionTool),
             typeof(SelectionTools),
             typeof(ImageZoom), null);
 
@@ -200,8 +200,8 @@ namespace CommonControls
         /// </value>
         public SelectionTools SelectionTool
         {
-            get => (SelectionTools)GetValue(Tools);
-            set => SetValue(Tools, value);
+            get => (SelectionTools)GetValue(SelectionToolProperty);
+            set => SetValue(SelectionToolProperty, value);
         }
 
         /// <summary>
@@ -394,8 +394,9 @@ namespace CommonControls
             switch (SelectionTool)
             {
                 case SelectionTools.Move:
+                    break;
                 case SelectionTools.Trace:
-                    // nothing
+                    _selectionAdorner.IsTracing = true;
                     break;
 
                 case SelectionTools.Rectangle:
@@ -443,6 +444,13 @@ namespace CommonControls
                 }
                     break;
                 case SelectionTools.Trace:
+                    _selectionAdorner.IsTracing = false;
+                    var points = _selectionAdorner.FreeFormPoints;
+                    //?.Invoke(frame);
+                    //SelectedFrameCommand.Execute(frame);
+                    break;
+
+                case SelectionTools.Dot:
                     SetClickedPoint(e);
 
                     var endpoint = e.GetPosition(BtmImage);
@@ -514,6 +522,8 @@ namespace CommonControls
 
                 case SelectionTools.Trace:
                     // Handle pixel selection if needed
+                    break;
+                case SelectionTools.Dot:
                     break;
                 default:
                     // Nothing

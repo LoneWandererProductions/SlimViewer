@@ -431,9 +431,9 @@ namespace SlimViews
         private double _tolerance;
 
         /// <summary>
-        /// The image zoom tool
+        /// The selection tool
         /// </summary>
-        private SelectionTools _imageZoomTool;
+        private SelectionTools _selectionTool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageView" /> class.
@@ -547,19 +547,6 @@ namespace SlimViews
             get => _selectedTool;
             set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
         }
-
-        /// <summary>
-        /// Gets or sets the image zoom tool.
-        /// </summary>
-        /// <value>
-        /// The image zoom tool.
-        /// </value>
-        public SelectionTools ImageZoomTool
-        {
-            get => _imageZoomTool;
-            set => SetProperty(ref _imageZoomTool, value, nameof(ImageZoomTool));
-        }
-
 
         /// <summary>
         ///     Gets or sets the type of the selected tool.
@@ -875,6 +862,18 @@ namespace SlimViews
         {
             get => _gifPath;
             set => SetProperty(ref _gifPath, value, nameof(GifPath));
+        }
+
+        /// <summary>
+        /// Gets or sets the selection tool.
+        /// </summary>
+        /// <value>
+        /// The selection tool.
+        /// </value>
+        public SelectionTools SelectionTool
+        {
+            get => _selectionTool;
+            set => SetProperty(ref _selectionTool, value, nameof(SelectionTool));
         }
 
         /// <summary>
@@ -1318,14 +1317,16 @@ namespace SlimViews
                     switch (SelectedTool)
                     {
                         case ImageTools.Move:
-                            ImageZoomTool = SelectionTools.Move;
+                            SelectionTool = SelectionTools.Move;
+
                             break;
                         case ImageTools.Paint:
                         case ImageTools.Erase:
                         case ImageTools.ColorSelect:
-                            ImageZoomTool = SelectionTools.Trace;
+                            SelectionTool = SelectionTools.Trace;
                             break;
                         case ImageTools.Area:
+                            // no need to handle anything here
                             break;
                     }
 
@@ -1335,6 +1336,9 @@ namespace SlimViews
                     break;
                 case nameof(SelectedFilter):
                     CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
+                    break;
+                case nameof(SelectedToolType):
+                    SelectionTool = Translator.GetToolsFromString(SelectedToolType);
                     break;
             }
         }
@@ -1354,7 +1358,7 @@ namespace SlimViews
         /// <param name="wPoint">The w point.</param>
         private void SelectedPointAction(Point wPoint)
         {
-            if (ImageZoomTool != SelectionTools.Trace)
+            if (SelectionTool != SelectionTools.Trace)
                 return;
 
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
@@ -1385,9 +1389,9 @@ namespace SlimViews
         /// <param name="frame">The selected area.</param>
         private void SelectedFrameAction(SelectionFrame frame)
         {
-            if (ImageZoomTool == SelectionTools.Move)
+            if (SelectionTool == SelectionTools.Move)
                 return;
-            if (ImageZoomTool == SelectionTools.Trace)
+            if (SelectionTool == SelectionTools.Trace)
                 return;
 
             var point = new System.Drawing.Point(frame.X, frame.Y);
