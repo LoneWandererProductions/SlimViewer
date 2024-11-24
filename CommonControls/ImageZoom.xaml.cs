@@ -9,6 +9,7 @@
 // ReSharper disable EventNeverSubscribedTo.Global, only used outside of the dll
 // ReSharper disable MemberCanBeInternal, must be visible, if we want to use it outside of the dll
 // ReSharper disable UnusedType.Global
+// ReSharper disable MissingSpace
 
 using System;
 using System.Diagnostics;
@@ -57,9 +58,12 @@ namespace CommonControls
         /// <summary>
         ///     The tools
         /// </summary>
-        public static readonly DependencyProperty SelectionToolProperty = DependencyProperty.Register(nameof(SelectionTool),
-            typeof(ImageZoomTools),
-            typeof(ImageZoom), null);
+        public static readonly DependencyProperty SelectionToolProperty =
+            DependencyProperty.Register(
+                nameof(SelectionTool),
+                typeof(ImageZoomTools),
+                typeof(ImageZoom),
+                new PropertyMetadata(OnSelectionToolChanged));
 
         /// <summary>
         ///     The autoplay gif Property
@@ -115,7 +119,7 @@ namespace CommonControls
         /// <summary>
         ///     The selection adorner
         /// </summary>
-        private SelectionAdorner _selectionAdorner;
+        private SelectionAdorner SelectionAdorner { get; set; }
 
         /// <summary>
         ///     The mouse down position
@@ -271,6 +275,26 @@ namespace CommonControls
         }
 
         /// <summary>
+        /// Called when [selection tool changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private static void OnSelectionToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as ImageZoom;
+            if (control == null) return; // Ensure that we are working with an ImageZoom instance
+
+            var newTool = (ImageZoomTools)e.NewValue;
+
+            // Detach the previous adorner if needed
+            if (control.SelectionAdorner == null) return;
+
+            control.SelectionAdorner.Tool = newTool; // Update the tool in the adorner
+            control.SelectionAdorner.ClearFreeFormPoints(); // Reset any existing free-form points if applicable
+        }
+
+        /// <summary>
         ///     Called when [image source GIF changed].
         /// </summary>
         private void OnImageSourceGifChanged()
@@ -313,7 +337,7 @@ namespace CommonControls
             MainCanvas.Width = BtmImage.Source.Width;
 
             // Update the adorner with the new image transform
-            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 
             // Reattach adorner for the new image (ensures correct behavior)
             AttachAdorner(SelectionTool);
@@ -347,7 +371,7 @@ namespace CommonControls
             MainCanvas.Width = BtmImage.Source.Width;
 
             // Update the adorner with the new image transform
-            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
 
             // Reattach adorner for new image (this ensures correct behavior for the new image)
             AttachAdorner(SelectionTool);
@@ -359,18 +383,18 @@ namespace CommonControls
         /// <param name="tool">The tool.</param>
         private void AttachAdorner(ImageZoomTools tool)
         {
-            if (_selectionAdorner == null)
+            if (SelectionAdorner == null)
             {
                 // Get the adorner layer for the BtmImage instead of the MainCanvas
                 var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-                _selectionAdorner = new SelectionAdorner(BtmImage, tool);
-                adornerLayer?.Add(_selectionAdorner);
+                SelectionAdorner = new SelectionAdorner(BtmImage, tool);
+                adornerLayer?.Add(SelectionAdorner);
             }
             else
             {
                 // Clear points and reset for the new selection tool
-                _selectionAdorner?.ClearFreeFormPoints();
-                _selectionAdorner.Tool = tool; // Update the tool if necessary
+                SelectionAdorner?.ClearFreeFormPoints();
+                SelectionAdorner.Tool = tool; // Update the tool if necessary
             }
         }
 
@@ -396,7 +420,7 @@ namespace CommonControls
                 case ImageZoomTools.Move:
                     break;
                 case ImageZoomTools.Trace:
-                    _selectionAdorner.IsTracing = true;
+                    SelectionAdorner.IsTracing = true;
                     break;
 
                 case ImageZoomTools.Rectangle:
@@ -422,7 +446,7 @@ namespace CommonControls
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
 
-            if (_selectionAdorner == null)
+            if (SelectionAdorner == null)
             {
                 Trace.Write(ComCtlResources.InformationArdonerNull);
                 return;
@@ -438,14 +462,15 @@ namespace CommonControls
 
                 case ImageZoomTools.Rectangle:
                 {
-                    var frame = _selectionAdorner.CurrentSelectionFrame;
+                    var frame = SelectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                     SelectedFrameCommand.Execute(frame);
                 }
                     break;
                 case ImageZoomTools.Trace:
-                    _selectionAdorner.IsTracing = false;
-                    var points = _selectionAdorner.FreeFormPoints;
+                    SelectionAdorner.IsTracing = false;
+                    //TODO implement
+                    var points = SelectionAdorner.FreeFormPoints;
                     //?.Invoke(frame);
                     //SelectedFrameCommand.Execute(frame);
                     break;
@@ -463,7 +488,7 @@ namespace CommonControls
                     return;
             }
 
-            if (_selectionAdorner != null)
+            if (SelectionAdorner != null)
             {
                 // Get the AdornerLayer for the image
                 var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
@@ -471,8 +496,8 @@ namespace CommonControls
                 if (adornerLayer != null)
                 {
                     // Remove the SelectionAdorner
-                    adornerLayer.Remove(_selectionAdorner);
-                    _selectionAdorner = null; // Clear the reference
+                    adornerLayer.Remove(SelectionAdorner);
+                    SelectionAdorner = null; // Clear the reference
                 }
             }
         }
@@ -499,7 +524,7 @@ namespace CommonControls
                     matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
                     BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                    _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
                     break;
                 }
 
@@ -507,7 +532,7 @@ namespace CommonControls
                 case ImageZoomTools.Ellipse:
                 {
                     // Update the adorner for rectangle or ellipse selection
-                    _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                    SelectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
                     break;
                 }
@@ -515,7 +540,7 @@ namespace CommonControls
                 case ImageZoomTools.FreeForm:
                 {
                     // Update the adorner for free form selection by adding points
-                    _selectionAdorner?.AddFreeFormPoint(mousePos);
+                    SelectionAdorner?.AddFreeFormPoint(mousePos);
 
                     break;
                 }
@@ -557,7 +582,7 @@ namespace CommonControls
             Scale.ScaleY = zoomScale;
 
             // Ensure the adorner updates with the new zoom scale
-            _selectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
         /// <summary>
@@ -599,13 +624,17 @@ namespace CommonControls
 
                     // Dispose image resources
                     BtmImage?.StopAnimation();
-                    BtmImage.Source = null;
-                    BtmImage.GifSource = null;
+                    if (BtmImage != null)
+                    {
+                        BtmImage.Source = null;
+                        BtmImage.GifSource = null;
 
-                    // Remove adorner
-                    var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-                    adornerLayer?.Remove(_selectionAdorner);
-                    _selectionAdorner = null;
+                        // Remove adorner
+                        var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+                        adornerLayer?.Remove(SelectionAdorner);
+                    }
+
+                    SelectionAdorner = null;
 
                     // Release UI interaction resources
                     MainCanvas.ReleaseMouseCapture();

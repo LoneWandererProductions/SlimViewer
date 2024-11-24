@@ -331,7 +331,7 @@
                 ItemsSource="{Binding Bmp}"
                 ImageGifPath="{Binding GifPath}"
                 Name="ImageZoom"
-                SelectionTool="{Binding SelectionTool}"
+                SelectionTool="{Binding ImageZoomTool, Mode=TwoWay}"
                 SelectedFrameCommand="{Binding SelectedFrameCommand}"
                 SelectedPointCommand="{Binding SelectedPointCommand}" />
         </Grid>

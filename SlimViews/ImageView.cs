@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBePrivate.Global, if we make it private the Property Changed event will not be triggered in the Window
 // ReSharper disable MemberCanBeInternal, must be public, else the View Model won't work
 // ReSharper disable BadBracesSpaces
+// ReSharper disable MissingSpace
 
 using System;
 using System.Collections.Generic;
@@ -433,7 +434,7 @@ namespace SlimViews
         /// <summary>
         /// The selection tool
         /// </summary>
-        private ImageZoomTools _areaTool;
+        private ImageZoomTools _imageZoomTool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageView" /> class.
@@ -542,10 +543,10 @@ namespace SlimViews
         /// <value>
         ///     The selected tool.
         /// </value>
-        public ImageZoomTools AreaTool
+        public ImageTools SelectedTool
         {
-            get => _areaTool;
-            set => SetProperty(ref _areaTool, value, nameof(SelectedTool));
+            get => _selectedTool;
+            set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
         }
 
         /// <summary>
@@ -870,10 +871,10 @@ namespace SlimViews
         /// <value>
         /// The selection tool.
         /// </value>
-        public ImageTools SelectedTool
+        public ImageZoomTools ImageZoomTool
         {
-            get => _selectedTool;
-            set => SetProperty(ref _selectedTool, value, nameof(AreaTool));
+            get => _imageZoomTool;
+            set => SetProperty(ref _imageZoomTool, value, nameof(ImageZoomTool));
         }
 
         /// <summary>
@@ -1317,13 +1318,13 @@ namespace SlimViews
                     switch (SelectedTool)
                     {
                         case ImageTools.Move:
-                            AreaTool = ImageZoomTools.Move;
+                            ImageZoomTool = ImageZoomTools.Move;
 
                             break;
                         case ImageTools.Paint:
                         case ImageTools.Erase:
                         case ImageTools.ColorSelect:
-                            AreaTool = ImageZoomTools.Trace;
+                            ImageZoomTool = ImageZoomTools.Trace;
                             break;
                         case ImageTools.Area:
                             // no need to handle anything here
@@ -1338,7 +1339,7 @@ namespace SlimViews
                     CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
                     break;
                 case nameof(SelectedToolType):
-                    AreaTool = Translator.GetToolsFromString(SelectedToolType);
+                    ImageZoomTool = Translator.GetToolsFromString(SelectedToolType);
                     break;
             }
         }
@@ -1358,7 +1359,7 @@ namespace SlimViews
         /// <param name="wPoint">The w point.</param>
         private void SelectedPointAction(Point wPoint)
         {
-            if (AreaTool != ImageZoomTools.Trace)
+            if (ImageZoomTool != ImageZoomTools.Trace)
                 return;
 
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
@@ -1389,9 +1390,9 @@ namespace SlimViews
         /// <param name="frame">The selected area.</param>
         private void SelectedFrameAction(SelectionFrame frame)
         {
-            if (AreaTool == ImageZoomTools.Move)
+            if (ImageZoomTool == ImageZoomTools.Move)
                 return;
-            if (AreaTool == ImageZoomTools.Trace)
+            if (ImageZoomTool == ImageZoomTools.Trace)
                 return;
 
             var point = new System.Drawing.Point(frame.X, frame.Y);
