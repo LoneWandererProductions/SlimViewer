@@ -63,16 +63,6 @@ namespace SlimViews
             _okayCommand ??= new DelegateCommand<Window>(OkayAction, CanExecute);
 
         /// <summary>
-        ///     Determines whether the command can execute. Currently always returns true.
-        /// </summary>
-        /// <param name="obj">The parameter passed to the command.</param>
-        /// <returns>True if the command can execute; otherwise, false.</returns>
-        public bool CanExecute(object obj)
-        {
-            return true;
-        }
-
-        /// <summary>
         ///     Executes the confirmation action.
         /// </summary>
         /// <param name="window">The window to close after confirming values.</param>

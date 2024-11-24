@@ -51,9 +51,9 @@
                  Text="{Binding Path=Range}"
                  HorizontalAlignment="Stretch" />
         <Button Content="Search" Grid.Column="11" HorizontalAlignment="Stretch" Grid.Row="4"
-                VerticalAlignment="Stretch" Command="{Binding SearchColorCommand}" />
+                VerticalAlignment="Stretch" Command="{Binding SearchByColorCommand}" />
         <Button Content="Search" Grid.Column="11" Grid.Row="1" HorizontalAlignment="Stretch"
-                Command="{Binding SearchStringCommand}"
+                Command="{Binding SearchByTextCommand}"
                 VerticalAlignment="Stretch" />
     </Grid>
     <Window.Resources>

@@ -57,7 +57,7 @@ namespace CommonControls
         /// <param name="adornedElement">The adorned element.</param>
         /// <param name="tool">The tool.</param>
         /// <param name="transform">The transform.</param>
-        public SelectionAdorner(UIElement adornedElement, SelectionTools tool, Transform transform = null)
+        public SelectionAdorner(UIElement adornedElement, ImageZoomTools tool, Transform transform = null)
             : base(adornedElement)
         {
             Tool = tool;
@@ -84,7 +84,7 @@ namespace CommonControls
         /// <value>
         ///     The tool.
         /// </value>
-        public SelectionTools Tool { get; internal set; }
+        public ImageZoomTools Tool { get; internal set; }
 
         /// <summary>
         ///     Updates the selection for rectangle and ellipse tools.
@@ -137,7 +137,7 @@ namespace CommonControls
         /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (Tool == SelectionTools.Trace && e.LeftButton == MouseButtonState.Pressed)
+            if (Tool == ImageZoomTools.Trace && e.LeftButton == MouseButtonState.Pressed)
             {
                 IsTracing = true;
                 FreeFormPoints.Clear(); // Clear existing points for a new trace
@@ -210,13 +210,13 @@ namespace CommonControls
 
                 switch (Tool)
                 {
-                    case SelectionTools.Rectangle:
+                    case ImageZoomTools.Rectangle:
                         // Draw the erase area (which can behave similarly to a rectangle tool, but with different logic)
                         drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)), dashedPen,
                             selectionRect);
                         break;
 
-                    case SelectionTools.Ellipse:
+                    case ImageZoomTools.Ellipse:
                         // Calculate the center of the rectangle
                         var center = new Point(
                             selectionRect.Left + selectionRect.Width / 2,
@@ -227,13 +227,13 @@ namespace CommonControls
                             selectionRect.Height / 2);
                         break;
 
-                    case SelectionTools.Dot:
+                    case ImageZoomTools.Dot:
                         // Select a single pixel (this can be visualized as a very small rectangle)
                         drawingContext.DrawRectangle(Brushes.Red, dashedPen,
                             new Rect(_startPoint.Value, new Size(1, 1)));
                         break;
 
-                    case SelectionTools.FreeForm:
+                    case ImageZoomTools.FreeForm:
                         if (FreeFormPoints.Count > 1)
                         {
                             var geometry = new StreamGeometry();

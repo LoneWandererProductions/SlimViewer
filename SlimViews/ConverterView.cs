@@ -141,6 +141,7 @@ namespace SlimViews
             OnPropertyChanged(propertyName);
         }
 
+        /// <inheritdoc cref="CanExecute" />
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.
         /// </summary>
@@ -151,7 +152,7 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
         /// </value>
-        public bool CanExecute(object obj)
+        public new bool CanExecute(object obj)
         {
             return !string.IsNullOrEmpty(_source) && !string.IsNullOrEmpty(_target);
         }

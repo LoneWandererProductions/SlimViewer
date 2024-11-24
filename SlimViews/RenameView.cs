@@ -172,22 +172,6 @@ namespace SlimViews
         public ConcurrentDictionary<int, string> Observer { get; set; }
 
         /// <summary>
-        ///     Gets a value indicating whether this instance can execute.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-        /// </returns>
-        /// <value>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-        /// </value>
-        public bool CanExecute(object obj)
-        {
-            // check if executing is allowed, not used right now
-            return true;
-        }
-
-        /// <summary>
         ///     Removes Appendage in File Name
         /// </summary>
         /// <param name="obj">The object.</param>

@@ -58,7 +58,7 @@ namespace CommonControls
         ///     The tools
         /// </summary>
         public static readonly DependencyProperty SelectionToolProperty = DependencyProperty.Register(nameof(SelectionTool),
-            typeof(SelectionTools),
+            typeof(ImageZoomTools),
             typeof(ImageZoom), null);
 
         /// <summary>
@@ -198,9 +198,9 @@ namespace CommonControls
         /// <value>
         ///     The zoom.
         /// </value>
-        public SelectionTools SelectionTool
+        public ImageZoomTools SelectionTool
         {
-            get => (SelectionTools)GetValue(SelectionToolProperty);
+            get => (ImageZoomTools)GetValue(SelectionToolProperty);
             set => SetValue(SelectionToolProperty, value);
         }
 
@@ -357,7 +357,7 @@ namespace CommonControls
         ///     Attaches the adorner.
         /// </summary>
         /// <param name="tool">The tool.</param>
-        private void AttachAdorner(SelectionTools tool)
+        private void AttachAdorner(ImageZoomTools tool)
         {
             if (_selectionAdorner == null)
             {
@@ -393,16 +393,16 @@ namespace CommonControls
 
             switch (SelectionTool)
             {
-                case SelectionTools.Move:
+                case ImageZoomTools.Move:
                     break;
-                case SelectionTools.Trace:
+                case ImageZoomTools.Trace:
                     _selectionAdorner.IsTracing = true;
                     break;
 
-                case SelectionTools.Rectangle:
-                case SelectionTools.Ellipse:
+                case ImageZoomTools.Rectangle:
+                case ImageZoomTools.Ellipse:
                     break;
-                case SelectionTools.FreeForm:
+                case ImageZoomTools.FreeForm:
                     e.GetPosition(BtmImage);
                     break;
                 default:
@@ -432,25 +432,25 @@ namespace CommonControls
 
             switch (SelectionTool)
             {
-                case SelectionTools.Move:
+                case ImageZoomTools.Move:
                     // nothing
                     break;
 
-                case SelectionTools.Rectangle:
+                case ImageZoomTools.Rectangle:
                 {
                     var frame = _selectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                     SelectedFrameCommand.Execute(frame);
                 }
                     break;
-                case SelectionTools.Trace:
+                case ImageZoomTools.Trace:
                     _selectionAdorner.IsTracing = false;
                     var points = _selectionAdorner.FreeFormPoints;
                     //?.Invoke(frame);
                     //SelectedFrameCommand.Execute(frame);
                     break;
 
-                case SelectionTools.Dot:
+                case ImageZoomTools.Dot:
                     SetClickedPoint(e);
 
                     var endpoint = e.GetPosition(BtmImage);
@@ -491,7 +491,7 @@ namespace CommonControls
 
             switch (SelectionTool)
             {
-                case SelectionTools.Move:
+                case ImageZoomTools.Move:
                 {
                     var position = e.GetPosition(MainCanvas);
                     var matrix = BtmImage.RenderTransform.Value;
@@ -503,8 +503,8 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.Rectangle:
-                case SelectionTools.Ellipse:
+                case ImageZoomTools.Rectangle:
+                case ImageZoomTools.Ellipse:
                 {
                     // Update the adorner for rectangle or ellipse selection
                     _selectionAdorner?.UpdateSelection(_startPoint, mousePos);
@@ -512,7 +512,7 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.FreeForm:
+                case ImageZoomTools.FreeForm:
                 {
                     // Update the adorner for free form selection by adding points
                     _selectionAdorner?.AddFreeFormPoint(mousePos);
@@ -520,10 +520,10 @@ namespace CommonControls
                     break;
                 }
 
-                case SelectionTools.Trace:
+                case ImageZoomTools.Trace:
                     // Handle pixel selection if needed
                     break;
-                case SelectionTools.Dot:
+                case ImageZoomTools.Dot:
                     break;
                 default:
                     // Nothing

@@ -200,18 +200,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Validates whether commands can execute.
-        /// </summary>
-        /// <param name="obj">Optional command parameter.</param>
-        /// <returns>
-        ///     <c>true</c> if the command can execute; otherwise, <c>false</c>.
-        /// </returns>
-        private bool CanExecute(object obj)
-        {
-            return true;
-        }
-
-        /// <summary>
         ///     Executes the text-based search action.
         /// </summary>
         /// <param name="obj">Optional command parameter.</param>

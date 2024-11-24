@@ -22,15 +22,15 @@ namespace SlimViews
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>SelectionTools enum</returns>
-        internal static SelectionTools GetToolsFromString(string command)
+        internal static ImageZoomTools GetToolsFromString(string command)
         {
             return command switch
             {
-                ViewGuiResources.MoveText => SelectionTools.Move,
-                ViewGuiResources.RectangleText => SelectionTools.Rectangle,
-                ViewGuiResources.EllipseText => SelectionTools.Ellipse,
-                ViewGuiResources.FreeFormText => SelectionTools.FreeForm,
-                _ => SelectionTools.Move
+                ViewGuiResources.MoveText => ImageZoomTools.Move,
+                ViewGuiResources.RectangleText => ImageZoomTools.Rectangle,
+                ViewGuiResources.EllipseText => ImageZoomTools.Ellipse,
+                ViewGuiResources.FreeFormText => ImageZoomTools.FreeForm,
+                _ => ImageZoomTools.Move
             };
         }
 

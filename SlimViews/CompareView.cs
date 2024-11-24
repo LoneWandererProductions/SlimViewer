@@ -279,22 +279,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this instance can execute.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>
-        ///     <c>true</c> if this instance can execute the specified object; otherwise, <c>false</c>.
-        /// </returns>
-        /// <value>
-        ///     <c>true</c> if this instance can execute; otherwise, <c>false</c>.
-        /// </value>
-        private bool CanExecute(object obj)
-        {
-            // check if executing is allowed, i.e., validate, check if a process is running, etc.
-            return true;
-        }
-
-        /// <summary>
         ///     Initiates the specified sub folders.
         /// </summary>
         /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
