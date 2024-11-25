@@ -292,7 +292,7 @@
                         <Button Content="Clean" Command="{Binding CleanTempFolder}" Grid.Column="2" />
                     </Grid>
                     <Separator />
-                    <CheckBox IsChecked="{Binding ElementName=ImageZoom, Path=AutoplayGifImage}">Autoplay Gif</CheckBox>
+                    <CheckBox IsChecked="{Binding ElementName=ImageControl, Path=AutoplayGifImage}">Autoplay Gif</CheckBox>
                 </MenuItem>
                 <MenuItem Header="Experimental">
                     <MenuItem Header="Open Cif" Command="{Binding OpenCommandCif}" />
@@ -312,7 +312,7 @@
             <ContentControl Grid.Row="0" Grid.Column="8" Content="{Binding SelectedTool}"
                             ContentTemplateSelector="{DynamicResource  ToolOptionsTemplateSelector}"
                             Grid.RowSpan="4" />
-            <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageZoom, Mode=TwoWay}"
+            <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"
                     Grid.Row="2" Grid.Column="2" IsEnabled="{Binding Path =IsActive}" />
 
         </Grid>
@@ -330,8 +330,8 @@
                 IsTabStop="True"
                 ItemsSource="{Binding Bmp}"
                 ImageGifPath="{Binding GifPath}"
-                Name="ImageZoom"
-                SelectionTool="{Binding ImageZoomTool, Mode=TwoWay}"
+                x:Name="ImageControl"
+                SelectionTool="{Binding ImageZoomTool}"
                 SelectedFrameCommand="{Binding SelectedFrameCommand}"
                 SelectedPointCommand="{Binding SelectedPointCommand}" />
         </Grid>

@@ -453,12 +453,14 @@ namespace SlimViews
         /// <param name="compressCif">if set to <c>true</c> [compress cif].</param>
         /// <param name="similarity">The similarity.</param>
         /// <param name="autoClean">if set to <c>true</c> [automatic clean].</param>
-        public ImageView(bool subFolders, bool compressCif, int similarity, bool autoClean)
+        /// <param name="imageZoom"></param>
+        public ImageView(bool subFolders, bool compressCif, int similarity, bool autoClean, ImageZoom imageZoom)
         {
             SubFolders = subFolders;
             Compress = compressCif;
             Similarity = similarity;
             AutoClean = autoClean;
+            ImageZoomControl = imageZoom;
 
             Initialize();
         }
@@ -1273,7 +1275,7 @@ namespace SlimViews
         /// <value>
         ///     The image zoom.
         /// </value>
-        public ImageZoom ImageZoom { get; init; }
+        public ImageZoom ImageZoomControl { get; set; }
 
         /// <summary>
         ///     Initializes this instance.
@@ -1300,6 +1302,7 @@ namespace SlimViews
                 { Key.Left, PreviousCommand },
                 { Key.Right, NextCommand }
             };
+
 
             PropertyChanged += OnPropertyChanged;
         }
@@ -1339,7 +1342,7 @@ namespace SlimViews
                     CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
                     break;
                 case nameof(SelectedToolType):
-                    ImageZoomTool = Translator.GetToolsFromString(SelectedToolType);
+                    if (ImageZoomControl != null) ImageZoomControl.SelectionTool = Translator.GetToolsFromString(SelectedToolType);
                     break;
             }
         }
@@ -1436,7 +1439,7 @@ namespace SlimViews
         private void CloseAction(object obj)
         {
             var config = SlimViewerRegister.GetRegister();
-            config.MainAutoPlayGif = ImageZoom.AutoplayGifImage;
+            config.MainAutoPlayGif = ImageZoomControl.AutoplayGifImage;
 
             Config.SetConfig(config);
             if (AutoClean) CleanTempAction(true);

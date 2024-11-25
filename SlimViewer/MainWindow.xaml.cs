@@ -40,12 +40,13 @@ namespace SlimViewer
 
             SlimViewerRegister.SetRegister(obj);
 
+            //TODO rework and set:
             View = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
-                obj.MainAutoClean) { Main = this, Thumb = Thumbnail, Picker = ColorPick, ImageZoom = ImageZoom };
+                obj.MainAutoClean, ImageControl) { Main = this, Thumb = Thumbnail, Picker = ColorPick };
 
             DataContext = View;
 
-            ImageZoom.AutoplayGifImage = obj.MainAutoPlayGif;
+            ImageControl.AutoplayGifImage = obj.MainAutoPlayGif;
         }
 
         /// <summary>
