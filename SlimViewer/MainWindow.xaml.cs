@@ -20,6 +20,11 @@ namespace SlimViewer
     /// </summary>
     public sealed partial class MainWindow
     {
+        /// <summary>
+        /// The view
+        /// </summary>
+        private ImageView _view;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="MainWindow" /> class.
@@ -41,10 +46,10 @@ namespace SlimViewer
             SlimViewerRegister.SetRegister(obj);
 
             //TODO rework and set:
-            View = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
+            _view = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
                 obj.MainAutoClean, ImageControl) { Main = this, Thumb = Thumbnail, Picker = ColorPick };
 
-            DataContext = View;
+            DataContext = _view;
 
             ImageControl.AutoplayGifImage = obj.MainAutoPlayGif;
         }
@@ -60,12 +65,12 @@ namespace SlimViewer
 
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-            if (files == null || files.Length == 0) return;
+            if (files == null || files.Length == 0 || _view == null) return;
 
-            View.IsActive = true;
+            _view.IsActive = true;
 
-            if (files.Length == 1) View.ChangeImage(files[0]);
-            else View.ChangeImage(files);
+            if (files.Length == 1) _view.ChangeImage(files[0]);
+            else _view.ChangeImage(files);
         }
 
         /// <inheritdoc />
@@ -76,7 +81,9 @@ namespace SlimViewer
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
-            View.CloseCommand.Execute(null);
+            if (_view == null) return;
+
+            _view.CloseCommand.Execute(null);
         }
     }
 }

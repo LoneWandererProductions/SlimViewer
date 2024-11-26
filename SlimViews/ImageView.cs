@@ -437,15 +437,6 @@ namespace SlimViews
         private ImageZoomTools _imageZoomTool;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImageView" /> class.
-        /// Initiates all necessary Collections as well
-        /// </summary>
-        public ImageView()
-        {
-            Initialize();
-        }
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="ImageView" /> class.
         ///     Initiates all necessary Collections as well
         /// </summary>
