@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Translator.cs
+ * FILE:        SlimControls/Translator.cs
  * PURPOSE:     Converts our static strings to the enum we need in the Imaging Library
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,19 +10,19 @@
 using CommonControls;
 using Imaging;
 
-namespace SlimViews
+namespace SlimControls
 {
     /// <summary>
     ///     Converts string to enums
     /// </summary>
-    internal static class Translator
+    public static class Translator
     {
         /// <summary>
         ///     Gets the tools from string.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>SelectionTools enum</returns>
-        internal static ImageZoomTools GetToolsFromString(string command)
+        public static ImageZoomTools GetToolsFromString(string command)
         {
             return command switch
             {
@@ -39,7 +39,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>TextureType enum</returns>
-        internal static TextureType GetTextureFromString(string command)
+        public static TextureType GetTextureFromString(string command)
         {
             return command switch
             {
@@ -60,7 +60,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>ImageFilters enum</returns>
-        internal static ImageFilters GetFilterFromString(string command)
+        public static ImageFilters GetFilterFromString(string command)
         {
             return command switch
             {

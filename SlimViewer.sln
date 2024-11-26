@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.10.35201.131
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35425.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{A87EE2C4-44A0-47EF-B5BE-5799F5A982F0}"
 EndProject
@@ -32,7 +32,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlimViews", "SlimViews\Slim
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonDialogs", "CommonDialogs\CommonDialogs.csproj", "{DCD7E213-7C00-4819-900B-DDB142901FFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimTests", "SlimTests\SlimTests.csproj", "{82C2FC6E-DF40-4972-9856-4F7E17CCC855}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlimTests", "SlimTests\SlimTests.csproj", "{82C2FC6E-DF40-4972-9856-4F7E17CCC855}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimControls", "SlimControls\SlimControls.csproj", "{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,10 @@ Global
 		{82C2FC6E-DF40-4972-9856-4F7E17CCC855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82C2FC6E-DF40-4972-9856-4F7E17CCC855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82C2FC6E-DF40-4972-9856-4F7E17CCC855}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

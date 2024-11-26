@@ -29,6 +29,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using SlimControls;
 using ViewModel;
 using Point = System.Windows.Point;
 

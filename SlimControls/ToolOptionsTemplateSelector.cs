@@ -1,16 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Templates/ToolOptionsTemplateSelector.cs
+ * FILE:        SlimControls/ToolOptionsTemplateSelector.cs
  * PURPOSE:     A bit of helper to handle the dynamic Menu.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Windows;
 using System.Windows.Controls;
-using SlimControls;
 
-namespace SlimViews.Templates
+namespace SlimControls
 {
     /// <inheritdoc />
     /// <summary>

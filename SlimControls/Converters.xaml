@@ -1,0 +1,56 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:slimControls="clr-namespace:SlimControls">
+
+    <slimControls:FillTypeVisibilityConverter x:Key="FillTypeVisibilityConverter" />
+    <slimControls:SelectionToVisibilityConverter x:Key="SelectionToVisibilityConverter" />
+    <slimControls:ComboBoxVisibilityAndSelectionConverter x:Key="ComboBoxVisibilityAndSelectionConverter" />
+
+
+    <!-- Selection Tool Strings -->
+    <slimControls:ConstantStringExtension Key="RectangleText" x:Key="RectangleText" />
+    <slimControls:ConstantStringExtension Key="EllipseText" x:Key="EllipseText" />
+    <slimControls:ConstantStringExtension Key="FreeFormText" x:Key="FreeFormText" />
+
+    <!-- Texture Strings -->
+    <slimControls:ConstantStringExtension Key="TextureNoise" x:Key="TextureNoise" />
+    <slimControls:ConstantStringExtension Key="TextureClouds" x:Key="TextureClouds" />
+    <slimControls:ConstantStringExtension Key="TextureMarble" x:Key="TextureMarble" />
+    <slimControls:ConstantStringExtension Key="TextureWood" x:Key="TextureWood" />
+    <slimControls:ConstantStringExtension Key="TextureWave" x:Key="TextureWave" />
+    <slimControls:ConstantStringExtension Key="TextureCrosshatch" x:Key="TextureCrosshatch" />
+    <slimControls:ConstantStringExtension Key="TextureConcrete" x:Key="TextureConcrete" />
+    <slimControls:ConstantStringExtension Key="TextureCanvas" x:Key="TextureCanvas" />
+
+    <!-- Filter Strings -->
+    <slimControls:ConstantStringExtension Key="FilterNone" x:Key="FilterNone" />
+    <slimControls:ConstantStringExtension Key="FilterGrayScale" x:Key="FilterGrayScale" />
+    <slimControls:ConstantStringExtension Key="FilterInvert" x:Key="FilterInvert" />
+    <slimControls:ConstantStringExtension Key="FilterSepia" x:Key="FilterSepia" />
+    <slimControls:ConstantStringExtension Key="FilterBlackAndWhite" x:Key="FilterBlackAndWhite" />
+    <slimControls:ConstantStringExtension Key="FilterPolaroid" x:Key="FilterPolaroid" />
+    <slimControls:ConstantStringExtension Key="FilterContour" x:Key="FilterContour" />
+    <slimControls:ConstantStringExtension Key="FilterBrightness" x:Key="FilterBrightness" />
+    <slimControls:ConstantStringExtension Key="FilterContrast" x:Key="FilterContrast" />
+    <slimControls:ConstantStringExtension Key="FilterHueShift" x:Key="FilterHueShift" />
+    <slimControls:ConstantStringExtension Key="FilterColorBalance" x:Key="FilterColorBalance" />
+    <slimControls:ConstantStringExtension Key="FilterVintage" x:Key="FilterVintage" />
+    <slimControls:ConstantStringExtension Key="FilterSharpen" x:Key="FilterSharpen" />
+    <slimControls:ConstantStringExtension Key="FilterGaussianBlur" x:Key="FilterGaussianBlur" />
+    <slimControls:ConstantStringExtension Key="FilterEmboss" x:Key="FilterEmboss" />
+    <slimControls:ConstantStringExtension Key="FilterBoxBlur" x:Key="FilterBoxBlur" />
+    <slimControls:ConstantStringExtension Key="FilterLaplacian" x:Key="FilterLaplacian" />
+    <slimControls:ConstantStringExtension Key="FilterEdgeEnhance" x:Key="FilterEdgeEnhance" />
+    <slimControls:ConstantStringExtension Key="FilterMotionBlur" x:Key="FilterMotionBlur" />
+    <slimControls:ConstantStringExtension Key="FilterUnsharpMask" x:Key="FilterUnsharpMask" />
+    <slimControls:ConstantStringExtension Key="FilterDifferenceOfGaussians" x:Key="FilterDifferenceOfGaussians" />
+    <slimControls:ConstantStringExtension Key="FilterCrosshatch" x:Key="FilterCrosshatch" />
+    <slimControls:ConstantStringExtension Key="FilterFloydSteinbergDithering" x:Key="FilterFloydSteinbergDithering" />
+    <slimControls:ConstantStringExtension Key="FilterAnisotropicKuwahara" x:Key="FilterAnisotropicKuwahara" />
+    <slimControls:ConstantStringExtension Key="FilterSupersamplingAntialiasing" x:Key="FilterSupersamplingAntialiasing" />
+    <slimControls:ConstantStringExtension Key="FilterPostProcessingAntialiasing" x:Key="FilterPostProcessingAntialiasing" />
+    <slimControls:ConstantStringExtension Key="FilterPencilSketchEffect" x:Key="FilterPencilSketchEffect" />
+
+</ResourceDictionary>
