@@ -8,6 +8,9 @@
 
 namespace SlimControls
 {
+    /// <summary>
+    /// The Tools we support right now
+    /// </summary>
     public enum ImageTools
     {
         /// <summary>

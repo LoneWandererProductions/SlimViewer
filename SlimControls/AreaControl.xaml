@@ -8,7 +8,7 @@
 
     <UserControl.Resources>
         <!-- Reference your ResourceDictionary here -->
-        <ResourceDictionary Source="Converters.xaml" />
+        <ResourceDictionary Source="Resources\Converters.xaml" />
     </UserControl.Resources>
 
     <Grid>
