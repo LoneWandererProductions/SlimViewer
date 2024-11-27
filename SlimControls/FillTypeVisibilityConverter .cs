@@ -13,6 +13,11 @@ using System.Windows.Data;
 
 namespace SlimControls
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Visibility Converter
+    /// </summary>
+    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public sealed class FillTypeVisibilityConverter : IValueConverter
     {
         /// <inheritdoc />
@@ -40,6 +45,7 @@ namespace SlimControls
             }
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Converts a value.
         /// </summary>

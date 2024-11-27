@@ -5,8 +5,14 @@ using System.Windows.Data;
 
 namespace SlimControls
 {
-    public class EnumToVisibilityConverter : IValueConverter
+    /// <inheritdoc />
+    /// <summary>
+    /// Enum to Visibility Converter
+    /// </summary>
+    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
+    public sealed class EnumToVisibilityConverter : IValueConverter
     {
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -23,9 +29,11 @@ namespace SlimControls
             {
                 return currentTool.ToString() == targetTool ? Visibility.Visible : Visibility.Collapsed;
             }
+
             return Visibility.Collapsed;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -36,7 +44,7 @@ namespace SlimControls
         /// <returns>
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <exception cref="T:System.NotImplementedException"></exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

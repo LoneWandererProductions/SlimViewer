@@ -16,7 +16,7 @@ namespace SlimControls
         /// <summary>
         /// The move
         /// </summary>
-        Move = 0, 
+        Move = 0,
 
         /// <summary>
         ///     The paint
@@ -37,6 +37,5 @@ namespace SlimControls
         ///     The area
         /// </summary>
         Area = 4
-
     }
 }
