@@ -50,7 +50,8 @@
     <slimControls:ConstantStringExtension Key="FilterFloydSteinbergDithering" x:Key="FilterFloydSteinbergDithering" />
     <slimControls:ConstantStringExtension Key="FilterAnisotropicKuwahara" x:Key="FilterAnisotropicKuwahara" />
     <slimControls:ConstantStringExtension Key="FilterSupersamplingAntialiasing" x:Key="FilterSupersamplingAntialiasing" />
-    <slimControls:ConstantStringExtension Key="FilterPostProcessingAntialiasing" x:Key="FilterPostProcessingAntialiasing" />
+    <slimControls:ConstantStringExtension Key="FilterPostProcessingAntialiasing"
+                                          x:Key="FilterPostProcessingAntialiasing" />
     <slimControls:ConstantStringExtension Key="FilterPencilSketchEffect" x:Key="FilterPencilSketchEffect" />
 
 </ResourceDictionary>

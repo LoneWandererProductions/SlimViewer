@@ -59,7 +59,7 @@ namespace CommonControls
         private readonly bool _unique;
 
         /// <summary>
-        /// The unique name
+        ///     The unique name
         /// </summary>
         private readonly List<string> _uniqueName;
 

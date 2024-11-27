@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-    xmlns:local="clr-namespace:SlimViews;assembly=SlimViews"
     xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
     xmlns:templates="clr-namespace:SlimViews.Templates;assembly=SlimViews"
     x:Class="SlimViewer.MainWindow"
@@ -397,6 +396,6 @@
                     Source="pack://application:,,,/SlimViews;component/Templates/ToolOptionsTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        
+
     </Window.Resources>
 </Window>

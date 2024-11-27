@@ -9,12 +9,12 @@
 namespace SlimControls
 {
     /// <summary>
-    /// The Tools we support right now
+    ///     The Tools we support right now
     /// </summary>
     public enum ImageTools
     {
         /// <summary>
-        /// The move
+        ///     The move
         /// </summary>
         Move = 0,
 

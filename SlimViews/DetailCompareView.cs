@@ -235,7 +235,7 @@ namespace SlimViews
         /// <summary>
         ///     Determines whether the commands can execute.
         /// </summary>
-        new public bool CanExecute(object obj)
+        public new bool CanExecute(object obj)
         {
             return _btmOne != null && _btmTwo != null;
         }

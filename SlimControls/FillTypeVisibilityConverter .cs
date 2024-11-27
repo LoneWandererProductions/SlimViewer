@@ -15,7 +15,7 @@ namespace SlimControls
 {
     /// <inheritdoc />
     /// <summary>
-    /// Visibility Converter
+    ///     Visibility Converter
     /// </summary>
     /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public sealed class FillTypeVisibilityConverter : IValueConverter

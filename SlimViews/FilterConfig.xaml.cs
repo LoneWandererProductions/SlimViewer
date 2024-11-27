@@ -10,11 +10,11 @@ using System.Windows;
 using Imaging;
 
 namespace SlimViews
-{    
+{
     /// <inheritdoc cref="Window" />
-     /// <summary>
-     ///     Configuration for our Filters
-     /// </summary>
+    /// <summary>
+    ///     Configuration for our Filters
+    /// </summary>
     public partial class FilterConfig
     {
         /// <inheritdoc />
@@ -28,7 +28,7 @@ namespace SlimViews
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="FilterConfig"/> class.
+        ///     Initializes a new instance of the <see cref="FilterConfig" /> class.
         /// </summary>
         /// <param name="filter">The filter.</param>
         public FilterConfig(ImageFilters filter)

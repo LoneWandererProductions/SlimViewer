@@ -117,11 +117,6 @@ namespace CommonControls
         private Point _originPoint;
 
         /// <summary>
-        ///     The selection adorner
-        /// </summary>
-        private SelectionAdorner SelectionAdorner { get; set; }
-
-        /// <summary>
         ///     The mouse down position
         /// </summary>
         private Point _startPoint;
@@ -138,6 +133,11 @@ namespace CommonControls
             MainCanvas.Height = BtmImage.Source.Height;
             MainCanvas.Width = BtmImage.Source.Width;
         }
+
+        /// <summary>
+        ///     The selection adorner
+        /// </summary>
+        private SelectionAdorner SelectionAdorner { get; set; }
 
         /// <summary>
         ///     Gets or sets the image clicked command.
@@ -275,10 +275,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Called when [selection tool changed].
+        ///     Called when [selection tool changed].
         /// </summary>
         /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
         /// <exception cref="System.NotImplementedException"></exception>
         private static void OnSelectionToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

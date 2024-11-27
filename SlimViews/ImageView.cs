@@ -219,6 +219,11 @@ namespace SlimViews
         private ICommand _imageLoadedCommand;
 
         /// <summary>
+        ///     The selection tool
+        /// </summary>
+        private ImageZoomTools _imageZoomTool;
+
+        /// <summary>
         ///     The information
         /// </summary>
         private string _information;
@@ -431,11 +436,6 @@ namespace SlimViews
         ///     The tolerance
         /// </summary>
         private double _tolerance;
-
-        /// <summary>
-        /// The selection tool
-        /// </summary>
-        private ImageZoomTools _imageZoomTool;
 
         public ImageView()
         {
@@ -865,10 +865,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the selection tool.
+        ///     Gets or sets the selection tool.
         /// </summary>
         /// <value>
-        /// The selection tool.
+        ///     The selection tool.
         /// </value>
         public ImageZoomTools ImageZoomTool
         {
@@ -1339,7 +1339,8 @@ namespace SlimViews
                     CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
                     break;
                 case nameof(SelectedToolType):
-                    if (ImageZoomControl != null) ImageZoomControl.SelectionTool = Translator.GetToolsFromString(SelectedToolType);
+                    if (ImageZoomControl != null)
+                        ImageZoomControl.SelectionTool = Translator.GetToolsFromString(SelectedToolType);
                     break;
             }
         }
@@ -1873,7 +1874,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void FilterConfigWindowAction(string obj)
         {
-            var filterConfig = new FilterConfig()
+            var filterConfig = new FilterConfig
             {
                 Topmost = true,
                 Owner = Main

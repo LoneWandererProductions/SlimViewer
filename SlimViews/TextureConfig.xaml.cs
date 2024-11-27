@@ -28,7 +28,7 @@ namespace SlimViews
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextureConfig"/> class.
+        ///     Initializes a new instance of the <see cref="TextureConfig" /> class.
         /// </summary>
         /// <param name="texture">The texture.</param>
         public TextureConfig(TextureType texture)

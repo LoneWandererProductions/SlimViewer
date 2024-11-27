@@ -19,7 +19,7 @@ namespace CommonControls
     public static class GlobalKeyHandler
     {
         /// <summary>
-        /// DependencyProperty to enable or disable global key handling on a specific UIElement.
+        ///     DependencyProperty to enable or disable global key handling on a specific UIElement.
         /// </summary>
         public static readonly DependencyProperty AttachProperty =
             DependencyProperty.RegisterAttached(
@@ -28,7 +28,7 @@ namespace CommonControls
 
 
         /// <summary>
-        /// DependencyProperty to store a dictionary of key-command pairs for a UIElement.
+        ///     DependencyProperty to store a dictionary of key-command pairs for a UIElement.
         /// </summary>
         public static readonly DependencyProperty CommandBindingsProperty =
             DependencyProperty.RegisterAttached(
@@ -37,7 +37,7 @@ namespace CommonControls
 
 
         /// <summary>
-        /// Skip text controls property
+        ///     Skip text controls property
         /// </summary>
         public static readonly DependencyProperty SkipTextControlsProperty =
             DependencyProperty.RegisterAttached(
@@ -45,7 +45,7 @@ namespace CommonControls
                 new PropertyMetadata(true));
 
         /// <summary>
-        /// Sets the skip text controls.
+        ///     Sets the skip text controls.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="value">if set to <c>true</c> [value].</param>
@@ -55,7 +55,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets the skip text controls.
+        ///     Gets the skip text controls.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns>Returns if we skip control.</returns>
