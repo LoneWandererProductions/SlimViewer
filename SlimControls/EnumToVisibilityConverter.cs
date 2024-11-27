@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Data;
 using System.Windows;
+using System.Windows.Data;
 
 namespace SlimControls
 {
@@ -19,9 +19,9 @@ namespace SlimControls
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Enum enumValue && parameter is string targetEnum)
+            if (value is ImageTools currentTool && parameter is string targetTool)
             {
-                return enumValue.ToString() == targetEnum ? Visibility.Visible : Visibility.Collapsed;
+                return currentTool.ToString() == targetTool ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;
         }
@@ -36,9 +36,10 @@ namespace SlimControls
         /// <returns>
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
+        /// <exception cref="NotImplementedException"></exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            throw new NotImplementedException();
         }
     }
 }
