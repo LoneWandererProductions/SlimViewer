@@ -47,11 +47,6 @@ namespace Imaging
                 new UIPropertyMetadata(string.Empty, GifSourcePropertyChanged));
 
         /// <summary>
-        ///     The animation
-        /// </summary>
-        private Int32Animation _animation;
-
-        /// <summary>
         ///     The image list
         /// </summary>
         private List<ImageSource> _imageList;
