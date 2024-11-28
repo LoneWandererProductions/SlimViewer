@@ -17,18 +17,19 @@ namespace SlimControls
         public static readonly DependencyProperty SelectedToolTypeProperty =
             DependencyProperty.Register(
                 nameof(SelectedToolType),
-                typeof(ImageZoomTools),
+                typeof(string),
                 typeof(AreaControl),
-                new PropertyMetadata(default(ImageZoomTools), OnSelectedToolTypeChanged));
+                new PropertyMetadata(default(string), OnSelectedToolTypeChanged));
 
         /// <summary>
         ///     Callback invoked when the SelectedToolType changes.
         /// </summary>
         private static void OnSelectedToolTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is AreaControl control && e.NewValue is ImageZoomTools newTool)
+            if (d is AreaControl control && e.NewValue is string newTool)
             {
-                control.NotifyToolSelection(newTool);
+                var tool = Translator.GetToolsFromString(newTool);
+                control.NotifyToolSelection(tool);
             }
         }
 
@@ -69,7 +70,7 @@ namespace SlimControls
         /// <value>
         ///     The type of the selected tool.
         /// </value>
-        public ImageZoomTools SelectedToolType
+        public string SelectedToolType
         {
             get => (ImageZoomTools)GetValue(SelectedToolTypeProperty);
             set => SetValue(SelectedToolTypeProperty, value);
