@@ -1,5 +1,7 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using CommonControls;
 
 namespace SlimControls
 {
@@ -13,8 +15,22 @@ namespace SlimControls
         ///     The selected tool type property
         /// </summary>
         public static readonly DependencyProperty SelectedToolTypeProperty =
-            DependencyProperty.Register(nameof(SelectedToolType), typeof(string), typeof(AreaControl),
-                new PropertyMetadata(default(string)));
+            DependencyProperty.Register(
+                nameof(SelectedToolType),
+                typeof(ImageZoomTools),
+                typeof(AreaControl),
+                new PropertyMetadata(default(ImageZoomTools), OnSelectedToolTypeChanged));
+
+        /// <summary>
+        ///     Callback invoked when the SelectedToolType changes.
+        /// </summary>
+        private static void OnSelectedToolTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is AreaControl control && e.NewValue is ImageZoomTools newTool)
+            {
+                control.NotifyToolSelection(newTool);
+            }
+        }
 
         /// <summary>
         ///     The selected fill type property
@@ -22,6 +38,22 @@ namespace SlimControls
         public static readonly DependencyProperty SelectedFillTypeProperty =
             DependencyProperty.Register(nameof(SelectedFillType), typeof(string), typeof(AreaControl),
                 new PropertyMetadata(default(string)));
+
+        // Event to notify when a tool is selected
+        public event EventHandler<ImageZoomTools>? ToolChanged;
+
+
+        // Raise ToolChanged when a tool is selected
+        private void NotifyToolSelection(ImageZoomTools selectedTool)
+        {
+            ToolChanged?.Invoke(this, selectedTool);
+        }
+
+        // Example: Hook this to a button click or selection change
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            NotifyToolSelection(ImageZoomTools.Rectangle); // Example for Rectangle tool
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AreaControl" /> class.
@@ -37,9 +69,9 @@ namespace SlimControls
         /// <value>
         ///     The type of the selected tool.
         /// </value>
-        public string SelectedToolType
+        public ImageZoomTools SelectedToolType
         {
-            get => (string)GetValue(SelectedToolTypeProperty);
+            get => (ImageZoomTools)GetValue(SelectedToolTypeProperty);
             set => SetValue(SelectedToolTypeProperty, value);
         }
 
