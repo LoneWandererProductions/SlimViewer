@@ -34,7 +34,6 @@
 
         <!-- Area Control -->
         <local:AreaControl x:Name="AreaControl"
-                   ToolChanged="AreaControl_ToolChanged"
                    Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Area}" />
 
     </Grid>
