@@ -1,54 +1,85 @@
 ﻿using CommonControls;
 using System;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace SlimControls
 {
-    public partial class UnifiedToolOptions : UserControl
+    public partial class UnifiedToolOptions
     {
         // DependencyProperty for SelectedTool
         public static readonly DependencyProperty SelectedToolProperty =
-            DependencyProperty.Register(nameof(SelectedTool), typeof(ImageTools), typeof(UnifiedToolOptions),
+            DependencyProperty.Register(
+                nameof(SelectedTool),
+                typeof(ImageTools),
+                typeof(UnifiedToolOptions),
                 new PropertyMetadata(ImageTools.Paint, OnSelectedToolChanged));
 
         // DependencyProperty for BrushSize
         public static readonly DependencyProperty BrushSizeProperty =
-            DependencyProperty.Register(nameof(BrushSize), typeof(double), typeof(UnifiedToolOptions),
+            DependencyProperty.Register(
+                nameof(BrushSize),
+                typeof(double),
+                typeof(UnifiedToolOptions),
                 new PropertyMetadata(1.0));
 
         // DependencyProperty for EraseRadius
         public static readonly DependencyProperty EraseRadiusProperty =
-            DependencyProperty.Register(nameof(EraseRadius), typeof(double), typeof(UnifiedToolOptions),
+            DependencyProperty.Register(
+                nameof(EraseRadius),
+                typeof(double),
+                typeof(UnifiedToolOptions),
                 new PropertyMetadata(1.0));
 
         // DependencyProperty for ColorTolerance
         public static readonly DependencyProperty ColorToleranceProperty =
-            DependencyProperty.Register(nameof(ColorTolerance), typeof(double), typeof(UnifiedToolOptions),
+            DependencyProperty.Register(
+                nameof(ColorTolerance),
+                typeof(double),
+                typeof(UnifiedToolOptions),
                 new PropertyMetadata(1.0));
 
+        // Routed event for external subscribers to know when a tool becomes visible
+        public static readonly RoutedEvent SelectedToolChangedEvent =
+            EventManager.RegisterRoutedEvent(
+                nameof(SelectedToolChanged),
+                RoutingStrategy.Bubble,
+                typeof(RoutedPropertyChangedEventHandler<ImageTools>),
+                typeof(UnifiedToolOptions));
+
         // Event to notify external subscribers when a tool is selected
-        public event EventHandler<ImageZoomTools>? ToolChanged;
+        public event RoutedPropertyChangedEventHandler<ImageTools> SelectedToolChanged
+        {
+            add => AddHandler(SelectedToolChangedEvent, value);
+            remove => RemoveHandler(SelectedToolChangedEvent, value);
+        }
 
         // Called when the SelectedTool property changes
         private static void OnSelectedToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is UnifiedToolOptions control && e.NewValue is ImageTools newTool)
             {
-                // Notify external listeners
-                control.NotifyToolSelection((ImageZoomTools)newTool);
+                var args = new RoutedPropertyChangedEventArgs<ImageTools>(
+                    (ImageTools)e.OldValue,
+                    newTool,
+                    SelectedToolChangedEvent);
+
+                control.RaiseEvent(args);
+
+                // Notify via the legacy event as well for compatibility
+                control.NotifyToolSelection(newTool);
             }
         }
 
-        // Raise the ToolChanged event
-        private void NotifyToolSelection(ImageZoomTools selectedTool)
+        // Raise the legacy ToolChanged event
+        private void NotifyToolSelection(ImageTools selectedTool)
         {
-            ToolChanged?.Invoke(this, selectedTool);
+            ToolChanged?.Invoke(this, (ImageZoomTools)selectedTool);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Constructor
-        /// Initializes a new instance of the <see cref="UnifiedToolOptions"/> class.
+        /// Initializes a new instance of the <see cref="T:SlimControls.UnifiedToolOptions" /> class.
         /// </summary>
         public UnifiedToolOptions()
         {
@@ -59,9 +90,6 @@ namespace SlimControls
         /// SelectedTool Property
         /// Gets or sets the selected tool.
         /// </summary>
-        /// <value>
-        /// The selected tool.
-        /// </value>
         public ImageTools SelectedTool
         {
             get => (ImageTools)GetValue(SelectedToolProperty);
@@ -88,5 +116,8 @@ namespace SlimControls
             get => (double)GetValue(ColorToleranceProperty);
             set => SetValue(ColorToleranceProperty, value);
         }
+
+        // Legacy event for backwards compatibility (optional)
+        public event EventHandler<ImageZoomTools>? ToolChanged;
     }
 }
