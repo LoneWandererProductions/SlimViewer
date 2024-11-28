@@ -46,13 +46,22 @@ namespace SlimControls
             ToolChanged?.Invoke(this, selectedTool);
         }
 
-        // Constructor
+        /// <summary>
+        /// Constructor
+        /// Initializes a new instance of the <see cref="UnifiedToolOptions"/> class.
+        /// </summary>
         public UnifiedToolOptions()
         {
             InitializeComponent();
         }
 
-        // SelectedTool Property
+        /// <summary>
+        /// SelectedTool Property
+        /// Gets or sets the selected tool.
+        /// </summary>
+        /// <value>
+        /// The selected tool.
+        /// </value>
         public ImageTools SelectedTool
         {
             get => (ImageTools)GetValue(SelectedToolProperty);
