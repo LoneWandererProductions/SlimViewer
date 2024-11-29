@@ -92,6 +92,16 @@ namespace SlimControls
             }
         }
 
+        /// <summary>
+        /// Handles the ToolChangedRouted event of the AreaControl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void AreaControl_ToolChangedRouted(object sender, RoutedEventArgs e)
+        {
+            //TODO 
+        }
+
 
         /// <summary>
         /// Notifies the tool selection.
