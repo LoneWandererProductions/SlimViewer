@@ -6,7 +6,9 @@ namespace SlimControls
 {
     public partial class UnifiedToolOptions
     {
-        // DependencyProperty for SelectedTool
+        /// <summary>
+        /// DependencyProperty for SelectedTool
+        /// </summary>
         public static readonly DependencyProperty SelectedToolProperty =
             DependencyProperty.Register(
                 nameof(SelectedTool),
@@ -14,7 +16,10 @@ namespace SlimControls
                 typeof(UnifiedToolOptions),
                 new PropertyMetadata(ImageTools.Paint, OnSelectedToolChanged));
 
-        // DependencyProperty for BrushSize
+
+        /// <summary>
+        /// DependencyProperty for BrushSize
+        /// </summary>
         public static readonly DependencyProperty BrushSizeProperty =
             DependencyProperty.Register(
                 nameof(BrushSize),
@@ -22,7 +27,9 @@ namespace SlimControls
                 typeof(UnifiedToolOptions),
                 new PropertyMetadata(1.0));
 
-        // DependencyProperty for EraseRadius
+        /// <summary>
+        /// DependencyProperty for EraseRadius
+        /// </summary>
         public static readonly DependencyProperty EraseRadiusProperty =
             DependencyProperty.Register(
                 nameof(EraseRadius),
@@ -30,15 +37,20 @@ namespace SlimControls
                 typeof(UnifiedToolOptions),
                 new PropertyMetadata(1.0));
 
-        // DependencyProperty for ColorTolerance
+        /// <summary>
+        /// DependencyProperty for ColorTolerance
+        /// </summary>
         public static readonly DependencyProperty ColorToleranceProperty =
             DependencyProperty.Register(
                 nameof(ColorTolerance),
                 typeof(double),
                 typeof(UnifiedToolOptions),
                 new PropertyMetadata(1.0));
-
-        // Routed event for external subscribers to know when a tool becomes visible
+ 
+        /// <summary>
+        /// Routed event for external subscribers to know when a tool becomes visible
+        /// The selected tool changed event
+        /// </summary>
         public static readonly RoutedEvent SelectedToolChangedEvent =
             EventManager.RegisterRoutedEvent(
                 nameof(SelectedToolChanged),
@@ -46,14 +58,24 @@ namespace SlimControls
                 typeof(RoutedPropertyChangedEventHandler<ImageTools>),
                 typeof(UnifiedToolOptions));
 
-        // Event to notify external subscribers when a tool is selected
+
+        /// <summary>
+        /// Occurs when [selected tool changed].
+        /// Event to notify external subscribers when a tool is selected
+        /// </summary>
         public event RoutedPropertyChangedEventHandler<ImageTools> SelectedToolChanged
         {
             add => AddHandler(SelectedToolChangedEvent, value);
             remove => RemoveHandler(SelectedToolChangedEvent, value);
         }
 
-        // Called when the SelectedTool property changes
+
+        /// <summary>
+        /// Called when [selected tool changed].
+        /// Called when the SelectedTool property changes
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void OnSelectedToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is UnifiedToolOptions control && e.NewValue is ImageTools newTool)
@@ -70,7 +92,12 @@ namespace SlimControls
             }
         }
 
-        // Raise the legacy ToolChanged event
+
+        /// <summary>
+        /// Notifies the tool selection.
+        /// Raise the legacy ToolChanged event
+        /// </summary>
+        /// <param name="selectedTool">The selected tool.</param>
         private void NotifyToolSelection(ImageTools selectedTool)
         {
             ToolChanged?.Invoke(this, (ImageZoomTools)selectedTool);
@@ -96,28 +123,50 @@ namespace SlimControls
             set => SetValue(SelectedToolProperty, value);
         }
 
-        // BrushSize Property
+        /// <summary>
+        /// Gets or sets the size of the brush.
+        /// BrushSize Property
+        /// </summary>
+        /// <value>
+        /// The size of the brush.
+        /// </value>
         public double BrushSize
         {
             get => (double)GetValue(BrushSizeProperty);
             set => SetValue(BrushSizeProperty, value);
         }
 
-        // EraseRadius Property
+        /// <summary>
+        /// EraseRadius Property
+        /// Gets or sets the erase radius.
+        /// </summary>
+        /// <value>
+        /// The erase radius.
+        /// </value>
         public double EraseRadius
         {
             get => (double)GetValue(EraseRadiusProperty);
             set => SetValue(EraseRadiusProperty, value);
         }
 
-        // ColorTolerance Property
+
+        /// <summary>
+        /// ColorTolerance Property
+        /// Gets or sets the color tolerance.
+        /// </summary>
+        /// <value>
+        /// The color tolerance.
+        /// </value>
         public double ColorTolerance
         {
             get => (double)GetValue(ColorToleranceProperty);
             set => SetValue(ColorToleranceProperty, value);
         }
 
-        // Legacy event for backwards compatibility (optional)
+        /// <summary>
+        /// Legacy event for backwards compatibility (optional)
+        /// Occurs when [tool changed].
+        /// </summary>
         public event EventHandler<ImageZoomTools>? ToolChanged;
     }
 }

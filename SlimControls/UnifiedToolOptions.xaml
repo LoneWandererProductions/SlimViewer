@@ -9,32 +9,30 @@
     <UserControl.Resources>
         <local:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
     </UserControl.Resources>
-
     <Grid>
         <!-- Paint Tool -->
         <local:ToolOptions x:Name="PaintTool"
-                           Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Paint}"
-                           HeaderText="Paint Tool Options"
-                           SliderCaption="Brush Size:"
-                           SliderValue="{Binding SliderValue, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Paint}"
+                       HeaderText="Paint Tool Options"
+                       SliderCaption="Brush Size:"
+                       SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=BrushSize}" />
 
         <!-- Erase Tool -->
         <local:ToolOptions x:Name="EraseTool"
-                           Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Erase}"
-                           HeaderText="Erase Tool Options"
-                           SliderCaption="Erase Radius:"
-                           SliderValue="{Binding SliderValue, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Erase}"
+                       HeaderText="Erase Tool Options"
+                       SliderCaption="Erase Radius:"
+                       SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=EraseRadius}" />
 
         <!-- Color Select Tool -->
         <local:ToolOptions x:Name="ColorSelectTool"
-                           Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=ColorSelect}"
-                           HeaderText="Color Select Options"
-                           SliderCaption="Tolerance:"
-                           SliderValue="{Binding SliderValue, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=ColorSelect}"
+                       HeaderText="Color Select Options"
+                       SliderCaption="Tolerance:"
+                       SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ColorTolerance}" />
 
         <!-- Area Control -->
         <local:AreaControl x:Name="AreaControl"
-                   Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Area}" />
-
+               Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Area}" />
     </Grid>
 </UserControl>
