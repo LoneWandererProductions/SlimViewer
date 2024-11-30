@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace SlimControls
 {
-    public partial class ToolOptions : UserControl
+    public sealed partial class ToolOptions
     {
         /// <summary>
         ///     Dependency Property for Header Text
@@ -36,6 +36,9 @@ namespace SlimControls
                 typeof(ToolOptions),
                 new PropertyMetadata(1.0)); // Default slider value
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ToolOptions"/> class.
+        /// </summary>
         public ToolOptions()
         {
             InitializeComponent();

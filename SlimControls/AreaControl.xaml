@@ -46,6 +46,7 @@
                           SelectedValuePath="Content">
                     <ComboBoxItem Content="Solid Color" />
                     <ComboBoxItem Content="Texture" />
+                    <ComboBoxItem Content="Filter" />
                     <!-- Add other items -->
                 </ComboBox>
             </Grid>
