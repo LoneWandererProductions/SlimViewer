@@ -7,13 +7,17 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <!-- Reference your ResourceDictionary here -->
-        <ResourceDictionary Source="Resources\Converters.xaml" />
+        <ResourceDictionary>
+            <!-- Include only the relevant converters -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources\Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <Grid>
+            <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -30,25 +34,81 @@
 
                 <!-- Selection Mode -->
                 <Label Content="Selection Mode:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
-                <ComboBox Grid.Row="1" Grid.Column="1"
-                          SelectedValue="{Binding SelectedToolType, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                <ComboBox x:Name="ToolTypeComboBox" Grid.Row="1" Grid.Column="1"
+                          SelectedValue="{Binding SelectedToolType, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
                           SelectedValuePath="Content">
-                    <ComboBoxItem Content="Rectangle" />
-                    <ComboBoxItem Content="Ellipse" />
-                    <ComboBoxItem Content="FreeForm" />
+                    <ComboBoxItem Content="{StaticResource RectangleText}" />
+                    <ComboBoxItem Content="{StaticResource EllipseText}" />
+                    <ComboBoxItem Content="{StaticResource FreeFormText}" />
                 </ComboBox>
 
                 <!-- Fill Type -->
                 <Label Content="Fill Type:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}" />
-                <ComboBox Grid.Row="2" Grid.Column="1"
-                          SelectedValue="{Binding SelectedFillType, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                          SelectedValuePath="Content">
+                <ComboBox x:Name="FillTypeComboBox" Grid.Row="2" Grid.Column="1"
+                          SelectedValue="{Binding SelectedFillType, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          SelectedValuePath="Content"
+                          Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}">
                     <ComboBoxItem Content="Solid Color" />
                     <ComboBoxItem Content="Texture" />
                     <ComboBoxItem Content="Filter" />
-                    <!-- Add other items -->
                 </ComboBox>
+
+                <!-- Texture Selection (Visible when Fill Type is Texture) -->
+                <Label Content="Texture:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"
+                       Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}" />
+                <ComboBox Grid.Row="4" Grid.Column="1"
+                          Name="TextureCombobox"
+                          Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Texture}"
+                          SelectedValue="{Binding SelectedTexture, Mode=TwoWay}" SelectedValuePath="Content">
+                    <ComboBoxItem Content="{StaticResource TextureClouds}" />
+                    <ComboBoxItem Content="{StaticResource TextureCrosshatch}" />
+                    <ComboBoxItem Content="{StaticResource TextureMarble}" />
+                    <ComboBoxItem Content="{StaticResource TextureNoise}" />
+                    <ComboBoxItem Content="{StaticResource TextureWave}" />
+                    <ComboBoxItem Content="{StaticResource TextureWood}" />
+                    <ComboBoxItem Content="{StaticResource TextureConcrete}" />
+                    <ComboBoxItem Content="{StaticResource TextureCanvas}" />
+                    <!-- Add more texture options here -->
+                </ComboBox>
+
+                <!-- Filter Selection (Visible when Fill Type is Filter) -->
+                <Label Content="Filter:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"
+                       Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}" />
+                <ComboBox Grid.Row="4" Grid.Column="1"
+                          Name="FilterCombobox"
+                          Visibility="{Binding SelectedIndex, ElementName=FillTypeComboBox, Converter={StaticResource FillTypeVisibilityConverter}, ConverterParameter=Filter}"
+                          SelectedValue="{Binding SelectedFilter, Mode=TwoWay}" SelectedValuePath="Content">
+                    <ComboBoxItem Content="{StaticResource FilterNone}" />
+                    <ComboBoxItem Content="{StaticResource FilterGrayScale}" />
+                    <ComboBoxItem Content="{StaticResource FilterInvert}" />
+                    <ComboBoxItem Content="{StaticResource FilterSepia}" />
+                    <ComboBoxItem Content="{StaticResource FilterBlackAndWhite}" />
+                    <ComboBoxItem Content="{StaticResource FilterPolaroid}" />
+                    <ComboBoxItem Content="{StaticResource FilterContour}" />
+                    <ComboBoxItem Content="{StaticResource FilterBrightness}" />
+                    <ComboBoxItem Content="{StaticResource FilterContrast}" />
+                    <ComboBoxItem Content="{StaticResource FilterHueShift}" />
+                    <ComboBoxItem Content="{StaticResource FilterColorBalance}" />
+                    <ComboBoxItem Content="{StaticResource FilterVintage}" />
+                    <ComboBoxItem Content="{StaticResource FilterSharpen}" />
+                    <ComboBoxItem Content="{StaticResource FilterGaussianBlur}" />
+                    <ComboBoxItem Content="{StaticResource FilterEmboss}" />
+                    <ComboBoxItem Content="{StaticResource FilterBoxBlur}" />
+                    <ComboBoxItem Content="{StaticResource FilterLaplacian}" />
+                    <ComboBoxItem Content="{StaticResource FilterEdgeEnhance}" />
+                    <ComboBoxItem Content="{StaticResource FilterMotionBlur}" />
+                    <ComboBoxItem Content="{StaticResource FilterUnsharpMask}" />
+                    <ComboBoxItem Content="{StaticResource FilterDifferenceOfGaussians}" />
+                    <ComboBoxItem Content="{StaticResource FilterCrosshatch}" />
+                    <ComboBoxItem Content="{StaticResource FilterFloydSteinbergDithering}" />
+                    <ComboBoxItem Content="{StaticResource FilterAnisotropicKuwahara}" />
+                    <ComboBoxItem Content="{StaticResource FilterSupersamplingAntialiasing}" />
+                    <ComboBoxItem Content="{StaticResource FilterPostProcessingAntialiasing}" />
+                    <ComboBoxItem Content="{StaticResource FilterPencilSketchEffect}" />
+                    <!-- Add more filter options if needed -->
+                </ComboBox>
+
             </Grid>
         </ScrollViewer>
     </Grid>
