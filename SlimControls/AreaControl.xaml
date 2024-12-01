@@ -23,10 +23,14 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
                 <!-- Title -->
@@ -46,7 +50,7 @@
                 <Label Content="Fill Type:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"
                        Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}" />
                 <ComboBox x:Name="FillTypeComboBox" Grid.Row="2" Grid.Column="1"
-                          SelectedValue="{Binding SelectedFillType, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          SelectedValue="{Binding FillType, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
                           SelectedValuePath="Content"
                           Visibility="{Binding SelectedItem, ElementName=ToolTypeComboBox, Converter={StaticResource SelectionToVisibilityConverter}}">
                     <ComboBoxItem Content="Solid Color" />
@@ -108,6 +112,41 @@
                     <ComboBoxItem Content="{StaticResource FilterPencilSketchEffect}" />
                     <!-- Add more filter options if needed -->
                 </ComboBox>
+
+                <!-- Visibility based on selected texture -->
+                <Button Content="Texture Config"
+                        Grid.Row="4"
+                        Command="{Binding TextureConfigCommand}"
+                        Grid.Column="2">
+                    <Button.Visibility>
+                        <MultiBinding Converter="{StaticResource ComboBoxVisibilityAndSelectionConverter}">
+                            <!-- Bind to the ComboBox's Visibility -->
+                            <Binding Path="Visibility" ElementName="TextureCombobox" />
+                            <!-- Bind to the ComboBox's SelectedIndex -->
+                            <Binding Path="SelectedIndex" ElementName="TextureCombobox" />
+                        </MultiBinding>
+                    </Button.Visibility>
+                    <Button.CommandParameter>
+                        <Binding Path="SelectedValue" ElementName="TextureCombobox" />
+                    </Button.CommandParameter>
+                </Button>
+
+                <Button Content="Filter Config"
+                        Command="{Binding FilterConfigCommand}"
+                        Grid.Row="4"
+                        Grid.Column="2">
+                    <Button.Visibility>
+                        <MultiBinding Converter="{StaticResource ComboBoxVisibilityAndSelectionConverter}">
+                            <!-- Bind to the ComboBox's Visibility -->
+                            <Binding Path="Visibility" ElementName="FilterCombobox" />
+                            <!-- Bind to the ComboBox's SelectedIndex -->
+                            <Binding Path="SelectedIndex" ElementName="FilterCombobox" />
+                        </MultiBinding>
+                    </Button.Visibility>
+                    <Button.CommandParameter>
+                        <Binding Path="SelectedValue" ElementName="FilterCombobox" />
+                    </Button.CommandParameter>
+                </Button>
 
             </Grid>
         </ScrollViewer>

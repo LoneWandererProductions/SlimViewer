@@ -392,11 +392,6 @@ namespace SlimViews
         private ImageTools _selectedTool;
 
         /// <summary>
-        ///     The selected tool type
-        /// </summary>
-        private string _selectedToolType;
-
-        /// <summary>
         ///     The similar command
         /// </summary>
         private ICommand _similarCommand;
@@ -532,16 +527,6 @@ namespace SlimViews
         public ColorPickerMenu Picker { get; init; }
 
         /// <summary>
-        ///     Gets the selections.
-        /// </summary>
-        /// <value>
-        ///     The selections.
-        /// </value>
-        public IEnumerable<ImageTools> Tooling =>
-            Enum.GetValues(typeof(ImageTools))
-                .Cast<ImageTools>();
-
-        /// <summary>
         ///     Gets or sets the selected tool.
         /// </summary>
         /// <value>
@@ -551,18 +536,6 @@ namespace SlimViews
         {
             get => _selectedTool;
             set => SetProperty(ref _selectedTool, value, nameof(SelectedTool));
-        }
-
-        /// <summary>
-        ///     Gets or sets the type of the selected tool.
-        /// </summary>
-        /// <value>
-        ///     The type of the selected tool.
-        /// </value>
-        public string SelectedToolType
-        {
-            get => _selectedToolType;
-            set => SetProperty(ref _selectedToolType, value, nameof(SelectedToolType));
         }
 
         /// <summary>
@@ -1263,13 +1236,15 @@ namespace SlimViews
         public ICommand PreviousCommand =>
             _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
 
+        /// <summary>
+        /// Gets the tool changed command.
+        /// </summary>
+        /// <value>
+        /// The tool changed command.
+        /// </value>
         public ICommand ToolChangedCommand =>
             _toolChangedCommand ??= new DelegateCommand<ImageZoomTools>(ToolChangedAction, CanExecute);
 
-        private void ToolChangedAction(ImageZoomTools obj)
-        {
-
-        }
 
         /// <summary>
         ///     Gets or sets the main.
@@ -1286,6 +1261,16 @@ namespace SlimViews
         ///     The image zoom.
         /// </value>
         public ImageZoom ImageZoomControl { get; set; }
+
+        /// <summary>
+        ///     Gets the selections.
+        /// </summary>
+        /// <value>
+        ///     The selections.
+        /// </value>
+        public IEnumerable<ImageTools> Tooling =>
+            Enum.GetValues(typeof(ImageTools))
+                .Cast<ImageTools>();
 
         /// <summary>
         ///     Initializes this instance.
@@ -1351,11 +1336,17 @@ namespace SlimViews
                 case nameof(SelectedFilter):
                     CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
                     break;
-                case nameof(SelectedToolType):
-                    if (ImageZoomControl != null)
-                        ImageZoomControl.SelectionTool = Translator.GetToolsFromString(SelectedToolType);
-                    break;
             }
+        }
+
+        /// <summary>
+        /// Tools the changed action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        private void ToolChangedAction(ImageZoomTools obj)
+        {
+            if (ImageZoomControl != null)
+                ImageZoomTool = obj;
         }
 
         /// <summary>

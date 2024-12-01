@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CommonControls;
@@ -16,16 +17,6 @@ namespace SlimControls
                 typeof(ICommand),
                 typeof(UnifiedToolOptions),
                 new PropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or sets the ToolChangedCommand.
-        /// </summary>
-        public ICommand? ToolChangedCommand
-        {
-            get => (ICommand?)GetValue(ToolChangedCommandProperty);
-            set => SetValue(ToolChangedCommandProperty, value);
-        }
-
 
         /// <summary>
         /// DependencyProperty for SelectedTool
@@ -78,6 +69,33 @@ namespace SlimControls
                 typeof(RoutedPropertyChangedEventHandler<ImageTools>),
                 typeof(UnifiedToolOptions));
 
+        // DependencyProperty for FilterCommand.
+        public static readonly DependencyProperty FilterCommandProperty =
+            DependencyProperty.Register(
+                nameof(FilterCommand),
+                typeof(ICommand),
+                typeof(UnifiedToolOptions),
+                new PropertyMetadata(null));
+
+        // DependencyProperty for TextureCommand.
+        public static readonly DependencyProperty TextureCommandProperty =
+            DependencyProperty.Register(
+                nameof(TextureCommand),
+                typeof(ICommand),
+                typeof(UnifiedToolOptions),
+                new PropertyMetadata(null));
+
+
+        /// <summary>
+        /// DependencyProperty for FillTypeChangedCommand.
+        /// </summary>
+        public static readonly DependencyProperty FillTypeChangedCommandProperty =
+            DependencyProperty.Register(
+                nameof(FillTypeChangedCommand),
+                typeof(ICommand),
+                typeof(UnifiedToolOptions),
+                new PropertyMetadata(null));
+
         /// <summary>
         /// Occurs when [selected tool changed].
         /// Event to notify external subscribers when a tool is selected
@@ -87,6 +105,43 @@ namespace SlimControls
             add => AddHandler(SelectedToolChangedEvent, value);
             remove => RemoveHandler(SelectedToolChangedEvent, value);
         }
+
+        /// <summary>
+        /// Gets or sets the ToolChangedCommand.
+        /// </summary>
+        public ICommand? ToolChangedCommand
+        {
+            get => (ICommand?)GetValue(ToolChangedCommandProperty);
+            set => SetValue(ToolChangedCommandProperty, value);
+        }
+
+        // ICommand property for FilterCommand
+        public ICommand? FilterCommand
+        {
+            get => (ICommand?)GetValue(FilterCommandProperty);
+            set => SetValue(FilterCommandProperty, value);
+        }
+
+        // ICommand property for TextureCommand
+        public ICommand? TextureCommand
+        {
+            get => (ICommand?)GetValue(TextureCommandProperty);
+            set => SetValue(TextureCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the FillTypeChangedCommand.
+        /// </summary>
+        public ICommand? FillTypeChangedCommand
+        {
+            get => (ICommand?)GetValue(FillTypeChangedCommandProperty);
+            set => SetValue(FillTypeChangedCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Legacy event for backwards compatibility (optional).
+        /// </summary>
+        public event EventHandler<ImageZoomTools>? ToolChanged;
 
         /// <summary>
         /// Called when the SelectedTool property changes.
@@ -116,27 +171,16 @@ namespace SlimControls
             var oldTool = toolArgs.OldValue;
             var newTool = toolArgs.NewValue;
 
-            Console.WriteLine($"Tool changed from {oldTool} to {newTool}");
+            Trace.WriteLine($"Tool changed from {oldTool} to {newTool}");
 
             // Notify via the legacy event for compatibility
             NotifyToolSelection(newTool);
         }
 
-        /// <summary>
-        /// Notifies the tool selection using ImageZoomTools.
-        /// </summary>
-        private void NotifyToolSelection(ImageZoomTools selectedTool)
-        {
-            ToolChanged?.Invoke(this, selectedTool);
-
-            // Execute the bound command if available
-            if (ToolChangedCommand?.CanExecute(selectedTool) == true)
-            {
-                ToolChangedCommand.Execute(selectedTool);
-            }
-        }
-
         /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnifiedToolOptions"/> class.
+        /// </summary>
         public UnifiedToolOptions()
         {
             InitializeComponent();
@@ -179,8 +223,75 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Legacy event for backwards compatibility (optional).
+        /// Handles the FillTypeChangedRouted event of the AreaControl control.
         /// </summary>
-        public event EventHandler<ImageZoomTools>? ToolChanged;
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void AreaControl_FillTypeChangedRouted(object sender, RoutedEventArgs e)
+        {
+            if (e is not RoutedPropertyChangedEventArgs<string> fillArgs) return;
+
+            // Retrieve the old and new FillType values from the event args
+            var oldFillType = fillArgs.OldValue;
+            var newFillType = fillArgs.NewValue;
+
+            Trace.WriteLine($"Fill type configuration changed from '{oldFillType}' to '{newFillType}'");
+
+            // Execute the command if the FillTypeChangedCommand is available
+            if (FillTypeChangedCommand?.CanExecute(newFillType) == true)
+            {
+                FillTypeChangedCommand.Execute(newFillType); // Execute the command with the new fill type
+            }
+        }
+
+        /// <summary>
+        /// Notifies the tool selection using ImageZoomTools.
+        /// </summary>
+        private void NotifyToolSelection(ImageZoomTools selectedTool)
+        {
+            ToolChanged?.Invoke(this, selectedTool);
+
+            // Execute the bound command if available
+            if (ToolChangedCommand?.CanExecute(selectedTool) == true)
+            {
+                ToolChangedCommand.Execute(selectedTool);
+            }
+        }
+
+        /// <summary>
+        /// Areas the control filter configuration executed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The e.</param>
+        private void AreaControl_FilterConfigExecuted(object sender, string e)
+        {
+            Trace.WriteLine($"Filter configuration executed: {e}");
+
+            var filter = Translator.GetFilterFromString(e);
+
+            // Execute the bound command if available
+            if (FilterCommand?.CanExecute(filter) == true)
+            {
+                FilterCommand.Execute(filter);
+            }
+        }
+
+        /// <summary>
+        /// Areas the control texture configuration executed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The e.</param>
+        private void AreaControl_TextureConfigExecuted(object sender, string e)
+        {
+            Trace.WriteLine($"Texture configuration executed: {e}");
+
+            var texture = Translator.GetTextureFromString(e);
+
+            // Execute the bound command if available
+            if (TextureCommand?.CanExecute(texture) == true)
+            {
+                TextureCommand.Execute(texture);
+            }
+        }
     }
 }

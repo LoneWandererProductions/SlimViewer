@@ -33,6 +33,10 @@
 
         <!-- Area Control -->
         <local:AreaControl x:Name="AreaControl"
-               Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Area}" ToolChangedRouted="AreaControl_ToolChangedRouted" />
+               Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Area}" 
+               ToolChangedRouted="AreaControl_ToolChangedRouted" 
+               FillTypeChangedRouted="AreaControl_FillTypeChangedRouted" 
+               FilterConfigExecuted="AreaControl_FilterConfigExecuted" 
+               TextureConfigExecuted="AreaControl_TextureConfigExecuted" />
     </Grid>
 </UserControl>
