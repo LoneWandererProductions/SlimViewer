@@ -6,8 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-
-using System;
 using CommonControls;
 using Imaging;
 

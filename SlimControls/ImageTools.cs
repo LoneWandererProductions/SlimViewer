@@ -36,6 +36,11 @@ namespace SlimControls
         /// <summary>
         ///     The area
         /// </summary>
-        Area = 4
+        Area = 4,
+
+        /// <summary>
+        /// The solid color
+        /// </summary>
+        SolidColor = 5
     }
 }
