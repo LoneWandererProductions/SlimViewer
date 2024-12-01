@@ -55,7 +55,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Converts to image zoom tools.
+        ///     Converts to image zoom tools.
         /// </summary>
         /// <param name="tool">The tool.</param>
         /// <returns>Mostly move</returns>

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 
 namespace SlimControls
 {
@@ -37,7 +36,7 @@ namespace SlimControls
                 new PropertyMetadata(1.0)); // Default slider value
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolOptions"/> class.
+        ///     Initializes a new instance of the <see cref="ToolOptions" /> class.
         /// </summary>
         public ToolOptions()
         {

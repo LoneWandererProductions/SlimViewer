@@ -12,31 +12,31 @@
     <Grid>
         <!-- Paint Tool -->
         <local:ToolOptions x:Name="PaintTool"
-                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Paint}"
-                       HeaderText="Paint Tool Options"
-                       SliderCaption="Brush Size:"
-                       SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=BrushSize}" />
+                           Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Paint}"
+                           HeaderText="Paint Tool Options"
+                           SliderCaption="Brush Size:"
+                           SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=BrushSize}" />
 
         <!-- Erase Tool -->
         <local:ToolOptions x:Name="EraseTool"
-                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Erase}"
-                       HeaderText="Erase Tool Options"
-                       SliderCaption="Erase Radius:"
-                       SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=EraseRadius}" />
+                           Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Erase}"
+                           HeaderText="Erase Tool Options"
+                           SliderCaption="Erase Radius:"
+                           SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=EraseRadius}" />
 
         <!-- Color Select Tool -->
         <local:ToolOptions x:Name="ColorSelectTool"
-                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=ColorSelect}"
-                       HeaderText="Color Select Options"
-                       SliderCaption="Tolerance:"
-                       SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ColorTolerance}" />
+                           Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=ColorSelect}"
+                           HeaderText="Color Select Options"
+                           SliderCaption="Tolerance:"
+                           SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ColorTolerance}" />
 
         <!-- Area Control -->
         <local:AreaControl x:Name="AreaControl"
-               Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Area}" 
-               ToolChangedRouted="AreaControl_ToolChangedRouted" 
-               FillTypeChangedRouted="AreaControl_FillTypeChangedRouted" 
-               FilterConfigExecuted="AreaControl_FilterConfigExecuted" 
-               TextureConfigExecuted="AreaControl_TextureConfigExecuted" />
+                           Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Area}"
+                           ToolChangedRouted="AreaControl_ToolChangedRouted"
+                           FillTypeChangedRouted="AreaControl_FillTypeChangedRouted"
+                           FilterConfigExecuted="AreaControl_FilterConfigExecuted"
+                           TextureConfigExecuted="AreaControl_TextureConfigExecuted" />
     </Grid>
 </UserControl>

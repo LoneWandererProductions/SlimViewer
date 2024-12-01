@@ -299,11 +299,6 @@ namespace SlimViews
         private ICommand _previousCommand;
 
         /// <summary>
-        /// The tool changed command
-        /// </summary>
-        private ICommand _toolChangedCommand;
-
-        /// <summary>
         ///     The red icon
         /// </summary>
         private string _redIcon;
@@ -436,6 +431,11 @@ namespace SlimViews
         ///     The tolerance
         /// </summary>
         private double _tolerance;
+
+        /// <summary>
+        ///     The tool changed command
+        /// </summary>
+        private ICommand _toolChangedCommand;
 
         public ImageView()
         {
@@ -1237,10 +1237,10 @@ namespace SlimViews
             _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
 
         /// <summary>
-        /// Gets the tool changed command.
+        ///     Gets the tool changed command.
         /// </summary>
         /// <value>
-        /// The tool changed command.
+        ///     The tool changed command.
         /// </value>
         public ICommand ToolChangedCommand =>
             _toolChangedCommand ??= new DelegateCommand<ImageZoomTools>(ToolChangedAction, CanExecute);
@@ -1340,7 +1340,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Tools the changed action.
+        ///     Tools the changed action.
         /// </summary>
         /// <param name="obj">The object.</param>
         private void ToolChangedAction(ImageZoomTools obj)

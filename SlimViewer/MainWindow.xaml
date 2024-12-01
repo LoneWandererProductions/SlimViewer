@@ -1,11 +1,13 @@
 ﻿<!-- ReSharper disable once MemberCanBeInternal -->
 <Window
- xmlns:slimControls="clr-namespace:SlimControls;assembly=SlimControls"     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:slimControls="clr-namespace:SlimControls;assembly=SlimControls"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-    xmlns:external="clr-namespace:CommonControls;assembly=CommonControls" xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews" 
+    xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
+    xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews"
     d:DataContext="{d:DesignInstance Type=slimviews:ImageView}"
     x:Class="SlimViewer.MainWindow"
     mc:Ignorable="d"
@@ -161,10 +163,11 @@
                                   Command="{Binding ApplyFilterCommand}"
                                   CommandParameter="{slimControls:ConstantStringExtension Key='FilterSupersamplingAntialiasing'}"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
-                                  Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
-                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem
+                            Header="{slimControls:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
+                            Command="{Binding ApplyFilterCommand}"
+                            CommandParameter="{slimControls:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
+                            IsEnabled="{Binding Path=IsImageActive}" />
                         <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterPencilSketchEffect'}"
                                   Command="{Binding ApplyFilterCommand}"
                                   CommandParameter="{slimControls:ConstantStringExtension Key='FilterPencilSketchEffect'}"
@@ -303,12 +306,12 @@
             <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="4" />
             <ComboBox Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Tooling}"
                       SelectedItem="{Binding SelectedTool}" />
-            <slimControls:UnifiedToolOptions Grid.Row="0" Grid.Column="8" 
+            <slimControls:UnifiedToolOptions Grid.Row="0" Grid.Column="8"
                                              SelectedTool="{Binding SelectedTool}"
                                              ToolChangedCommand="{Binding ToolChangedCommand}"
-                                             FilterCommand ="{Binding ToolChangedCommand}"
-                                             TextureCommand ="{Binding ToolChangedCommand}"
-                                             FillTypeChangedCommand  ="{Binding ToolChangedCommand}"
+                                             FilterCommand="{Binding ToolChangedCommand}"
+                                             TextureCommand="{Binding ToolChangedCommand}"
+                                             FillTypeChangedCommand="{Binding ToolChangedCommand}"
                                              Grid.RowSpan="4" />
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
@@ -396,7 +399,7 @@
                 <!-- Existing Generic.xaml resource dictionary -->
                 <ResourceDictionary Source="pack://application:,,,/Themes/Generic.xaml" />
                 <!-- ToolOptionsslimControls.xaml resource dictionary -->
-                <ResourceDictionary/>
+                <ResourceDictionary />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

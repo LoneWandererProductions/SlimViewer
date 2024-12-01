@@ -10,32 +10,7 @@ namespace SlimControls
     public sealed partial class AreaControl
     {
         /// <summary>
-        /// CLR Event for tool selection (not RoutedEvent-related).
-        /// </summary>
-        public event EventHandler<ImageZoomTools>? ToolChangedClr;
-
-        /// <summary>
-        /// Occurs when the texture configuration command is executed.
-        /// </summary>
-        public event EventHandler<string>? TextureConfigExecuted;
-
-        /// <summary>
-        /// Occurs when the filter configuration command is executed.
-        /// </summary>
-        public event EventHandler<string>? FilterConfigExecuted;
-
-        /// <summary>
-        /// Gets the texture configuration command.
-        /// </summary>
-        public ICommand TextureConfigCommand { get; set; }
-
-        /// <summary>
-        /// Gets the filter configuration command.
-        /// </summary>
-        public ICommand FilterConfigCommand { get; set; }
-
-        /// <summary>
-        /// DependencyProperty for the selected tool type.
+        ///     DependencyProperty for the selected tool type.
         /// </summary>
         public static readonly DependencyProperty SelectedToolTypeProperty =
             DependencyProperty.Register(
@@ -45,7 +20,7 @@ namespace SlimControls
                 new PropertyMetadata(default(string), OnSelectedToolTypeChanged));
 
         /// <summary>
-        /// RoutedEvent for ToolChanged (for XAML and WPF event routing support).
+        ///     RoutedEvent for ToolChanged (for XAML and WPF event routing support).
         /// </summary>
         public static readonly RoutedEvent ToolChangedEvent =
             EventManager.RegisterRoutedEvent(
@@ -55,7 +30,7 @@ namespace SlimControls
                 typeof(AreaControl));
 
         /// <summary>
-        /// DependencyProperty for the fill type.
+        ///     DependencyProperty for the fill type.
         /// </summary>
         public static readonly DependencyProperty FillTypeProperty =
             DependencyProperty.Register(
@@ -65,7 +40,7 @@ namespace SlimControls
                 new PropertyMetadata(string.Empty, OnFillTypeChanged));
 
         /// <summary>
-        /// RoutedEvent for FillType changes.
+        ///     RoutedEvent for FillType changes.
         /// </summary>
         public static readonly RoutedEvent FillTypeChangedEvent =
             EventManager.RegisterRoutedEvent(
@@ -75,43 +50,7 @@ namespace SlimControls
                 typeof(AreaControl));
 
         /// <summary>
-        /// Gets or sets the type of the fill.
-        /// </summary>
-        public string FillType
-        {
-            get => (string)GetValue(FillTypeProperty);
-            set => SetValue(FillTypeProperty, value);
-        }
-
-        /// <summary>
-        /// CLR Wrapper for the RoutedEvent.
-        /// </summary>
-        public event RoutedEventHandler ToolChangedRouted
-        {
-            add => AddHandler(ToolChangedEvent, value);
-            remove => RemoveHandler(ToolChangedEvent, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the selected tool type.
-        /// </summary>
-        public string SelectedToolType
-        {
-            get => (string)GetValue(SelectedToolTypeProperty);
-            set => SetValue(SelectedToolTypeProperty, value);
-        }
-
-        /// <summary>
-        /// CLR Wrapper for the FillTypeChanged RoutedEvent.
-        /// </summary>
-        public event RoutedEventHandler FillTypeChangedRouted
-        {
-            add => AddHandler(FillTypeChangedEvent, value);
-            remove => RemoveHandler(FillTypeChangedEvent, value);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AreaControl"/> class.
+        ///     Initializes a new instance of the <see cref="AreaControl" /> class.
         /// </summary>
         public AreaControl()
         {
@@ -120,7 +59,68 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Initializes the commands.
+        ///     Gets the texture configuration command.
+        /// </summary>
+        public ICommand TextureConfigCommand { get; set; }
+
+        /// <summary>
+        ///     Gets the filter configuration command.
+        /// </summary>
+        public ICommand FilterConfigCommand { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the type of the fill.
+        /// </summary>
+        public string FillType
+        {
+            get => (string)GetValue(FillTypeProperty);
+            set => SetValue(FillTypeProperty, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the selected tool type.
+        /// </summary>
+        public string SelectedToolType
+        {
+            get => (string)GetValue(SelectedToolTypeProperty);
+            set => SetValue(SelectedToolTypeProperty, value);
+        }
+
+        /// <summary>
+        ///     CLR Event for tool selection (not RoutedEvent-related).
+        /// </summary>
+        public event EventHandler<ImageZoomTools> ToolChangedClr;
+
+        /// <summary>
+        ///     Occurs when the texture configuration command is executed.
+        /// </summary>
+        public event EventHandler<string> TextureConfigExecuted;
+
+        /// <summary>
+        ///     Occurs when the filter configuration command is executed.
+        /// </summary>
+        public event EventHandler<string> FilterConfigExecuted;
+
+        /// <summary>
+        ///     CLR Wrapper for the RoutedEvent.
+        /// </summary>
+        public event RoutedEventHandler ToolChangedRouted
+        {
+            add => AddHandler(ToolChangedEvent, value);
+            remove => RemoveHandler(ToolChangedEvent, value);
+        }
+
+        /// <summary>
+        ///     CLR Wrapper for the FillTypeChanged RoutedEvent.
+        /// </summary>
+        public event RoutedEventHandler FillTypeChangedRouted
+        {
+            add => AddHandler(FillTypeChangedEvent, value);
+            remove => RemoveHandler(FillTypeChangedEvent, value);
+        }
+
+        /// <summary>
+        ///     Initializes the commands.
         /// </summary>
         private void InitializeCommands()
         {
@@ -129,7 +129,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Raises the RoutedEvent with the specified old and new values.
+        ///     Raises the RoutedEvent with the specified old and new values.
         /// </summary>
         private void RaiseRoutedEvent<T>(RoutedEvent routedEvent, T oldValue, T newValue)
         {
@@ -138,7 +138,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Raise both CLR and Routed events when the tool changes.
+        ///     Raise both CLR and Routed events when the tool changes.
         /// </summary>
         private void NotifyToolSelection(ImageZoomTools selectedTool)
         {
@@ -149,7 +149,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Callback invoked when the SelectedToolType changes.
+        ///     Callback invoked when the SelectedToolType changes.
         /// </summary>
         private static void OnSelectedToolTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -164,7 +164,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Callback invoked when the FillType changes.
+        ///     Callback invoked when the FillType changes.
         /// </summary>
         /// <param name="d">The source object where the property change occurred.</param>
         /// <param name="e">Details about the property change event.</param>
@@ -188,7 +188,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Executes the texture configuration command.
+        ///     Executes the texture configuration command.
         /// </summary>
         private void ExecuteTextureConfigCommand(string parameter)
         {
@@ -202,7 +202,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Executes the filter configuration command.
+        ///     Executes the filter configuration command.
         /// </summary>
         private void ExecuteFilterConfigCommand(string parameter)
         {

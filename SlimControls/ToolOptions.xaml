@@ -16,8 +16,10 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=HeaderText}" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
-            <Label Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path= SliderCaption}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
+            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=HeaderText}"
+                       FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" />
+            <Label Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path= SliderCaption}"
+                   Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
             <Slider Minimum="1" Maximum="20" Grid.Row="1" Grid.Column="1"
                     Value="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SliderValue}" />
         </Grid>
