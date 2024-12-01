@@ -309,8 +309,8 @@
             <slimControls:UnifiedToolOptions Grid.Row="0" Grid.Column="8"
                                              SelectedTool="{Binding SelectedTool}"
                                              ToolChangedCommand="{Binding ToolChangedCommand}"
-                                             FilterCommand="{Binding ToolChangedCommand}"
-                                             TextureCommand="{Binding ToolChangedCommand}"
+                                             FilterCommand="{Binding FilterConfigCommand}"
+                                             TextureCommand="{Binding TextureConfigCommand}"
                                              FillTypeChangedCommand="{Binding ToolChangedCommand}"
                                              Grid.RowSpan="4" />
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
