@@ -299,6 +299,11 @@ namespace SlimViews
         private ICommand _previousCommand;
 
         /// <summary>
+        /// The tool changed command
+        /// </summary>
+        private ICommand _toolChangedCommand;
+
+        /// <summary>
         ///     The red icon
         /// </summary>
         private string _redIcon;
@@ -1257,6 +1262,14 @@ namespace SlimViews
         /// </value>
         public ICommand PreviousCommand =>
             _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
+
+        public ICommand ToolChangedCommand =>
+            _toolChangedCommand ??= new DelegateCommand<ImageZoomTools>(ToolChangedAction, CanExecute);
+
+        private void ToolChangedAction(ImageZoomTools obj)
+        {
+
+        }
 
         /// <summary>
         ///     Gets or sets the main.

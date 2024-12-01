@@ -7,6 +7,7 @@
  */
 
 
+using System;
 using CommonControls;
 using Imaging;
 
@@ -52,6 +53,23 @@ namespace SlimControls
                 ViewGuiResources.TextureConcrete => TextureType.Concrete,
                 ViewGuiResources.TextureCanvas => TextureType.Canvas,
                 _ => TextureType.Noise
+            };
+        }
+
+        /// <summary>
+        /// Converts to image zoom tools.
+        /// </summary>
+        /// <param name="tool">The tool.</param>
+        /// <returns>Mostly move</returns>
+        public static ImageZoomTools ConvertToImageZoomTools(ImageTools tool)
+        {
+            return tool switch
+            {
+                ImageTools.Move => ImageZoomTools.Move,
+                ImageTools.Paint => ImageZoomTools.Trace,
+                ImageTools.Erase => ImageZoomTools.Trace,
+                ImageTools.ColorSelect => ImageZoomTools.Trace,
+                _ => ImageZoomTools.Move
             };
         }
 

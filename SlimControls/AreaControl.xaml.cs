@@ -1,16 +1,15 @@
 using System;
 using System.Windows;
-using System.Windows.Controls;
 using CommonControls;
 
 namespace SlimControls
 {
-    public sealed partial class AreaControl : UserControl
+    public sealed partial class AreaControl
     {
         /// <summary>
         /// CLR Event for tool selection (not RoutedEvent-related).
         /// </summary>
-        public event EventHandler<ImageZoomTools>? ToolChangedCLR;
+        public event EventHandler<ImageZoomTools>? ToolChangedClr;
 
         /// <summary>
         /// DependencyProperty for the selected tool type
@@ -46,14 +45,18 @@ namespace SlimControls
         /// </summary>
         private void NotifyToolSelection(ImageZoomTools selectedTool)
         {
-            // Raise CLR event
-            ToolChangedCLR?.Invoke(this, selectedTool);
+            // Get the current tool (old value) from the SelectedToolType property
+            var oldTool = Translator.GetToolsFromString(SelectedToolType);
 
-            // Raise RoutedEvent
-            var args = new RoutedEventArgs(ToolChangedEvent)
-            {
-                Source = this
-            };
+            // Raise CLR event
+            ToolChangedClr?.Invoke(this, selectedTool);
+
+            // Raise RoutedEvent with property changed args
+            var args = new RoutedPropertyChangedEventArgs<ImageZoomTools>(
+                oldTool, // Old tool value
+                selectedTool, // New tool value
+                ToolChangedEvent); // The routed event
+
             RaiseEvent(args);
         }
 
