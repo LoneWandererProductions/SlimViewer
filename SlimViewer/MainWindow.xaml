@@ -310,8 +310,10 @@
                                              SelectedTool="{Binding SelectedTool}"
                                              ToolChangedCommand="{Binding ToolChangedCommand}"
                                              FilterCommand="{Binding FilterConfigCommand}"
-                                             TextureCommand="{Binding TextureConfigCommand}"
-                                             FillTypeChangedCommand="{Binding ToolChangedCommand}"
+                                             FillTypeChangedCommand="{Binding FillTypeChangedCommand}"
+                                             ColorTolerance="{Binding Tolerance}"
+                                             BrushSize="{Binding BrushSize}"
+                                             EraseRadius="{Binding EraseRadius}"
                                              Grid.RowSpan="4" />
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />

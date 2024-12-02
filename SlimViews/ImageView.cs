@@ -87,6 +87,11 @@ namespace SlimViews
         private double _brushSize;
 
         /// <summary>
+        /// The erase radius
+        /// </summary>
+        private double _eraseRadius;
+
+        /// <summary>
         ///     The Bitmap
         /// </summary>
         private Bitmap _btm;
@@ -437,6 +442,11 @@ namespace SlimViews
         /// </summary>
         private ICommand _toolChangedCommand;
 
+        /// <summary>
+        /// The fill type changed command
+        /// </summary>
+        private ICommand _fillTypeChangedCommand;
+
         public ImageView()
         {
             Initialize();
@@ -551,6 +561,18 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Gets or sets the erase radius.
+        /// </summary>
+        /// <value>
+        /// The erase radius.
+        /// </value>
+        public double EraseRadius
+        {
+            get => _eraseRadius;
+            set => SetProperty(ref _eraseRadius, value, nameof(EraseRadius));
+        }
+
+        /// <summary>
         ///     Gets or sets the tolerance.
         /// </summary>
         /// <value>
@@ -560,18 +582,6 @@ namespace SlimViews
         {
             get => _tolerance;
             set => SetProperty(ref _tolerance, value, nameof(Tolerance));
-        }
-
-        /// <summary>
-        ///     Gets or sets the type of the selected fill.
-        /// </summary>
-        /// <value>
-        ///     The type of the selected fill.
-        /// </value>
-        public string SelectedFillType
-        {
-            get => _selectedFillType;
-            set => SetProperty(ref _selectedFillType, value, nameof(SelectedFillType));
         }
 
         /// <summary>
@@ -1245,6 +1255,14 @@ namespace SlimViews
         public ICommand ToolChangedCommand =>
             _toolChangedCommand ??= new DelegateCommand<ImageZoomTools>(ToolChangedAction, CanExecute);
 
+        /// <summary>
+        /// Gets the fill type changed command.
+        /// </summary>
+        /// <value>
+        /// The fill type changed command.
+        /// </value>
+        public ICommand FillTypeChangedCommand =>
+            _fillTypeChangedCommand ??= new DelegateCommand<string>(FillTypeChangedAction, CanExecute);
 
         /// <summary>
         ///     Gets or sets the main.
@@ -1359,6 +1377,15 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Fills the type changed action.
+        /// </summary>
+        /// <param name="obj">The string of the tool.</param>
+        private void FillTypeChangedAction(string obj)
+        {
+            //TODO tell the tool we want to use solid color
+        }
+
+        /// <summary>
         ///     Set the selected point.
         /// </summary>
         /// <param name="wPoint">The w point.</param>
@@ -1407,18 +1434,6 @@ namespace SlimViews
                 case ImageTools.Erase:
                     Btm = ImageProcessor.EraseImage(frame, Btm);
                     break;
-
-                case ImageTools.Paint:
-                    if (Color == null) return;
-
-                    var color = Color.GetDrawingColor();
-
-                    Btm = ImageProcessor.SetPixel(Btm, point, color);
-                    return;
-
-                case ImageTools.ColorSelect:
-                    Color = ImageProcessor.GetPixel(Btm, point);
-                    return;
             }
 
             Bmp = Btm.ToBitmapImage();
