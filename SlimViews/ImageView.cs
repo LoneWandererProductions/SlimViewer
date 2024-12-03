@@ -447,6 +447,8 @@ namespace SlimViews
         /// </summary>
         private ICommand _fillTypeChangedCommand;
 
+        private bool _fillType;
+
         public ImageView()
         {
             Initialize();
@@ -1382,7 +1384,7 @@ namespace SlimViews
         /// <param name="obj">The string of the tool.</param>
         private void FillTypeChangedAction(string obj)
         {
-            //TODO tell the tool we want to use solid color
+            _fillType = true;
         }
 
         /// <summary>
@@ -1426,6 +1428,11 @@ namespace SlimViews
                 return;
             if (ImageZoomTool == ImageZoomTools.Trace)
                 return;
+
+            if (_fillType)
+            {
+                return;
+            }
 
             var point = new System.Drawing.Point(frame.X, frame.Y);
 
