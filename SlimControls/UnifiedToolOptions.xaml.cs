@@ -189,24 +189,6 @@ namespace SlimControls
         public event EventHandler<ImageZoomTools> ToolChanged;
 
         /// <summary>
-        ///     Called when the SelectedTool property changes.
-        /// </summary>
-        private static void OnSelectedToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not UnifiedToolOptions control || e.NewValue is not ImageTools newTool) return;
-
-            var args = new RoutedPropertyChangedEventArgs<ImageTools>(
-                (ImageTools)e.OldValue,
-                newTool,
-                SelectedToolChangedEvent);
-
-            control.RaiseEvent(args);
-
-            // Notify via the legacy event as well for compatibility
-            control.NotifyToolSelection(Translator.ConvertToImageZoomTools(newTool));
-        }
-
-        /// <summary>
         ///     Handles the ToolChangedRouted event of the AreaControl control.
         /// </summary>
         private void AreaControl_ToolChangedRouted(object sender, RoutedEventArgs e)
@@ -282,5 +264,85 @@ namespace SlimControls
             // Execute the bound command if available
             if (TextureCommand?.CanExecute(texture) == true) TextureCommand.Execute(texture);
         }
+
+        /// <summary>
+        /// DependencyProperty for SelectedToolCode
+        /// </summary>
+        public static readonly DependencyProperty SelectedToolCodeProperty =
+            DependencyProperty.Register(
+                nameof(SelectedToolCode),
+                typeof(int),
+                typeof(UnifiedToolOptions),
+                new PropertyMetadata(0, OnSelectedToolCodeChanged));
+
+        /// <summary>
+        /// Gets or sets the SelectedToolCode as an integer.
+        /// </summary>
+        public int SelectedToolCode
+        {
+            get => (int)GetValue(SelectedToolCodeProperty);
+            set => SetValue(SelectedToolCodeProperty, value);
+        }
+
+        /// <summary>
+        /// Called when the SelectedToolCode property changes.
+        /// </summary>
+        private static void OnSelectedToolCodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not UnifiedToolOptions control) return;
+
+            int newCode = (int)e.NewValue;
+            control.SelectedTool = control.MapCodeToTool(newCode);
+        }
+
+        /// <summary>
+        /// Called when the SelectedTool property changes.
+        /// </summary>
+        private static void OnSelectedToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not UnifiedToolOptions control || e.NewValue is not ImageTools newTool) return;
+
+            var args = new RoutedPropertyChangedEventArgs<ImageTools>(
+                (ImageTools)e.OldValue,
+                newTool,
+                SelectedToolChangedEvent);
+
+            control.RaiseEvent(args);
+
+            // Notify via the legacy event as well for compatibility
+            control.NotifyToolSelection(Translator.ConvertToImageZoomTools(newTool));
+
+            // Update SelectedToolCode
+            control.SelectedToolCode = control.MapToolToCode(newTool);
+        }
+
+        /// <summary>
+        /// Maps an ImageTools enum value to an integer code.
+        /// </summary>
+        private int MapToolToCode(ImageTools tool)
+        {
+            return tool switch
+            {
+                ImageTools.Paint => 100,
+                ImageTools.Erase => 101,
+                ImageTools.Area => 200,
+                _ => 0 // Default value for unknown tools
+            };
+        }
+
+        /// <summary>
+        /// Maps an integer code to an ImageTools enum value.
+        /// </summary>
+        private ImageTools MapCodeToTool(int code)
+        {
+            return code switch
+            {
+                100 => ImageTools.Paint,
+                101 => ImageTools.Erase,
+                200 => ImageTools.Area,
+                _ => ImageTools.Paint // Default value for unknown codes
+            };
+        }
+
     }
 }
