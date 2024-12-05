@@ -219,6 +219,9 @@ namespace SlimControls
 
             Trace.WriteLine($"Fill type configuration changed from '{oldFillType}' to '{newFillType}'");
 
+            //set code
+            SelectedToolCode = 310;
+
             // Execute the command if the FillTypeChangedCommand is available
             if (FillTypeChangedCommand?.CanExecute(newFillType) == true)
                 FillTypeChangedCommand.Execute(newFillType); // Execute the command with the new fill type
@@ -246,6 +249,9 @@ namespace SlimControls
 
             var filter = Translator.GetFilterFromString(e);
 
+            //set code
+            SelectedToolCode = 320;
+
             // Execute the bound command if available
             if (FilterCommand?.CanExecute(filter) == true) FilterCommand.Execute(filter);
         }
@@ -260,6 +266,9 @@ namespace SlimControls
             Trace.WriteLine($"Texture configuration executed: {e}");
 
             var texture = Translator.GetTextureFromString(e);
+
+            //set code
+            SelectedToolCode = 330;
 
             // Execute the bound command if available
             if (TextureCommand?.CanExecute(texture) == true) TextureCommand.Execute(texture);
@@ -291,7 +300,7 @@ namespace SlimControls
         {
             if (d is not UnifiedToolOptions control) return;
 
-            int newCode = (int)e.NewValue;
+            var newCode = (int)e.NewValue;
             control.SelectedTool = control.MapCodeToTool(newCode);
         }
 
