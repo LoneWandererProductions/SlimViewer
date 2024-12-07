@@ -72,6 +72,32 @@ namespace SlimControls
         }
 
         /// <summary>
+        /// Maps an ImageTools enum value to an integer code.
+        /// </summary>
+        internal static EnumTools MapToolToEnumTools(ImageTools tool)
+        {
+            return tool switch
+            {
+                ImageTools.Paint => EnumTools.Paint,
+                ImageTools.Erase => EnumTools.Erase,
+                _ => EnumTools.Move // Default value for unknown tools
+            };
+        }
+
+        /// <summary>
+        /// Maps an integer code to an ImageTools enum value.
+        /// </summary>
+        internal static ImageTools MapCodeToTool(EnumTools code)
+        {
+            return code switch
+            {
+                EnumTools.Paint => ImageTools.Paint,
+                EnumTools.Erase => ImageTools.Erase,
+                _ => ImageTools.Paint // Default value for unknown codes
+            };
+        }
+
+        /// <summary>
         ///     Gets the filter from string.
         /// </summary>
         /// <param name="command">The command.</param>

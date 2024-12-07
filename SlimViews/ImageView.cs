@@ -539,6 +539,14 @@ namespace SlimViews
         public ColorPickerMenu Picker { get; init; }
 
         /// <summary>
+        /// Gets or sets the tool code.
+        /// </summary>
+        /// <value>
+        /// The tool code.
+        /// </value>
+        public EnumTools ToolCode { get; set; }
+
+        /// <summary>
         ///     Gets or sets the selected tool.
         /// </summary>
         /// <value>
@@ -1258,15 +1266,6 @@ namespace SlimViews
             _toolChangedCommand ??= new DelegateCommand<ImageZoomTools>(ToolChangedAction, CanExecute);
 
         /// <summary>
-        /// Gets the fill type changed command.
-        /// </summary>
-        /// <value>
-        /// The fill type changed command.
-        /// </value>
-        public ICommand FillTypeChangedCommand =>
-            _fillTypeChangedCommand ??= new DelegateCommand<string>(FillTypeChangedAction, CanExecute);
-
-        /// <summary>
         ///     Gets or sets the main.
         /// </summary>
         /// <value>
@@ -1379,15 +1378,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Fills the type changed action.
-        /// </summary>
-        /// <param name="obj">The string of the tool.</param>
-        private void FillTypeChangedAction(string obj)
-        {
-            _fillType = true;
-        }
-
-        /// <summary>
         ///     Set the selected point.
         /// </summary>
         /// <param name="wPoint">The w point.</param>
@@ -1398,9 +1388,9 @@ namespace SlimViews
 
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
-            switch (SelectedTool)
+            switch (ToolCode)
             {
-                case ImageTools.Paint:
+                case EnumTools.Paint:
                     if (Color == null) return;
 
                     var color = Color.GetDrawingColor();
@@ -1410,11 +1400,17 @@ namespace SlimViews
                     Bmp = Btm.ToBitmapImage();
                     return;
 
-                case ImageTools.ColorSelect:
+                case EnumTools.ColorSelect:
                     Color = ImageProcessor.GetPixel(Btm, point);
                     Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
                     Color = Picker.Colors;
                     return;
+                case EnumTools.Move:
+                    break;
+                case EnumTools.Erase:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -1429,18 +1425,23 @@ namespace SlimViews
             if (ImageZoomTool == ImageZoomTools.Trace)
                 return;
 
-            if (_fillType)
-            {
-                return;
-            }
-
             var point = new System.Drawing.Point(frame.X, frame.Y);
 
-            switch (SelectedTool)
+            switch (ToolCode)
             {
-                case ImageTools.Erase:
+                case EnumTools.Erase:
                     Btm = ImageProcessor.EraseImage(frame, Btm);
                     break;
+                case EnumTools.Move:
+                    break;
+                case EnumTools.SolidColor:
+                    break;
+                case EnumTools.Texture:
+                    break;
+                case EnumTools.Filter:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             Bmp = Btm.ToBitmapImage();

@@ -1,8 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CommonControls;
+
+// ReSharper disable MissingSpace
 
 namespace SlimControls
 {
@@ -184,11 +185,6 @@ namespace SlimControls
         }
 
         /// <summary>
-        ///     Legacy event for backwards compatibility (optional).
-        /// </summary>
-        public event EventHandler<ImageZoomTools> ToolChanged;
-
-        /// <summary>
         ///     Handles the ToolChangedRouted event of the AreaControl control.
         /// </summary>
         private void AreaControl_ToolChangedRouted(object sender, RoutedEventArgs e)
@@ -220,7 +216,7 @@ namespace SlimControls
             Trace.WriteLine($"Fill type configuration changed from '{oldFillType}' to '{newFillType}'");
 
             //set code
-            SelectedToolCode = 310;
+            SelectedToolCode = EnumTools.SolidColor;
 
             // Execute the command if the FillTypeChangedCommand is available
             if (FillTypeChangedCommand?.CanExecute(newFillType) == true)
@@ -232,8 +228,6 @@ namespace SlimControls
         /// </summary>
         private void NotifyToolSelection(ImageZoomTools selectedTool)
         {
-            ToolChanged?.Invoke(this, selectedTool);
-
             // Execute the bound command if available
             if (ToolChangedCommand?.CanExecute(selectedTool) == true) ToolChangedCommand.Execute(selectedTool);
         }
@@ -250,7 +244,7 @@ namespace SlimControls
             var filter = Translator.GetFilterFromString(e);
 
             //set code
-            SelectedToolCode = 320;
+            SelectedToolCode = EnumTools.Filter;
 
             // Execute the bound command if available
             if (FilterCommand?.CanExecute(filter) == true) FilterCommand.Execute(filter);
@@ -268,7 +262,7 @@ namespace SlimControls
             var texture = Translator.GetTextureFromString(e);
 
             //set code
-            SelectedToolCode = 330;
+            SelectedToolCode = EnumTools.Texture;
 
             // Execute the bound command if available
             if (TextureCommand?.CanExecute(texture) == true) TextureCommand.Execute(texture);
@@ -280,16 +274,16 @@ namespace SlimControls
         public static readonly DependencyProperty SelectedToolCodeProperty =
             DependencyProperty.Register(
                 nameof(SelectedToolCode),
-                typeof(int),
+                typeof(EnumTools),
                 typeof(UnifiedToolOptions),
                 new PropertyMetadata(0, OnSelectedToolCodeChanged));
 
         /// <summary>
         /// Gets or sets the SelectedToolCode as an integer.
         /// </summary>
-        public int SelectedToolCode
+        public EnumTools SelectedToolCode
         {
-            get => (int)GetValue(SelectedToolCodeProperty);
+            get => (EnumTools)GetValue(SelectedToolCodeProperty);
             set => SetValue(SelectedToolCodeProperty, value);
         }
 
@@ -300,8 +294,8 @@ namespace SlimControls
         {
             if (d is not UnifiedToolOptions control) return;
 
-            var newCode = (int)e.NewValue;
-            control.SelectedTool = control.MapCodeToTool(newCode);
+            EnumTools newCode = (EnumTools)e.NewValue;
+            control.SelectedTool = Translator.MapCodeToTool(newCode);
         }
 
         /// <summary>
@@ -318,40 +312,8 @@ namespace SlimControls
 
             control.RaiseEvent(args);
 
-            // Notify via the legacy event as well for compatibility
-            control.NotifyToolSelection(Translator.ConvertToImageZoomTools(newTool));
-
             // Update SelectedToolCode
-            control.SelectedToolCode = control.MapToolToCode(newTool);
+            control.SelectedToolCode = Translator.MapToolToEnumTools(newTool);
         }
-
-        /// <summary>
-        /// Maps an ImageTools enum value to an integer code.
-        /// </summary>
-        private int MapToolToCode(ImageTools tool)
-        {
-            return tool switch
-            {
-                ImageTools.Paint => 100,
-                ImageTools.Erase => 101,
-                ImageTools.Area => 200,
-                _ => 0 // Default value for unknown tools
-            };
-        }
-
-        /// <summary>
-        /// Maps an integer code to an ImageTools enum value.
-        /// </summary>
-        private ImageTools MapCodeToTool(int code)
-        {
-            return code switch
-            {
-                100 => ImageTools.Paint,
-                101 => ImageTools.Erase,
-                200 => ImageTools.Area,
-                _ => ImageTools.Paint // Default value for unknown codes
-            };
-        }
-
     }
 }
