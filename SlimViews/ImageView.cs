@@ -84,7 +84,7 @@ namespace SlimViews
         /// <summary>
         ///     The brush size
         /// </summary>
-        private double _brushSize;
+        private int _brushSize;
 
         /// <summary>
         /// The erase radius
@@ -435,7 +435,7 @@ namespace SlimViews
         /// <summary>
         ///     The tolerance
         /// </summary>
-        private double _tolerance;
+        private int _tolerance;
 
         /// <summary>
         ///     The tool changed command
@@ -564,7 +564,7 @@ namespace SlimViews
         /// <value>
         ///     The size of the brush.
         /// </value>
-        public double BrushSize
+        public int BrushSize
         {
             get => _brushSize;
             set => SetProperty(ref _brushSize, value, nameof(BrushSize));
@@ -588,7 +588,7 @@ namespace SlimViews
         /// <value>
         ///     The tolerance.
         /// </value>
-        public double Tolerance
+        public int Tolerance
         {
             get => _tolerance;
             set => SetProperty(ref _tolerance, value, nameof(Tolerance));
@@ -1383,9 +1383,6 @@ namespace SlimViews
         /// <param name="wPoint">The w point.</param>
         private void SelectedPointAction(Point wPoint)
         {
-            if (ImageZoomTool != ImageZoomTools.Trace)
-                return;
-
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
             switch (ToolCode)
@@ -1395,22 +1392,21 @@ namespace SlimViews
 
                     var color = Color.GetDrawingColor();
 
-                    Btm = ImageProcessor.SetPixel(Btm, point, color);
+                    Btm = ImageProcessor.SetPixel(Btm, point, color, BrushSize);
 
                     Bmp = Btm.ToBitmapImage();
                     return;
 
                 case EnumTools.ColorSelect:
-                    Color = ImageProcessor.GetPixel(Btm, point);
+                    Color = ImageProcessor.GetPixel(Btm, point, Tolerance);
                     Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
                     Color = Picker.Colors;
                     return;
                 case EnumTools.Move:
-                    break;
                 case EnumTools.Erase:
+                case EnumTools.SolidColor:
+                case EnumTools.Filter:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -1435,10 +1431,17 @@ namespace SlimViews
                 case EnumTools.Move:
                     break;
                 case EnumTools.SolidColor:
+                    if (Color == null) return;
+
+                    var color = Color.GetDrawingColor();
+
+                    Btm = ImageProcessor.FillArea(Btm, frame, color);
                     break;
                 case EnumTools.Texture:
+                    Btm = ImageProcessor.FillTexture(Btm, frame, CurrentFilter);
                     break;
                 case EnumTools.Filter:
+                    Btm = ImageProcessor.FillFilter(Btm, frame, CurrentTexture);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

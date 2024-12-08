@@ -31,7 +31,7 @@ namespace SlimControls
         public static readonly DependencyProperty SliderValueProperty =
             DependencyProperty.Register(
                 nameof(SliderValue),
-                typeof(double),
+                typeof(int),
                 typeof(ToolOptions),
                 new PropertyMetadata(1.0)); // Default slider value
 
@@ -75,7 +75,7 @@ namespace SlimControls
         /// </value>
         public double SliderValue
         {
-            get => (double)GetValue(SliderValueProperty);
+            get => (int)GetValue(SliderValueProperty);
             set => SetValue(SliderValueProperty, value);
         }
     }

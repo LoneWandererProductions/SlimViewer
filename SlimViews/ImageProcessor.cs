@@ -129,10 +129,10 @@ namespace SlimViews
         /// <param name="btm">The bitmap.</param>
         /// <param name="point">The point.</param>
         /// <param name="color">The color.</param>
-        /// <param name="frame">The optional frame.</param>
-        internal static Bitmap SetPixel(Bitmap btm, Point point, Color color, SelectionFrame frame = null)
+        /// <param name="radius">The optional radius.</param>
+        internal static Bitmap SetPixel(Bitmap btm, Point point, Color color, int radius = 1)
         {
-            return Render.SetPixel(btm, point, color);
+            return Render.SetPixel(btm, point, color, radius);
         }
 
         /// <summary>
@@ -374,27 +374,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Cuts the image.
-        /// </summary>
-        /// <param name="frame">The selection frame.</param>
-        /// <param name="btm">The bitmap.</param>
-        /// <returns>Changed bitmap or in case of error the original</returns>
-        internal static Bitmap CutImage(SelectionFrame frame, Bitmap btm)
-        {
-            try
-            {
-                btm = Render.CutBitmap(btm, frame.X, frame.Y, frame.Height, frame.Width);
-            }
-            catch (ArgumentNullException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(CutImage)));
-            }
-
-            return btm;
-        }
-
-        /// <summary>
         ///     Erases part of the image.
         /// </summary>
         /// <param name="frame">The selection frame.</param>
@@ -413,6 +392,21 @@ namespace SlimViews
             }
 
             return btm;
+        }
+
+        public static Bitmap FillArea(Bitmap btm, SelectionFrame frame, Color color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Bitmap FillTexture(Bitmap btm, SelectionFrame frame, ImageFilters currentFilter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Bitmap FillFilter(Bitmap btm, SelectionFrame frame, TextureType currentTexture)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
