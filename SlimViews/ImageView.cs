@@ -1438,10 +1438,10 @@ namespace SlimViews
                     Btm = ImageProcessor.FillArea(Btm, frame, color);
                     break;
                 case EnumTools.Texture:
-                    Btm = ImageProcessor.FillTexture(Btm, frame, CurrentFilter);
+                    Btm = ImageProcessor.FillTexture(Btm, frame, CurrentTexture);
                     break;
                 case EnumTools.Filter:
-                    Btm = ImageProcessor.FillFilter(Btm, frame, CurrentTexture);
+                    Btm = ImageProcessor.FillFilter(Btm, frame, CurrentFilter);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

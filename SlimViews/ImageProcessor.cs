@@ -394,19 +394,47 @@ namespace SlimViews
             return btm;
         }
 
-        public static Bitmap FillArea(Bitmap btm, SelectionFrame frame, Color color)
+        public static Bitmap FillArea(Bitmap bitmap, SelectionFrame frame, Color color)
         {
             throw new NotImplementedException();
         }
 
-        public static Bitmap FillTexture(Bitmap btm, SelectionFrame frame, ImageFilters currentFilter)
+        public static Bitmap FillTexture(Bitmap bitmap, SelectionFrame frame, TextureType texture)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //TODO generate smaller image from Frame 
+                //just overlay the whole image with the texture, will be changed later
+                //TODO use frame
+                var btm = Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, MaskShape.Rectangle);
+                //overlay both images
+                bitmap = Render.CombineBitmap(bitmap, btm, 0, 0);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
+            {
+                Trace.WriteLine(ex);
+                ShowError(ex.ToString(), ViewResources.ErrorMessage);
+            }
+
+            return bitmap;
         }
 
-        public static Bitmap FillFilter(Bitmap btm, SelectionFrame frame, TextureType currentTexture)
+        public static Bitmap FillFilter(Bitmap bitmap, SelectionFrame frame, ImageFilters filter)
         {
-            throw new NotImplementedException();
+            if (filter == ImageFilters.None) return bitmap;
+
+            try
+            {
+                //TODO generate smaller image from Frame 
+                return Render.FilterImage(bitmap, filter);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
+            {
+                Trace.WriteLine(ex);
+                ShowError(ex.ToString(), ViewResources.ErrorMessage);
+            }
+
+            return bitmap;
         }
 
         /// <summary>
