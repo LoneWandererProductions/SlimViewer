@@ -10,6 +10,7 @@
 // ReSharper disable MemberCanBeInternal, must be public, else the View Model won't work
 // ReSharper disable BadBracesSpaces
 // ReSharper disable MissingSpace
+// ReSharper disable WrongIndentSize
 
 using System;
 using System.Collections.Generic;
@@ -362,11 +363,6 @@ namespace SlimViews
         private ICommand _searchCommand;
 
         /// <summary>
-        ///     The selected fill type
-        /// </summary>
-        private string _selectedFillType;
-
-        /// <summary>
         ///     The selected filter
         /// </summary>
         private string _selectedFilter;
@@ -442,13 +438,6 @@ namespace SlimViews
         /// </summary>
         private ICommand _toolChangedCommand;
 
-        /// <summary>
-        /// The fill type changed command
-        /// </summary>
-        private ICommand _fillTypeChangedCommand;
-
-        private bool _fillType;
-
         public ImageView()
         {
             Initialize();
@@ -480,7 +469,7 @@ namespace SlimViews
         /// <value>
         ///     The current filter.
         /// </value>
-        private ImageFilters CurrentFilter { get; set; }
+        private FiltersType CurrentFilter { get; set; }
 
         /// <summary>
         ///     Gets or sets the current texture.
@@ -1421,8 +1410,6 @@ namespace SlimViews
             if (ImageZoomTool == ImageZoomTools.Trace)
                 return;
 
-            var point = new System.Drawing.Point(frame.X, frame.Y);
-
             switch (ToolCode)
             {
                 case EnumTools.Erase:
@@ -1438,10 +1425,10 @@ namespace SlimViews
                     Btm = ImageProcessor.FillArea(Btm, frame, color);
                     break;
                 case EnumTools.Texture:
-                    Btm = ImageProcessor.FillTexture(Btm, frame, CurrentTexture);
+                    Btm = ImageProcessor.FillTexture(Btm, frame, CurrentFilter);
                     break;
                 case EnumTools.Filter:
-                    Btm = ImageProcessor.FillFilter(Btm, frame, CurrentFilter);
+                    Btm = ImageProcessor.FillFilter(Btm, frame, CurrentTexture);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

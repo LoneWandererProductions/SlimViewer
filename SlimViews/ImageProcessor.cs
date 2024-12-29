@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable WrongIndentSize
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -215,13 +217,13 @@ namespace SlimViews
         /// <param name="bitmap">The bitmap to filter.</param>
         /// <param name="filter">The filter to apply.</param>
         /// <returns>The filtered bitmap.</returns>
-        internal static Bitmap Filter(Bitmap bitmap, ImageFilters filter)
+        internal static Bitmap Filter(Bitmap bitmap, FiltersType filter)
         {
-            if (filter == ImageFilters.None) return bitmap;
+            if (filter == FiltersType.None) return bitmap;
 
             try
             {
-                return Render.FilterImage(bitmap, filter);
+                return Render.FilterImageArea(bitmap, filter, MaskShape.Rectangle);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
@@ -243,9 +245,7 @@ namespace SlimViews
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                var btm = Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, MaskShape.Rectangle);
-                //overlay both images
-                bitmap = Render.CombineBitmap(bitmap, btm, 0, 0);
+                return Generator.GenerateTextureOverlay(bitmap, texture, MaskShape.Rectangle);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
@@ -394,47 +394,19 @@ namespace SlimViews
             return btm;
         }
 
-        public static Bitmap FillArea(Bitmap bitmap, SelectionFrame frame, Color color)
+        public static Bitmap FillArea(Bitmap btm, SelectionFrame frame, Color color)
         {
             throw new NotImplementedException();
         }
 
-        public static Bitmap FillTexture(Bitmap bitmap, SelectionFrame frame, TextureType texture)
+        public static Bitmap FillTexture(Bitmap btm, SelectionFrame frame, FiltersType currentFilter)
         {
-            try
-            {
-                //TODO generate smaller image from Frame 
-                //just overlay the whole image with the texture, will be changed later
-                //TODO use frame
-                var btm = Generator.GenerateTexture(bitmap.Width, bitmap.Height, texture, MaskShape.Rectangle);
-                //overlay both images
-                bitmap = Render.CombineBitmap(bitmap, btm, 0, 0);
-            }
-            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
-            {
-                Trace.WriteLine(ex);
-                ShowError(ex.ToString(), ViewResources.ErrorMessage);
-            }
-
-            return bitmap;
+            throw new NotImplementedException();
         }
 
-        public static Bitmap FillFilter(Bitmap bitmap, SelectionFrame frame, ImageFilters filter)
+        public static Bitmap FillFilter(Bitmap btm, SelectionFrame frame, TextureType currentTexture)
         {
-            if (filter == ImageFilters.None) return bitmap;
-
-            try
-            {
-                //TODO generate smaller image from Frame 
-                return Render.FilterImage(bitmap, filter);
-            }
-            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
-            {
-                Trace.WriteLine(ex);
-                ShowError(ex.ToString(), ViewResources.ErrorMessage);
-            }
-
-            return bitmap;
+            throw new NotImplementedException();
         }
 
         /// <summary>

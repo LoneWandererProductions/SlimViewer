@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/Texture.cs
+ * FILE:        Imaging/TextureStream.cs
  * PURPOSE:     Basic stuff for generating textures
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://lodev.org/cgtutor/randomnoise.html
@@ -18,7 +18,7 @@ namespace Imaging
     /// <summary>
     ///     Class that generates Textures
     /// </summary>
-    internal static class Texture
+    internal static class TextureStream
     {
         /// <summary>
         ///     The noise width
@@ -360,8 +360,6 @@ namespace Imaging
 
             return crosshatchBitmap;
         }
-
-        //TODO wire in the two Textures, add the settings to the config menu
 
         /// <summary>
         ///     Generates a concrete texture bitmap.

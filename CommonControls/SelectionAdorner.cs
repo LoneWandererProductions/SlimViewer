@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable BadBracesSpaces
+// ReSharper disable MissingSpace
 
 using System.Collections.Generic;
 using System.Linq;

@@ -31,7 +31,7 @@ namespace SlimViews
         ///     Initializes a new instance of the <see cref="FilterConfig" /> class.
         /// </summary>
         /// <param name="filter">The filter.</param>
-        public FilterConfig(ImageFilters filter)
+        public FilterConfig(FiltersType filter)
         {
             InitializeComponent();
             FilterView.SelectedFilter = filter;

@@ -25,7 +25,7 @@ namespace SlimViews
         /// <summary>
         ///     The current configuration
         /// </summary>
-        private readonly ImageFilterConfig _currentConfig;
+        private readonly FiltersConfig _currentConfig;
 
         /// <summary>
         ///     The base window size
@@ -65,7 +65,7 @@ namespace SlimViews
         /// <summary>
         ///     The selected filter
         /// </summary>
-        private ImageFilters _selectedFilter;
+        private FiltersType _selectedFilter;
 
         /// <summary>
         ///     The sigma
@@ -77,7 +77,7 @@ namespace SlimViews
         /// </summary>
         public FilterConfigView()
         {
-            CurrentConfig = new ImageFilterConfig(); // Initialize with default values
+            CurrentConfig = new FiltersConfig(); // Initialize with default values
 
             // Set properties from CurrentConfig
             Factor = CurrentConfig.Factor;
@@ -140,7 +140,7 @@ namespace SlimViews
         /// <value>
         ///     The selected filter.
         /// </value>
-        public ImageFilters SelectedFilter
+        public FiltersType SelectedFilter
         {
             get => _selectedFilter;
             set
@@ -159,8 +159,8 @@ namespace SlimViews
         /// <value>
         ///     The filter options.
         /// </value>
-        public IEnumerable<ImageFilters> FilterOptions =>
-            Enum.GetValues(typeof(ImageFilters)) as IEnumerable<ImageFilters>;
+        public IEnumerable<FiltersType> FilterOptions =>
+            Enum.GetValues(typeof(FiltersType)) as IEnumerable<FiltersType>;
 
         /// <summary>
         ///     Gets or sets the current configuration.
@@ -168,7 +168,7 @@ namespace SlimViews
         /// <value>
         ///     The current configuration.
         /// </value>
-        public ImageFilterConfig CurrentConfig
+        public FiltersConfig CurrentConfig
         {
             get => _currentConfig;
             init
@@ -303,7 +303,7 @@ namespace SlimViews
         private void SaveSettings()
         {
             //create a new ImageFilterConfig object
-            var config = new ImageFilterConfig();
+            var config = new FiltersConfig();
 
             // Update or better say reset the settings in ImageRegister
             ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, config);
@@ -316,7 +316,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ResetAction(object obj)
         {
-            var config = new ImageFilterConfig();
+            var config = new FiltersConfig();
             // Update the settings in ImageRegister
             ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, config);
         }

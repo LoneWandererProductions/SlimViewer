@@ -102,38 +102,38 @@ namespace SlimControls
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>ImageFilters enum</returns>
-        public static ImageFilters GetFilterFromString(string command)
+        public static FiltersType GetFilterFromString(string command)
         {
             return command switch
             {
-                ViewGuiResources.FilterNone => ImageFilters.None,
-                ViewGuiResources.FilterGrayScale => ImageFilters.GrayScale,
-                ViewGuiResources.FilterInvert => ImageFilters.Invert,
-                ViewGuiResources.FilterSepia => ImageFilters.Sepia,
-                ViewGuiResources.FilterBlackAndWhite => ImageFilters.BlackAndWhite,
-                ViewGuiResources.FilterPolaroid => ImageFilters.Polaroid,
-                ViewGuiResources.FilterContour => ImageFilters.Contour,
-                ViewGuiResources.FilterBrightness => ImageFilters.Brightness,
-                ViewGuiResources.FilterContrast => ImageFilters.Contrast,
-                ViewGuiResources.FilterHueShift => ImageFilters.HueShift,
-                ViewGuiResources.FilterColorBalance => ImageFilters.ColorBalance,
-                ViewGuiResources.FilterVintage => ImageFilters.Vintage,
-                ViewGuiResources.FilterSharpen => ImageFilters.Sharpen,
-                ViewGuiResources.FilterGaussianBlur => ImageFilters.GaussianBlur,
-                ViewGuiResources.FilterEmboss => ImageFilters.Emboss,
-                ViewGuiResources.FilterBoxBlur => ImageFilters.BoxBlur,
-                ViewGuiResources.FilterLaplacian => ImageFilters.Laplacian,
-                ViewGuiResources.FilterEdgeEnhance => ImageFilters.EdgeEnhance,
-                ViewGuiResources.FilterMotionBlur => ImageFilters.MotionBlur,
-                ViewGuiResources.FilterUnsharpMask => ImageFilters.UnsharpMask,
-                ViewGuiResources.FilterDifferenceOfGaussians => ImageFilters.DifferenceOfGaussians,
-                ViewGuiResources.FilterCrosshatch => ImageFilters.Crosshatch,
-                ViewGuiResources.FilterFloydSteinbergDithering => ImageFilters.FloydSteinbergDithering,
-                ViewGuiResources.FilterAnisotropicKuwahara => ImageFilters.AnisotropicKuwahara,
-                ViewGuiResources.FilterSupersamplingAntialiasing => ImageFilters.SupersamplingAntialiasing,
-                ViewGuiResources.FilterPostProcessingAntialiasing => ImageFilters.PostProcessingAntialiasing,
-                ViewGuiResources.FilterPencilSketchEffect => ImageFilters.PencilSketchEffect,
-                _ => ImageFilters.None
+                ViewGuiResources.FilterNone => FiltersType.None,
+                ViewGuiResources.FilterGrayScale => FiltersType.GrayScale,
+                ViewGuiResources.FilterInvert => FiltersType.Invert,
+                ViewGuiResources.FilterSepia => FiltersType.Sepia,
+                ViewGuiResources.FilterBlackAndWhite => FiltersType.BlackAndWhite,
+                ViewGuiResources.FilterPolaroid => FiltersType.Polaroid,
+                ViewGuiResources.FilterContour => FiltersType.Contour,
+                ViewGuiResources.FilterBrightness => FiltersType.Brightness,
+                ViewGuiResources.FilterContrast => FiltersType.Contrast,
+                ViewGuiResources.FilterHueShift => FiltersType.HueShift,
+                ViewGuiResources.FilterColorBalance => FiltersType.ColorBalance,
+                ViewGuiResources.FilterVintage => FiltersType.Vintage,
+                ViewGuiResources.FilterSharpen => FiltersType.Sharpen,
+                ViewGuiResources.FilterGaussianBlur => FiltersType.GaussianBlur,
+                ViewGuiResources.FilterEmboss => FiltersType.Emboss,
+                ViewGuiResources.FilterBoxBlur => FiltersType.BoxBlur,
+                ViewGuiResources.FilterLaplacian => FiltersType.Laplacian,
+                ViewGuiResources.FilterEdgeEnhance => FiltersType.EdgeEnhance,
+                ViewGuiResources.FilterMotionBlur => FiltersType.MotionBlur,
+                ViewGuiResources.FilterUnsharpMask => FiltersType.UnsharpMask,
+                ViewGuiResources.FilterDifferenceOfGaussians => FiltersType.DifferenceOfGaussians,
+                ViewGuiResources.FilterCrosshatch => FiltersType.Crosshatch,
+                ViewGuiResources.FilterFloydSteinbergDithering => FiltersType.FloydSteinbergDithering,
+                ViewGuiResources.FilterAnisotropicKuwahara => FiltersType.AnisotropicKuwahara,
+                ViewGuiResources.FilterSupersamplingAntialiasing => FiltersType.SupersamplingAntialiasing,
+                ViewGuiResources.FilterPostProcessingAntialiasing => FiltersType.PostProcessingAntialiasing,
+                ViewGuiResources.FilterPencilSketchEffect => FiltersType.PencilSketchEffect,
+                _ => FiltersType.None
             };
         }
     }
