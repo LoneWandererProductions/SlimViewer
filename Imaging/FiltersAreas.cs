@@ -20,6 +20,8 @@ namespace Imaging
         /// Generates the filter.
         /// </summary>
         /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="imageSettings">The image settings.</param>
@@ -32,6 +34,8 @@ namespace Imaging
         /// or
         /// shape - null</exception>
         internal static Bitmap GenerateFilter(Bitmap image,
+            int width,
+            int height,
             FiltersType filter,
             MaskShape shape,
             ImageRegister imageSettings,
@@ -162,11 +166,11 @@ namespace Imaging
             switch (shape)
             {
                 case MaskShape.Rectangle:
-                    filterBitmap = ImageMask.ApplyRectangleMask(filterBitmap, image.Width, image.Height, actualStartPoint);
+                    filterBitmap = ImageMask.ApplyRectangleMask(filterBitmap, width, height, actualStartPoint);
                     break;
 
                 case MaskShape.Circle:
-                    filterBitmap = ImageMask.ApplyCircleMask(filterBitmap, image.Width, image.Height, actualStartPoint);
+                    filterBitmap = ImageMask.ApplyCircleMask(filterBitmap, width, height, actualStartPoint);
                     break;
 
                 case MaskShape.Polygon:

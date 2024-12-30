@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using CommonControls;
 using Imaging;
 
@@ -94,6 +95,17 @@ namespace SlimControls
                 EnumTools.Paint => ImageTools.Paint,
                 EnumTools.Erase => ImageTools.Erase,
                 _ => ImageTools.Paint // Default value for unknown codes
+            };
+        }
+
+        public static MaskShape MapCodeToTool(ImageZoomTools code)
+        {
+            return code switch
+            {
+                ImageZoomTools.Rectangle => MaskShape.Rectangle,
+                ImageZoomTools.Ellipse => MaskShape.Circle,
+                ImageZoomTools.FreeForm => MaskShape.Polygon,
+                _ => MaskShape.Rectangle,
             };
         }
 

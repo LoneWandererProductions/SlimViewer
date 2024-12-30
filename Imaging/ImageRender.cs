@@ -134,6 +134,8 @@ namespace Imaging
         /// Filters the image area.
         /// </summary>
         /// <param name="image">The image.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="shapeParams">The shape parameters.</param>
@@ -145,6 +147,8 @@ namespace Imaging
         /// or
         /// shape - null</exception>
         public Bitmap FilterImageArea(Bitmap image,
+            int width,
+            int height,
             FiltersType filter,
             MaskShape shape,
             object shapeParams = null,
@@ -152,6 +156,8 @@ namespace Imaging
         {
             return FiltersAreas.GenerateFilter(
                 image,
+                width,
+                height,
                 filter,
                 shape,
                 ImageSettings, shapeParams, startPoint);

@@ -23,6 +23,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using SlimControls;
 using Point = System.Drawing.Point;
 
 namespace SlimViews
@@ -223,7 +224,7 @@ namespace SlimViews
 
             try
             {
-                return Render.FilterImageArea(bitmap, filter, MaskShape.Rectangle);
+                return Render.FilterImage(bitmap, filter);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
@@ -245,7 +246,7 @@ namespace SlimViews
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                return Generator.GenerateTextureOverlay(bitmap, texture, MaskShape.Rectangle);
+                return Generator.GenerateTextureOverlay(bitmap, bitmap.Width, bitmap.Height, texture, MaskShape.Rectangle);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
@@ -394,19 +395,61 @@ namespace SlimViews
             return btm;
         }
 
-        public static Bitmap FillArea(Bitmap btm, SelectionFrame frame, Color color)
+        public static Bitmap FillArea(Bitmap bitmap, SelectionFrame frame, Color color)
         {
             throw new NotImplementedException();
         }
 
-        public static Bitmap FillTexture(Bitmap btm, SelectionFrame frame, FiltersType currentFilter)
+        /// <summary>
+        /// Fills the texture.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <param name="frame">The frame.</param>
+        /// <param name="texture">The texture.</param>
+        /// <returns></returns>
+        public static Bitmap FillTexture(Bitmap bitmap, SelectionFrame frame, TextureType texture)
         {
-            throw new NotImplementedException();
+            var mask = Translator.MapCodeToTool(frame.Tool);
+            var point = new Point(frame.X, frame.Y);
+
+            try
+            {
+                //just overlay the whole image with the texture, will be changed later
+                return Generator.GenerateTextureOverlay(bitmap, frame.Width, frame.Height, texture, mask, point);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
+            {
+                Trace.WriteLine(ex);
+                ShowError(ex.ToString(), ViewResources.ErrorMessage);
+            }
+
+            return bitmap;
         }
 
-        public static Bitmap FillFilter(Bitmap btm, SelectionFrame frame, TextureType currentTexture)
+        /// <summary>
+        /// Fills the filter.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <param name="frame">The frame.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        public static Bitmap FillFilter(Bitmap bitmap, SelectionFrame frame, FiltersType filter)
         {
-            throw new NotImplementedException();
+            var mask = Translator.MapCodeToTool(frame.Tool);
+            var point = new Point(frame.X, frame.Y);
+
+            try
+            {
+                //just overlay the whole image with the texture, will be changed later
+                return Render.FilterImageArea(bitmap, frame.Width, frame.Height, filter, mask, point);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
+            {
+                Trace.WriteLine(ex);
+                ShowError(ex.ToString(), ViewResources.ErrorMessage);
+            }
+
+            return bitmap;
         }
 
         /// <summary>
