@@ -169,10 +169,12 @@ namespace Imaging
         /// Generates the texture overlay.
         /// </summary>
         /// <param name="image">The image.</param>
+        /// <param name="height">The height.</param>
         /// <param name="filter">The filter.</param>
         /// <param name="shape">The shape.</param>
         /// <param name="startPoint">The start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="width">The width.</param>
         /// <returns>
         /// Texture Bitmap
         /// </returns>
