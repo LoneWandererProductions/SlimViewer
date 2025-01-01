@@ -34,8 +34,8 @@ namespace Imaging
         /// or
         /// shape - null</exception>
         internal static Bitmap GenerateFilter(Bitmap image,
-            int width,
-            int height,
+            int? width,
+            int? height,
             FiltersType filter,
             MaskShape shape,
             ImageRegister imageSettings,
@@ -46,9 +46,12 @@ namespace Imaging
             if (image == null) throw new ArgumentNullException(nameof(image));
 
             if (filter == FiltersType.None) return image; // No filtering required
-
             // Default start point
             var actualStartPoint = startPoint ?? new Point(0, 0);
+
+            // Determine dimensions
+            var actualWidth = width ?? image.Width;
+            var actualHeight = height ?? image.Height;
 
             // Apply filter
             Bitmap filterBitmap = FiltersStream.FilterImage(image, filter, imageSettings);
@@ -56,78 +59,16 @@ namespace Imaging
             // Apply mask
             filterBitmap = shape switch
             {
-                MaskShape.Rectangle => ImageMask.ApplyRectangleMask(filterBitmap, width, height, actualStartPoint),
-                MaskShape.Circle => ImageMask.ApplyCircleMask(filterBitmap, width, height, actualStartPoint),
+                MaskShape.Rectangle => ImageMask.ApplyRectangleMask(filterBitmap, actualWidth, actualHeight, actualStartPoint),
+                MaskShape.Circle => ImageMask.ApplyCircleMask(filterBitmap, actualWidth, actualHeight, actualStartPoint),
                 MaskShape.Polygon => shapeParams is Point[] points
                     ? ImageMask.ApplyPolygonMask(filterBitmap, points)
-                    : throw new ArgumentException("Invalid shape parameters for polygon mask.", nameof(shapeParams)),
+                    : throw new ArgumentException(ImagingResources.ErrorWithShapePolygon, nameof(shapeParams)),
                 _ => throw new ArgumentOutOfRangeException(nameof(shape), shape, null)
             };
 
             // Combine original and filtered images
             return ImageStream.CombineBitmap(image, filterBitmap, 0, 0);
-        }
-
-        /// <summary>
-        /// Fills the area with color.
-        /// </summary>
-        /// <param name="image">The image.</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <param name="shape">The shape.</param>
-        /// <param name="shapeParams">The shape parameters.</param>
-        /// <param name="startPoint">The optional starting point (top-left corner) of the rectangle. Defaults to (0, 0).</param>
-        /// <returns>
-        /// Generates a filter for a certain area
-        /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">filter - null
-        /// or
-        /// shape - null</exception>
-        internal static Bitmap FillAreaWithColor(
-            Bitmap image,
-            int width,
-            int height,
-            Color color,
-            MaskShape shape,
-            object shapeParams = null,
-            Point? startPoint = null)
-        {
-            // Validate input
-            if (image == null) throw new ArgumentNullException(nameof(image));
-
-            // Default start point
-            var actualStartPoint = startPoint ?? new Point(0, 0);
-
-            using Graphics g = Graphics.FromImage(image);
-            using Brush brush = new SolidBrush(color);
-
-            // Apply mask based on the specified shape
-            switch (shape)
-            {
-                case MaskShape.Rectangle:
-                    g.FillRectangle(brush, new Rectangle(actualStartPoint, new Size(width, height)));
-                    break;
-
-                case MaskShape.Circle:
-                    g.FillEllipse(brush, new Rectangle(actualStartPoint, new Size(width, height)));
-                    break;
-
-                case MaskShape.Polygon:
-                    if (shapeParams is Point[] points)
-                    {
-                        g.FillPolygon(brush, points);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Invalid shape parameters for polygon mask.", nameof(shapeParams));
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(shape), shape, "Unsupported shape type");
-            }
-
-            return image;
         }
     }
 }

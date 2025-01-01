@@ -395,9 +395,29 @@ namespace SlimViews
             return btm;
         }
 
+        /// <summary>
+        /// Fills the area.
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <param name="frame">The frame.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>Changed bitmap or in case of error the original</returns>
         public static Bitmap FillArea(Bitmap bitmap, SelectionFrame frame, Color color)
         {
-            throw new NotImplementedException();
+            var mask = Translator.MapCodeToTool(frame.Tool);
+            var point = new Point(frame.X, frame.Y);
+
+            try
+            {
+                bitmap = Render.FillAreaWithColor(bitmap, frame.Width, frame.Height, color, mask, point);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(EraseImage)));
+            }
+
+            return bitmap;
         }
 
         /// <summary>
@@ -406,7 +426,7 @@ namespace SlimViews
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="frame">The frame.</param>
         /// <param name="texture">The texture.</param>
-        /// <returns></returns>
+        /// <returns>Changed bitmap or in case of error the original</returns>
         public static Bitmap FillTexture(Bitmap bitmap, SelectionFrame frame, TextureType texture)
         {
             var mask = Translator.MapCodeToTool(frame.Tool);
@@ -432,7 +452,7 @@ namespace SlimViews
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="frame">The frame.</param>
         /// <param name="filter">The filter.</param>
-        /// <returns></returns>
+        /// <returns>Changed bitmap or in case of error the original</returns>
         public static Bitmap FillFilter(Bitmap bitmap, SelectionFrame frame, FiltersType filter)
         {
             var mask = Translator.MapCodeToTool(frame.Tool);
