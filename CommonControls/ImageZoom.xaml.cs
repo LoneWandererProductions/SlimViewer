@@ -12,6 +12,7 @@
 // ReSharper disable MissingSpace
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -96,6 +97,14 @@ namespace CommonControls
                 new PropertyMetadata(null));
 
         /// <summary>
+        /// The selected free form points command property
+        /// </summary>
+        public static readonly DependencyProperty SelectedFreeFormPointsCommandProperty =
+            DependencyProperty.Register(nameof(SelectedFreeFormPointsCommand), typeof(ICommand), typeof(ImageZoom),
+                new PropertyMetadata(null));
+
+
+        /// <summary>
         ///     The lock
         /// </summary>
         private readonly object _lock = new();
@@ -161,6 +170,18 @@ namespace CommonControls
         {
             get => (ICommand)GetValue(SelectedFrameCommandProperty);
             set => SetValue(SelectedFrameCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the selected free form points command.
+        /// </summary>
+        /// <value>
+        /// The selected free form points command.
+        /// </value>
+        public ICommand SelectedFreeFormPointsCommand
+        {
+            get => (ICommand)GetValue(SelectedFreeFormPointsCommandProperty);
+            set => SetValue(SelectedFreeFormPointsCommandProperty, value);
         }
 
         /// <summary>
@@ -452,39 +473,46 @@ namespace CommonControls
                 return;
             }
 
-            //clicked Endpoint
-
             switch (SelectionTool)
             {
                 case ImageZoomTools.Move:
-                    // nothing
+                    // No specific action required for Move
                     break;
 
                 case ImageZoomTools.Rectangle:
-                {
                     var frame = SelectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                     SelectedFrameCommand.Execute(frame);
-                }
                     break;
+
                 case ImageZoomTools.Trace:
                     SelectionAdorner.IsTracing = false;
-                    //TODO implement
+
+                    // Implement logic for FreeFormPoints
                     var points = SelectionAdorner.FreeFormPoints;
-                    //?.Invoke(frame);
-                    //SelectedFrameCommand.Execute(frame);
+                    if (points is {Count: > 0})
+                    {
+                        // Process the collected freeform points
+                        if (SelectedFreeFormPointsCommand?.CanExecute(points) == true)
+                        {
+                            SelectedFreeFormPointsCommand.Execute(points);
+                        }
+
+                        // Optionally, log or display the points
+                        Trace.WriteLine($"Trace tool completed with {points.Count} points.");
+                    }
+
                     break;
 
                 case ImageZoomTools.Dot:
                     SetClickedPoint(e);
 
                     var endpoint = e.GetPosition(BtmImage);
-
-
                     SelectedPoint?.Invoke(endpoint);
                     break;
+
                 default:
-                    // nothing
+                    // Do nothing for unsupported tools
                     return;
             }
 
@@ -501,6 +529,7 @@ namespace CommonControls
                 }
             }
         }
+
 
         /// <summary>
         ///     Handles the MouseMove event of the Canvas control.
@@ -635,6 +664,8 @@ namespace CommonControls
                     }
 
                     SelectionAdorner = null;
+
+                    if (BtmImage != null) BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
 
                     // Release UI interaction resources
                     MainCanvas.ReleaseMouseCapture();
