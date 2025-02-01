@@ -98,6 +98,16 @@ namespace SlimControls
                 typeof(UnifiedToolOptions),
                 new PropertyMetadata(null));
 
+        /// <summary>
+        ///     DependencyProperty for SelectedToolCode
+        /// </summary>
+        public static readonly DependencyProperty SelectedToolCodeProperty =
+            DependencyProperty.Register(
+                nameof(SelectedToolCode),
+                typeof(EnumTools),
+                typeof(UnifiedToolOptions),
+                new PropertyMetadata(EnumTools.Move, OnSelectedToolCodeChanged));
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="UnifiedToolOptions" /> class.
@@ -173,6 +183,15 @@ namespace SlimControls
         {
             get => (double)GetValue(ColorToleranceProperty);
             set => SetValue(ColorToleranceProperty, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the SelectedToolCode as an integer.
+        /// </summary>
+        public EnumTools SelectedToolCode
+        {
+            get => (EnumTools)GetValue(SelectedToolCodeProperty);
+            set => SetValue(SelectedToolCodeProperty, value);
         }
 
         /// <summary>
@@ -270,37 +289,18 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// DependencyProperty for SelectedToolCode
-        /// </summary>
-        public static readonly DependencyProperty SelectedToolCodeProperty =
-            DependencyProperty.Register(
-                nameof(SelectedToolCode),
-                typeof(EnumTools),
-                typeof(UnifiedToolOptions),
-                new PropertyMetadata(EnumTools.Move, OnSelectedToolCodeChanged));
-
-        /// <summary>
-        /// Gets or sets the SelectedToolCode as an integer.
-        /// </summary>
-        public EnumTools SelectedToolCode
-        {
-            get => (EnumTools)GetValue(SelectedToolCodeProperty);
-            set => SetValue(SelectedToolCodeProperty, value);
-        }
-
-        /// <summary>
-        /// Called when the SelectedToolCode property changes.
+        ///     Called when the SelectedToolCode property changes.
         /// </summary>
         private static void OnSelectedToolCodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not UnifiedToolOptions control) return;
 
-            EnumTools newCode = (EnumTools)e.NewValue;
+            var newCode = (EnumTools)e.NewValue;
             control.SelectedTool = Translator.MapCodeToTool(newCode);
         }
 
         /// <summary>
-        /// Called when the SelectedTool property changes.
+        ///     Called when the SelectedTool property changes.
         /// </summary>
         private static void OnSelectedToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

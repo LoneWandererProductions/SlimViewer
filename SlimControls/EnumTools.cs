@@ -3,7 +3,7 @@
     public enum EnumTools
     {
         /// <summary>
-        /// The move
+        ///     The move
         /// </summary>
         Move = 0,
 
@@ -23,17 +23,17 @@
         ColorSelect = 3,
 
         /// <summary>
-        /// The solid color
+        ///     The solid color
         /// </summary>
         SolidColor = 4,
 
         /// <summary>
-        /// The texture
+        ///     The texture
         /// </summary>
         Texture = 5,
 
         /// <summary>
-        /// The filter
+        ///     The filter
         /// </summary>
         Filter = 6
     }

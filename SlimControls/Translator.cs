@@ -72,7 +72,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Maps an ImageTools enum value to an integer code.
+        ///     Maps an ImageTools enum value to an integer code.
         /// </summary>
         internal static EnumTools MapToolToEnumTools(ImageTools tool)
         {
@@ -85,7 +85,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Maps an integer code to an ImageTools enum value.
+        ///     Maps an integer code to an ImageTools enum value.
         /// </summary>
         internal static ImageTools MapCodeToTool(EnumTools code)
         {
@@ -104,7 +104,7 @@ namespace SlimControls
                 ImageZoomTools.Rectangle => MaskShape.Rectangle,
                 ImageZoomTools.Ellipse => MaskShape.Circle,
                 ImageZoomTools.FreeForm => MaskShape.Polygon,
-                _ => MaskShape.Rectangle,
+                _ => MaskShape.Rectangle
             };
         }
 
