@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
 using CommonControls;
 using Imaging;
 
@@ -22,7 +21,7 @@ namespace SlimControls
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns>SelectionTools enum</returns>
-        public static ImageZoomTools GetToolsFromString(string command)
+        internal static ImageZoomTools GetToolsFromString(string command)
         {
             return command switch
             {
