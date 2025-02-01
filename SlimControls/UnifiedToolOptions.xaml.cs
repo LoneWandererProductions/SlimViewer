@@ -27,7 +27,8 @@ namespace SlimControls
                 nameof(SelectedTool),
                 typeof(ImageTools),
                 typeof(UnifiedToolOptions),
-                new PropertyMetadata(ImageTools.Paint, OnSelectedToolChanged));
+                new PropertyMetadata(ImageTools.Area, OnSelectedToolChanged));
+
 
         /// <summary>
         ///     DependencyProperty for BrushSize
@@ -276,7 +277,7 @@ namespace SlimControls
                 nameof(SelectedToolCode),
                 typeof(EnumTools),
                 typeof(UnifiedToolOptions),
-                new PropertyMetadata(0, OnSelectedToolCodeChanged));
+                new PropertyMetadata(EnumTools.Move, OnSelectedToolCodeChanged));
 
         /// <summary>
         /// Gets or sets the SelectedToolCode as an integer.

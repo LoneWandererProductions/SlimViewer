@@ -10,6 +10,10 @@
         <local:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="800*"/>
+            <ColumnDefinition Width="13*"/>
+        </Grid.ColumnDefinitions>
         <!-- Paint Tool -->
         <local:ToolOptions x:Name="PaintTool"
                            Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Paint}"

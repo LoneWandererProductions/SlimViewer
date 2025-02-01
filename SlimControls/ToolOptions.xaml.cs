@@ -33,7 +33,7 @@ namespace SlimControls
                 nameof(SliderValue),
                 typeof(int),
                 typeof(ToolOptions),
-                new PropertyMetadata(1.0)); // Default slider value
+                new PropertyMetadata(1)); // Default slider value
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ToolOptions" /> class.

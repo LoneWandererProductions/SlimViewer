@@ -25,11 +25,15 @@ namespace SlimControls
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null || parameter == null)
+                return Visibility.Collapsed; // Prevent errors on null values
+
             if (value is ImageTools currentTool && parameter is string targetTool)
                 return currentTool.ToString() == targetTool ? Visibility.Visible : Visibility.Collapsed;
 
             return Visibility.Collapsed;
         }
+
 
         /// <inheritdoc />
         /// <summary>
