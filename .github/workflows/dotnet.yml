@@ -16,10 +16,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4  # Updated to latest version
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4  # Updated to latest version
       with:
         dotnet-version: 5.0.x
 
@@ -27,7 +27,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
@@ -39,7 +39,7 @@ jobs:
       run: dir ./release  # Use 'ls -la ./release' for Unix-based systems
 
     - name: Upload Release Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Updated to latest version
       with:
         name: my-release-binaries
         path: ./release
@@ -48,19 +48,20 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    steps:
 
+    steps:
     - name: Download Release Binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4  # Updated to latest version
       with:
         name: my-release-binaries
+        path: ./release
 
     - name: List Downloaded Files
-      run: ls -la  # Check the base directory for the downloaded files
+      run: ls -la ./release  # Ensure correct directory
 
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2  # Updated to latest version
       with:
-        files: my-release-binaries.zip  # Ensure this matches the actual file
+        files: ./release/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
