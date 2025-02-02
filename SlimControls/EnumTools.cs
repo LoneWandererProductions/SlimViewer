@@ -35,6 +35,11 @@
         /// <summary>
         ///     The filter
         /// </summary>
-        Filter = 6
+        Filter = 6,
+
+        /// <summary>
+        ///     The filter
+        /// </summary>
+        Area = 7
     }
 }

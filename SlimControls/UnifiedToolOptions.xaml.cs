@@ -296,7 +296,7 @@ namespace SlimControls
             if (d is not UnifiedToolOptions control) return;
 
             var newCode = (EnumTools)e.NewValue;
-            control.SelectedTool = Translator.MapCodeToTool(newCode);
+            // right now redundant it could do the job of AreaControl_TextureConfigExecuted, AreaControl_FilterConfigExecuted
         }
 
         /// <summary>
@@ -304,7 +304,17 @@ namespace SlimControls
         /// </summary>
         private static void OnSelectedToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not UnifiedToolOptions control || e.NewValue is not ImageTools newTool) return;
+            if (d is not UnifiedToolOptions control)
+            {
+                Trace.WriteLine($"Error: Expected d to be UnifiedToolOptions, but got {d?.GetType().Name ?? "null"}");
+                return;
+            }
+
+            if (e.NewValue is not ImageTools newTool)
+            {
+                Trace.WriteLine($"Error: Expected e.NewValue to be ImageTools, but got {e.NewValue?.GetType().Name ?? "null"}");
+                return;
+            }
 
             var args = new RoutedPropertyChangedEventArgs<ImageTools>(
                 (ImageTools)e.OldValue,

@@ -80,6 +80,7 @@ namespace SlimControls
             {
                 ImageTools.Paint => EnumTools.Paint,
                 ImageTools.Erase => EnumTools.Erase,
+                ImageTools.Area => EnumTools.Area,
                 _ => EnumTools.Move // Default value for unknown tools
             };
         }
