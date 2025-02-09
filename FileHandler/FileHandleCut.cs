@@ -70,7 +70,7 @@ namespace FileHandler
                         FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                     }
                     catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                                   or NotSupportedException)
+                        or NotSupportedException)
                     {
                         FileHandlerRegister.AddError(nameof(CutFiles), file.Name, ex);
                         Trace.WriteLine(ex);
@@ -143,7 +143,7 @@ namespace FileHandler
                     FileHandlerRegister.SendStatus?.Invoke(nameof(CutFiles), file.Name);
                 }
                 catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                               or NotSupportedException)
+                    or NotSupportedException)
                 {
                     FileHandlerRegister.AddError(nameof(CutFiles), element, ex);
                     Trace.WriteLine(ex);

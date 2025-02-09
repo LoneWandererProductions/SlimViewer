@@ -52,7 +52,7 @@ namespace ViewModel
         /// <param name="parameter">The parameter for the action.</param>
         public void Execute(object parameter)
         {
-            _action((T)parameter);
+            _action((T) parameter);
         }
 
         /// <inheritdoc />
@@ -63,7 +63,7 @@ namespace ViewModel
         /// <returns>True if the command can execute, otherwise false.</returns>
         public bool CanExecute(object parameter)
         {
-            return _canExecute?.Invoke((T)parameter) ?? true;
+            return _canExecute?.Invoke((T) parameter) ?? true;
         }
 
         /// <inheritdoc />

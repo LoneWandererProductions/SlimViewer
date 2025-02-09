@@ -184,10 +184,10 @@ namespace FileHandler
             var myFiles = new List<string>();
 
             foreach (var files
-                     in
-                     fileExtList.Select(
-                         appendix => FileHandleSearch.GetFilesByExtensionFullPath(path, appendix, subdirectories))
-                    )
+                in
+                fileExtList.Select(
+                    appendix => FileHandleSearch.GetFilesByExtensionFullPath(path, appendix, subdirectories))
+            )
             {
                 if (files == null) return false;
 
@@ -255,7 +255,7 @@ namespace FileHandler
                 stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
             }
             catch (Exception ex) when (ex is ArgumentException or PathTooLongException or IOException
-                                           or UnauthorizedAccessException or NotSupportedException)
+                or UnauthorizedAccessException or NotSupportedException)
             {
                 Trace.WriteLine(string.Concat(FileHandlerResources.ErrorLock, ex));
                 return true;

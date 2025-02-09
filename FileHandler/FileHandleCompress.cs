@@ -50,7 +50,7 @@ namespace FileHandler
                 }
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                           or NotSupportedException)
+                or NotSupportedException)
             {
                 FileHandlerRegister.AddError(nameof(SaveZip), zipPath, ex);
                 Trace.WriteLine(ex);
@@ -85,7 +85,7 @@ namespace FileHandler
                 archive.ExtractToDirectory(extractPath);
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                           or NotSupportedException)
+                or NotSupportedException)
             {
                 FileHandlerRegister.AddError(nameof(OpenZip), zipPath, ex);
                 Trace.WriteLine(ex);

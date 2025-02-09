@@ -27,7 +27,8 @@ namespace SlimControls
                 nameof(SelectedTool),
                 typeof(ImageTools),
                 typeof(UnifiedToolOptions),
-                new PropertyMetadata(ImageTools.Area, OnSelectedToolChanged));
+                new PropertyMetadata(null));
+        //new PropertyMetadata(ImageTools.Area, OnSelectedToolChanged));
 
 
         /// <summary>
@@ -122,21 +123,21 @@ namespace SlimControls
         /// </summary>
         public ICommand ToolChangedCommand
         {
-            get => (ICommand)GetValue(ToolChangedCommandProperty);
+            get => (ICommand) GetValue(ToolChangedCommandProperty);
             set => SetValue(ToolChangedCommandProperty, value);
         }
 
         // ICommand property for FilterCommand
         public ICommand FilterCommand
         {
-            get => (ICommand)GetValue(FilterCommandProperty);
+            get => (ICommand) GetValue(FilterCommandProperty);
             set => SetValue(FilterCommandProperty, value);
         }
 
         // ICommand property for TextureCommand
         public ICommand TextureCommand
         {
-            get => (ICommand)GetValue(TextureCommandProperty);
+            get => (ICommand) GetValue(TextureCommandProperty);
             set => SetValue(TextureCommandProperty, value);
         }
 
@@ -145,7 +146,7 @@ namespace SlimControls
         /// </summary>
         public ICommand FillTypeChangedCommand
         {
-            get => (ICommand)GetValue(FillTypeChangedCommandProperty);
+            get => (ICommand) GetValue(FillTypeChangedCommandProperty);
             set => SetValue(FillTypeChangedCommandProperty, value);
         }
 
@@ -154,7 +155,7 @@ namespace SlimControls
         /// </summary>
         public ImageTools SelectedTool
         {
-            get => (ImageTools)GetValue(SelectedToolProperty);
+            get => (ImageTools) GetValue(SelectedToolProperty);
             set => SetValue(SelectedToolProperty, value);
         }
 
@@ -163,7 +164,7 @@ namespace SlimControls
         /// </summary>
         public double BrushSize
         {
-            get => (double)GetValue(BrushSizeProperty);
+            get => (double) GetValue(BrushSizeProperty);
             set => SetValue(BrushSizeProperty, value);
         }
 
@@ -172,7 +173,7 @@ namespace SlimControls
         /// </summary>
         public double EraseRadius
         {
-            get => (double)GetValue(EraseRadiusProperty);
+            get => (double) GetValue(EraseRadiusProperty);
             set => SetValue(EraseRadiusProperty, value);
         }
 
@@ -181,7 +182,7 @@ namespace SlimControls
         /// </summary>
         public double ColorTolerance
         {
-            get => (double)GetValue(ColorToleranceProperty);
+            get => (double) GetValue(ColorToleranceProperty);
             set => SetValue(ColorToleranceProperty, value);
         }
 
@@ -190,7 +191,7 @@ namespace SlimControls
         /// </summary>
         public EnumTools SelectedToolCode
         {
-            get => (EnumTools)GetValue(SelectedToolCodeProperty);
+            get => (EnumTools) GetValue(SelectedToolCodeProperty);
             set => SetValue(SelectedToolCodeProperty, value);
         }
 
@@ -295,7 +296,7 @@ namespace SlimControls
         {
             if (d is not UnifiedToolOptions control) return;
 
-            var newCode = (EnumTools)e.NewValue;
+            var newCode = (EnumTools) e.NewValue;
             // right now redundant it could do the job of AreaControl_TextureConfigExecuted, AreaControl_FilterConfigExecuted
         }
 
@@ -312,12 +313,13 @@ namespace SlimControls
 
             if (e.NewValue is not ImageTools newTool)
             {
-                Trace.WriteLine($"Error: Expected e.NewValue to be ImageTools, but got {e.NewValue?.GetType().Name ?? "null"}");
+                Trace.WriteLine(
+                    $"Error: Expected e.NewValue to be ImageTools, but got {e.NewValue?.GetType().Name ?? "null"}");
                 return;
             }
 
             var args = new RoutedPropertyChangedEventArgs<ImageTools>(
-                (ImageTools)e.OldValue,
+                (ImageTools) e.OldValue,
                 newTool,
                 SelectedToolChangedEvent);
 

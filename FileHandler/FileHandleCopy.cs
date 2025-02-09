@@ -59,7 +59,7 @@ namespace FileHandler
                     FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
                 }
                 catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                               or NotSupportedException)
+                    or NotSupportedException)
                 {
                     FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);
                     Trace.WriteLine(ex);
@@ -138,7 +138,7 @@ namespace FileHandler
                     FileHandlerRegister.SendStatus?.Invoke(nameof(CopyFiles), file.Name);
                 }
                 catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                               or NotSupportedException)
+                    or NotSupportedException)
                 {
                     check = false;
                     FileHandlerRegister.AddError(nameof(CopyFiles), element, ex);
@@ -258,7 +258,7 @@ namespace FileHandler
                         }
                     }
                     catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                                                   or NotSupportedException)
+                        or NotSupportedException)
                     {
                         check = false;
                         FileHandlerRegister.AddError(nameof(CopyFiles), file.Name, ex);

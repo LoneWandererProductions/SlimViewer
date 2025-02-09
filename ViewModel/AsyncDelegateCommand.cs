@@ -51,7 +51,7 @@ namespace ViewModel
         /// <param name="parameter">The parameter for the action.</param>
         public async void Execute(object parameter)
         {
-            await _execute((T)parameter);
+            await _execute((T) parameter);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace ViewModel
         /// <returns>True if the command can execute, otherwise false.</returns>
         public bool CanExecute(object parameter)
         {
-            return _canExecute?.Invoke((T)parameter) ?? true;
+            return _canExecute?.Invoke((T) parameter) ?? true;
         }
 
         /// <summary>
