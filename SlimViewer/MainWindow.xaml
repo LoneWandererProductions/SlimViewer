@@ -313,7 +313,7 @@
                                              ColorTolerance="{Binding Tolerance}"
                                              BrushSize="{Binding BrushSize}"
                                              EraseRadius="{Binding EraseRadius}"
-                                             SelectedToolCode="{Binding ToolCode}"
+                                             SelectedToolCode="{Binding ToolCode, Mode=TwoWay}"
                                              Grid.RowSpan="4" />
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
