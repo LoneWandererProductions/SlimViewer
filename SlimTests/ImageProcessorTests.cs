@@ -1,16 +1,15 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using CommonControls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SlimViews;
 
-namespace ImageProcessorTests
+namespace SlimTests
 {
     [TestClass]
     public class ImageProcessorTests
     {
         [TestMethod]
-        public void FillArea_StartPointNotNull_RemainsNotNull()
+        public void FillAreaStartPointNotNullRemainsNotNull()
         {
             // Arrange
             var bitmap = new Bitmap(10, 10);

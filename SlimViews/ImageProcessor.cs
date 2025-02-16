@@ -410,7 +410,7 @@ namespace SlimViews
             try
             {
                 //error here startpoint gets nulled
-                bitmap = Render.FillAreaWithColor(bitmap, frame.Width, frame.Height, color, mask, point);
+                bitmap = Render.FillAreaWithColor(bitmap, frame.Width, frame.Height, color, mask, startPoint: point);
             }
             catch (ArgumentNullException ex)
             {
