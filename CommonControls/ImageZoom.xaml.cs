@@ -12,7 +12,6 @@
 // ReSharper disable MissingSpace
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -480,6 +479,8 @@ namespace CommonControls
                     break;
 
                 case ImageZoomTools.Rectangle:
+                case ImageZoomTools.Ellipse:
+                case ImageZoomTools.FreeForm:
                     var frame = SelectionAdorner.CurrentSelectionFrame;
                     SelectedFrame?.Invoke(frame);
                     SelectedFrameCommand.Execute(frame);
@@ -510,7 +511,6 @@ namespace CommonControls
                     var endpoint = e.GetPosition(BtmImage);
                     SelectedPoint?.Invoke(endpoint);
                     break;
-
                 default:
                     // Do nothing for unsupported tools
                     return;
