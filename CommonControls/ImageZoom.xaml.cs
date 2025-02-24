@@ -434,12 +434,28 @@ namespace CommonControls
         {
             // Capture and track the mouse.
             _mouseDown = true;
-            _startPoint = e.GetPosition(MainCanvas);
-            _originPoint.X = BtmImage.RenderTransform.Value.OffsetX;
-            _originPoint.Y = BtmImage.RenderTransform.Value.OffsetY;
+
+            // Get the mouse position relative to the canvas
+            Point rawPoint = e.GetPosition(MainCanvas);
+
+            // Adjust for ScrollViewer offsets
+            double offsetX = ScrollView.HorizontalOffset;
+            double offsetY = ScrollView.VerticalOffset;
+            Point adjustedPoint = new Point(rawPoint.X + offsetX, rawPoint.Y + offsetY);
+
+            // Adjust for scaling (convert to image space)
+            double scaleX = Scale.ScaleX;
+            double scaleY = Scale.ScaleY;
+            Point imagePoint = new Point(adjustedPoint.X / scaleX, adjustedPoint.Y / scaleY);
+
+            Debug.WriteLine($"Raw Click: {rawPoint}, Adjusted: {adjustedPoint}, Image Space: {imagePoint}");
+
+            _startPoint = imagePoint; // Store the transformed point
+
+            // Capture the mouse
             _ = MainCanvas.CaptureMouse();
 
-            AttachAdorner(SelectionTool); // Attach Adorner based on current tool
+            AttachAdorner(SelectionTool);
 
             switch (SelectionTool)
             {
@@ -448,15 +464,14 @@ namespace CommonControls
                 case ImageZoomTools.Trace:
                     SelectionAdorner.IsTracing = true;
                     break;
-
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
                     break;
                 case ImageZoomTools.FreeForm:
-                    e.GetPosition(BtmImage);
+                    // Ensure position is properly transformed before using
+                    imagePoint = e.GetPosition(BtmImage);
                     break;
                 default:
-                    // nothing
                     return;
             }
         }
