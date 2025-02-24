@@ -439,6 +439,7 @@ namespace CommonControls
             Point rawPoint = e.GetPosition(MainCanvas);
 
             //TODO ERROR HERE!
+            Point position = e.GetPosition(this);
 
             // Adjust for ScrollViewer offsets
             double offsetX = ScrollView.HorizontalOffset;
