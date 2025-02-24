@@ -339,6 +339,9 @@ namespace CommonControls
             // Set GifSource and subscribe to the ImageLoaded event
             BtmImage.ImageLoaded += BtmImage_ImageLoaded;
             BtmImage.GifSource = ImageGifPath;
+
+            // Ensure the adorner updates with the new zoom scale
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
         /// <summary>
@@ -361,6 +364,9 @@ namespace CommonControls
 
             // Reattach adorner for the new image (ensures correct behavior)
             AttachAdorner(SelectionTool);
+
+            // Ensure the adorner updates with the new zoom scale
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
         /// <summary>
@@ -530,7 +536,6 @@ namespace CommonControls
             }
         }
 
-
         /// <summary>
         ///     Handles the MouseMove event of the Canvas control.
         /// </summary>
@@ -598,6 +603,9 @@ namespace CommonControls
                 var newZoomScale = Scale.ScaleX * zoomFactor; // Assume uniform scaling, so use ScaleX
 
                 UpdateZoomScale(newZoomScale); // Centralize logic for updating the zoom scale
+
+                // Ensure the adorner updates with the new zoom scale
+                SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
             }
         }
 
