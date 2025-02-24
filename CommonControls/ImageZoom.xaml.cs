@@ -12,6 +12,7 @@
 // ReSharper disable MissingSpace
 
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -438,22 +439,51 @@ namespace CommonControls
             // Get the mouse position relative to the canvas
             Point rawPoint = e.GetPosition(MainCanvas);
 
-            //TODO ERROR HERE!
-            Point position = e.GetPosition(this);
+            // Get DPI scaling factor for the specific window
+            PresentationSource source = PresentationSource.FromVisual(MainCanvas);
 
-            // Adjust for ScrollViewer offsets
+            //Problem is here: 
+            //https://github.com/microsoft/WPF-Samples/blob/main/PerMonitorDPI/readme.md
+
+            // Adjust the rawPoint for ScrollViewer offsets
             double offsetX = ScrollView.HorizontalOffset;
             double offsetY = ScrollView.VerticalOffset;
-            Point adjustedPoint = new Point(rawPoint.X + offsetX, rawPoint.Y + offsetY);
+            rawPoint.X += offsetX;
+            rawPoint.Y += offsetY;
 
-            // Adjust for scaling (convert to image space)
-            double scaleX = Scale.ScaleX;
-            double scaleY = Scale.ScaleY;
-            Point imagePoint = new Point(adjustedPoint.X / scaleX, adjustedPoint.Y / scaleY);
+            if (source != null)
+            {
+                Matrix transformToDevice = source.CompositionTarget.TransformToDevice;
 
-            Debug.WriteLine($"Raw Click: {rawPoint}, Adjusted: {adjustedPoint}, Image Space: {imagePoint}");
+                // Convert Raw Click to Physical Pixels
+                Point physicalPixels = transformToDevice.Transform(rawPoint);
 
-            _startPoint = imagePoint; // Store the transformed point
+                // Get DPI Scaling Information using VisualTreeHelper
+                double dpiX = 96; // Default DPI value (96 DPI)
+                double dpiY = 96;
+
+                if (source != null)
+                {
+                    var visual = (Visual)source.RootVisual;
+                    var dpi = VisualTreeHelper.GetDpi(visual);
+                    dpiX = dpi.PixelsPerInchX;
+                    dpiY = dpi.PixelsPerInchY;
+                }
+
+                Trace.WriteLine($"DPI Scale: X = {dpiX}, Y = {dpiY}");
+
+                // Adjust the rawPoint based on DPI scaling factor and reverse the transformation
+                // We want to scale the physical pixels back to logical pixels
+                Point correctedPoint = new Point(physicalPixels.X / dpiX * 96, physicalPixels.Y / dpiY * 96);
+
+                Trace.WriteLine($"Raw Click: {rawPoint}, Physical Pixels: {physicalPixels}, Corrected Click: {correctedPoint}");
+
+                _startPoint = correctedPoint; // Store the corrected point
+            }
+            else
+            {
+                _startPoint = rawPoint; // Fallback if no valid source
+            }
 
             // Capture the mouse
             _ = MainCanvas.CaptureMouse();
@@ -472,7 +502,7 @@ namespace CommonControls
                     break;
                 case ImageZoomTools.FreeForm:
                     // Ensure position is properly transformed before using
-                    imagePoint = e.GetPosition(BtmImage);
+                    var imagePoint = e.GetPosition(BtmImage);
                     break;
                 default:
                     return;
