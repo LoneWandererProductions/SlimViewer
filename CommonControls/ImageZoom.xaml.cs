@@ -438,6 +438,8 @@ namespace CommonControls
             // Get the mouse position relative to the canvas
             Point rawPoint = e.GetPosition(MainCanvas);
 
+            //TODO ERROR HERE!
+
             // Adjust for ScrollViewer offsets
             double offsetX = ScrollView.HorizontalOffset;
             double offsetY = ScrollView.VerticalOffset;
