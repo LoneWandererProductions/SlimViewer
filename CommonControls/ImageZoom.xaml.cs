@@ -425,7 +425,6 @@ namespace CommonControls
             }
         }
 
-
         /// <summary>
         ///     Handles the MouseDown event of the Grid control.
         /// </summary>
