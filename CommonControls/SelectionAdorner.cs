@@ -215,7 +215,7 @@ namespace CommonControls
                     Y = (int)selectionRect.Y,
                     Width = (int)selectionRect.Width,
                     Height = (int)selectionRect.Height,
-                    Tool = Tool// Store the current tool as a string
+                    Tool = Tool // Store the current tool as a string
                 };
 
                 switch (Tool)

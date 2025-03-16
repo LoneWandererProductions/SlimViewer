@@ -88,11 +88,6 @@ namespace SlimViews
         private int _brushSize;
 
         /// <summary>
-        /// The erase radius
-        /// </summary>
-        private double _eraseRadius;
-
-        /// <summary>
         ///     The Bitmap
         /// </summary>
         private Bitmap _btm;
@@ -156,6 +151,11 @@ namespace SlimViews
         ///     The duplicate command
         /// </summary>
         private ICommand _duplicateCommand;
+
+        /// <summary>
+        ///     The erase radius
+        /// </summary>
+        private double _eraseRadius;
 
         /// <summary>
         ///     The explorer command
@@ -528,10 +528,10 @@ namespace SlimViews
         public ColorPickerMenu Picker { get; init; }
 
         /// <summary>
-        /// Gets or sets the tool code.
+        ///     Gets or sets the tool code.
         /// </summary>
         /// <value>
-        /// The tool code.
+        ///     The tool code.
         /// </value>
         public EnumTools ToolCode { get; set; }
 
@@ -560,10 +560,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the erase radius.
+        ///     Gets or sets the erase radius.
         /// </summary>
         /// <value>
-        /// The erase radius.
+        ///     The erase radius.
         /// </value>
         public double EraseRadius
         {

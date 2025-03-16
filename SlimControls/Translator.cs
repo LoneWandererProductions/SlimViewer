@@ -70,7 +70,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Maps the code to tool.
+        ///     Maps the code to tool.
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns></returns>
@@ -86,7 +86,7 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Gets the fill tool.
+        ///     Gets the fill tool.
         /// </summary>
         /// <param name="enumString">The enum string.</param>
         /// <returns></returns>
@@ -94,17 +94,14 @@ namespace SlimControls
         public static EnumTools GetFillTool(string enumString)
         {
             // Attempt to parse the string to an EnumTools value
-            if (Enum.TryParse(enumString, out EnumTools result))
-            {
-                return result;
-            }
+            if (Enum.TryParse(enumString, out EnumTools result)) return result;
 
             // If parsing fails, you could either throw an exception, return a default value, or handle it however you'd like.
             return EnumTools.SolidColor;
         }
 
         /// <summary>
-        /// Maps the enum tools to tool.
+        ///     Maps the enum tools to tool.
         /// </summary>
         /// <param name="toolCode">The tool code.</param>
         /// <returns></returns>

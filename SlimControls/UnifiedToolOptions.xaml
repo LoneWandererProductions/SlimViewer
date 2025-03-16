@@ -17,9 +17,9 @@
         <!-- Paint Tool -->
         <local:ToolOptions
             Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=SelectedTool, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Paint}"
-                           HeaderText="Paint Tool Options"
-                           SliderCaption="Brush Size:"
-                           SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=BrushSize}" />
+            HeaderText="Paint Tool Options"
+            SliderCaption="Brush Size:"
+            SliderValue="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=BrushSize}" />
 
         <!-- Erase Tool -->
         <local:ToolOptions Grid.Column="0"

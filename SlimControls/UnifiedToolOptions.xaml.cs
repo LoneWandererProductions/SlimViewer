@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Input;
 using CommonControls;
@@ -11,7 +10,7 @@ namespace SlimControls
     public sealed partial class UnifiedToolOptions
     {
         /// <summary>
-        /// DependencyProperty for ToolChangedCommand.
+        ///     DependencyProperty for ToolChangedCommand.
         /// </summary>
         public static readonly DependencyProperty ToolChangedCommandProperty =
             DependencyProperty.Register(
@@ -21,7 +20,7 @@ namespace SlimControls
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// DependencyProperty for SelectedTool.
+        ///     DependencyProperty for SelectedTool.
         /// </summary>
         public static readonly DependencyProperty SelectedToolProperty =
             DependencyProperty.Register(
@@ -31,7 +30,7 @@ namespace SlimControls
                 new PropertyMetadata(ImageTools.Move, OnSelectedToolChanged)); // Add callback
 
         /// <summary>
-        /// DependencyProperty for BrushSize.
+        ///     DependencyProperty for BrushSize.
         /// </summary>
         public static readonly DependencyProperty BrushSizeProperty =
             DependencyProperty.Register(
@@ -41,7 +40,7 @@ namespace SlimControls
                 new PropertyMetadata(1.0));
 
         /// <summary>
-        /// DependencyProperty for EraseRadius.
+        ///     DependencyProperty for EraseRadius.
         /// </summary>
         public static readonly DependencyProperty EraseRadiusProperty =
             DependencyProperty.Register(
@@ -51,7 +50,7 @@ namespace SlimControls
                 new PropertyMetadata(1.0));
 
         /// <summary>
-        /// DependencyProperty for ColorTolerance.
+        ///     DependencyProperty for ColorTolerance.
         /// </summary>
         public static readonly DependencyProperty ColorToleranceProperty =
             DependencyProperty.Register(
@@ -61,7 +60,7 @@ namespace SlimControls
                 new PropertyMetadata(1.0));
 
         /// <summary>
-        /// Routed event for external subscribers to know when a tool becomes visible.
+        ///     Routed event for external subscribers to know when a tool becomes visible.
         /// </summary>
         public static readonly RoutedEvent SelectedToolChangedEvent =
             EventManager.RegisterRoutedEvent(
@@ -87,7 +86,7 @@ namespace SlimControls
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// DependencyProperty for FillTypeChangedCommand.
+        ///     DependencyProperty for FillTypeChangedCommand.
         /// </summary>
         public static readonly DependencyProperty FillTypeChangedCommandProperty =
             DependencyProperty.Register(
@@ -97,7 +96,7 @@ namespace SlimControls
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// DependencyProperty for SelectedToolCode.
+        ///     DependencyProperty for SelectedToolCode.
         /// </summary>
         public static readonly DependencyProperty SelectedToolCodeProperty =
             DependencyProperty.Register(
@@ -108,7 +107,7 @@ namespace SlimControls
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnifiedToolOptions" /> class.
+        ///     Initializes a new instance of the <see cref="UnifiedToolOptions" /> class.
         /// </summary>
         public UnifiedToolOptions()
         {
@@ -237,7 +236,8 @@ namespace SlimControls
 
             if (e.NewValue is not ImageTools newTool)
             {
-                Trace.WriteLine($"Error: Expected e.NewValue to be ImageTools, but got {e.NewValue?.GetType().Name ?? "null"}");
+                Trace.WriteLine(
+                    $"Error: Expected e.NewValue to be ImageTools, but got {e.NewValue?.GetType().Name ?? "null"}");
                 return;
             }
 

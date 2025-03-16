@@ -47,7 +47,7 @@ namespace SlimViewer
 
             //TODO rework and set:
             _view = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
-                obj.MainAutoClean, ImageControl) {Main = this, Thumb = Thumbnail, Picker = ColorPick};
+                obj.MainAutoClean, ImageControl) { Main = this, Thumb = Thumbnail, Picker = ColorPick };
 
             DataContext = _view;
 
@@ -63,7 +63,7 @@ namespace SlimViewer
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             if (files == null || files.Length == 0 || _view == null) return;
 

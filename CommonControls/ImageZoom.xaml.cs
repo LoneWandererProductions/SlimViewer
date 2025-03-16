@@ -12,7 +12,6 @@
 // ReSharper disable MissingSpace
 
 using System;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -97,7 +96,7 @@ namespace CommonControls
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// The selected free form points command property
+        ///     The selected free form points command property
         /// </summary>
         public static readonly DependencyProperty SelectedFreeFormPointsCommandProperty =
             DependencyProperty.Register(nameof(SelectedFreeFormPointsCommand), typeof(ICommand), typeof(ImageZoom),
@@ -173,10 +172,10 @@ namespace CommonControls
         }
 
         /// <summary>
-        /// Gets or sets the selected free form points command.
+        ///     Gets or sets the selected free form points command.
         /// </summary>
         /// <value>
-        /// The selected free form points command.
+        ///     The selected free form points command.
         /// </value>
         public ICommand SelectedFreeFormPointsCommand
         {
@@ -436,7 +435,7 @@ namespace CommonControls
             _mouseDown = true;
 
             // Get the mouse position relative to the canvas
-            Point rawPoint = e.GetPosition(MainCanvas);
+            var rawPoint = e.GetPosition(MainCanvas);
 
             //TODO problem with our DPI and multiple Monitor Setup
             _startPoint = rawPoint;
@@ -498,13 +497,11 @@ namespace CommonControls
 
                     // Implement logic for FreeFormPoints
                     var points = SelectionAdorner.FreeFormPoints;
-                    if (points is {Count: > 0})
+                    if (points is { Count: > 0 })
                     {
                         // Process the collected freeform points
                         if (SelectedFreeFormPointsCommand?.CanExecute(points) == true)
-                        {
                             SelectedFreeFormPointsCommand.Execute(points);
-                        }
 
                         // Optionally, log or display the points
                         Trace.WriteLine($"Trace tool completed with {points.Count} points.");
