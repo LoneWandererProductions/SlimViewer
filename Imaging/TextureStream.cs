@@ -122,7 +122,8 @@ namespace Imaging
             for (var x = 0; x < width; x++)
             {
                 var value = Turbulence(x, y, turbulenceSize);
-                var l = Math.Clamp(minValue + (int)(value / 4.0), minValue, maxValue);
+                var cloudDensity = Math.Pow(value, 1.8); // Adjust contrast (1.8 = sharper clouds)
+                var l = Math.Clamp(minValue + (int)(cloudDensity * (maxValue - minValue)), minValue, maxValue);
                 var color = Color.FromArgb(alpha, l, l, l);
                 pixelData.Add((x, y, color));
             }
@@ -470,14 +471,16 @@ namespace Imaging
         {
             var value = 0.0;
             var initialSize = size;
+
             while (size >= 1)
             {
                 value += SmoothNoise(x / size, y / size) * size;
                 size /= 2;
             }
 
-            return Math.Abs(value / initialSize);
+            return value / initialSize; // Normalize
         }
+
 
         /// <summary>
         ///     Smooths the noise.
@@ -487,21 +490,22 @@ namespace Imaging
         /// <returns>Generate Noise</returns>
         private static double SmoothNoise(double x, double y)
         {
-            var intX = (int)x;
+            var intX = (int)Math.Floor(x);
             var fracX = x - intX;
-            var intY = (int)y;
+            var intY = (int)Math.Floor(y);
             var fracY = y - intY;
 
-            var v1 = Noise[intY % NoiseHeight, intX % NoiseWidth];
-            var v2 = Noise[intY % NoiseHeight, (intX + 1) % NoiseWidth];
-            var v3 = Noise[(intY + 1) % NoiseHeight, intX % NoiseWidth];
-            var v4 = Noise[(intY + 1) % NoiseHeight, (intX + 1) % NoiseWidth];
+            var v1 = Noise[(intY + NoiseHeight) % NoiseHeight, (intX + NoiseWidth) % NoiseWidth];
+            var v2 = Noise[(intY + NoiseHeight) % NoiseHeight, (intX + 1 + NoiseWidth) % NoiseWidth];
+            var v3 = Noise[(intY + 1 + NoiseHeight) % NoiseHeight, (intX + NoiseWidth) % NoiseWidth];
+            var v4 = Noise[(intY + 1 + NoiseHeight) % NoiseHeight, (intX + 1 + NoiseWidth) % NoiseWidth];
 
             var i1 = ImageHelper.Interpolate(v1, v2, fracX);
             var i2 = ImageHelper.Interpolate(v3, v4, fracX);
 
             return ImageHelper.Interpolate(i1, i2, fracY);
         }
+
 
         /// <summary>
         ///     Adds a minor random variation to an integer value within a given range.

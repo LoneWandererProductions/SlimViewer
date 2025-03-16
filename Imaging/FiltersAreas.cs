@@ -54,7 +54,7 @@ namespace Imaging
             var actualHeight = height ?? image.Height;
 
             // Apply filter
-            Bitmap filterBitmap = FiltersStream.FilterImage(image, filter, imageSettings);
+            var filterBitmap = FiltersStream.FilterImage(image, filter, imageSettings);
 
             // Apply mask
             filterBitmap = shape switch
