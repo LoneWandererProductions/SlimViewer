@@ -40,7 +40,10 @@ namespace FileHandler
                 foreach (var file in fileToAdd)
                 {
                     //does not exist? Well next one
-                    if (!FileHandleSearch.FileExists(file)) continue;
+                    if (!File.Exists(file))
+                    {
+                        continue;
+                    }
 
                     // Add the entry for each file
                     var fileInfo = new FileInfo(file);
@@ -50,7 +53,7 @@ namespace FileHandler
                 }
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                or NotSupportedException)
+                                           or NotSupportedException)
             {
                 FileHandlerRegister.AddError(nameof(SaveZip), zipPath, ex);
                 Trace.WriteLine(ex);
@@ -58,7 +61,10 @@ namespace FileHandler
             }
 
             //shall we delete old files?
-            if (!delele) return true;
+            if (!delele)
+            {
+                return true;
+            }
 
             var deleteTasks = fileToAdd.Select(async file => await FileHandleDelete.DeleteFile(file));
             var results = await Task.WhenAll(deleteTasks);
@@ -76,8 +82,10 @@ namespace FileHandler
         /// <exception cref="FileHandlerException"></exception>
         public static async Task<bool> OpenZip(string zipPath, string extractPath, bool delete = true)
         {
-            if (!FileHandleSearch.FileExists(zipPath))
+            if (!File.Exists(zipPath))
+            {
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorFileNotFound, zipPath));
+            }
 
             try
             {
@@ -85,7 +93,7 @@ namespace FileHandler
                 archive.ExtractToDirectory(extractPath);
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or ArgumentException or IOException
-                or NotSupportedException)
+                                           or NotSupportedException)
             {
                 FileHandlerRegister.AddError(nameof(OpenZip), zipPath, ex);
                 Trace.WriteLine(ex);

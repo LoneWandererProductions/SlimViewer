@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Todo.txt = Todo.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHandler", "FileHandler\FileHandler.csproj", "{3A92744A-6793-4663-9FB8-ECE450237373}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageCompare", "ImageCompare\ImageCompare.csproj", "{E591A6E9-A412-48F1-B0EC-6C2A637F160D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mathematics", "Mathematics\Mathematics.csproj", "{B0FF368E-D101-4B2F-A430-166AC2F4CDBD}"
@@ -34,7 +32,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonDialogs", "CommonDial
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlimTests", "SlimTests\SlimTests.csproj", "{82C2FC6E-DF40-4972-9856-4F7E17CCC855}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimControls", "SlimControls\SlimControls.csproj", "{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlimControls", "SlimControls\SlimControls.csproj", "{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHandler", "FileHandler\FileHandler.csproj", "{36D045E5-D99E-4C98-8BE7-2C9438C6C5EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,10 +50,6 @@ Global
 		{9562D2D4-11A5-4B1F-8D12-A7EC44587640}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9562D2D4-11A5-4B1F-8D12-A7EC44587640}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9562D2D4-11A5-4B1F-8D12-A7EC44587640}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A92744A-6793-4663-9FB8-ECE450237373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A92744A-6793-4663-9FB8-ECE450237373}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A92744A-6793-4663-9FB8-ECE450237373}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A92744A-6793-4663-9FB8-ECE450237373}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E591A6E9-A412-48F1-B0EC-6C2A637F160D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E591A6E9-A412-48F1-B0EC-6C2A637F160D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E591A6E9-A412-48F1-B0EC-6C2A637F160D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -94,6 +90,10 @@ Global
 		{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FEBE4CF-D661-42FA-A553-C2E7B3C8BCC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36D045E5-D99E-4C98-8BE7-2C9438C6C5EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36D045E5-D99E-4C98-8BE7-2C9438C6C5EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36D045E5-D99E-4C98-8BE7-2C9438C6C5EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36D045E5-D99E-4C98-8BE7-2C9438C6C5EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

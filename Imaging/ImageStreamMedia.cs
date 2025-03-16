@@ -151,18 +151,41 @@ namespace Imaging
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
 
-            using var memory = new MemoryStream();
-            image.Save(memory, ImageFormat.Png);
-            memory.Position = 0;
+            Bitmap tempImage = null;
 
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memory;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
+            // Convert the image to Format32bppArgb if necessary
+            if (image.PixelFormat != PixelFormat.Format32bppArgb)
+            {
+                tempImage = new Bitmap(image.Width, image.Height, PixelFormat.Format32bppArgb);
+                using (var g = Graphics.FromImage(tempImage))
+                {
+                    g.DrawImage(image, 0, 0);
+                }
 
-            return bitmapImage;
+                image = tempImage;
+            }
+
+            try
+            {
+                // Create a memory stream and save the image in a compatible format (e.g., PNG)
+                using var memoryStream = new MemoryStream();
+                image.Save(memoryStream, ImageFormat.Png);
+                memoryStream.Position = 0;
+
+                // Create a BitmapImage from the memory stream
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // Ensures full load and availability
+                bitmapImage.EndInit();
+                bitmapImage.Freeze(); // Makes it thread-safe and ready for WPF usage
+
+                return bitmapImage;
+            }
+            finally
+            {
+                tempImage?.Dispose(); // Dispose of the temporary image if created
+            }
         }
     }
 }

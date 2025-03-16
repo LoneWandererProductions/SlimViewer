@@ -26,7 +26,10 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static void CreateFolder(string path)
         {
-            if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
             _ = CreateDirectory(path);
         }
@@ -41,7 +44,9 @@ namespace FileHandler
         public static bool CreateFolder(string path, string name)
         {
             if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(name))
+            {
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            }
 
             var root = Path.Combine(path, name);
 

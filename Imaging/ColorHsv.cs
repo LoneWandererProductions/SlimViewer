@@ -17,6 +17,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using ExtendedSystemObjects;
 
@@ -59,11 +60,20 @@ namespace Imaging
         /// <param name="a">The Hue value.</param>
         public ColorHsv(int r, int g, int b, int a)
         {
-            if (r == -1) return;
+            if (r == -1)
+            {
+                return;
+            }
 
-            if (g == -1) return;
+            if (g == -1)
+            {
+                return;
+            }
 
-            if (b == -1) return;
+            if (b == -1)
+            {
+                return;
+            }
 
             ColorToHsv(r, g, b, a);
         }
@@ -119,6 +129,14 @@ namespace Imaging
         /// </summary>
         public string Hex { get; private set; }
 
+        /// <summary>
+        ///     Gets the color of the open tk.
+        /// </summary>
+        /// <value>
+        ///     The color of the open tk.
+        /// </value>
+        public float[] OpenTKColor { get; private set; }
+
         /// <inheritdoc />
         /// <summary>
         ///     HSV, A Values are enough to check equality
@@ -127,13 +145,25 @@ namespace Imaging
         /// <returns>If equal or not</returns>
         public bool Equals(ColorHsv other)
         {
-            if (other == null) return false;
+            if (other == null)
+            {
+                return false;
+            }
 
-            if (R != other.R) return false;
+            if (R != other.R)
+            {
+                return false;
+            }
 
-            if (G != other.G) return false;
+            if (G != other.G)
+            {
+                return false;
+            }
 
-            if (B != other.B) return false;
+            if (B != other.B)
+            {
+                return false;
+            }
 
             return A == other.A;
         }
@@ -155,10 +185,13 @@ namespace Imaging
 
             var degree = h * 180 / Math.PI;
 
-            if (degree is > 360 or < 0 || s is > 1 or < 0 || v is > 1 or < 0) return;
+            if (degree is > 360 or < 0 || s is > 1 or < 0 || v is > 1 or < 0)
+            {
+                return;
+            }
 
             var c = v * s;
-            var x = c * (1 - Math.Abs(degree / 60 % 2 - 1));
+            var x = c * (1 - Math.Abs((degree / 60 % 2) - 1));
             var m = v - c;
 
             double r = 0, g = 0, b = 0;
@@ -204,6 +237,7 @@ namespace Imaging
             B = (int)((b + m) * 255);
 
             GetHex();
+            GetFloatArray();
         }
 
         /// <summary>
@@ -212,7 +246,10 @@ namespace Imaging
         /// <param name="hex">The hexadecimal.</param>
         public void RbgHex(string hex)
         {
-            if (string.IsNullOrEmpty(hex)) return;
+            if (string.IsNullOrEmpty(hex))
+            {
+                return;
+            }
 
             Color color;
 
@@ -248,10 +285,11 @@ namespace Imaging
             var min = Math.Min(r, Math.Min(g, b));
 
             H = GetHue(r, g, b);
-            S = max == 0 ? 0 : 1d - 1d * min / max;
+            S = max == 0 ? 0 : 1d - (1d * min / max);
             V = max / 255d;
 
             GetHex();
+            GetFloatArray();
         }
 
         /// <summary>
@@ -272,13 +310,13 @@ namespace Imaging
 
             // Calculate the hue, saturation, and value
             H = GetHue(R, G, B);
-            S = max == 0 ? 0 : 1d - 1d * min / max;
+            S = max == 0 ? 0 : 1d - (1d * min / max);
             V = max / 255d;
 
             // Update the hex representation of the color
             GetHex();
+            GetFloatArray();
         }
-
 
         /// <summary>
         ///     Hexadecimals to color.
@@ -286,7 +324,10 @@ namespace Imaging
         /// <param name="hex">The hexadecimal.</param>
         public void HexToColor(string hex)
         {
-            if (string.IsNullOrEmpty(hex)) return;
+            if (string.IsNullOrEmpty(hex))
+            {
+                return;
+            }
 
             var color = (Color)ColorConverter.ConvertFromString(hex);
 
@@ -346,8 +387,15 @@ namespace Imaging
         /// </returns>
         public static bool operator ==(ColorHsv left, ColorHsv right)
         {
-            if (ReferenceEquals(left, right)) return true; // Same reference
-            if (left is null || right is null) return false; // One is null
+            if (ReferenceEquals(left, right))
+            {
+                return true; // Same reference
+            }
+
+            if (left is null || right is null)
+            {
+                return false; // One is null
+            }
 
             return left.Equals(right);
         }
@@ -397,20 +445,32 @@ namespace Imaging
             double min = Math.Min(Math.Min(r, g), b);
             double max = Math.Max(Math.Max(r, g), b);
 
-            if (min.IsEqualTo(max, 10)) return 0;
+            if (min.IsEqualTo(max, 10))
+            {
+                return 0;
+            }
 
             double hue;
 
             if (max.IsEqualTo(r, 10))
+            {
                 hue = (g - b) / (max - min);
+            }
             else if (max.IsEqualTo(g, 10))
-                hue = 2f + (b - r) / (max - min);
+            {
+                hue = 2f + ((b - r) / (max - min));
+            }
             else
-                hue = 4f + (r - g) / (max - min);
+            {
+                hue = 4f + ((r - g) / (max - min));
+            }
 
             hue *= 60;
 
-            if (hue < 0) hue += 360;
+            if (hue < 0)
+            {
+                hue += 360;
+            }
 
             return hue * Math.PI / 180;
         }
@@ -418,9 +478,36 @@ namespace Imaging
         /// <summary>
         ///     Gets the hexadecimal.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GetHex()
         {
             Hex = string.Concat("#", $"{R:X2}{G:X2}{B:X2}");
+        }
+
+        /// <summary>
+        ///     Rgbas to float array.
+        /// </summary>
+        private void GetFloatArray()
+        {
+            // Normalize the RGBA values to the [0.0f, 1.0f] range
+            var normalizedR = Normalize(R);
+            var normalizedG = Normalize(G);
+            var normalizedB = Normalize(B);
+            var normalizedA = Normalize(A);
+
+            // Return as float[] in the range [0.0f, 1.0f]
+            OpenTKColor = new[] { normalizedR, normalizedG, normalizedB, normalizedA };
+        }
+
+        /// <summary>
+        ///     Normalizes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Normalized value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float Normalize(int value)
+        {
+            return value / 255f;
         }
 
         /// <summary>

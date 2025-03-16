@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/DictionaryExtensions.cs
- * PURPOSE:     Helper class that extends the already versatile Dictionary
+ * PURPOSE:     Helper class that extends the already versatile Dictionary, most operations are not thread safe, so beware.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace ExtendedSystemObjects
 {
@@ -24,6 +25,7 @@ namespace ExtendedSystemObjects
         ///     Adds the specified key to the Value, that is a list.
         ///     I know it is not recommended to use List and Dictionary together but in case you do,
         ///     this extension should avoid ugly null reference Exceptions and make the code more readable.
+        ///     List handling.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -46,6 +48,7 @@ namespace ExtendedSystemObjects
 
         /// <summary>
         ///     Adds the specified key and adds a new initialized SortedList.
+        ///     List handling.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -68,6 +71,7 @@ namespace ExtendedSystemObjects
 
         /// <summary>
         ///     Add or Replace Key Value Pair
+        ///     List handling.
         /// </summary>
         /// <typeparam name="TKey">Internal Key</typeparam>
         /// <typeparam name="TValue">Internal Value</typeparam>
@@ -85,7 +89,10 @@ namespace ExtendedSystemObjects
 
             var cache = dic[key];
 
-            if (cache.Contains(value)) return false;
+            if (cache.Contains(value))
+            {
+                return false;
+            }
 
             cache.Add(value);
             dic[key] = cache;
@@ -101,6 +108,7 @@ namespace ExtendedSystemObjects
         /// <param name="dic">Internal Target Dictionary</param>
         /// <param name="key">Unique Key</param>
         /// <param name="value">Value to add</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AddDistinct<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, TValue value)
         {
             dic[key] = value;
@@ -119,12 +127,16 @@ namespace ExtendedSystemObjects
         public static void AddDistinctKeyValue<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, TValue value)
         {
             if (dic.ContainsKey(key))
+            {
                 throw new ArgumentException(string.Concat(ExtendedSystemObjectsResources.ErrorKeyExists,
                     nameof(value)));
+            }
 
             if (dic.ContainsValue(value))
+            {
                 throw new ArgumentException(string.Concat(ExtendedSystemObjectsResources.ErrorValueExists,
                     nameof(value)));
+            }
 
             dic.Add(key, value);
         }
@@ -142,7 +154,10 @@ namespace ExtendedSystemObjects
 
             var sortedDictionary = new Dictionary<TKey, TValue>();
 
-            foreach (var pair in sortedPairs) sortedDictionary.Add(pair.Key, pair.Value);
+            foreach (var pair in sortedPairs)
+            {
+                sortedDictionary.Add(pair.Key, pair.Value);
+            }
 
             return sortedDictionary;
         }
@@ -154,9 +169,13 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">Internal Value</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <returns>If Dictionary is Null or has zero Elements</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmpty<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
-            if (dic == null) return true;
+            if (dic == null)
+            {
+                return true;
+            }
 
             return dic.Count == 0;
         }
@@ -186,8 +205,12 @@ namespace ExtendedSystemObjects
             var uniqueValues = new HashSet<TValue>();
 
             foreach (var value in dic.Values)
+            {
                 if (!uniqueValues.Add(value))
+                {
                     return false; // Non-unique value found
+                }
+            }
 
             return true; // All values are distinct
         }
@@ -205,7 +228,10 @@ namespace ExtendedSystemObjects
         /// <exception cref="ValueNotFoundException"><paramref name="value" /> not found.</exception>
         public static TKey GetFirstKeyByValue<TKey, TValue>(this IDictionary<TKey, TValue> dic, TValue value)
         {
-            foreach (var pair in dic.Where(pair => value.Equals(pair.Value))) return pair.Key;
+            foreach (var pair in dic.Where(pair => value.Equals(pair.Value)))
+            {
+                return pair.Key;
+            }
 
             throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
         }
@@ -224,7 +250,9 @@ namespace ExtendedSystemObjects
             var collection = (from pair in dic where value.Equals(pair.Value) select pair.Key).ToList();
 
             if (collection.Count == 0)
+            {
                 throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorValueNotFound);
+            }
 
             return collection;
         }
@@ -246,7 +274,9 @@ namespace ExtendedSystemObjects
             var collection = value.Where(dic.ContainsKey).ToDictionary(key => key, key => dic[key]);
 
             if (collection.Count == 0)
+            {
                 throw new ValueNotFoundException(ExtendedSystemObjectsResources.ErrorNoValueFound);
+            }
 
             return collection;
         }
