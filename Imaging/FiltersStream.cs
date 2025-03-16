@@ -153,8 +153,7 @@ namespace Imaging
                     settings = _imageSettings.GetSettings(FiltersType.PostProcessingAntialiasing);
                     return ApplyPostProcessingAntialiasing(image, settings.Sigma);
                 case FiltersType.PencilSketchEffect:
-                    settings = _imageSettings.GetSettings(FiltersType.PencilSketchEffect);
-                    return ApplyPostProcessingAntialiasing(image, settings.Sigma);
+                    return PencilSketchEffect(image);
                 default:
                     return null;
             }
