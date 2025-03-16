@@ -1,45 +1,67 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
 name: .NET
 
 on:
   push:
     branches: [ "master" ]
+    tags:
+      - 'v*.*.*'  # Trigger on version tags for releases
   pull_request:
     branches: [ "master" ]
 
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 30  # Increased timeout for the entire job
 
     steps:
-    - uses: actions/checkout@v4
-    
+    - uses: actions/checkout@v4  # Updated to latest version
+
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4  # Updated to latest version
       with:
-        dotnet-version: 5.0.x  # Updated to a more recent LTS version
+        dotnet-version: 5.0.x
 
     - name: Restore dependencies
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release
 
-    # Run tests in parts (if categorized)
-    - name: Run Tests (Part 1)
-      run: dotnet test --no-build --verbosity normal --filter "Category=Part1" --no-restore
-      timeout-minutes: 5
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
 
-    - name: Run Tests (Part 2)
-      run: dotnet test --no-build --verbosity normal --filter "Category=Part2" --no-restore
-      timeout-minutes: 5
+    - name: Publish
+      run: dotnet publish --configuration Release --output ./release
 
-    # Detailed logging for debugging (consider a more structured approach)
-    - name: Test with Detailed Logging
-      run: dotnet test --no-build --verbosity detailed --no-restore --logger "console;verbosity=detailed"
+    - name: List Release Files
+      run: dir ./release  # Use 'ls -la ./release' for Unix-based systems
 
-    # Check for stuck processes if needed (consider additional logic to handle stuck processes)
-    - name: Check for Stuck Processes
-      run: |
-        tasklist /FI "IMAGENAME eq vstest.console.exe"
-        # Optionally, add logic to kill stuck processes if necessary
+    - name: Upload Release Binaries
+      uses: actions/upload-artifact@v4  # Updated to latest version
+      with:
+        name: my-release-binaries
+        path: ./release
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+    - name: Download Release Binaries
+      uses: actions/download-artifact@v4  # Updated to latest version
+      with:
+        name: my-release-binaries
+        path: ./release
+
+    - name: List Downloaded Files
+      run: ls -la ./release  # Ensure correct directory
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2  # Updated to latest version
+      with:
+        files: ./release/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

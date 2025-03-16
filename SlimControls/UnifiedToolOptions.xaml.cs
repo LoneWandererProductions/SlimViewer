@@ -190,7 +190,8 @@ namespace SlimControls
 
             Trace.WriteLine($"Fill type changed from '{fillArgs.OldValue}' to '{fillArgs.NewValue}'");
 
-            SelectedToolCode = EnumTools.SolidColor;
+
+            SelectedToolCode = Translator.GetFillTool(fillArgs.NewValue);
 
             FillTypeChangedCommand?.Execute(fillArgs.NewValue);
         }

@@ -56,23 +56,6 @@ namespace SlimControls
         }
 
         /// <summary>
-        ///     Converts to image zoom tools.
-        /// </summary>
-        /// <param name="tool">The tool.</param>
-        /// <returns>Mostly move</returns>
-        public static ImageZoomTools ConvertToImageZoomTools(ImageTools tool)
-        {
-            return tool switch
-            {
-                ImageTools.Move => ImageZoomTools.Move,
-                ImageTools.Paint => ImageZoomTools.Trace,
-                ImageTools.Erase => ImageZoomTools.Trace,
-                ImageTools.ColorSelect => ImageZoomTools.Trace,
-                _ => ImageZoomTools.Move
-            };
-        }
-
-        /// <summary>
         ///     Maps an ImageTools enum value to an integer code.
         /// </summary>
         internal static EnumTools MapToolToEnumTools(ImageTools tool)
@@ -87,18 +70,10 @@ namespace SlimControls
         }
 
         /// <summary>
-        ///     Maps an integer code to an ImageTools enum value.
+        /// Maps the code to tool.
         /// </summary>
-        internal static ImageTools MapCodeToTool(EnumTools code)
-        {
-            return code switch
-            {
-                EnumTools.Paint => ImageTools.Paint,
-                EnumTools.Erase => ImageTools.Erase,
-                _ => ImageTools.Paint // Default value for unknown codes
-            };
-        }
-
+        /// <param name="code">The code.</param>
+        /// <returns></returns>
         public static MaskShape MapCodeToTool(ImageZoomTools code)
         {
             return code switch
@@ -110,6 +85,29 @@ namespace SlimControls
             };
         }
 
+        /// <summary>
+        /// Gets the fill tool.
+        /// </summary>
+        /// <param name="enumString">The enum string.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">Invalid enum string: {enumString} - enumString</exception>
+        public static EnumTools GetFillTool(string enumString)
+        {
+            // Attempt to parse the string to an EnumTools value
+            if (Enum.TryParse(enumString, out EnumTools result))
+            {
+                return result;
+            }
+
+            // If parsing fails, you could either throw an exception, return a default value, or handle it however you'd like.
+            throw new ArgumentException($"Invalid enum string: {enumString}", nameof(enumString));
+        }
+
+        /// <summary>
+        /// Maps the enum tools to tool.
+        /// </summary>
+        /// <param name="toolCode">The tool code.</param>
+        /// <returns></returns>
         public static ImageTools MapEnumToolsToTool(EnumTools toolCode)
         {
             return toolCode switch
