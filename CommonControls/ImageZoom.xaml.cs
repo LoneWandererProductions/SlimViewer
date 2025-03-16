@@ -438,51 +438,8 @@ namespace CommonControls
             // Get the mouse position relative to the canvas
             Point rawPoint = e.GetPosition(MainCanvas);
 
-            // Get DPI scaling factor for the specific window
-            PresentationSource source = PresentationSource.FromVisual(MainCanvas);
-
-            //Problem is here: 
-            //https://github.com/microsoft/WPF-Samples/blob/main/PerMonitorDPI/readme.md
-
-            // Adjust the rawPoint for ScrollViewer offsets
-            double offsetX = ScrollView.HorizontalOffset;
-            double offsetY = ScrollView.VerticalOffset;
-            rawPoint.X += offsetX;
-            rawPoint.Y += offsetY;
-
-            if (source != null)
-            {
-                Matrix transformToDevice = source.CompositionTarget.TransformToDevice;
-
-                // Convert Raw Click to Physical Pixels
-                Point physicalPixels = transformToDevice.Transform(rawPoint);
-
-                // Get DPI Scaling Information using VisualTreeHelper
-                double dpiX = 96; // Default DPI value (96 DPI)
-                double dpiY = 96;
-
-                if (source != null)
-                {
-                    var visual = (Visual)source.RootVisual;
-                    var dpi = VisualTreeHelper.GetDpi(visual);
-                    dpiX = dpi.PixelsPerInchX;
-                    dpiY = dpi.PixelsPerInchY;
-                }
-
-                Trace.WriteLine($"DPI Scale: X = {dpiX}, Y = {dpiY}");
-
-                // Adjust the rawPoint based on DPI scaling factor and reverse the transformation
-                // We want to scale the physical pixels back to logical pixels
-                Point correctedPoint = new Point(physicalPixels.X / dpiX * 96, physicalPixels.Y / dpiY * 96);
-
-                Trace.WriteLine($"Raw Click: {rawPoint}, Physical Pixels: {physicalPixels}, Corrected Click: {correctedPoint}");
-
-                _startPoint = correctedPoint; // Store the corrected point
-            }
-            else
-            {
-                _startPoint = rawPoint; // Fallback if no valid source
-            }
+            //TODO problem with our DPI and multiple Monitor Setup
+            _startPoint = rawPoint;
 
             // Capture the mouse
             _ = MainCanvas.CaptureMouse();
@@ -498,10 +455,7 @@ namespace CommonControls
                     break;
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
-                    break;
                 case ImageZoomTools.FreeForm:
-                    // Ensure position is properly transformed before using
-                    var imagePoint = e.GetPosition(BtmImage);
                     break;
                 default:
                     return;

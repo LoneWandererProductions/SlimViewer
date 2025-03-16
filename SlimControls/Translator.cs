@@ -100,7 +100,7 @@ namespace SlimControls
             }
 
             // If parsing fails, you could either throw an exception, return a default value, or handle it however you'd like.
-            throw new ArgumentException($"Invalid enum string: {enumString}", nameof(enumString));
+            return EnumTools.SolidColor;
         }
 
         /// <summary>
