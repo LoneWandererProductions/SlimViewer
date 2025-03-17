@@ -96,6 +96,15 @@ namespace Imaging
         public double V { get; set; }
 
         /// <summary>
+        /// Gets or sets the l.
+        /// New properties for HSL
+        /// </summary>
+        /// <value>
+        /// The l.
+        /// </value>
+        public double L { get; set; }
+
+        /// <summary>
         ///     The Hue Value, in our Case x.
         /// </summary>
         public int R { get; internal set; }
