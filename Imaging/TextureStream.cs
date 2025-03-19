@@ -33,7 +33,7 @@ namespace Imaging
         /// <summary>
         ///     The noise
         /// </summary>
-        private static double[,] Noise = new double[NoiseHeight, NoiseWidth];
+        private static readonly double[,] Noise = new double[NoiseHeight, NoiseWidth];
 
         /// <summary>
         ///     Generates the noise bitmap.
@@ -61,32 +61,27 @@ namespace Imaging
             ImageHelper.ValidateParameters(minValue, maxValue, alpha);
 
             // Generate base noise
-            GenerateBaseNoise();
+            var noiseGen = new NoiseSmoothGenerator();
 
             // Create DirectBitmap
-            var noiseBitmap = new DirectBitmap(width, height);
+            using var noiseBitmap = new DirectBitmap(width, height);
 
             // Create an enumerable to collect pixel data
-            var pixelData = new List<(int x, int y, Color color)>();
+            var pixelData = new (int x, int y, Color color)[width * height];
+            var index = 0;
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                double value;
+                for (var x = 0; x < width; x++)
+                {
+                    double value = useTurbulence
+                        ? noiseGen.Turbulence(x, y, turbulenceSize)
+                        : useSmoothNoise
+                            ? noiseGen.SmoothNoise(x, y)
+                            : Noise[y % NoiseHeight, x % NoiseWidth];
 
-                if (useTurbulence)
-                    value = Turbulence(x, y, turbulenceSize);
-                else if (useSmoothNoise)
-                    value = SmoothNoise(x, y);
-                else
-                    value = Noise[y % NoiseHeight, x % NoiseWidth];
-
-                var colorValue = minValue + (int)((maxValue - minValue) * value);
-                colorValue = Math.Max(minValue, Math.Min(maxValue, colorValue));
-                var color = Color.FromArgb(alpha, colorValue, colorValue, colorValue);
-
-                pixelData.Add((x, y, color));
-            }
+                    var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * value), minValue, maxValue);
+                    pixelData[index++] = (x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue));
+                }
 
             // Set pixels using SIMD
             noiseBitmap.SetPixelsSimd(pixelData);
@@ -113,7 +108,7 @@ namespace Imaging
             double turbulenceSize = 64)
         {
             ImageHelper.ValidateParameters(minValue, maxValue, alpha);
-            GenerateBaseNoise();
+            var noiseGen = new NoiseSmoothGenerator();
 
             var cloudsBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
@@ -121,7 +116,7 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                var turbulenceValue = Turbulence(x, y, turbulenceSize);
+                var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
 
                 // Compute luminance with turbulence effect but keeping a good contrast
                 var L = (byte)Math.Clamp(180 + (turbulenceValue * 30), 180, 220);  // Lightness varies but doesn't go too bright
@@ -171,7 +166,7 @@ namespace Imaging
             Color baseColor = default)
         {
             baseColor = baseColor == default ? Color.FromArgb(30, 10, 0) : baseColor;
-            GenerateBaseNoise();
+            var noiseGen = new NoiseSmoothGenerator();
 
             var marbleBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
@@ -180,7 +175,7 @@ namespace Imaging
             for (var x = 0; x < width; x++)
             {
                 var xyValue = (x * xPeriod / NoiseWidth + y * yPeriod / NoiseHeight) +
-                              turbulencePower * Turbulence(x, y, turbulenceSize) / 128.0 +
+                              turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0 +
                               (Math.Sin((x + y) * 0.1) * 0.5); // Slight random distortion
 
                     var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
@@ -224,7 +219,7 @@ namespace Imaging
             Color baseColor = default)
         {
             baseColor = baseColor == default ? Color.FromArgb(80, 30, 30) : baseColor;
-            GenerateBaseNoise();
+            var noiseGen = new NoiseSmoothGenerator();
 
             var woodBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
@@ -235,7 +230,7 @@ namespace Imaging
                 var xValue = (x - width / 2.0) / width;
                 var yValue = (y - height / 2.0) / height;
                 var distValue = Math.Sqrt(xValue * xValue + yValue * yValue) +
-                                turbulencePower * Turbulence(x, y, turbulenceSize) / 256.0;
+                                turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0;
                 var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
 
                 var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
@@ -274,7 +269,7 @@ namespace Imaging
             double turbulencePower = 0.1,
             double turbulenceSize = 32.0)
         {
-            GenerateBaseNoise();
+            var noiseGen = new NoiseSmoothGenerator();
 
             var waveBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
@@ -282,10 +277,10 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                var turbulenceValue = Turbulence(x, y, turbulenceSize);
+                var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
                 var xValue = (x - width / 2.0) / width + turbulencePower * turbulenceValue / 256.0;
                 var yValue = (y - height / 2.0) / height +
-                             turbulencePower * Turbulence(height - y, width - x, turbulenceSize) / 256.0;
+                             turbulencePower * noiseGen.Turbulence(height - y, width - x, turbulenceSize) / 256.0;
 
                 var sineValue = 22.0 *
                                 Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
@@ -467,38 +462,6 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Generates the base noise.
-        /// </summary>
-        private static void GenerateBaseNoise()
-        {
-            var random = new Random();
-            for (var y = 0; y < NoiseHeight; y++)
-            for (var x = 0; x < NoiseWidth; x++)
-                Noise[y, x] = random.NextDouble(); // Random value between 0.0 and 1.0
-        }
-
-        /// <summary>
-        ///     Turbulence the specified x.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// <param name="size">The size.</param>
-        /// <returns>Generate Turbulence</returns>
-        private static double Turbulence(int x, int y, double size)
-        {
-            var value = 0.0;
-            var initialSize = size;
-
-            while (size >= 1)
-            {
-                value += SmoothNoise(x / size, y / size) * size;
-                size /= 2;
-            }
-
-            return (value / initialSize) * 255.0;
-        }
-
-        /// <summary>
         /// HSL to RGB.
         /// </summary>
         /// <param name="h">The h.</param>
@@ -551,40 +514,6 @@ namespace Imaging
             if (t < 1.0 / 2.0) return q;
             if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6;
             return p;
-        }
-
-
-        /// <summary>
-        ///     Smooths the noise.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// <returns>Generate Noise</returns>
-        private static double SmoothNoise(double x, double y)
-        {
-            var intX = (int)Math.Floor(x);
-            var fracX = x - intX;
-            var intY = (int)Math.Floor(y);
-            var fracY = y - intY;
-
-            var v1 = Noise[(intY + NoiseHeight) % NoiseHeight, (intX + NoiseWidth) % NoiseWidth];
-            var v2 = Noise[(intY + NoiseHeight) % NoiseHeight, (intX + 1 + NoiseWidth) % NoiseWidth];
-            var v3 = Noise[(intY + 1 + NoiseHeight) % NoiseHeight, (intX + NoiseWidth) % NoiseWidth];
-            var v4 = Noise[(intY + 1 + NoiseHeight) % NoiseHeight, (intX + 1 + NoiseWidth) % NoiseWidth];
-
-            var i1 = ImageHelper.Interpolate(v1, v2, fracX);
-            var i2 = ImageHelper.Interpolate(v3, v4, fracX);
-
-            return ImageHelper.Interpolate(i1, i2, fracY);
-        }
-
-        /// <summary>
-        ///     Adds a minor random variation to an integer value within a given range.
-        /// </summary>
-        private static int RandomVariation(int min, int max)
-        {
-            var rand = new Random();
-            return rand.Next(min, max);
         }
     }
 }
