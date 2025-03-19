@@ -70,7 +70,7 @@ namespace Imaging
         /// <param name="x">The x-coordinate.</param>
         /// <param name="y">The y-coordinate.</param>
         /// <returns>A noise value between 0 and 1.</returns>
-        private double GetNoise(int x, int y)
+        public double GetNoise(int x, int y)
         {
             x = (x + _width) % _width;   // Wrap around horizontally
             y = (y + _height) % _height; // Wrap around vertically
@@ -105,7 +105,7 @@ namespace Imaging
         /// <param name="x">The x-coordinate (floating-point for interpolation).</param>
         /// <param name="y">The y-coordinate (floating-point for interpolation).</param>
         /// <returns>A smoothed noise value between 0 and 1.</returns>
-        private double SmoothNoise(double x, double y)
+        public double SmoothNoise(double x, double y)
         {
             var xInt = (int)x;
             var yInt = (int)y;

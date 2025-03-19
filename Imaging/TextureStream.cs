@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 
 // ReSharper disable UnusedMember.Local
@@ -20,21 +21,6 @@ namespace Imaging
     /// </summary>
     internal static class TextureStream
     {
-        /// <summary>
-        ///     The noise width
-        /// </summary>
-        private const int NoiseWidth = 320; // Width for noise generation
-
-        /// <summary>
-        ///     The noise height
-        /// </summary>
-        private const int NoiseHeight = 240; // Height for noise generation
-
-        /// <summary>
-        ///     The noise
-        /// </summary>
-        private static readonly double[,] Noise = new double[NoiseHeight, NoiseWidth];
-
         /// <summary>
         ///     Generates the noise bitmap.
         /// </summary>
@@ -60,34 +46,42 @@ namespace Imaging
             // Validate parameters
             ImageHelper.ValidateParameters(minValue, maxValue, alpha);
 
-            // Generate base noise
-            var noiseGen = new NoiseSmoothGenerator();
+            // Generate noise
+            var noiseGen = new NoiseGenerator(width, height);
 
             // Create DirectBitmap
-            using var noiseBitmap = new DirectBitmap(width, height);
+            var noiseBitmap = new DirectBitmap(width, height);
+            var pixelData = new List<(int x, int y, Color color)>();
 
-            // Create an enumerable to collect pixel data
-            var pixelData = new (int x, int y, Color color)[width * height];
-            var index = 0;
-
+            // Set pixels directly
             for (var y = 0; y < height; y++)
+            {
                 for (var x = 0; x < width; x++)
                 {
-                    double value = useTurbulence
+                    var value = useTurbulence
                         ? noiseGen.Turbulence(x, y, turbulenceSize)
                         : useSmoothNoise
                             ? noiseGen.SmoothNoise(x, y)
-                            : Noise[y % NoiseHeight, x % NoiseWidth];
+                            : noiseGen.GetNoise(x, y); // Use GetNoise for basic noise
 
-                    var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * value), minValue, maxValue);
-                    pixelData[index++] = (x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue));
+                    // Normalize value to 0.0 - 1.0 range
+                    var normalizedValue = Math.Clamp(value / 255.0, 0.0, 1.0);
+
+                    // Then, apply the color scaling
+                    var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * normalizedValue), minValue, maxValue);
+
+
+                    pixelData.Add((x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue)));
                 }
+            }
 
-            // Set pixels using SIMD
-            noiseBitmap.SetPixelsSimd(pixelData);
+            // Use SIMD-based bulk pixel setting
+            noiseBitmap.SetPixelsSimd(pixelData.ToArray());
+            pixelData.Clear();
 
             return noiseBitmap.Bitmap;
         }
+
 
         /// <summary>
         ///     Generates the clouds bitmap.
@@ -108,7 +102,7 @@ namespace Imaging
             double turbulenceSize = 64)
         {
             ImageHelper.ValidateParameters(minValue, maxValue, alpha);
-            var noiseGen = new NoiseSmoothGenerator();
+            var noiseGen = new NoiseGenerator(width, height);
 
             var cloudsBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
@@ -116,20 +110,20 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
+                // Generate turbulence value
                 var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
 
-                // Compute luminance with turbulence effect but keeping a good contrast
-                var L = (byte)Math.Clamp(180 + (turbulenceValue * 30), 180, 220);  // Lightness varies but doesn't go too bright
+                // Adjust turbulence value like in the C code (divide by 4)
+                var L = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230);  // Lightness adjustment
 
-                // Reduce saturation for a more muted light blue
-                var S = 80;
-
-                // Keep hue at 200° for light blue
-                var H = 200;
+                // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
+                var H = 190;  // Adjusted Hue value closer to light blue
+                var S = 200;  // Reduced Saturation for a more muted, light blue
 
                 // Convert HSL to RGB
                 var color = HsLtoRgb(H, S, L);
 
+                // Add the pixel data for SIMD processing
                 pixelData.Add((x, y, color));
             }
 
@@ -166,7 +160,7 @@ namespace Imaging
             Color baseColor = default)
         {
             baseColor = baseColor == default ? Color.FromArgb(30, 10, 0) : baseColor;
-            var noiseGen = new NoiseSmoothGenerator();
+            var noiseGen = new NoiseGenerator(width, height); // Dynamically sized noise
 
             var marbleBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
@@ -174,23 +168,22 @@ namespace Imaging
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                var xyValue = (x * xPeriod / NoiseWidth + y * yPeriod / NoiseHeight) +
+                // Replace fixed NoiseWidth/NoiseHeight with width/height
+                var xyValue = (x * xPeriod / width + y * yPeriod / height) +
                               turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0 +
                               (Math.Sin((x + y) * 0.1) * 0.5); // Slight random distortion
 
-                    var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
+                var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
 
                 var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
                 var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
                 var b = Math.Clamp(baseColor.B + (int)sineValue, 0, 255);
 
-                var color = Color.FromArgb(alpha, r, g, b);
-                pixelData.Add((x, y, color));
+                pixelData.Add((x, y, Color.FromArgb(alpha, r, g, b)));
             }
 
-            // Convert list to array for SIMD processing
-            var pixelArray = pixelData.ToArray();
-            marbleBitmap.SetPixelsSimd(pixelArray);
+            // Use SIMD-based bulk pixel setting
+            marbleBitmap.SetPixelsSimd(pixelData.ToArray());
             pixelData.Clear();
 
             return marbleBitmap.Bitmap;
@@ -219,7 +212,7 @@ namespace Imaging
             Color baseColor = default)
         {
             baseColor = baseColor == default ? Color.FromArgb(80, 30, 30) : baseColor;
-            var noiseGen = new NoiseSmoothGenerator();
+            var noiseGen = new NoiseGenerator(width, height);
 
             var woodBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
@@ -269,7 +262,7 @@ namespace Imaging
             double turbulencePower = 0.1,
             double turbulenceSize = 32.0)
         {
-            var noiseGen = new NoiseSmoothGenerator();
+            var noiseGen = new NoiseGenerator(width, height);
 
             var waveBitmap = new DirectBitmap(width, height);
             var pixelData = new List<(int x, int y, Color color)>();
