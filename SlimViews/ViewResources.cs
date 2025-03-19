@@ -22,7 +22,7 @@ namespace SlimViews
         ///     Files(*.Bmp)|*.Bmp|Image Files(*.gif)|*.gif|Image Files(*.tif)|*.tif|All files (*.*)|*.*".
         /// </summary>
         internal const string FileOpen =
-            "Image Files(*.png)|*.png|Image Files(*.jpg)|*.jpg|Image Files(*.Bmp)|*.Bmp|Image Files(*.gif)|*.gif|Image Files(*.tif)|*.tif|All files (*.*)|*.*";
+            "Image Files(*.jpg)|*.jpg|Image Files(*.png)|*.png|Image Files(*.Bmp)|*.Bmp|Image Files(*.gif)|*.gif|Image Files(*.tif)|*.tif|All files (*.*)|*.*";
 
         /// <summary>
         ///     The file open CBR (const). Value: "Comic Book File (*.cbz)|*.cbz".
