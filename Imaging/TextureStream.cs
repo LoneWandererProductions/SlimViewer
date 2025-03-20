@@ -307,59 +307,46 @@ namespace Imaging
         internal static Bitmap GenerateCrosshatchBitmap(
             int width,
             int height,
-            int lineSpacing = 10,
+            int lineSpacing = 50,
             Color lineColor = default,
             int lineThickness = 1,
             double angle1 = 45.0,
-            double angle2 = 135.0,
+            double angle2 = -45.0, // The second angle must be negative
             int alpha = 255)
         {
             lineColor = lineColor == default ? Color.Black : lineColor;
 
             var crosshatchBitmap = new Bitmap(width, height);
             using var graphics = Graphics.FromImage(crosshatchBitmap);
-            graphics.Clear(Color.Transparent); // Background color
-            graphics.SmoothingMode = SmoothingMode.None; // Ensure crisp rendering
+            graphics.Clear(Color.White);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            // Create a pen with the specified color and thickness
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
 
-            // Helper function to draw parallel lines at a given angle
-            void DrawHatchLines(double angleRad)
+            void DrawHatchLines(double angle, int startX, int startY)
             {
-                var cos = Math.Cos(angleRad);
-                var sin = Math.Sin(angleRad);
+                double radians = angle * Math.PI / 180.0;
+                double slope = Math.Tan(radians);
 
-                // Calculate starting points and step along the lines
-                for (int i = -width; i < width + height; i += lineSpacing)
+                for (int y = startY; y <= height; y += lineSpacing)
                 {
-                    // Starting point of each line based on the angle
-                    int x1 = (int)(i * cos);
-                    int y1 = (int)(i * sin);
+                    int x1 = startX;
+                    int y1 = y;
+                    int x2 = (int)(x1 + height / slope);
+                    int y2 = 0;
 
-                    // Ending point of each line
-                    int x2 = (int)((i + height) * cos);
-                    int y2 = (int)((i + height) * sin);
-
-                    // Ensure lines stay within the bitmap bounds
-                    if (x1 >= 0 && x1 <= width && y1 >= 0 && y1 <= height && x2 >= 0 && x2 <= width && y2 >= 0 && y2 <= height)
-                    {
-                        graphics.DrawLine(pen, x1, y1, x2, y2);
-                    }
+                    graphics.DrawLine(pen, x1, y1, x2, y2);
                 }
             }
 
-            // Convert angles from degrees to radians
-            double angle1Rad = angle1 * Math.PI / 180.0;
-            double angle2Rad = angle2 * Math.PI / 180.0;
+            // First set: Starts from (0,0) and increases by spacing
+            DrawHatchLines(angle1, 0, 0);
 
-            // Draw the two sets of crosshatch lines
-            DrawHatchLines(angle1Rad);  // First set of lines (e.g., at 45 degrees)
-            DrawHatchLines(angle2Rad);  // Second set of lines (e.g., at 135 degrees)
+            // Second set: Starts from (width, 0) and moves down
+            DrawHatchLines(angle2, width, 0);
 
             return crosshatchBitmap;
         }
-
 
 
         /// <summary>
@@ -446,8 +433,8 @@ namespace Imaging
                     for (var x = 0; x < width; x += lineSpacing)
                     {
                         // Apply sine wave effect and randomization
-                        double yOffset = waveAmplitude * Math.Sin(waveFrequency * x) + (randomizationFactor * (new Random().NextDouble() - 0.5));
-                        int yShifted = (int)(yOffset);
+                        var yOffset = waveAmplitude * Math.Sin(waveFrequency * x) + (randomizationFactor * (new Random().NextDouble() - 0.5));
+                        var yShifted = (int)(yOffset);
 
                         // Draw the vertical line with wobbly offset
                         g.FillRectangle(fiberBrush, x, 0 + yShifted, lineThickness, height);
@@ -457,8 +444,8 @@ namespace Imaging
                     for (var y = 0; y < height; y += lineSpacing)
                     {
                         // Apply sine wave effect and randomization
-                        double xOffset = waveAmplitude * Math.Sin(waveFrequency * y) + (randomizationFactor * (new Random().NextDouble() - 0.5));
-                        int xShifted = (int)(xOffset);
+                        var xOffset = waveAmplitude * Math.Sin(waveFrequency * y) + (randomizationFactor * (new Random().NextDouble() - 0.5));
+                        var xShifted = (int)(xOffset);
 
                         // Draw the horizontal line with wobbly offset
                         g.FillRectangle(fiberBrush, 0 + xShifted, y, width, lineThickness);
