@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 // ReSharper disable UnusedMember.Local
 
@@ -317,48 +318,32 @@ namespace Imaging
 
             var crosshatchBitmap = new Bitmap(width, height);
             using var graphics = Graphics.FromImage(crosshatchBitmap);
-            graphics.Clear(Color.White); // Background color
+            graphics.Clear(Color.Transparent);
+            graphics.SmoothingMode = SmoothingMode.None; // Ensures crisp rendering
 
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
-            // Convert angles from degrees to radians
-            var radAngle1 = angle1 * Math.PI / 180.0;
-            var radAngle2 = angle2 * Math.PI / 180.0;
 
-            // Calculate the line direction vectors
-            var dx1 = Math.Cos(radAngle1);
-            var dy1 = Math.Sin(radAngle1);
-            var dx2 = Math.Cos(radAngle2);
-            var dy2 = Math.Sin(radAngle2);
+            // Helper function to draw a set of parallel lines at a given angle
+            void DrawHatchLines(double angleRad)
+            {
+                var cos = Math.Cos(angleRad);
+                var sin = Math.Sin(angleRad);
 
-            // Draw first set of lines
-            for (var y = 0; y < height; y += lineSpacing)
-                graphics.DrawLine(
-                    pen,
-                    0, y,
-                    (int)(width * dx1 + width * dy1),
-                    (int)(y * dx1 + width * dy1));
+                // Diagonal movement in both directions
+                for (int i = -width - height; i < width + height; i += lineSpacing)
+                {
+                    int x1 = (int)(i * cos);
+                    int y1 = (int)(i * sin);
+                    int x2 = (int)((i + height * sin) * cos);
+                    int y2 = (int)((i + height * sin) * sin);
 
-            for (var x = 0; x < width; x += lineSpacing)
-                graphics.DrawLine(
-                    pen,
-                    x, 0,
-                    (int)(x * dx1 + height * dx1),
-                    (int)(height * dx1 + height * dy1));
+                    graphics.DrawLine(pen, x1, y1, x2, y2);
+                }
+            }
 
-            // Draw second set of lines
-            for (var y = 0; y < height; y += lineSpacing)
-                graphics.DrawLine(
-                    pen,
-                    0, y,
-                    (int)(width * dx2 + height * dy2),
-                    (int)(y * dx2 + height * dy2));
-
-            for (var x = 0; x < width; x += lineSpacing)
-                graphics.DrawLine(
-                    pen,
-                    x, 0,
-                    (int)(x * dx2 + width * dx2),
-                    (int)(width * dx2 + height * dy2));
+            // Convert angles to radians and draw the two crosshatch sets
+            DrawHatchLines(angle1 * Math.PI / 180.0);
+            DrawHatchLines(angle2 * Math.PI / 180.0);
 
             return crosshatchBitmap;
         }
