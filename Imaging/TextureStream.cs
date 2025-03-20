@@ -411,32 +411,48 @@ namespace Imaging
             int lineSpacing = 8,
             Color lineColor = default,
             int lineThickness = 1,
-            int alpha = 255)
+            int alpha = 255,
+            double waveFrequency = 0.1, // Controls the frequency of the waves
+            double waveAmplitude = 2,   // Controls the amplitude (size) of the wave
+            double randomizationFactor = 0.5) // Randomization factor to add slight randomness
         {
-            var canvasBitmap = new DirectBitmap(width, height);
+            // Create a standard Bitmap object
+            var canvasBitmap = new Bitmap(width, height);
 
-
-            //no Simd for now
-            using (var g = Graphics.FromImage(canvasBitmap.Bitmap))
+            using (var g = Graphics.FromImage(canvasBitmap))
             {
                 g.Clear(Color.White);
 
-                // Draw vertical fibers
-                for (var x = 0; x < width; x += lineSpacing)
-                    using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
+                var lineColorWithAlpha = Color.FromArgb(alpha, lineColor);
+
+                // Reuse SolidBrush for vertical and horizontal fibers
+                using (var fiberBrush = new SolidBrush(lineColorWithAlpha))
+                {
+                    // Draw vertical fibers with sinusoidal distortion
+                    for (var x = 0; x < width; x += lineSpacing)
                     {
-                        g.FillRectangle(fiberBrush, x, 0, lineThickness, height);
+                        // Apply sine wave effect and randomization
+                        double yOffset = waveAmplitude * Math.Sin(waveFrequency * x) + (randomizationFactor * (new Random().NextDouble() - 0.5));
+                        int yShifted = (int)(yOffset);
+
+                        // Draw the vertical line with wobbly offset
+                        g.FillRectangle(fiberBrush, x, 0 + yShifted, lineThickness, height);
                     }
 
-                // Draw horizontal fibers
-                for (var y = 0; y < height; y += lineSpacing)
-                    using (var fiberBrush = new SolidBrush(Color.FromArgb(alpha, lineColor)))
+                    // Draw horizontal fibers with sinusoidal distortion
+                    for (var y = 0; y < height; y += lineSpacing)
                     {
-                        g.FillRectangle(fiberBrush, 0, y, width, lineThickness);
+                        // Apply sine wave effect and randomization
+                        double xOffset = waveAmplitude * Math.Sin(waveFrequency * y) + (randomizationFactor * (new Random().NextDouble() - 0.5));
+                        int xShifted = (int)(xOffset);
+
+                        // Draw the horizontal line with wobbly offset
+                        g.FillRectangle(fiberBrush, 0 + xShifted, y, width, lineThickness);
                     }
+                }
             }
 
-            return canvasBitmap.Bitmap;
+            return canvasBitmap;
         }
 
         /// <summary>
