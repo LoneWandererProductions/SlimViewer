@@ -318,35 +318,49 @@ namespace Imaging
 
             var crosshatchBitmap = new Bitmap(width, height);
             using var graphics = Graphics.FromImage(crosshatchBitmap);
-            graphics.Clear(Color.Transparent);
-            graphics.SmoothingMode = SmoothingMode.None; // Ensures crisp rendering
+            graphics.Clear(Color.Transparent); // Background color
+            graphics.SmoothingMode = SmoothingMode.None; // Ensure crisp rendering
 
+            // Create a pen with the specified color and thickness
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
 
-            // Helper function to draw a set of parallel lines at a given angle
+            // Helper function to draw parallel lines at a given angle
             void DrawHatchLines(double angleRad)
             {
                 var cos = Math.Cos(angleRad);
                 var sin = Math.Sin(angleRad);
 
-                // Diagonal movement in both directions
-                for (int i = -width - height; i < width + height; i += lineSpacing)
+                // Calculate starting points and step along the lines
+                for (int i = -width; i < width + height; i += lineSpacing)
                 {
+                    // Starting point of each line based on the angle
                     int x1 = (int)(i * cos);
                     int y1 = (int)(i * sin);
-                    int x2 = (int)((i + height * sin) * cos);
-                    int y2 = (int)((i + height * sin) * sin);
 
-                    graphics.DrawLine(pen, x1, y1, x2, y2);
+                    // Ending point of each line
+                    int x2 = (int)((i + height) * cos);
+                    int y2 = (int)((i + height) * sin);
+
+                    // Ensure lines stay within the bitmap bounds
+                    if (x1 >= 0 && x1 <= width && y1 >= 0 && y1 <= height && x2 >= 0 && x2 <= width && y2 >= 0 && y2 <= height)
+                    {
+                        graphics.DrawLine(pen, x1, y1, x2, y2);
+                    }
                 }
             }
 
-            // Convert angles to radians and draw the two crosshatch sets
-            DrawHatchLines(angle1 * Math.PI / 180.0);
-            DrawHatchLines(angle2 * Math.PI / 180.0);
+            // Convert angles from degrees to radians
+            double angle1Rad = angle1 * Math.PI / 180.0;
+            double angle2Rad = angle2 * Math.PI / 180.0;
+
+            // Draw the two sets of crosshatch lines
+            DrawHatchLines(angle1Rad);  // First set of lines (e.g., at 45 degrees)
+            DrawHatchLines(angle2Rad);  // Second set of lines (e.g., at 135 degrees)
 
             return crosshatchBitmap;
         }
+
+
 
         /// <summary>
         /// Generates a concrete texture bitmap.
