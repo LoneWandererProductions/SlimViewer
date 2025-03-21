@@ -311,7 +311,7 @@ namespace Imaging
             Color lineColor = default,
             int lineThickness = 1,
             double angle1 = 45.0,
-            double angle2 = -45.0, // The second angle must be negative
+            double angle2 = -45.0,
             int alpha = 255)
         {
             lineColor = lineColor == default ? Color.Black : lineColor;
@@ -323,31 +323,34 @@ namespace Imaging
 
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
 
-            void DrawHatchLines(double angle, int startX, int startY)
+            void DrawHatchLines(double angle)
             {
                 double radians = angle * Math.PI / 180.0;
-                double slope = Math.Tan(radians);
+                double dx = Math.Cos(radians) * lineSpacing;
+                double dy = Math.Sin(radians) * lineSpacing;
 
-                for (int y = startY; y <= height; y += lineSpacing)
+                int maxOffset = Math.Max(width, height); // Ensures full coverage
+
+                for (int i = -maxOffset; i < maxOffset * 2; i += lineSpacing)
                 {
-                    int x1 = startX;
-                    int y1 = y;
-                    int x2 = (int)(x1 + height / slope);
-                    int y2 = 0;
+                    int x1 = (int)(i * dx);
+                    int y1 = (int)(i * dy);
+                    int x2 = x1 + width;
+                    int y2 = y1 + height;
 
                     graphics.DrawLine(pen, x1, y1, x2, y2);
                 }
             }
 
-            // First set: Starts from (0,0) and increases by spacing
-            DrawHatchLines(angle1, 0, 0);
+            // First set of diagonal lines (angle1)
+            // TODO ERROR here
+            DrawHatchLines(angle1);
 
-            // Second set: Starts from (width, 0) and moves down
-            DrawHatchLines(angle2, width, 0);
+            // Second set of diagonal lines (angle2)
+            DrawHatchLines(angle2);
 
             return crosshatchBitmap;
         }
-
 
         /// <summary>
         /// Generates a concrete texture bitmap.
