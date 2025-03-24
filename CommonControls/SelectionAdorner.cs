@@ -177,6 +177,11 @@ namespace CommonControls
             }
         }
 
+        /// <summary>
+        /// Transforms the mouse position.
+        /// </summary>
+        /// <param name="mousePosition">The mouse position.</param>
+        /// <returns>Transformed Point.</returns>
         private Point TransformMousePosition(Point mousePosition)
         {
             if (_imageTransform == null)
