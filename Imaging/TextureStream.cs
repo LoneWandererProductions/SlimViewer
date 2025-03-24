@@ -9,9 +9,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
+using Mathematics;
 
 // ReSharper disable UnusedMember.Local
 
@@ -300,8 +301,8 @@ namespace Imaging
         /// <param name="lineSpacing">The spacing between lines.</param>
         /// <param name="lineColor">The color of the lines.</param>
         /// <param name="lineThickness">The thickness of the lines.</param>
-        /// <param name="angle1">The angle of the first set of lines, in degrees.</param>
-        /// <param name="angle2">The angle of the second set of lines, in degrees.</param>
+        /// <param name="angleOne">The angle of the first set of lines, in degrees.</param>
+        /// <param name="angleTwo">The angle of the second set of lines, in degrees.</param>
         /// <param name="alpha">The alpha value for the color.</param>
         /// <returns>Texture Bitmap</returns>
         internal static Bitmap GenerateCrosshatchBitmap(
@@ -310,47 +311,59 @@ namespace Imaging
             int lineSpacing = 50,
             Color lineColor = default,
             int lineThickness = 1,
-            double angle1 = 45.0,
-            double angle2 = -45.0,
+            double angleOne = 45.0,
+            double angleTwo = -45.0,
             int alpha = 255)
         {
             lineColor = lineColor == default ? Color.Black : lineColor;
 
             var crosshatchBitmap = new Bitmap(width, height);
             using var graphics = Graphics.FromImage(crosshatchBitmap);
-            graphics.Clear(Color.White);
+            graphics.Clear(Color.Transparent);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
 
-            void DrawHatchLines(double angle)
+            // Loop along the top and left edges to cover the entire image
+            for (var offset = 0; offset < width + height; offset += lineSpacing)
             {
-                double radians = angle * Math.PI / 180.0;
-                double dx = Math.Cos(radians) * lineSpacing;
-                double dy = Math.Sin(radians) * lineSpacing;
+                var pointOne = new Point(offset, 0);
+                var pointTwo = new Point(0, offset);
 
-                int maxOffset = Math.Max(width, height); // Ensures full coverage
-
-                for (int i = -maxOffset; i < maxOffset * 2; i += lineSpacing)
-                {
-                    int x1 = (int)(i * dx);
-                    int y1 = (int)(i * dy);
-                    int x2 = x1 + width;
-                    int y2 = y1 + height;
-
-                    graphics.DrawLine(pen, x1, y1, x2, y2);
-                }
+                DrawFullLine(crosshatchBitmap, pointOne, angleOne, pen);
+                DrawFullLine(crosshatchBitmap, pointTwo, angleOne, pen);
+                DrawFullLine(crosshatchBitmap, pointOne, angleTwo, pen);
+                DrawFullLine(crosshatchBitmap, pointTwo, angleTwo, pen);
             }
-
-            // First set of diagonal lines (angle1)
-            // TODO ERROR here
-            DrawHatchLines(angle1);
-
-            // Second set of diagonal lines (angle2)
-            DrawHatchLines(angle2);
 
             return crosshatchBitmap;
         }
+
+        /// <summary>
+        /// Draws a line from the given start point at the specified angle, covering the entire image.
+        /// </summary>
+        /// <param name="bitmap">The image on which to draw.</param>
+        /// <param name="startPoint">The starting point of the line.</param>
+        /// <param name="angleDegrees">The angle of the line, in degrees.</param>
+        /// <param name="pen">The pen used to draw the line.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void DrawFullLine(Image bitmap, Point startPoint, double angleDegrees, Pen pen)
+        {
+            var angleRadians = angleDegrees * Math.PI / 180.0;
+            var dx = Math.Cos(angleRadians);
+            var dy = Math.Sin(angleRadians);
+
+            var width = bitmap.Width;
+            var height = bitmap.Height;
+            var maxDistance = Math.Max(width, height) * Math.Sqrt(2);
+
+            var endpointOne = new PointF((float)(startPoint.X + dx * maxDistance), (float)(startPoint.Y + dy * maxDistance));
+            var endpointTwo = new PointF((float)(startPoint.X - dx * maxDistance), (float)(startPoint.Y - dy * maxDistance));
+
+            using var g = Graphics.FromImage(bitmap);
+            g.DrawLine(pen, endpointOne, endpointTwo);
+        }
+
 
         /// <summary>
         /// Generates a concrete texture bitmap.
@@ -400,7 +413,7 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Generates a canvas texture bitmap.
+        /// Generates a canvas texture bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -408,7 +421,12 @@ namespace Imaging
         /// <param name="lineColor">The color of the fibers.</param>
         /// <param name="lineThickness">The thickness of the fibers.</param>
         /// <param name="alpha">The alpha transparency level.</param>
-        /// <returns>Canvas Texture Bitmap</returns>
+        /// <param name="waveFrequency">The wave frequency.</param>
+        /// <param name="waveAmplitude">The wave amplitude.</param>
+        /// <param name="randomizationFactor">The randomization factor.</param>
+        /// <returns>
+        /// Canvas Texture Bitmap
+        /// </returns>
         internal static Bitmap GenerateCanvasBitmap(
             int width,
             int height,
