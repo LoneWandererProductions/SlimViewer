@@ -157,6 +157,7 @@ namespace Imaging
             object shapeParams = null)
         {
             return TextureAreas.GenerateTexture(
+                null,
                 width,
                 height,
                 filter,
@@ -187,15 +188,13 @@ namespace Imaging
             Point? startPoint = null,
             object shapeParams = null)
         {
-            var overlay = TextureAreas.GenerateTexture(
+            return TextureAreas.GenerateTexture(
+                image,
                 width,
                 height,
                 filter,
                 shape,
                 ImageSettings, shapeParams, startPoint);
-
-            //overlay both images and return
-            return ImageStream.CombineBitmap(image, overlay, 0, 0);
         }
 
         /// <inheritdoc />

@@ -436,7 +436,7 @@ namespace SlimViews
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                return Generator.GenerateTextureOverlay(bitmap, frame.Width, frame.Height, texture, mask, point);
+                return Generator.GenerateTextureOverlay(bitmap, frame.Width, frame.Height, texture, shape: mask, startPoint: point);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
@@ -462,7 +462,7 @@ namespace SlimViews
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                return Render.FilterImageArea(bitmap, frame.Width, frame.Height, filter, mask, point);
+                return Render.FilterImageArea(bitmap, frame.Width, frame.Height, filter, mask, startPoint: point);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
