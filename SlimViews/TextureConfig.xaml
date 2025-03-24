@@ -10,7 +10,6 @@
     <Window.DataContext>
         <local:TextureConfigView x:Name="TextureView" />
     </Window.DataContext>
-
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" />
@@ -59,7 +58,19 @@
             <!-- Angle 1 -->
             <RowDefinition Height="Auto" />
             <!-- Angle 2 -->
-            <!-- Add more rows as needed -->
+            <RowDefinition Height="Auto" />
+            <!-- Additional Texture Settings -->
+            <RowDefinition Height="Auto" />
+            <!-- Wave Frequency -->
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <!-- Wave Amplitude -->
+            <RowDefinition Height="Auto" />
+            <!-- Randomization Factor -->
+            <RowDefinition Height="Auto" />
+            <!-- Edge Jaggedness Limit -->
+            <RowDefinition Height="Auto" />
+            <!-- Jaggedness Threshold -->
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -73,43 +84,35 @@
 
         <Label Content="Min Value" Grid.Row="2" Grid.Column="0" />
         <TextBox Text="{Binding MinValue, Mode=TwoWay}"
-                 IsEnabled="{Binding IsMinValueActive}"
-                 Grid.Row="2" Grid.Column="1" />
+                 IsEnabled="{Binding IsMinValueActive}" Grid.Row="2" Grid.Column="1" />
 
         <Label Content="Max Value" Grid.Row="3" Grid.Column="0" />
         <TextBox Text="{Binding MaxValue, Mode=TwoWay}"
-                 IsEnabled="{Binding IsMaxValueActive}"
-                 Grid.Row="3" Grid.Column="1" />
+                 IsEnabled="{Binding IsMaxValueActive}" Grid.Row="3" Grid.Column="1" />
 
         <Label Content="Alpha" Grid.Row="4" Grid.Column="0" />
         <TextBox Text="{Binding Alpha, Mode=TwoWay}"
-                 IsEnabled="{Binding IsAlphaActive}"
-                 Grid.Row="4" Grid.Column="1" />
+                 IsEnabled="{Binding IsAlphaActive}" Grid.Row="4" Grid.Column="1" />
 
         <Label Content="X Period" Grid.Row="5" Grid.Column="0" />
         <TextBox Text="{Binding XPeriod, Mode=TwoWay}"
-                 IsEnabled="{Binding IsXPeriodActive}"
-                 Grid.Row="5" Grid.Column="1" />
+                 IsEnabled="{Binding IsXPeriodActive}" Grid.Row="5" Grid.Column="1" />
 
         <Label Content="Y Period" Grid.Row="6" Grid.Column="0" />
         <TextBox Text="{Binding YPeriod, Mode=TwoWay}"
-                 IsEnabled="{Binding IsYPeriodActive}"
-                 Grid.Row="6" Grid.Column="1" />
+                 IsEnabled="{Binding IsYPeriodActive}" Grid.Row="6" Grid.Column="1" />
 
         <Label Content="Turbulence Power" Grid.Row="7" Grid.Column="0" />
         <TextBox Text="{Binding TurbulencePower, Mode=TwoWay}"
-                 IsEnabled="{Binding IsTurbulencePowerActive}"
-                 Grid.Row="7" Grid.Column="1" />
+                 IsEnabled="{Binding IsTurbulencePowerActive}" Grid.Row="7" Grid.Column="1" />
 
         <Label Content="Turbulence Size" Grid.Row="8" Grid.Column="0" />
         <TextBox Text="{Binding TurbulenceSize, Mode=TwoWay}"
-                 IsEnabled="{Binding IsTurbulenceSizeActive}"
-                 Grid.Row="8" Grid.Column="1" />
+                 IsEnabled="{Binding IsTurbulenceSizeActive}" Grid.Row="8" Grid.Column="1" />
 
         <Label Content="Base Color" Grid.Row="9" Grid.Column="0" />
         <ComboBox SelectedItem="{Binding BaseColor, Mode=TwoWay}"
-                  IsEnabled="{Binding IsBaseColorActive}"
-                  Grid.Row="9" Grid.Column="1">
+                  IsEnabled="{Binding IsBaseColorActive}" Grid.Row="9" Grid.Column="1">
             <ComboBoxItem Content="White" />
             <ComboBoxItem Content="Black" />
             <ComboBoxItem Content="Red" />
@@ -119,69 +122,75 @@
 
         <Label Content="Is Monochrome" Grid.Row="10" Grid.Column="0" />
         <CheckBox IsChecked="{Binding IsMonochrome, Mode=TwoWay}"
-                  IsEnabled="{Binding IsMonochromeActive}"
-                  Grid.Row="10" Grid.Column="1" />
+                  IsEnabled="{Binding IsMonochromeActive}" Grid.Row="10" Grid.Column="1" />
 
         <Label Content="Is Tiled" Grid.Row="11" Grid.Column="0" />
         <CheckBox IsChecked="{Binding IsTiled, Mode=TwoWay}"
-                  IsEnabled="{Binding IsTiledActive}"
-                  Grid.Row="11" Grid.Column="1" />
+                  IsEnabled="{Binding IsTiledActive}" Grid.Row="11" Grid.Column="1" />
 
         <Label Content="Use Smooth Noise" Grid.Row="12" Grid.Column="0" />
         <CheckBox IsChecked="{Binding UseSmoothNoise, Mode=TwoWay}"
-                  IsEnabled="{Binding IsUseSmoothNoiseActive}"
-                  Grid.Row="12" Grid.Column="1" />
+                  IsEnabled="{Binding IsUseSmoothNoiseActive}" Grid.Row="12" Grid.Column="1" />
 
         <Label Content="Use Turbulence" Grid.Row="13" Grid.Column="0" />
         <CheckBox IsChecked="{Binding UseTurbulence, Mode=TwoWay}"
-                  IsEnabled="{Binding IsUseTurbulenceActive}"
-                  Grid.Row="13" Grid.Column="1" />
+                  IsEnabled="{Binding IsUseTurbulenceActive}" Grid.Row="13" Grid.Column="1" />
 
         <Label Content="XY Period" Grid.Row="14" Grid.Column="0" />
         <TextBox Text="{Binding XyPeriod, Mode=TwoWay}"
-                 IsEnabled="{Binding IsXyPeriodActive}"
-                 Grid.Row="14" Grid.Column="1" />
+                 IsEnabled="{Binding IsXyPeriodActive}" Grid.Row="14" Grid.Column="1" />
 
-        <!-- Crosshatch settings -->
+        <!-- Crosshatch Settings -->
         <TextBlock Grid.Row="15" Grid.Column="0" FontWeight="Bold" Text="Crosshatch Settings" Margin="0,10,0,5" />
 
         <Label Content="Line Spacing" Grid.Row="16" Grid.Column="0" />
         <TextBox Text="{Binding LineSpacing, Mode=TwoWay}"
-                 IsEnabled="{Binding IsLineSpacingActive}"
-                 Grid.Row="16" Grid.Column="1" />
+                 IsEnabled="{Binding IsLineSpacingActive}" Grid.Row="16" Grid.Column="1" />
 
         <Label Content="Line Color" Grid.Row="17" Grid.Column="0" />
         <ComboBox SelectedItem="{Binding LineColor, Mode=TwoWay}"
-                  IsEnabled="{Binding IsLineColorActive}"
-                  Grid.Row="17" Grid.Column="1">
+                  IsEnabled="{Binding IsLineColorActive}" Grid.Row="17" Grid.Column="1">
             <ComboBoxItem Content="Black" />
             <ComboBoxItem Content="White" />
-            <ComboBoxItem Content="Gray" />
-            <ComboBoxItem Content="Yellow" />
+            <ComboBoxItem Content="Red" />
+            <ComboBoxItem Content="Green" />
+            <ComboBoxItem Content="Blue" />
         </ComboBox>
 
         <Label Content="Line Thickness" Grid.Row="18" Grid.Column="0" />
         <TextBox Text="{Binding LineThickness, Mode=TwoWay}"
-                 IsEnabled="{Binding IsLineThicknessActive}"
-                 Grid.Row="18" Grid.Column="1" />
+                 IsEnabled="{Binding IsLineThicknessActive}" Grid.Row="18" Grid.Column="1" />
 
-        <Label Content="Angle 1" Grid.Row="19" Grid.Column="0" />
-        <TextBox Text="{Binding Angle1, Mode=TwoWay}"
-                 IsEnabled="{Binding IsAngle1Active}"
-                 Grid.Row="19" Grid.Column="1" />
+        <Label Content="Angle Primary" Grid.Row="19" Grid.Column="0" />
+        <TextBox Text="{Binding AnglePrimary, Mode=TwoWay}"
+                 IsEnabled="{Binding IsAnglePrimaryActive}" Grid.Row="19" Grid.Column="1" />
 
-        <Label Content="Angle 2" Grid.Row="20" Grid.Column="0" />
-        <TextBox Text="{Binding Angle2, Mode=TwoWay}"
-                 IsEnabled="{Binding IsAngle2Active}"
-                 Grid.Row="20" Grid.Column="1" />
+        <Label Content="Angle Secondary" Grid.Row="20" Grid.Column="0" />
+        <TextBox Text="{Binding AngleSecondary, Mode=TwoWay}"
+                 IsEnabled="{Binding IsAngleSecondaryActive}" Grid.Row="20" Grid.Column="1" />
 
-        <!-- Buttons on the right -->
-        <StackPanel Grid.Column="1" VerticalAlignment="Top" Grid.Row="21" Orientation="Horizontal">
-            <Button Content="Save" Width="75" Margin="5" Command="{Binding SaveCommand}" />
-            <Button Content="Reset" Width="75" Margin="5" Command="{Binding ResetCommand}" />
-            <Button Content="Cancel" Width="75" Margin="5" Command="{Binding CancelCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
-        </StackPanel>
+        <!-- Additional Texture Settings -->
+        <TextBlock Grid.Row="21" Grid.Column="0" FontWeight="Bold" Text="Additional Texture Settings" Margin="0,10,0,5" />
+
+        <Label Content="Wave Frequency" Grid.Row="22" Grid.Column="0" />
+        <TextBox Text="{Binding WaveFrequency, Mode=TwoWay}"
+                 IsEnabled="{Binding IsWaveFrequencyActive}" Grid.Row="22" Grid.Column="1" />
+
+        <Label Content="Wave Amplitude" Grid.Row="23" Grid.Column="0" />
+        <TextBox Text="{Binding WaveAmplitude, Mode=TwoWay}"
+                 IsEnabled="{Binding IsWaveAmplitudeActive}" Grid.Row="23" Grid.Column="1" />
+
+        <Label Content="Randomization Factor" Grid.Row="24" Grid.Column="0" />
+        <TextBox Text="{Binding RandomizationFactor, Mode=TwoWay}"
+                 IsEnabled="{Binding IsRandomizationFactorActive}" Grid.Row="24" Grid.Column="1" />
+
+        <Label Content="Edge Jaggedness Limit" Grid.Row="25" Grid.Column="0" />
+        <TextBox Text="{Binding EdgeJaggednessLimit, Mode=TwoWay}"
+                 IsEnabled="{Binding IsEdgeJaggednessLimitActive}" Grid.Row="25" Grid.Column="1" />
+
+        <Label Content="Jaggedness Threshold" Grid.Row="26" Grid.Column="0" />
+        <TextBox Text="{Binding JaggednessThreshold, Mode=TwoWay}"
+                 IsEnabled="{Binding IsJaggednessThresholdActive}" Grid.Row="26" Grid.Column="1" />
     </Grid>
     <Window.Resources>
         <ResourceDictionary>

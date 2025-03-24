@@ -215,8 +215,8 @@ namespace Imaging
                 config.LineSpacing,
                 config.LineColor,
                 config.LineThickness,
-                config.Angle1,
-                config.Angle2
+                config.AnglePrimary,
+                config.AngleSecondary
             );
         }
 
@@ -230,18 +230,6 @@ namespace Imaging
         public Bitmap GenerateConcreteBitmap(int width, int height)
         {
             var config = ImageSettings.GetSettings(TextureType.Crosshatch);
-
-            //return _Tester.GenerateMarbleBitmap(
-            //    width,
-            //    height,
-            //    config.MinValue,
-            //    config.MaxValue,
-            //    config.Alpha,
-            //    config.XPeriod,
-            //    config.YPeriod,
-            //    config.TurbulencePower,
-            //    config.TurbulenceSize
-            //);
 
             return TextureStream.GenerateConcreteBitmap(
                 width,
@@ -273,7 +261,12 @@ namespace Imaging
                 config.LineSpacing,
                 config.LineColor,
                 config.LineThickness,
-                config.Alpha
+                config.Alpha,
+                config.WaveFrequency,
+                config.WaveAmplitude,
+                config.RandomizationFactor,
+                config.EdgeJaggednessLimit,
+                config.JaggednessThreshold
             );
         }
     }

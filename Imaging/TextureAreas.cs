@@ -70,14 +70,14 @@ namespace Imaging
                     width, height, settings.Alpha),
 
                 TextureType.Crosshatch => TextureStream.GenerateCrosshatchBitmap(
-                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Angle1,
-                    settings.Angle2, settings.Alpha),
+                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.AnglePrimary,
+                    settings.AngleSecondary, settings.Alpha),
 
                 TextureType.Concrete => TextureStream.GenerateConcreteBitmap(
                     width, height, settings.MinValue, settings.MaxValue, settings.Alpha, settings.XPeriod, settings.YPeriod, settings.TurbulencePower, settings.TurbulenceSize),
 
                 TextureType.Canvas => TextureStream.GenerateCanvasBitmap(
-                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Alpha),
+                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Alpha, settings.WaveFrequency, settings.WaveAmplitude, settings.RandomizationFactor, settings.EdgeJaggednessLimit, settings.JaggednessThreshold),
 
                 _ => throw new ArgumentOutOfRangeException(nameof(texture), texture,
                     ImagingResources.UnsupportedTexture)

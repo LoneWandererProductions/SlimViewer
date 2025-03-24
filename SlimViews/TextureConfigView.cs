@@ -31,12 +31,12 @@ namespace SlimViews
         /// <summary>
         ///     The angle1
         /// </summary>
-        private double _angle1;
+        private double _anglePrimary;
 
         /// <summary>
         ///     The angle2
         /// </summary>
-        private double _angle2;
+        private double _angleSecondary;
 
         /// <summary>
         ///     The base color
@@ -134,6 +134,31 @@ namespace SlimViews
         private double _yPeriod;
 
         /// <summary>
+        /// The wave frequency
+        /// </summary>
+        private double _waveFrequency;
+
+        /// <summary>
+        /// The wave amplitude
+        /// </summary>
+        private double _waveAmplitude;
+
+        /// <summary>
+        /// The randomization factor
+        /// </summary>
+        private double _randomizationFactor;
+
+        /// <summary>
+        /// The edge jaggedness limit
+        /// </summary>
+        private int _edgeJaggednessLimit;
+
+        /// <summary>
+        /// The jaggedness threshold
+        /// </summary>
+        private int _jaggednessThreshold;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="TextureConfigView" /> class.
         /// </summary>
         public TextureConfigView()
@@ -157,8 +182,13 @@ namespace SlimViews
             LineSpacing = defaultConfig.LineSpacing;
             LineColor = defaultConfig.LineColor;
             LineThickness = defaultConfig.LineThickness;
-            Angle1 = defaultConfig.Angle1;
-            Angle2 = defaultConfig.Angle2;
+            AnglePrimary = defaultConfig.AnglePrimary;
+            AngleSecondary = defaultConfig.AngleSecondary;
+            WaveFrequency = defaultConfig.WaveFrequency;
+            WaveAmplitude = defaultConfig.WaveAmplitude;
+            RandomizationFactor = defaultConfig.RandomizationFactor;
+            EdgeJaggednessLimit = defaultConfig.EdgeJaggednessLimit;
+            JaggednessThreshold = defaultConfig.JaggednessThreshold;
 
             UpdateActiveProperties();
         }
@@ -386,12 +416,11 @@ namespace SlimViews
         /// <value>
         ///     The angle1.
         /// </value>
-        public double Angle1
+        public double AnglePrimary
         {
-            get => _angle1;
-            set => SetProperty(ref _angle1, value, nameof(Angle1));
+            get => _anglePrimary;
+            set => SetProperty(ref _anglePrimary, value, nameof(AnglePrimary));
         }
-
 
         /// <summary>
         ///     Gets or sets the angle2.
@@ -399,13 +428,74 @@ namespace SlimViews
         /// <value>
         ///     The angle2.
         /// </value>
-        public double Angle2
+        public double AngleSecondary
         {
-            get => _angle2;
-            set => SetProperty(ref _angle2, value, nameof(Angle2));
+            get => _angleSecondary;
+            set => SetProperty(ref _angleSecondary, value, nameof(AngleSecondary));
+        }
+
+        /// <summary>
+        /// Gets or sets the wave frequency.
+        /// </summary>
+        /// <value>
+        /// The wave frequency.
+        /// </value>
+        public double WaveFrequency
+        {
+            get => _waveFrequency;
+            set => SetProperty(ref _waveFrequency, value, nameof(WaveFrequency));
+        }
+
+        /// <summary>
+        /// Gets or sets the wave amplitude.
+        /// </summary>
+        /// <value>
+        /// The wave amplitude.
+        /// </value>
+        public double WaveAmplitude
+        {
+            get => _waveAmplitude;
+            set => SetProperty(ref _waveAmplitude, value, nameof(WaveAmplitude));
+        }
+
+        /// <summary>
+        /// Gets or sets the randomization factor.
+        /// </summary>
+        /// <value>
+        /// The randomization factor.
+        /// </value>
+        public double RandomizationFactor
+        {
+            get => _randomizationFactor;
+            set => SetProperty(ref _randomizationFactor, value, nameof(RandomizationFactor));
+        }
+
+        /// <summary>
+        /// Gets or sets the edge jaggedness limit.
+        /// </summary>
+        /// <value>
+        /// The edge jaggedness limit.
+        /// </value>
+        public int EdgeJaggednessLimit
+        {
+            get => _edgeJaggednessLimit;
+            set => SetProperty(ref _edgeJaggednessLimit, value, nameof(EdgeJaggednessLimit));
+        }
+
+        /// <summary>
+        /// Gets or sets the jaggedness threshold.
+        /// </summary>
+        /// <value>
+        /// The jaggedness threshold.
+        /// </value>
+        public int JaggednessThreshold
+        {
+            get => _jaggednessThreshold;
+            set => SetProperty(ref _jaggednessThreshold, value, nameof(JaggednessThreshold));
         }
 
         // Active properties
+
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is minimum value active.
         /// </summary>
@@ -540,7 +630,7 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if this instance is angle1 active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsAngle1Active { get; set; }
+        public bool IsAnglePrimaryActive { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is angle2 active.
@@ -548,7 +638,47 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if this instance is angle2 active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsAngle2Active { get; set; }
+        public bool IsAngleSecondaryActive { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is jaggedness threshold.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is jaggedness threshold; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsJaggednessThreshold { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is edge jaggedness limit.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is edge jaggedness limit; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsEdgeJaggednessLimit { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is randomization factor.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is randomization factor; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsRandomizationFactor { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is wave amplitude.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is wave amplitude; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsWaveAmplitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is wave frequency.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is wave frequency; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsWaveFrequency { get; set; }
 
         /// <summary>
         ///     Gets the save command.
@@ -638,6 +768,7 @@ namespace SlimViews
             IsUseTurbulenceActive = usedProperties.Contains(nameof(UseTurbulence));
             IsXyPeriodActive = usedProperties.Contains(nameof(XyPeriod));
 
+
             // Retrieve the saved settings for the selected texture
             var savedSettings = ImageProcessor.Render.ImageSettings.GetSettings(SelectedTexture);
 
@@ -655,6 +786,13 @@ namespace SlimViews
             if (IsUseSmoothNoiseActive) UseSmoothNoise = savedSettings.UseSmoothNoise;
             if (IsUseTurbulenceActive) UseTurbulence = savedSettings.UseTurbulence;
             if (IsXyPeriodActive) XyPeriod = savedSettings.XyPeriod;
+            if (IsAnglePrimaryActive) AnglePrimary = savedSettings.AnglePrimary;
+            if (IsAngleSecondaryActive) AngleSecondary = savedSettings.AngleSecondary;
+            if (IsWaveFrequency) WaveFrequency = savedSettings.WaveFrequency;
+            if (IsWaveAmplitude) WaveAmplitude = savedSettings.WaveAmplitude;
+            if (IsRandomizationFactor) RandomizationFactor = savedSettings.RandomizationFactor;
+            if (IsEdgeJaggednessLimit) EdgeJaggednessLimit = savedSettings.EdgeJaggednessLimit;
+            if (IsJaggednessThreshold) JaggednessThreshold = savedSettings.JaggednessThreshold;
 
             // Notify UI about changes
             OnPropertyChanged(nameof(IsMinValueActive));
@@ -670,6 +808,13 @@ namespace SlimViews
             OnPropertyChanged(nameof(IsUseSmoothNoiseActive));
             OnPropertyChanged(nameof(IsUseTurbulenceActive));
             OnPropertyChanged(nameof(IsXyPeriodActive));
+            OnPropertyChanged(nameof(IsAnglePrimaryActive));
+            OnPropertyChanged(nameof(IsAngleSecondaryActive));
+            OnPropertyChanged(nameof(IsWaveFrequency));
+            OnPropertyChanged(nameof(IsWaveAmplitude));
+            OnPropertyChanged(nameof(IsRandomizationFactor));
+            OnPropertyChanged(nameof(IsEdgeJaggednessLimit));
+            OnPropertyChanged(nameof(IsJaggednessThreshold));
         }
 
         /// <summary>
@@ -696,8 +841,13 @@ namespace SlimViews
                 LineSpacing = LineSpacing,
                 LineColor = LineColor,
                 LineThickness = LineThickness,
-                Angle1 = Angle1,
-                Angle2 = Angle2
+                AnglePrimary = AnglePrimary,
+                AngleSecondary = AngleSecondary,
+                WaveFrequency = WaveFrequency,
+                WaveAmplitude = WaveAmplitude,
+                RandomizationFactor = RandomizationFactor,
+                EdgeJaggednessLimit = EdgeJaggednessLimit,
+                JaggednessThreshold = JaggednessThreshold
             };
 
             // Update the settings in ImageRegister

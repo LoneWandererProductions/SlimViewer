@@ -301,8 +301,8 @@ namespace Imaging
         /// <param name="lineSpacing">The spacing between lines.</param>
         /// <param name="lineColor">The color of the lines.</param>
         /// <param name="lineThickness">The thickness of the lines.</param>
-        /// <param name="angleOne">The angle of the first set of lines, in degrees.</param>
-        /// <param name="angleTwo">The angle of the second set of lines, in degrees.</param>
+        /// <param name="anglePrimary">The angle of the first set of lines, in degrees.</param>
+        /// <param name="angleSecondary">The angle of the second set of lines, in degrees.</param>
         /// <param name="alpha">The alpha value for the color.</param>
         /// <returns>Texture Bitmap</returns>
         internal static Bitmap GenerateCrosshatchBitmap(
@@ -311,8 +311,8 @@ namespace Imaging
             int lineSpacing = 50,
             Color lineColor = default,
             int lineThickness = 1,
-            double angleOne = 45.0,
-            double angleTwo = -45.0,
+            double anglePrimary = 45.0,
+            double angleSecondary = -45.0,
             int alpha = 255)
         {
             lineColor = lineColor == default ? Color.Black : lineColor;
@@ -324,16 +324,16 @@ namespace Imaging
 
             using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
 
-            // Loop along the top and left edges to cover the entire image
+            // Cover the entire image by looping along the top and left edges
             for (var offset = 0; offset < width + height; offset += lineSpacing)
             {
-                var pointOne = new Point(offset, 0);
-                var pointTwo = new Point(0, offset);
+                var topEdgePoint = new Point(offset, 0);    // Shift along the top edge
+                var leftEdgePoint = new Point(0, offset);   // Shift along the left edge
 
-                DrawFullLine(crosshatchBitmap, pointOne, angleOne, pen);
-                DrawFullLine(crosshatchBitmap, pointTwo, angleOne, pen);
-                DrawFullLine(crosshatchBitmap, pointOne, angleTwo, pen);
-                DrawFullLine(crosshatchBitmap, pointTwo, angleTwo, pen);
+                DrawFullLine(crosshatchBitmap, topEdgePoint, anglePrimary, pen);
+                DrawFullLine(crosshatchBitmap, leftEdgePoint, anglePrimary, pen);
+                DrawFullLine(crosshatchBitmap, topEdgePoint, angleSecondary, pen);
+                DrawFullLine(crosshatchBitmap, leftEdgePoint, angleSecondary, pen);
             }
 
             return crosshatchBitmap;
@@ -355,15 +355,15 @@ namespace Imaging
 
             var width = bitmap.Width;
             var height = bitmap.Height;
-            var maxDistance = Math.Max(width, height) * Math.Sqrt(2);
+            var maxDistance = Math.Max(width, height) * Math.Sqrt(2); // Diagonal coverage
 
-            var endpointOne = new PointF((float)(startPoint.X + dx * maxDistance), (float)(startPoint.Y + dy * maxDistance));
-            var endpointTwo = new PointF((float)(startPoint.X - dx * maxDistance), (float)(startPoint.Y - dy * maxDistance));
+            // Calculate line endpoints far enough to cover the entire image
+            var endpointStart = new PointF((float)(startPoint.X + dx * maxDistance), (float)(startPoint.Y + dy * maxDistance));
+            var endpointEnd = new PointF((float)(startPoint.X - dx * maxDistance), (float)(startPoint.Y - dy * maxDistance));
 
-            using var g = Graphics.FromImage(bitmap);
-            g.DrawLine(pen, endpointOne, endpointTwo);
+            using var graphics = Graphics.FromImage(bitmap);
+            graphics.DrawLine(pen, endpointStart, endpointEnd);
         }
-
 
         /// <summary>
         /// Generates a concrete texture bitmap.
@@ -424,6 +424,8 @@ namespace Imaging
         /// <param name="waveFrequency">The wave frequency.</param>
         /// <param name="waveAmplitude">The wave amplitude.</param>
         /// <param name="randomizationFactor">The randomization factor.</param>
+        /// <param name="edgeJaggednessLimit">The edge jaggedness limit.</param>
+        /// <param name="jaggednessThreshold">The jaggedness threshold.</param>
         /// <returns>
         /// Canvas Texture Bitmap
         /// </returns>
@@ -434,48 +436,69 @@ namespace Imaging
             Color lineColor = default,
             int lineThickness = 1,
             int alpha = 255,
-            double waveFrequency = 0.1, // Controls the frequency of the waves
-            double waveAmplitude = 2,   // Controls the amplitude (size) of the wave
-            double randomizationFactor = 0.5) // Randomization factor to add slight randomness
+            double waveFrequency = 0.02,
+            double waveAmplitude = 3,
+            double randomizationFactor = 1.5,
+            int edgeJaggednessLimit = 20, // Limit jaggedness to within 20% of the image's edges
+            int jaggednessThreshold = 10) // Reduced jagged chance for edge lines
         {
-            // Create a standard Bitmap object
             var canvasBitmap = new Bitmap(width, height);
 
-            using (var g = Graphics.FromImage(canvasBitmap))
+            using (var graphics = Graphics.FromImage(canvasBitmap))
             {
-                g.Clear(Color.White);
+                graphics.Clear(Color.Transparent);
 
-                var lineColorWithAlpha = Color.FromArgb(alpha, lineColor);
+                var lineColorWithAlpha = Color.FromArgb(alpha, lineColor == default ? Color.Black : lineColor);
 
-                // Reuse SolidBrush for vertical and horizontal fibers
-                using (var fiberBrush = new SolidBrush(lineColorWithAlpha))
+                using (var fiberPen = new Pen(lineColorWithAlpha, lineThickness))
                 {
-                    // Draw vertical fibers with sinusoidal distortion
+                    var random = new Random();
+
+                    // Draw vertical wavy and edge-jagged fibers
                     for (var x = 0; x < width; x += lineSpacing)
                     {
-                        // Apply sine wave effect and randomization
-                        var yOffset = waveAmplitude * Math.Sin(waveFrequency * x) + (randomizationFactor * (new Random().NextDouble() - 0.5));
-                        var yShifted = (int)(yOffset);
+                        var path = new GraphicsPath();
+                        var shouldCutOff = random.Next(0, 100) < jaggednessThreshold;
 
-                        // Draw the vertical line with wobbly offset
-                        g.FillRectangle(fiberBrush, x, 0 + yShifted, lineThickness, height);
+                        // Limit cutoff to top/bottom 20% of the image height
+                        var cutoffStart = shouldCutOff ? random.Next(0, height / edgeJaggednessLimit) : 0;
+                        var cutoffEnd = shouldCutOff ? height - random.Next(0, height / edgeJaggednessLimit) : height;
+
+                        for (var y = cutoffStart; y < cutoffEnd; y += 5)
+                        {
+                            var xOffset = waveAmplitude * Math.Sin(waveFrequency * y)
+                                          + (randomizationFactor * (random.NextDouble() - 0.5));
+                            path.AddLine(x + (float)xOffset, y, x + (float)xOffset, y + 5);
+                        }
+
+                        graphics.DrawPath(fiberPen, path);
                     }
 
-                    // Draw horizontal fibers with sinusoidal distortion
+                    // Draw horizontal wavy and edge-jagged fibers
                     for (var y = 0; y < height; y += lineSpacing)
                     {
-                        // Apply sine wave effect and randomization
-                        var xOffset = waveAmplitude * Math.Sin(waveFrequency * y) + (randomizationFactor * (new Random().NextDouble() - 0.5));
-                        var xShifted = (int)(xOffset);
+                        var path = new GraphicsPath();
+                        var shouldCutOff = random.Next(0, 100) < jaggednessThreshold;
 
-                        // Draw the horizontal line with wobbly offset
-                        g.FillRectangle(fiberBrush, 0 + xShifted, y, width, lineThickness);
+                        // Limit cutoff to left/right 20% of the image width
+                        var cutoffStart = shouldCutOff ? random.Next(0, width / edgeJaggednessLimit) : 0;
+                        var cutoffEnd = shouldCutOff ? width - random.Next(0, width / edgeJaggednessLimit) : width;
+
+                        for (var x = cutoffStart; x < cutoffEnd; x += 5)
+                        {
+                            var yOffset = waveAmplitude * Math.Sin(waveFrequency * x)
+                                          + (randomizationFactor * (random.NextDouble() - 0.5));
+                            path.AddLine(x, y + (float)yOffset, x + 5, y + (float)yOffset);
+                        }
+
+                        graphics.DrawPath(fiberPen, path);
                     }
                 }
             }
 
             return canvasBitmap;
         }
+
 
         /// <summary>
         /// HSL to RGB.
