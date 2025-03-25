@@ -42,7 +42,6 @@ namespace CommonDialogs
             ErrorDetailsText.Text = details;
         }
 
-
         /// <summary>
         /// Handles the Click event of the CloseButton control.
         /// </summary>
