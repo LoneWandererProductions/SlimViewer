@@ -158,7 +158,7 @@ namespace SlimViews
         internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne,
             string colorTwo, string similarity, Bitmap difference)
         {
-            var pathObj = FileIoHandler.HandleFileSave(ViewResources.FileOpenTxt, null!);
+            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenTxt, null!);
 
             if (pathObj == null) return;
 
@@ -341,8 +341,7 @@ namespace SlimViews
         /// <param name="source">The source of the error (optional).</param>
         private static void ShowError(string message, string source = null)
         {
-            if (source != null) message = $"{ViewResources.ErrorSourceMessage}{source}\n{message}";
-            MessageBox.Show(message, ViewResources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            DialogHandler.ErrorDialog(message, source: source);
         }
 
         /// <summary>

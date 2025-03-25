@@ -405,7 +405,7 @@ namespace SlimViews
         /// </summary>
         private static PathObject OpenFile()
         {
-            return FileIoHandler.HandleFileOpen(ViewResources.FileOpen);
+            return DialogHandler.HandleFileOpen(ViewResources.FileOpen);
         }
     }
 }

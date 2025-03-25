@@ -1,8 +1,8 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/FileIoHandler.cs
- * PURPOSE:     Extension for File Dialogs, some smaller extras and Extensions like a Folder View
+ * FILE:        CommonDialogs/DialogHandler.cs
+ * PURPOSE:     Extension for Dialogs, some smaller extras and Extensions like a Folder View
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -17,7 +17,7 @@ namespace CommonDialogs
     /// <summary>
     ///     Loads all the basic Files on StartUp
     /// </summary>
-    public static class FileIoHandler
+    public static class DialogHandler
     {
         /// <summary>
         ///     Show a Folder Dialog, displaying Folder structure
@@ -26,7 +26,10 @@ namespace CommonDialogs
         /// <returns>Selected Path</returns>
         public static string ShowFolder(string folder = "")
         {
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var browser = new FolderBrowser(folder);
             _ = browser.ShowDialog();
@@ -46,6 +49,14 @@ namespace CommonDialogs
             return login.View.Connection;
         }
 
+        public static void ErrorDialog(string message, string source = null, string details = null, string header = null)
+        {
+            var title = header ?? "Error";
+            var error = new CustomErrorDialog(title, message, source, details);
+
+            error.ShowDialog();
+        }
+
         /// <summary>
         ///     Shows the input box.
         /// </summary>
@@ -57,7 +68,10 @@ namespace CommonDialogs
             var input = new InputBox(header, description);
             _ = input.ShowDialog();
 
-            if (string.IsNullOrEmpty(input.InputText)) return string.Empty;
+            if (string.IsNullOrEmpty(input.InputText))
+            {
+                return string.Empty;
+            }
 
             return input.InputText;
         }
@@ -72,13 +86,22 @@ namespace CommonDialogs
         /// <returns>PathObject with basic File Parameters</returns>
         public static PathObject? HandleFileOpen(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var openFile = new OpenFileDialog { Filter = appendage, InitialDirectory = folder };
 
-            if (openFile.ShowDialog() != true) return null;
+            if (openFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = openFile.FileName;
 
@@ -95,13 +118,22 @@ namespace CommonDialogs
         /// <returns>PathObject with basic File Parameters</returns>
         public static PathObject? HandleFileSave(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var saveFile = new SaveFileDialog { Filter = appendage, InitialDirectory = folder, OverwritePrompt = true };
 
-            if (saveFile.ShowDialog() != true) return null;
+            if (saveFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = saveFile.FileName;
 

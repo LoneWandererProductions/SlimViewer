@@ -324,7 +324,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(ViewResources.FileOpenGif, null);
+            var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpenGif, null);
 
             if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, ViewResources.CbzExt,
                     StringComparison.OrdinalIgnoreCase)) return;
@@ -362,7 +362,7 @@ namespace SlimViews
         private void OpenFolderAction(object obj)
         {
             //get target Folder
-            var path = FileIoHandler.ShowFolder(null);
+            var path = DialogHandler.ShowFolder(null);
 
             _ = InitiateAsync(OutputPath);
 
@@ -418,7 +418,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SaveGifAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileSave(ViewResources.FileOpenGif, OutputPath);
+            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenGif, OutputPath);
 
             if (pathObj == null) return;
 
@@ -435,7 +435,7 @@ namespace SlimViews
         private void SaveImagesAction(object obj)
         {
             //get target Folder
-            var path = FileIoHandler.ShowFolder(OutputPath);
+            var path = DialogHandler.ShowFolder(OutputPath);
 
             if (string.IsNullOrEmpty(path)) return;
 

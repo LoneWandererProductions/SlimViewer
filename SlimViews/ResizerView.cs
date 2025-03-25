@@ -279,7 +279,7 @@ namespace SlimViews
         {
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Output = FileIoHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
+            Output = DialogHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace SlimViews
         {
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Input = FileIoHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
+            Input = DialogHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
         }
 
         /// <summary>

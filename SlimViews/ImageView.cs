@@ -1468,7 +1468,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OpenAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
+            var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
@@ -1503,7 +1503,7 @@ namespace SlimViews
         private void OpenCbzAction(object obj)
         {
             var pathObj =
-                FileIoHandler.HandleFileOpen(ViewResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
+                DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1521,7 +1521,7 @@ namespace SlimViews
         private void OpenCifAction(object obj)
         {
             var pathObj =
-                FileIoHandler.HandleFileOpen(ViewResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
+                DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1546,7 +1546,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ConvertCifAction(object obj)
         {
-            var pathObj = FileIoHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
+            var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -1564,7 +1564,7 @@ namespace SlimViews
 
             var btm = Bmp.ToBitmap();
 
-            var pathObj = FileIoHandler.HandleFileSave(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
+            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
             if (pathObj == null) return;
 
@@ -1836,7 +1836,7 @@ namespace SlimViews
         private void FolderAction(object obj)
         {
             //get target Folder
-            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
+            var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
 
             if (!Directory.Exists(path)) return;
 
@@ -2147,7 +2147,7 @@ namespace SlimViews
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             //get target Folder
-            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
+            var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
 
             if (!Thumb.Selection.IsNullOrEmpty())
             {
@@ -2210,7 +2210,7 @@ namespace SlimViews
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             //get target Folder
-            var path = FileIoHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
+            var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
 
             if (!Directory.Exists(path)) return;
 
