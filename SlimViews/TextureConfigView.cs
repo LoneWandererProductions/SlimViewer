@@ -49,6 +49,11 @@ namespace SlimViews
         private ICommand _cancelCommand;
 
         /// <summary>
+        ///     The edge jaggedness limit
+        /// </summary>
+        private int _edgeJaggednessLimit;
+
+        /// <summary>
         ///     The is monochrome
         /// </summary>
         private bool _isMonochrome;
@@ -57,6 +62,11 @@ namespace SlimViews
         ///     The is tiled
         /// </summary>
         private bool _isTiled;
+
+        /// <summary>
+        ///     The jaggedness threshold
+        /// </summary>
+        private int _jaggednessThreshold;
 
         /// <summary>
         ///     The line color
@@ -82,6 +92,11 @@ namespace SlimViews
         ///     The minimum value
         /// </summary>
         private int _minValue;
+
+        /// <summary>
+        ///     The randomization factor
+        /// </summary>
+        private double _randomizationFactor;
 
         /// <summary>
         ///     The reset command
@@ -119,6 +134,16 @@ namespace SlimViews
         private bool _useTurbulence;
 
         /// <summary>
+        ///     The wave amplitude
+        /// </summary>
+        private double _waveAmplitude;
+
+        /// <summary>
+        ///     The wave frequency
+        /// </summary>
+        private double _waveFrequency;
+
+        /// <summary>
         ///     The x period
         /// </summary>
         private double _xPeriod;
@@ -132,31 +157,6 @@ namespace SlimViews
         ///     The y period
         /// </summary>
         private double _yPeriod;
-
-        /// <summary>
-        /// The wave frequency
-        /// </summary>
-        private double _waveFrequency;
-
-        /// <summary>
-        /// The wave amplitude
-        /// </summary>
-        private double _waveAmplitude;
-
-        /// <summary>
-        /// The randomization factor
-        /// </summary>
-        private double _randomizationFactor;
-
-        /// <summary>
-        /// The edge jaggedness limit
-        /// </summary>
-        private int _edgeJaggednessLimit;
-
-        /// <summary>
-        /// The jaggedness threshold
-        /// </summary>
-        private int _jaggednessThreshold;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TextureConfigView" /> class.
@@ -435,10 +435,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the wave frequency.
+        ///     Gets or sets the wave frequency.
         /// </summary>
         /// <value>
-        /// The wave frequency.
+        ///     The wave frequency.
         /// </value>
         public double WaveFrequency
         {
@@ -447,10 +447,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the wave amplitude.
+        ///     Gets or sets the wave amplitude.
         /// </summary>
         /// <value>
-        /// The wave amplitude.
+        ///     The wave amplitude.
         /// </value>
         public double WaveAmplitude
         {
@@ -459,10 +459,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the randomization factor.
+        ///     Gets or sets the randomization factor.
         /// </summary>
         /// <value>
-        /// The randomization factor.
+        ///     The randomization factor.
         /// </value>
         public double RandomizationFactor
         {
@@ -471,10 +471,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the edge jaggedness limit.
+        ///     Gets or sets the edge jaggedness limit.
         /// </summary>
         /// <value>
-        /// The edge jaggedness limit.
+        ///     The edge jaggedness limit.
         /// </value>
         public int EdgeJaggednessLimit
         {
@@ -483,10 +483,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets or sets the jaggedness threshold.
+        ///     Gets or sets the jaggedness threshold.
         /// </summary>
         /// <value>
-        /// The jaggedness threshold.
+        ///     The jaggedness threshold.
         /// </value>
         public int JaggednessThreshold
         {
@@ -641,42 +641,42 @@ namespace SlimViews
         public bool IsAngleSecondaryActive { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is jaggedness threshold.
+        ///     Gets or sets a value indicating whether this instance is jaggedness threshold.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is jaggedness threshold; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is jaggedness threshold; otherwise, <c>false</c>.
         /// </value>
         public bool IsJaggednessThreshold { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is edge jaggedness limit.
+        ///     Gets or sets a value indicating whether this instance is edge jaggedness limit.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is edge jaggedness limit; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is edge jaggedness limit; otherwise, <c>false</c>.
         /// </value>
         public bool IsEdgeJaggednessLimit { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is randomization factor.
+        ///     Gets or sets a value indicating whether this instance is randomization factor.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is randomization factor; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is randomization factor; otherwise, <c>false</c>.
         /// </value>
         public bool IsRandomizationFactor { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is wave amplitude.
+        ///     Gets or sets a value indicating whether this instance is wave amplitude.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is wave amplitude; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is wave amplitude; otherwise, <c>false</c>.
         /// </value>
         public bool IsWaveAmplitude { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is wave frequency.
+        ///     Gets or sets a value indicating whether this instance is wave frequency.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is wave frequency; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is wave frequency; otherwise, <c>false</c>.
         /// </value>
         public bool IsWaveFrequency { get; set; }
 

@@ -27,7 +27,9 @@ namespace CommonDialogs
         /// <summary>
         ///     Initializes a new instance of the FolderBrowser dialog.
         /// </summary>
-        internal FolderBrowser() : this(string.Empty) { }
+        internal FolderBrowser() : this(string.Empty)
+        {
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -56,12 +58,18 @@ namespace CommonDialogs
         /// <summary>
         ///     Handles the OK button click event to confirm folder selection.
         /// </summary>
-        private void BtnOk_Click(object sender, RoutedEventArgs e) => HandleButtonClick(true);
+        private void BtnOk_Click(object sender, RoutedEventArgs e)
+        {
+            HandleButtonClick(true);
+        }
 
         /// <summary>
         ///     Handles the Cancel button click event to reset the folder and close.
         /// </summary>
-        private void BtnCancel_Click(object sender, RoutedEventArgs e) => HandleButtonClick(false);
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            HandleButtonClick(false);
+        }
 
         /// <summary>
         ///     Handles both OK and Cancel clicks to avoid duplicate code.
