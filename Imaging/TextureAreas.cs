@@ -47,9 +47,6 @@ namespace Imaging
             if (imageSettings == null)
                 throw new ArgumentNullException(nameof(imageSettings), ImagingResources.ImageSettingsNull);
 
-            // Default start point
-            var actualStartPoint = startPoint ?? new Point(0, 0);
-
             // Use 0 for x and y if startPoint is null
             int x = startPoint?.X ?? 0;
             int y = startPoint?.Y ?? 0;
