@@ -23,9 +23,7 @@ namespace ExtendedSystemObjects
         ///     Initializes a new instance of the <see cref="VaultItem{TU}" /> class.
         ///     Needed for Json serialization.
         /// </summary>
-        public VaultItem()
-        {
-        }
+        public VaultItem() { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VaultItem{U}" /> class.
@@ -38,9 +36,13 @@ namespace ExtendedSystemObjects
             Data = data;
             ExpiryTime = expiryTime;
             if (expiryTime != null)
+            {
                 ExpiryDate = DateTime.UtcNow.Add((TimeSpan)expiryTime);
+            }
             else
+            {
                 HasExpireTime = false;
+            }
 
             Description = description;
             CreationDate = DateTime.Now;
@@ -128,7 +130,10 @@ namespace ExtendedSystemObjects
         /// <returns>The size in bytes.</returns>
         private static long MeasureMemoryUsage<T>(T data)
         {
-            if (data == null) return 0;
+            if (data == null)
+            {
+                return 0;
+            }
 
             var before = GC.GetTotalMemory(true);
             _ = data; // Ensures the data is referenced

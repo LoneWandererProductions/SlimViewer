@@ -17,7 +17,7 @@ namespace Imaging
     internal static class TextureAreas
     {
         /// <summary>
-        ///     Generates the texture for a specified area.
+        /// Generates the texture for a specified area.
         /// </summary>
         /// <param name="image">The image, optional.</param>
         /// <param name="width">The width.</param>
@@ -28,7 +28,7 @@ namespace Imaging
         /// <param name="shapeParams">The shape parameters (optional).</param>
         /// <param name="startPoint">The optional starting point. Defaults to (0, 0).</param>
         /// <returns>
-        ///     A Bitmap with the applied texture.
+        /// A Bitmap with the applied texture.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown for unsupported texture or shape types.</exception>
         internal static Bitmap GenerateTexture(
@@ -51,8 +51,8 @@ namespace Imaging
             var actualStartPoint = startPoint ?? new Point(0, 0);
 
             // Use 0 for x and y if startPoint is null
-            var x = startPoint?.X ?? 0;
-            var y = startPoint?.Y ?? 0;
+            int x = startPoint?.X ?? 0;
+            int y = startPoint?.Y ?? 0;
 
             // Retrieve texture settings
             var settings = imageSettings.GetSettings(texture) ??
@@ -78,18 +78,14 @@ namespace Imaging
                     width, height, settings.Alpha),
 
                 TextureType.Crosshatch => TextureStream.GenerateCrosshatchBitmap(
-                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness,
-                    settings.AnglePrimary,
+                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.AnglePrimary,
                     settings.AngleSecondary, settings.Alpha),
 
                 TextureType.Concrete => TextureStream.GenerateConcreteBitmap(
-                    width, height, settings.MinValue, settings.MaxValue, settings.Alpha, settings.XPeriod,
-                    settings.YPeriod, settings.TurbulencePower, settings.TurbulenceSize),
+                    width, height, settings.MinValue, settings.MaxValue, settings.Alpha, settings.XPeriod, settings.YPeriod, settings.TurbulencePower, settings.TurbulenceSize),
 
                 TextureType.Canvas => TextureStream.GenerateCanvasBitmap(
-                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Alpha,
-                    settings.WaveFrequency, settings.WaveAmplitude, settings.RandomizationFactor,
-                    settings.EdgeJaggednessLimit, settings.JaggednessThreshold),
+                    width, height, settings.LineSpacing, settings.LineColor, settings.LineThickness, settings.Alpha, settings.WaveFrequency, settings.WaveAmplitude, settings.RandomizationFactor, settings.EdgeJaggednessLimit, settings.JaggednessThreshold),
 
                 _ => throw new ArgumentOutOfRangeException(nameof(texture), texture,
                     ImagingResources.UnsupportedTexture)

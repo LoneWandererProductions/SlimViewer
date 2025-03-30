@@ -341,7 +341,7 @@ namespace SlimViews
         /// <param name="source">The source of the error (optional).</param>
         private static void ShowError(string message, string source = null)
         {
-            DialogHandler.ErrorDialog(message, source);
+            DialogHandler.ErrorDialog(message, source: source);
         }
 
         /// <summary>
@@ -435,7 +435,7 @@ namespace SlimViews
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                return Generator.GenerateTextureOverlay(bitmap, frame.Width, frame.Height, texture, mask, point);
+                return Generator.GenerateTextureOverlay(bitmap, frame.Width, frame.Height, texture, shape: mask, startPoint: point);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {

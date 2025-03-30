@@ -80,7 +80,10 @@ namespace CommonDialogs
             get => Root;
             set
             {
-                if (value == Root) return;
+                if (value == Root)
+                {
+                    return;
+                }
 
                 Root = value;
                 OnPropertyChanged(nameof(Paths));
@@ -98,7 +101,10 @@ namespace CommonDialogs
             get => _lookUp;
             set
             {
-                if (value == _lookUp) return;
+                if (value == _lookUp)
+                {
+                    return;
+                }
 
                 _lookUp = value;
                 OnPropertyChanged(nameof(LookUp));
@@ -118,7 +124,10 @@ namespace CommonDialogs
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
         private static void OnShowFilesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is FolderControl folderControl) folderControl.SetItems(folderControl.Paths);
+            if (d is FolderControl folderControl)
+            {
+                folderControl.SetItems(folderControl.Paths);
+            }
         }
 
         /// <inheritdoc cref="PropertyChangedEventArgs" />
@@ -157,7 +166,10 @@ namespace CommonDialogs
                 if (Directory.Exists(path))
                 {
                     directories = Directory.GetDirectories(path);
-                    if (ShowFiles) files = Directory.GetFiles(path);
+                    if (ShowFiles)
+                    {
+                        files = Directory.GetFiles(path);
+                    }
                 }
                 else
                 {
@@ -169,13 +181,20 @@ namespace CommonDialogs
             FoldersItem.Items.Clear();
 
             // Add directories asynchronously
-            foreach (var item in directories.Select(CreateTreeViewItem)) _ = FoldersItem.Items.Add(item);
+            foreach (var item in directories.Select(CreateTreeViewItem))
+            {
+                _ = FoldersItem.Items.Add(item);
+            }
 
             // Optionally add files asynchronously
             if (ShowFiles)
-                foreach (var fileItem in files.Select(file => new TreeViewItem
-                             { Header = Path.GetFileName(file), Tag = file }))
+            {
+                foreach (var fileItem in files.Select(file =>
+                             new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                {
                     _ = FoldersItem.Items.Add(fileItem);
+                }
+            }
 
             // Update Paths property with the current path
             Paths = path;
@@ -209,7 +228,10 @@ namespace CommonDialogs
         private async void FolderExpanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
-            if (item.Items.Count != 1 || item.Items[0] != null) return; // Already expanded
+            if (item.Items.Count != 1 || item.Items[0] != null)
+            {
+                return; // Already expanded
+            }
 
             item.Items.Clear();
             var path = item.Tag.ToString();
@@ -218,14 +240,20 @@ namespace CommonDialogs
             {
                 var subDirs = await Task.Run(() => Directory.GetDirectories(path));
 
-                foreach (var subItem in subDirs.Select(CreateTreeViewItem)) item.Items.Add(subItem);
+                foreach (var subItem in subDirs.Select(CreateTreeViewItem))
+                {
+                    item.Items.Add(subItem);
+                }
 
                 if (ShowFiles)
                 {
                     var files = await Task.Run(() => Directory.GetFiles(path));
 
-                    foreach (var fileItem in files.Select(file => new TreeViewItem
-                                 { Header = Path.GetFileName(file), Tag = file })) item.Items.Add(fileItem);
+                    foreach (var fileItem in files.Select(file =>
+                                 new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                    {
+                        item.Items.Add(fileItem);
+                    }
                 }
             }
             catch (UnauthorizedAccessException ex)
@@ -247,7 +275,10 @@ namespace CommonDialogs
         /// <param name="e">The <see cref="RoutedPropertyChangedEventArgs{Object}" /> instance containing the event data.</param>
         private void FoldersItemSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is TreeViewItem { Tag: string selectedPath }) Paths = selectedPath;
+            if (e.NewValue is TreeViewItem { Tag: string selectedPath })
+            {
+                Paths = selectedPath;
+            }
         }
 
         /// <summary>
@@ -259,7 +290,10 @@ namespace CommonDialogs
         private void BtnUpClick(object sender, RoutedEventArgs e)
         {
             var path = Directory.GetParent(Paths);
-            if (path != null) SetItems(path.ToString());
+            if (path != null)
+            {
+                SetItems(path.ToString());
+            }
         }
 
         /// <summary>
@@ -270,7 +304,10 @@ namespace CommonDialogs
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void BtnGoClick(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(LookUp)) return;
+            if (!Directory.Exists(LookUp))
+            {
+                return;
+            }
 
             SetItems(LookUp);
             LookUp = string.Empty;
@@ -349,7 +386,10 @@ namespace CommonDialogs
             var i = 1;
 
             // Ensure the new folder name is unique
-            while (Directory.Exists(dirName)) dirName = $"{newDirPath} ({i++})";
+            while (Directory.Exists(dirName))
+            {
+                dirName = $"{newDirPath} ({i++})";
+            }
 
             // Create the new directory and refresh the TreeView
             _ = Directory.CreateDirectory(dirName);
@@ -365,7 +405,9 @@ namespace CommonDialogs
         private void BtnExplorerClick(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(Paths) && Directory.Exists(Paths))
+            {
                 _ = Process.Start(new ProcessStartInfo { FileName = Paths, UseShellExecute = true });
+            }
         }
     }
 }

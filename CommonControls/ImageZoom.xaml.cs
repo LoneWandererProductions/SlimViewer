@@ -12,6 +12,7 @@
 // ReSharper disable MissingSpace
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -617,17 +618,20 @@ namespace CommonControls
         }
 
         /// <summary>
-        ///     Handles the MouseRightButtonUp event of the Canvas control.
+        /// Handles the MouseRightButtonUp event of the Canvas control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
         private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (SelectionTool == ImageZoomTools.FreeForm) CompleteFreeFormSelection();
+            if (SelectionTool == ImageZoomTools.FreeForm)
+            {
+                CompleteFreeFormSelection();
+            }
         }
 
         /// <summary>
-        ///     Completes the free form selection.
+        /// Completes the free form selection.
         /// </summary>
         private void CompleteFreeFormSelection()
         {
@@ -635,7 +639,9 @@ namespace CommonControls
             SelectedFrame?.Invoke(frame); // Notify listeners that selection is done
 
             if (SelectedFrameCommand?.CanExecute(frame) == true)
+            {
                 SelectedFrameCommand.Execute(frame); // Execute any bound command
+            }
 
             SelectionAdorner.FreeFormPoints.Clear(); // Reset collected points for the next freeform drawing
         }

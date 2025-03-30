@@ -24,9 +24,12 @@ namespace CommonDialogs
         /// </summary>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>Selected Path</returns>
-        public static string ShowFolder(string folder = "")
+        public static string? ShowFolder(string folder = "")
         {
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var browser = new FolderBrowser(folder);
             _ = browser.ShowDialog();
@@ -46,13 +49,19 @@ namespace CommonDialogs
             return login.View.Connection;
         }
 
-        public static void ErrorDialog(string message, string source = null, string details = null,
-            string header = null)
+        /// <summary>
+        /// Errors the dialog.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="details">The details.</param>
+        /// <param name="title">The title.</param>
+        public static void ErrorDialog(string message, string source = "", string details = "",
+            string title = "Error")
         {
-            var title = header ?? "Error";
-            var error = new CustomErrorDialog(title, message, source, details);
+            var error = new ErrorDialog(title, message, source, details);
 
-            error.ShowDialog();
+            _ = error.ShowDialog();
         }
 
         /// <summary>
@@ -66,7 +75,10 @@ namespace CommonDialogs
             var input = new InputBox(header, description);
             _ = input.ShowDialog();
 
-            if (string.IsNullOrEmpty(input.InputText)) return string.Empty;
+            if (string.IsNullOrEmpty(input.InputText))
+            {
+                return string.Empty;
+            }
 
             return input.InputText;
         }
@@ -81,13 +93,22 @@ namespace CommonDialogs
         /// <returns>PathObject with basic File Parameters</returns>
         public static PathObject? HandleFileOpen(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var openFile = new OpenFileDialog { Filter = appendage, InitialDirectory = folder };
 
-            if (openFile.ShowDialog() != true) return null;
+            if (openFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = openFile.FileName;
 
@@ -104,13 +125,22 @@ namespace CommonDialogs
         /// <returns>PathObject with basic File Parameters</returns>
         public static PathObject? HandleFileSave(string appendage, string folder = "")
         {
-            if (string.IsNullOrEmpty(appendage)) appendage = ComCtlResources.Appendix;
+            if (string.IsNullOrEmpty(appendage))
+            {
+                appendage = ComCtlResources.Appendix;
+            }
 
-            if (!Directory.Exists(folder)) folder = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(folder))
+            {
+                folder = Directory.GetCurrentDirectory();
+            }
 
             var saveFile = new SaveFileDialog { Filter = appendage, InitialDirectory = folder, OverwritePrompt = true };
 
-            if (saveFile.ShowDialog() != true) return null;
+            if (saveFile.ShowDialog() != true)
+            {
+                return null;
+            }
 
             var path = saveFile.FileName;
 

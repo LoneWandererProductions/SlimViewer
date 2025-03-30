@@ -178,7 +178,7 @@ namespace CommonControls
         }
 
         /// <summary>
-        ///     Transforms the mouse position.
+        /// Transforms the mouse position.
         /// </summary>
         /// <param name="mousePosition">The mouse position.</param>
         /// <returns>Transformed Point.</returns>
