@@ -96,11 +96,11 @@ namespace Imaging
         public double V { get; set; }
 
         /// <summary>
-        /// Gets or sets the l.
-        /// New properties for HSL
+        ///     Gets or sets the l.
+        ///     New properties for HSL
         /// </summary>
         /// <value>
-        /// The l.
+        ///     The l.
         /// </value>
         public double L { get; set; }
 

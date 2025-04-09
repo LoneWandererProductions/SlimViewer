@@ -27,7 +27,9 @@ namespace CommonDialogs
         /// <summary>
         ///     Initializes a new instance of the FolderBrowser dialog.
         /// </summary>
-        internal FolderBrowser() : this(string.Empty) { }
+        internal FolderBrowser() : this(string.Empty)
+        {
+        }
 
         /// <inheritdoc />
         /// <summary>

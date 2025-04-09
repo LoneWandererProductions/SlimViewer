@@ -184,10 +184,7 @@ namespace CommonControls
         /// <returns>Transformed Point.</returns>
         private Point TransformMousePosition(Point mousePosition)
         {
-            if (_imageTransform == null)
-            {
-                return mousePosition;
-            }
+            if (_imageTransform == null) return mousePosition;
 
             return _imageTransform.Inverse.Transform(mousePosition);
         }
@@ -236,8 +233,8 @@ namespace CommonControls
                     case ImageZoomTools.Ellipse:
                         // Calculate the center of the rectangle
                         var center = new Point(
-                            selectionRect.Left + (selectionRect.Width / 2),
-                            selectionRect.Top + (selectionRect.Height / 2));
+                            selectionRect.Left + selectionRect.Width / 2,
+                            selectionRect.Top + selectionRect.Height / 2);
 
                         // Draw the ellipse with the calculated center and half the width and height as radii
                         drawingContext.DrawEllipse(null, dashedPen, center, selectionRect.Width / 2,

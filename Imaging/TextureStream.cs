@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
-using Mathematics;
 
 // ReSharper disable UnusedMember.Local
 
@@ -57,24 +56,23 @@ namespace Imaging
 
             // Set pixels directly
             for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
             {
-                for (var x = 0; x < width; x++)
-                {
-                    var value = useTurbulence
-                        ? noiseGen.Turbulence(x, y, turbulenceSize)
-                        : useSmoothNoise
-                            ? noiseGen.SmoothNoise(x, y)
-                            : noiseGen.GetNoise(x, y); // Use GetNoise for basic noise
+                var value = useTurbulence
+                    ? noiseGen.Turbulence(x, y, turbulenceSize)
+                    : useSmoothNoise
+                        ? noiseGen.SmoothNoise(x, y)
+                        : noiseGen.GetNoise(x, y); // Use GetNoise for basic noise
 
-                    // Normalize value to 0.0 - 1.0 range
-                    var normalizedValue = Math.Clamp(value / 255.0, 0.0, 1.0);
+                // Normalize value to 0.0 - 1.0 range
+                var normalizedValue = Math.Clamp(value / 255.0, 0.0, 1.0);
 
-                    // Then, apply the color scaling
-                    var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * normalizedValue), minValue, maxValue);
+                // Then, apply the color scaling
+                var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * normalizedValue), minValue,
+                    maxValue);
 
 
-                    pixelData.Add((x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue)));
-                }
+                pixelData.Add((x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue)));
             }
 
             // Use SIMD-based bulk pixel setting
@@ -116,11 +114,11 @@ namespace Imaging
                 var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
 
                 // Adjust turbulence value like in the C code (divide by 4)
-                var L = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230);  // Lightness adjustment
+                var L = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230); // Lightness adjustment
 
                 // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
-                var H = 190;  // Adjusted Hue value closer to light blue
-                var S = 200;  // Reduced Saturation for a more muted, light blue
+                var H = 190; // Adjusted Hue value closer to light blue
+                var S = 200; // Reduced Saturation for a more muted, light blue
 
                 // Convert HSL to RGB
                 var color = HsLtoRgb(H, S, L);
@@ -171,9 +169,9 @@ namespace Imaging
             for (var x = 0; x < width; x++)
             {
                 // Replace fixed NoiseWidth/NoiseHeight with width/height
-                var xyValue = (x * xPeriod / width + y * yPeriod / height) +
+                var xyValue = x * xPeriod / width + y * yPeriod / height +
                               turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0 +
-                              (Math.Sin((x + y) * 0.1) * 0.5); // Slight random distortion
+                              Math.Sin((x + y) * 0.1) * 0.5; // Slight random distortion
 
                 var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
 
@@ -327,8 +325,8 @@ namespace Imaging
             // Cover the entire image by looping along the top and left edges
             for (var offset = 0; offset < width + height; offset += lineSpacing)
             {
-                var topEdgePoint = new Point(offset, 0);    // Shift along the top edge
-                var leftEdgePoint = new Point(0, offset);   // Shift along the left edge
+                var topEdgePoint = new Point(offset, 0); // Shift along the top edge
+                var leftEdgePoint = new Point(0, offset); // Shift along the left edge
 
                 DrawFullLine(crosshatchBitmap, topEdgePoint, anglePrimary, pen);
                 DrawFullLine(crosshatchBitmap, leftEdgePoint, anglePrimary, pen);
@@ -340,7 +338,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Draws a line from the given start point at the specified angle, covering the entire image.
+        ///     Draws a line from the given start point at the specified angle, covering the entire image.
         /// </summary>
         /// <param name="bitmap">The image on which to draw.</param>
         /// <param name="startPoint">The starting point of the line.</param>
@@ -358,15 +356,17 @@ namespace Imaging
             var maxDistance = Math.Max(width, height) * Math.Sqrt(2); // Diagonal coverage
 
             // Calculate line endpoints far enough to cover the entire image
-            var endpointStart = new PointF((float)(startPoint.X + dx * maxDistance), (float)(startPoint.Y + dy * maxDistance));
-            var endpointEnd = new PointF((float)(startPoint.X - dx * maxDistance), (float)(startPoint.Y - dy * maxDistance));
+            var endpointStart = new PointF((float)(startPoint.X + dx * maxDistance),
+                (float)(startPoint.Y + dy * maxDistance));
+            var endpointEnd = new PointF((float)(startPoint.X - dx * maxDistance),
+                (float)(startPoint.Y - dy * maxDistance));
 
             using var graphics = Graphics.FromImage(bitmap);
             graphics.DrawLine(pen, endpointStart, endpointEnd);
         }
 
         /// <summary>
-        /// Generates a concrete texture bitmap.
+        ///     Generates a concrete texture bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -378,7 +378,7 @@ namespace Imaging
         /// <param name="turbulencePower">The turbulence power.</param>
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>
-        /// Concrete Texture Bitmap
+        ///     Concrete Texture Bitmap
         /// </returns>
         internal static Bitmap GenerateConcreteBitmap(
             int width,
@@ -395,25 +395,23 @@ namespace Imaging
             var bitmap = new Bitmap(width, height);
 
             for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
             {
-                for (var x = 0; x < width; x++)
-                {
-                    var xyValue = (x * xPeriod / width) + (y * yPeriod / height) +
-                                  (turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0);
+                var xyValue = x * xPeriod / width + y * yPeriod / height +
+                              turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0;
 
-                    var sineValue = 256 * Math.Abs(Math.Sin(xyValue * Math.PI));
+                var sineValue = 256 * Math.Abs(Math.Sin(xyValue * Math.PI));
 
-                    var grayscale = Math.Clamp((int)sineValue, minValue, maxValue);
-                    var color = Color.FromArgb(alpha, grayscale, grayscale, grayscale);
-                    bitmap.SetPixel(x, y, color);
-                }
+                var grayscale = Math.Clamp((int)sineValue, minValue, maxValue);
+                var color = Color.FromArgb(alpha, grayscale, grayscale, grayscale);
+                bitmap.SetPixel(x, y, color);
             }
 
             return bitmap;
         }
 
         /// <summary>
-        /// Generates a canvas texture bitmap.
+        ///     Generates a canvas texture bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
@@ -427,7 +425,7 @@ namespace Imaging
         /// <param name="edgeJaggednessLimit">The edge jaggedness limit.</param>
         /// <param name="jaggednessThreshold">The jaggedness threshold.</param>
         /// <returns>
-        /// Canvas Texture Bitmap
+        ///     Canvas Texture Bitmap
         /// </returns>
         internal static Bitmap GenerateCanvasBitmap(
             int width,
@@ -467,7 +465,7 @@ namespace Imaging
                         for (var y = cutoffStart; y < cutoffEnd; y += 5)
                         {
                             var xOffset = waveAmplitude * Math.Sin(waveFrequency * y)
-                                          + (randomizationFactor * (random.NextDouble() - 0.5));
+                                          + randomizationFactor * (random.NextDouble() - 0.5);
                             path.AddLine(x + (float)xOffset, y, x + (float)xOffset, y + 5);
                         }
 
@@ -487,7 +485,7 @@ namespace Imaging
                         for (var x = cutoffStart; x < cutoffEnd; x += 5)
                         {
                             var yOffset = waveAmplitude * Math.Sin(waveFrequency * x)
-                                          + (randomizationFactor * (random.NextDouble() - 0.5));
+                                          + randomizationFactor * (random.NextDouble() - 0.5);
                             path.AddLine(x, y + (float)yOffset, x + 5, y + (float)yOffset);
                         }
 
@@ -501,7 +499,7 @@ namespace Imaging
 
 
         /// <summary>
-        /// HSL to RGB.
+        ///     HSL to RGB.
         /// </summary>
         /// <param name="h">The h.</param>
         /// <param name="s">The s.</param>
@@ -522,7 +520,7 @@ namespace Imaging
             }
             else
             {
-                var q = l < 0.5 ? l * (1 + s) : (l + s - l * s);
+                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
                 var p = 2 * l - q;
 
                 r = HueToRgb(p, q, h + 1.0 / 3.0);
@@ -539,7 +537,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Hues to RGB.
+        ///     Hues to RGB.
         /// </summary>
         /// <param name="p">The p.</param>
         /// <param name="q">The q.</param>
