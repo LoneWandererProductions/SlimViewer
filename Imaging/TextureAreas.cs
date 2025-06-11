@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+#nullable enable
 using System;
 using System.Drawing;
 
@@ -38,14 +39,18 @@ namespace Imaging
             TextureType texture,
             MaskShape shape,
             ImageRegister imageSettings,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null)
         {
             if (width <= 0 || height <= 0)
+            {
                 throw new ArgumentException(ImagingResources.InvalidDimensions);
+            }
 
             if (imageSettings == null)
+            {
                 throw new ArgumentNullException(nameof(imageSettings), ImagingResources.ImageSettingsNull);
+            }
 
             // Use 0 for x and y if startPoint is null
             var x = startPoint?.X ?? 0;
