@@ -69,7 +69,7 @@ namespace ExtendedSystemObjects
         /// <param name="binary">The binary.</param>
         /// <param name="toBase">To base.</param>
         /// <returns>a binary string to target number system</returns>
-        public static int BinaryToBase(this string binary, int toBase)
+        public static int ParseStringToInt(this string binary, int toBase)
         {
             //2 was the base, convert back to base
             return Convert.ToInt32(binary, toBase);
@@ -82,7 +82,10 @@ namespace ExtendedSystemObjects
         /// <returns>Rounded  up float to int value.</returns>
         public static int RoundToInt(this float value)
         {
-            if (value < 0) return (int)(value - 0.5f); // round down for negative values
+            if (value < 0)
+            {
+                return (int)(value - 0.5f); // round down for negative values
+            }
 
             return (int)(value + 0.5f); // round up for positive values
         }

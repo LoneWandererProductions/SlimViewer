@@ -10,7 +10,7 @@
 // ReSharper disable EventNeverSubscribedTo.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeInternal
-
+// ReSharper disable UnusedMethodReturnValue.Global
 
 using System;
 using System.Collections.Generic;
@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
@@ -108,11 +109,12 @@ namespace ExtendedSystemObjects
         public long Add(TU data, TimeSpan? expiryTime = null, string description = "", long identifier = -1)
         {
             // If identifier is not provided (default -1), generate a new identifier
-            if (identifier == -1) identifier = Utility.GetFirstAvailableIndex(_vault.Keys.ToList());
+            if (identifier == -1)
+            {
+                identifier = Utility.GetFirstAvailableIndex(_vault.Keys.ToList());
+            }
 
-            var expiry = expiryTime;
-
-            var vaultItem = new VaultItem<TU>(data, expiry, description);
+            var vaultItem = new VaultItem<TU>(data, expiryTime, description);
 
             _lock.EnterWriteLock();
             try
@@ -127,11 +129,12 @@ namespace ExtendedSystemObjects
             // Now calculate memory usage outside the write lock
             var currentMemoryUsage = CalculateMemoryUsage();
             if (currentMemoryUsage > MemoryThreshold)
+            {
                 MemoryThresholdExceeded?.Invoke(this, new VaultMemoryThresholdExceededEventArgs(currentMemoryUsage));
+            }
 
             return identifier;
         }
-
 
         /// <summary>
         ///     Gets the data by its identifier.
@@ -205,12 +208,18 @@ namespace ExtendedSystemObjects
 
                 // Iterate over the vault and classify items
                 foreach (var (identifier, item) in _vault)
+                {
                     if (item.HasExpired && item.HasExpireTime)
+                    {
                         // Add expired item keys for removal
                         expiredKeys.Add(identifier);
+                    }
                     else
+                    {
                         // Add non-expired item data
                         nonExpiredItems.Add(item.Data);
+                    }
+                }
 
                 // Remove expired items with a write lock
                 if (expiredKeys.Count > 0)
@@ -218,7 +227,10 @@ namespace ExtendedSystemObjects
                     _lock.EnterWriteLock();
                     try
                     {
-                        foreach (var key in expiredKeys) _vault.Remove(key);
+                        foreach (var key in expiredKeys)
+                        {
+                            _vault.Remove(key);
+                        }
                     }
                     finally
                     {
@@ -246,7 +258,9 @@ namespace ExtendedSystemObjects
             {
                 foreach (var key in _vault.Where(kvp => kvp.Value.HasExpired && kvp.Value.HasExpireTime)
                              .Select(kvp => kvp.Key).ToList())
+                {
                     _vault.Remove(key);
+                }
             }
             finally
             {
@@ -281,7 +295,10 @@ namespace ExtendedSystemObjects
             try
             {
                 // Try to get the item from the vault
-                if (!_vault.TryGetValue(identifier, out var item)) return default; // Item not found
+                if (!_vault.TryGetValue(identifier, out var item))
+                {
+                    return default; // Item not found
+                }
 
                 // Check if the item has expired and can expire
                 if (item.HasExpireTime && item.HasExpired)
@@ -320,12 +337,18 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void AddMetadata(long identifier, VaultMetadata metaData)
         {
-            if (metaData == null) throw new ArgumentNullException(nameof(metaData));
+            if (metaData == null)
+            {
+                throw new ArgumentNullException(nameof(metaData));
+            }
 
             _lock.EnterWriteLock();
             try
             {
-                if (!_vault.ContainsKey(identifier)) return;
+                if (!_vault.ContainsKey(identifier))
+                {
+                    return;
+                }
 
                 _vault[identifier].Description = metaData.Description;
                 _vault[identifier].HasExpireTime = metaData.HasExpireTime;

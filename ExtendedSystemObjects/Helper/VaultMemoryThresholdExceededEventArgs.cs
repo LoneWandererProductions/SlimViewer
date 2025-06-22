@@ -1,14 +1,17 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/VaultMemoryThresholdExceededEventArgs.cs
+ * PROJECT:     ExtendedSystemObjects.Helper
+ * FILE:        ExtendedSystemObjects.Helper/VaultMemoryThresholdExceededEventArgs.cs
  * PURPOSE:     Event when Memory exceeds a certain threshold.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable MemberCanBeInternal
+
 using System;
 
-namespace ExtendedSystemObjects
+namespace ExtendedSystemObjects.Helper
 {
     /// <inheritdoc />
     /// <summary>
