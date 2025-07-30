@@ -138,7 +138,7 @@ namespace CommonDialogs
         /// <param name="path">The path.</param>
         public void Initiate(string path)
         {
-            SetItems(path);
+            _ = SetItems(path);
         }
 
         /// <summary>
@@ -146,18 +146,19 @@ namespace CommonDialogs
         ///     Function to set items (folders and files) asynchronously
         /// </summary>
         /// <param name="path">The path.</param>
-        private async void SetItems(string path)
+        private async Task SetItems(string path)
         {
             var directories = Array.Empty<string>();
             var files = Array.Empty<string>();
+            var includeFiles = ShowFiles; // ✅ Lokale Variable, UI-Thread-safe
 
-            // Use asynchronous loading to prevent UI freezing
             await Task.Run(() =>
             {
                 if (Directory.Exists(path))
                 {
                     directories = Directory.GetDirectories(path);
-                    if (ShowFiles) files = Directory.GetFiles(path);
+                    if (includeFiles)
+                        files = Directory.GetFiles(path);
                 }
                 else
                 {
@@ -165,22 +166,23 @@ namespace CommonDialogs
                 }
             });
 
-            // Clear TreeView before repopulating
-            FoldersItem.Items.Clear();
+            await Dispatcher.InvokeAsync(() =>
+            {
+                FoldersItem.Items.Clear();
 
-            // Add directories asynchronously
-            foreach (var item in directories.Select(CreateTreeViewItem)) _ = FoldersItem.Items.Add(item);
+                foreach (var item in directories.Select(CreateTreeViewItem))
+                    FoldersItem.Items.Add(item);
 
-            // Optionally add files asynchronously
-            if (ShowFiles)
-                foreach (var fileItem in files.Select(file =>
-                             new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
-                    _ = FoldersItem.Items.Add(fileItem);
+                if (includeFiles)
+                {
+                    foreach (var fileItem in files.Select(file =>
+                                 new TreeViewItem { Header = Path.GetFileName(file), Tag = file }))
+                        FoldersItem.Items.Add(fileItem);
+                }
 
-            // Update Paths property with the current path
-            Paths = path;
+                Paths = path;
+            });
         }
-
 
         /// <summary>
         ///     Creates the TreeView item.
