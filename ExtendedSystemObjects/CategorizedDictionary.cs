@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
@@ -93,17 +94,25 @@ namespace ExtendedSystemObjects
         /// <returns>True if equal, otherwise false.</returns>
         public bool Equals(CategorizedDictionary<TK, TV> other)
         {
-            if (other == null || Count != other.Count) return false;
+            if (other == null || Count != other.Count)
+            {
+                return false;
+            }
 
             foreach (var (key, category, value) in this)
             {
-                if (!other.TryGetValue(key, out var otherValue)) return false;
+                if (!other.TryGetValue(key, out var otherValue))
+                {
+                    return false;
+                }
 
                 var otherCategory = other.GetCategoryAndValue(key)?.Category ?? string.Empty;
 
                 if (!string.Equals(category, otherCategory, StringComparison.OrdinalIgnoreCase) ||
                     !EqualityComparer<TV>.Default.Equals(value, otherValue))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -118,7 +127,8 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                return _data.Keys; // Create a copy for thread safety
+                return _data.Keys.ToList();
+                // Create a copy for thread safety
             }
             finally
             {
@@ -137,10 +147,7 @@ namespace ExtendedSystemObjects
             _lock.EnterWriteLock();
             try
             {
-                if (_data.ContainsKey(key))
-                    throw new ArgumentException($"{ExtendedSystemObjectsResources.ErrorKeyExists}{key}");
-
-                _data[key] = (category, value);
+                AddInternal(category, key, value);
             }
             finally
             {
@@ -155,10 +162,20 @@ namespace ExtendedSystemObjects
         /// <param name="value">The value.</param>
         public void Add(TK key, TV value)
         {
+            Add(string.Empty, key, value);
+        }
+
+        /// <summary>
+        ///     Removes the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>If item was removed</returns>
+        public bool Remove(TK key)
+        {
             _lock.EnterWriteLock();
             try
             {
-                Add(string.Empty, key, value);
+                return _data.Remove(key);
             }
             finally
             {
@@ -252,7 +269,10 @@ namespace ExtendedSystemObjects
             _lock.EnterWriteLock();
             try
             {
-                if (!_data.TryGetValue(key, out var entry)) return false;
+                if (!_data.TryGetValue(key, out var entry))
+                {
+                    return false;
+                }
 
                 _data[key] = (newCategory, entry.Value);
                 return true;
@@ -333,6 +353,22 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        ///     Clears this instance.
+        /// </summary>
+        public void Clear()
+        {
+            _lock.EnterWriteLock();
+            try
+            {
+                _data.Clear();
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
         ///     Checks if two CategorizedDictionary instances are equal and provides a message.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
@@ -346,17 +382,17 @@ namespace ExtendedSystemObjects
         {
             if (expected == null || actual == null)
             {
-                message = ExtendedSystemObjectsResources.NullDictionaries;
+                message = SharedResources.NullDictionaries;
                 return false;
             }
 
             if (expected.Equals(actual))
             {
-                message = ExtendedSystemObjectsResources.DictionariesEqual;
+                message = SharedResources.DictionariesEqual;
                 return true;
             }
 
-            message = ExtendedSystemObjectsResources.DictionaryComparisonFailed;
+            message = SharedResources.DictionaryComparisonFailed;
             return false;
         }
 
@@ -371,7 +407,7 @@ namespace ExtendedSystemObjects
             try
             {
                 var entries = _data.Select(entry =>
-                    string.Format(ExtendedSystemObjectsResources.KeyCategoryValueFormat, entry.Key,
+                    string.Format(SharedResources.KeyCategoryValueFormat, entry.Key,
                         entry.Value.Category,
                         entry.Value.Value));
 
@@ -428,13 +464,30 @@ namespace ExtendedSystemObjects
 
                 foreach (var (key, category, value) in this)
                 {
-                    hashCode = hashCode * 23 + EqualityComparer<TK>.Default.GetHashCode(key);
-                    hashCode = hashCode * 23 + (category?.GetHashCode() ?? 0);
-                    hashCode = hashCode * 23 + EqualityComparer<TV>.Default.GetHashCode(value);
+                    hashCode = (hashCode * 23) + EqualityComparer<TK>.Default.GetHashCode(key);
+                    hashCode = (hashCode * 23) + (category?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 23) + EqualityComparer<TV>.Default.GetHashCode(value);
                 }
 
                 return hashCode;
             }
+        }
+
+        /// <summary>
+        ///     Adds the internal.
+        /// </summary>
+        /// <param name="category">The category.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <exception cref="System.ArgumentException"></exception>
+        private void AddInternal(string category, TK key, TV value)
+        {
+            if (_data.ContainsKey(key))
+            {
+                throw new ArgumentException($"{SharedResources.ErrorKeyExists}{key}");
+            }
+
+            _data[key] = (category, value);
         }
     }
 }

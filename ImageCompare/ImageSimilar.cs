@@ -7,6 +7,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using ExtendedSystemObjects;
 
 namespace ImageCompare
@@ -16,6 +17,8 @@ namespace ImageCompare
     ///     Struct for checking duplicate Images
     /// </summary>
     /// <seealso cref="T:System.IComparable`1" />
+    [DebuggerDisplay(
+        "R = {R}, G = {G}, B = {B}, Id = {Id}")]
     internal readonly struct ImageSimilar : IComparable<ImageSimilar>
     {
         /// <summary>
@@ -81,6 +84,12 @@ namespace ImageCompare
         /// </value>
         internal int Id { get; init; }
 
+        /// <summary>
+        ///     Gets the hash.
+        /// </summary>
+        /// <value>
+        ///     The hash.
+        /// </value>
         public byte[] Hash { get; init; }
 
         /// <summary>
@@ -113,13 +122,25 @@ namespace ImageCompare
         /// </returns>
         public int CompareTo(ImageSimilar other)
         {
-            if (Image == null) return 0;
+            if (Image == null)
+            {
+                return 0;
+            }
 
-            if (!other.R.Interval(R, ImageResources.ColorThreshold)) return 0;
+            if (!other.R.Interval(R, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
-            if (!other.G.Interval(G, ImageResources.ColorThreshold)) return 0;
+            if (!other.G.Interval(G, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
-            if (!other.B.Interval(B, ImageResources.ColorThreshold)) return 0;
+            if (!other.B.Interval(B, ImageResources.ColorThreshold))
+            {
+                return 0;
+            }
 
             return 1;
         }

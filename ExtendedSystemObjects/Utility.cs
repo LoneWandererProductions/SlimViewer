@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
@@ -33,7 +34,10 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetFirstAvailableIndex(List<int> lst)
         {
-            if (lst == null) throw new ArgumentNullException(nameof(lst));
+            if (lst == null)
+            {
+                throw new ArgumentNullException(nameof(lst));
+            }
 
             lock (lst) // Ensure exclusive access to the list
             {
@@ -41,8 +45,12 @@ namespace ExtendedSystemObjects
                 var snapshot = new HashSet<int>(lst.ToList());
 
                 for (var i = 0; i < int.MaxValue; i++)
+                {
                     if (!snapshot.Contains(i))
+                    {
                         return i;
+                    }
+                }
             }
 
             throw new InvalidOperationException("No available index found.");
@@ -58,7 +66,10 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long GetFirstAvailableIndex(List<long> lst)
         {
-            if (lst == null) throw new ArgumentNullException(nameof(lst));
+            if (lst == null)
+            {
+                throw new ArgumentNullException(nameof(lst));
+            }
 
             lock (lst) // Ensure exclusive access to the list
             {
@@ -66,11 +77,66 @@ namespace ExtendedSystemObjects
                 var snapshot = new HashSet<long>(lst.ToList());
 
                 for (long i = 0; i < long.MaxValue; i++)
+                {
                     if (!snapshot.Contains(i))
+                    {
                         return i;
+                    }
+                }
             }
 
             throw new InvalidOperationException("No available index found.");
+        }
+
+        /// <summary>
+        ///     Performs binary search on a sorted span of integers.
+        /// </summary>
+        /// <param name="sortedKeys">The sorted span of integers.</param>
+        /// <param name="target">The value to search for.</param>
+        /// <returns>
+        ///     Index of the element if found; otherwise, the bitwise complement of the insertion index.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int BinarySearch(ReadOnlySpan<int> sortedKeys, int target)
+        {
+            return BinarySearch(sortedKeys, sortedKeys.Length, target);
+        }
+
+        /// <summary>
+        ///     Internal binary search method using a specified count of elements.
+        /// </summary>
+        /// <param name="sortedKeys">The sorted span of integers.</param>
+        /// <param name="count">The number of elements to consider from the start of the span.</param>
+        /// <param name="target">The value to search for.</param>
+        /// <returns>
+        ///     Index of the element if found; otherwise, the bitwise complement of the insertion index.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int BinarySearch(ReadOnlySpan<int> sortedKeys, int count, int target)
+        {
+            int left = 0, right = count - 1;
+
+            while (left <= right)
+            {
+                var mid = left + ((right - left) >> 1);
+                var midKey = sortedKeys[mid];
+
+                if (midKey == target)
+                {
+                    return mid;
+                }
+
+                if (midKey < target)
+                {
+                    left = mid + 1;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+
+            return ~left;
         }
 
         /// <summary>
@@ -81,7 +147,10 @@ namespace ExtendedSystemObjects
         /// <returns>Next Element</returns>
         public static int GetNextElement(int position, List<int> lst)
         {
-            if (position == lst.Max()) return lst.Min();
+            if (position == lst.Max())
+            {
+                return lst.Min();
+            }
 
             var index = lst.IndexOf(position);
 
@@ -96,7 +165,10 @@ namespace ExtendedSystemObjects
         /// <returns>Previous Element</returns>
         public static int GetPreviousElement(int position, List<int> lst)
         {
-            if (position == lst.Min()) return lst.Max();
+            if (position == lst.Min())
+            {
+                return lst.Max();
+            }
 
             var index = lst.IndexOf(position);
 
@@ -114,8 +186,10 @@ namespace ExtendedSystemObjects
         public static List<int> GetAvailableIndexes(List<int> lst, int count)
         {
             if (count < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(count),
-                    ExtendedSystemObjectsResources.ErrorValueNotAllowed);
+                    SharedResources.ErrorValueNotAllowed);
+            }
 
             var keys = new List<int>();
             for (var i = 0; i < count; i++)
@@ -149,13 +223,19 @@ namespace ExtendedSystemObjects
                 if (Math.Abs(sortedList[i - 1] + 1) == cache)
                 {
                     //should be only the first case
-                    if (!currentSequence.Contains(i - 1)) currentSequence.Add(i - 1);
+                    if (!currentSequence.Contains(i - 1))
+                    {
+                        currentSequence.Add(i - 1);
+                    }
 
                     currentSequence.Add(i);
                 }
                 else
                 {
-                    if (currentSequence.Count == 0) continue;
+                    if (currentSequence.Count == 0)
+                    {
+                        continue;
+                    }
 
                     sequenceGroups.Add(currentSequence);
                     currentSequence = new List<int>();
@@ -190,13 +270,19 @@ namespace ExtendedSystemObjects
                 if (Math.Abs(numbers[i - 1] + 1) == cache)
                 {
                     //should be only the first case
-                    if (!currentSequence.Contains(i - 1)) currentSequence.Add(i - 1);
+                    if (!currentSequence.Contains(i - 1))
+                    {
+                        currentSequence.Add(i - 1);
+                    }
 
                     currentSequence.Add(i);
                 }
                 else
                 {
-                    if (currentSequence.Count == 0) continue;
+                    if (currentSequence.Count == 0)
+                    {
+                        continue;
+                    }
 
                     sequenceGroups.Add(currentSequence);
                     currentSequence = new List<int>();
@@ -221,46 +307,47 @@ namespace ExtendedSystemObjects
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
         public static List<KeyValuePair<int, int>> Sequencer(List<int> numbers, int stepWidth, int sequenceLength)
         {
-            numbers.Sort();
-            var max = numbers.Max();
-
-            var sequenceGroups = new List<List<int>>();
-            var currentSequence = new List<int>();
-            var observer = new List<int>();
-
-            foreach (var element in numbers)
+            if (numbers == null || numbers.Count == 0 || sequenceLength <= 1)
             {
-                var cache = Math.Abs(element);
-                var count = cache;
-
-                do
-                {
-                    if (currentSequence.Contains(cache)) break;
-
-                    count += stepWidth;
-
-                    if (observer.Contains(count)) continue;
-
-                    if (!numbers.Contains(count)) break;
-
-                    currentSequence.Add(count);
-                    observer.Add(count);
-                } while (count < max);
-
-                if (currentSequence.Count == 0) continue;
-
-                currentSequence.AddFirst(cache);
-                sequenceGroups.Add(currentSequence);
-                currentSequence = new List<int>();
+                return null;
             }
 
-            return sequenceGroups.Count == 0
-                ? null
-                : (from stack in sequenceGroups
-                    where stack.Count >= sequenceLength
-                    let start = stack[0]
-                    let end = stack[^1]
-                    select new KeyValuePair<int, int>(start, end)).ToList();
+            numbers.Sort();
+            var numberSet = new HashSet<int>(numbers);
+
+            var result = new List<KeyValuePair<int, int>>();
+            var visited = new HashSet<int>();
+
+            foreach (var num in numbers)
+            {
+                if (visited.Contains(num))
+                {
+                    continue;
+                }
+
+                var current = num;
+                var streak = 1;
+
+                // Try to build sequence by jumping stepWidth repeatedly
+                while (numberSet.Contains(current + stepWidth))
+                {
+                    current += stepWidth;
+                    streak++;
+                }
+
+                if (streak >= sequenceLength)
+                {
+                    result.Add(new KeyValuePair<int, int>(num, current));
+
+                    // Mark all in this sequence as visited to avoid duplicates
+                    for (var val = num; val <= current; val += stepWidth)
+                    {
+                        visited.Add(val);
+                    }
+                }
+            }
+
+            return result.Count == 0 ? null : result;
         }
 
         /// <summary>
@@ -273,13 +360,19 @@ namespace ExtendedSystemObjects
         {
             var result = new List<(int start, int end, int value)>();
 
-            if (numbers == null || numbers.Count == 0) return result;
+            if (numbers == null || numbers.Count == 0)
+            {
+                return result;
+            }
 
             var start = 0;
             for (var i = 1; i <= numbers.Count; i++)
             {
                 // Check if we're at the end of a sequence or at the end of the list
-                if (i != numbers.Count && numbers[i] == numbers[start]) continue;
+                if (i != numbers.Count && numbers[i] == numbers[start])
+                {
+                    continue;
+                }
 
                 result.Add((start, i - 1, numbers[start]));
                 start = i;

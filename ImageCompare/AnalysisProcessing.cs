@@ -27,7 +27,7 @@ namespace ImageCompare
         /// <summary>
         ///     The render
         /// </summary>
-        private static readonly ImageRender Render = new();
+        private static IImageRender _render;
 
         /// <summary>
         ///     Compares a list of Images and returns the Difference in Percentage
@@ -38,14 +38,23 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static List<float> GetSimilarity(List<string> imagePaths)
         {
-            if (imagePaths.IsNullOrEmpty()) return null;
+            if (imagePaths.IsNullOrEmpty())
+            {
+                return null;
+            }
 
-            if (imagePaths.Count == 1) return null;
+            if (imagePaths.Count == 1)
+            {
+                return null;
+            }
 
             var paths = new List<string>(imagePaths);
 
             var path = imagePaths[0];
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path))
+            {
+                return null;
+            }
 
             var lst = new List<float>(paths.Count - 1);
 
@@ -57,6 +66,7 @@ namespace ImageCompare
 
                 //with sanity check in Case one file went missing, we won't have to stop everything
                 foreach (var element in paths.Where(File.Exists))
+                {
                     try
                     {
                         using var btm = new Bitmap(element);
@@ -71,6 +81,7 @@ namespace ImageCompare
                         Trace.WriteLine(ex);
                         throw new InvalidOperationException(ex.ToString());
                     }
+                }
             }
             catch (InvalidOperationException ex)
             {
@@ -80,7 +91,10 @@ namespace ImageCompare
             }
 
             //File was skipped? Return null
-            if (lst.Count != imagePaths.Count - 1) return null;
+            if (lst.Count != imagePaths.Count - 1)
+            {
+                return null;
+            }
 
             lst.AddFirst(100);
             return lst;
@@ -94,8 +108,10 @@ namespace ImageCompare
         /// <returns>ImageColor Object</returns>
         internal static ImageColor GenerateData(Bitmap bitmap, string path)
         {
+            _render = new ImageRender();
+
             //resize
-            bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
+            bitmap = _render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             //use our new Format
             var dbm = DirectBitmap.GetInstance(bitmap);
@@ -121,7 +137,7 @@ namespace ImageCompare
             var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
             //get greyscale
-            bitmap = Render.FilterImage(bitmap, FiltersType.GrayScale);
+            bitmap = _render.FilterImage(bitmap, FiltersType.GrayScale);
 
             //Get array Map for comparison
             dbm = DirectBitmap.GetInstance(bitmap);
@@ -164,7 +180,10 @@ namespace ImageCompare
         [return: MaybeNull]
         internal static ImageData GetImageDetails(string imagePath)
         {
-            if (!File.Exists(imagePath)) return null;
+            if (!File.Exists(imagePath))
+            {
+                return null;
+            }
 
             using var btm = new Bitmap(imagePath);
             var color = GenerateData(btm, string.Empty);
@@ -214,10 +233,12 @@ namespace ImageCompare
         /// <returns>The difference Bitmap</returns>
         internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
         {
+            _render = new ImageRender();
+
             var width = Math.Min(first.Width, second.Width);
             var height = Math.Min(first.Height, second.Height);
 
-            var canvas = Render.CutBitmap(first, 0, 0, height, width);
+            var canvas = _render.CutBitmap(first, 0, 0, height, width);
 
             using var dbmCanvas = new DirectBitmap(canvas);
             using var dbmCompare = new DirectBitmap(second);
@@ -234,7 +255,10 @@ namespace ImageCompare
                 for (var x = 0; x < width; x++)
                 {
                     var index = offset + x;
-                    if (canvasPixels[index] != comparePixels[index]) canvasPixels[index] = colorArgb;
+                    if (canvasPixels[index] != comparePixels[index])
+                    {
+                        canvasPixels[index] = colorArgb;
+                    }
                 }
             });
 

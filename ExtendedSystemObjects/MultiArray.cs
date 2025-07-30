@@ -2,15 +2,31 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ExtendedSystemObjects/MultiArray.cs
- * PURPOSE:     Some Extensions for Arrays, all generic
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PURPOSE:     Utility extensions for 2D and jagged arrays, with focus on performance and unsafe access.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ *
+ * DESCRIPTION:
+ *     This file contains a set of static helper methods to simplify working with multi-dimensional arrays.
+ *     It includes operations like deep cloning, row/column swapping, equality checks, span conversion,
+ *     and conversions between jagged and rectangular arrays using unsafe code for maximum performance.
  */
 
 using System;
 using System.Text;
+using ExtendedSystemObjects.Helper;
 
 namespace ExtendedSystemObjects
 {
+    /// <summary>
+    ///     Provides utility extensions for 2D arrays (`[,]`) and jagged arrays (`[][]`),
+    ///     including efficient operations such as swapping rows/columns, deep copying, comparing,
+    ///     and converting to spans or between formats.
+    ///     Designed for use with unmanaged types to leverage unsafe memory access for performance.
+    /// </summary>
+    /// <remarks>
+    ///     All methods are `static` and operate on arrays passed as parameters.
+    ///     Unsafe context is used in several methods to improve performance via pointer access.
+    /// </remarks>
     public static class MultiArray
     {
         /// <summary>
@@ -22,7 +38,9 @@ namespace ExtendedSystemObjects
         public static void SwapColumn<TValue>(this TValue[,] array, int xOne, int xTwo)
         {
             for (var i = 0; i < array.GetLength(1); i++)
+            {
                 (array[xOne, i], array[xTwo, i]) = (array[xTwo, i], array[xOne, i]);
+            }
         }
 
         /// <summary>
@@ -35,7 +53,9 @@ namespace ExtendedSystemObjects
         public static void SwapRow<TValue>(this TValue[,] array, int xOne, int xTwo)
         {
             for (var i = 0; i < array.GetLength(0); i++)
+            {
                 (array[i, xOne], array[i, xTwo]) = (array[i, xTwo], array[i, xOne]);
+            }
         }
 
         /// <summary>
@@ -61,9 +81,13 @@ namespace ExtendedSystemObjects
                     _ = str.Append(tmp);
 
                     if ((i + 1) % row == 0 && i + 1 >= row)
+                    {
                         _ = str.Append(Environment.NewLine);
+                    }
                     else
-                        _ = str.Append(ExtendedSystemObjectsResources.Separator);
+                    {
+                        _ = str.Append(SharedResources.Separator);
+                    }
                 }
             }
 
@@ -87,7 +111,7 @@ namespace ExtendedSystemObjects
                 for (var i = 0; i < array.GetLength(0); i++)
                 for (var j = 0; j < array.GetLength(1); j++)
                 {
-                    var cursor = i + j * array.GetLength(1);
+                    var cursor = i + (j * array.GetLength(1));
 
                     one[cursor] = two[cursor];
                 }
@@ -105,17 +129,27 @@ namespace ExtendedSystemObjects
         /// <returns>Equal or not</returns>
         public static unsafe bool Equal<TValue>(this TValue[,] array, TValue[,] compare) where TValue : unmanaged
         {
-            if (array.GetLength(0) != compare.GetLength(0)) return false;
+            if (array.GetLength(0) != compare.GetLength(0))
+            {
+                return false;
+            }
 
-            if (array.GetLength(1) != compare.GetLength(1)) return false;
+            if (array.GetLength(1) != compare.GetLength(1))
+            {
+                return false;
+            }
 
             var length = array.GetLength(0) * array.GetLength(1);
 
             fixed (TValue* one = array, two = compare)
             {
                 for (var i = 0; i < length; ++i)
+                {
                     if (!one[i].Equals(two[i]))
+                    {
                         return false;
+                    }
+                }
             }
 
             return true;
@@ -156,11 +190,16 @@ namespace ExtendedSystemObjects
 
             // Iterate through each row
             for (var i = 0; i < rows; i++)
+            {
                 // Pin the current row
                 fixed (TValue* rowPtr = jaggedArray[i])
                 {
-                    for (var j = 0; j < cols; j++) result[i, j] = rowPtr[j]; // Copy the value directly
+                    for (var j = 0; j < cols; j++)
+                    {
+                        result[i, j] = rowPtr[j]; // Copy the value directly
+                    }
                 }
+            }
 
             return result;
         }

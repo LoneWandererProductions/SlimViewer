@@ -15,6 +15,9 @@ using System.Collections.Generic;
 
 namespace ExtendedSystemObjects
 {
+    /// <summary>
+    ///     Meta Data for the class
+    /// </summary>
     public sealed class VaultMetadata
     {
         /// <summary>
@@ -65,7 +68,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///     <c>true</c> if this instance has expire time; otherwise, <c>false</c>.
         /// </value>
-        public bool HasExpireTime { get; set; }
+        public bool HasExpireTime { get; init; }
 
         /// <summary>
         ///     Gets or sets the additional metadata.

@@ -22,7 +22,7 @@ namespace DataFormatter
         ///     Gets the parts.
         /// </summary>
         /// <param name="str">The string.</param>
-        /// <param separator="separator"></param>
+        /// <param separator="separator">The splitter for the csv file.</param>
         /// <param name="separator">the splitter used in the csv</param>
         /// <returns>split Parts</returns>
         internal static List<string> GetParts(string str, char separator)
@@ -43,7 +43,10 @@ namespace DataFormatter
             var bytesRead = fs.Read(buffer, 0, 5);
 
             // Check if the file is smaller than the BOM sizes we are checking
-            if (bytesRead < 2) return Encoding.Default; // Default ANSI code page if not enough bytes for BOM
+            if (bytesRead < 2)
+            {
+                return Encoding.Default; // Default ANSI code page if not enough bytes for BOM
+            }
 
             switch (buffer[0])
             {
