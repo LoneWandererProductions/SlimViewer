@@ -72,7 +72,6 @@ namespace Imaging
                     var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * normalizedValue), minValue,
                         maxValue);
 
-
                     pixelData.Add((x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue)));
                 }
             }
@@ -83,7 +82,6 @@ namespace Imaging
 
             return noiseBitmap.Bitmap;
         }
-
 
         /// <summary>
         ///     Generates the clouds bitmap.
@@ -118,9 +116,9 @@ namespace Imaging
                 // Adjust turbulence value like in the C code (divide by 4)
                 var l = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230); // Lightness adjustment
 
-                // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
-                var h = 190; // Adjusted Hue value closer to light blue
-                var s = 200; // Reduced Saturation for a more muted, light blue
+                    // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
+                    const int h = 190; // Adjusted Hue value closer to light blue
+                    const int s = 200; // Reduced Saturation for a more muted, light blue
 
                 // Convert HSL to RGB
                 var color = HsLtoRgb(h, s, l);
@@ -497,7 +495,6 @@ namespace Imaging
             return canvasBitmap;
         }
 
-
         /// <summary>
         ///     HSL to RGB.
         /// </summary>
@@ -547,12 +544,12 @@ namespace Imaging
         {
             if (t < 0)
             {
-                t += 1;
+                t++;
             }
 
             if (t > 1)
             {
-                t -= 1;
+                t--;
             }
 
             if (t < 1.0 / 6.0)

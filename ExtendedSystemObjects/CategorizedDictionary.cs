@@ -14,6 +14,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using ExtendedSystemObjects.Helper;
@@ -26,6 +27,7 @@ namespace ExtendedSystemObjects
     /// </summary>
     /// <typeparam name="TK">Key Type</typeparam>
     /// <typeparam name="TV">Value Type</typeparam>
+    [DebuggerDisplay("{ToString()}")]
     public sealed class CategorizedDictionary<TK, TV> : IEnumerable, IEquatable<CategorizedDictionary<TK, TV>>
     {
         /// <summary>
@@ -76,6 +78,59 @@ namespace ExtendedSystemObjects
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the <see cref="TV" /> with the specified key.
+        /// </summary>
+        /// <value>
+        ///     The <see cref="TV" />.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">
+        ///     The given key '{key}' was not present in the
+        ///     dictionary.
+        /// </exception>
+        public TV this[TK key]
+        {
+            get
+            {
+                _lock.EnterReadLock();
+                try
+                {
+                    if (_data.TryGetValue(key, out var entry))
+                    {
+                        return entry.Value;
+                    }
+
+                    throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.");
+                }
+                finally
+                {
+                    _lock.ExitReadLock();
+                }
+            }
+            set
+            {
+                _lock.EnterWriteLock();
+                try
+                {
+                    if (_data.ContainsKey(key))
+                    {
+                        var (Category, Value) = _data[key];
+                        _data[key] = (Category, value);
+                    }
+                    else
+                    {
+                        _data[key] = (string.Empty, value);
+                    }
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Returns an enumerator for iterating over the dictionary's key-value pairs.
@@ -116,6 +171,27 @@ namespace ExtendedSystemObjects
             }
 
             return true;
+        }
+
+        /// <summary>
+        ///     Gets the category.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException"></exception>
+        public string GetCategory(TK key)
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                if (_data.TryGetValue(key, out var entry))
+                {
+                    return entry.Category;
+                }
+
+                throw new KeyNotFoundException();
+            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -184,6 +260,24 @@ namespace ExtendedSystemObjects
         }
 
         /// <summary>
+        ///     Determines whether the dictionary contains the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate in the dictionary.</param>
+        /// <returns>true if the dictionary contains an element with the specified key; otherwise, false.</returns>
+        public bool ContainsKey(TK key)
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                return _data.ContainsKey(key);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+
+        /// <summary>
         ///     Gets a value from the dictionary based on the key.
         /// </summary>
         /// <param name="key">The key of the value to get.</param>
@@ -237,6 +331,12 @@ namespace ExtendedSystemObjects
             {
                 _lock.ExitReadLock();
             }
+        }
+
+        public bool ContainsCategory(string category)
+        {
+            return category != null && _data.Values.Any(entry =>
+                string.Equals(entry.Category, category, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -407,9 +507,7 @@ namespace ExtendedSystemObjects
             try
             {
                 var entries = _data.Select(entry =>
-                    string.Format(SharedResources.KeyCategoryValueFormat, entry.Key,
-                        entry.Value.Category,
-                        entry.Value.Value));
+                    $"[{entry.Key}] ({entry.Value.Category}):\n  {entry.Value.Value}");
 
                 return string.Join(Environment.NewLine, entries);
             }
@@ -418,6 +516,7 @@ namespace ExtendedSystemObjects
                 _lock.ExitReadLock();
             }
         }
+
 
         /// <summary>
         ///     Returns an enumerator for iterating over the dictionary's key-value pairs.

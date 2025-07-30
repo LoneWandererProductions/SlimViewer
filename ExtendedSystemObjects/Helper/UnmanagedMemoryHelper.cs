@@ -72,7 +72,7 @@ namespace ExtendedSystemObjects.Helper
         /// <summary>
         ///     Shifts the right. Adding data at index.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="ptr">The PTR.</param>
         /// <param name="index">The index.</param>
         /// <param name="count">The count.</param>
@@ -83,22 +83,23 @@ namespace ExtendedSystemObjects.Helper
             where T : unmanaged
         {
             var elementsToShift = length - index;
-            if (elementsToShift <= 0)
+            if (elementsToShift <= 0 || count <= 0)
             {
                 return;
             }
 
+            // Start copying from the end to avoid overwriting
             Buffer.MemoryCopy(
                 ptr + index,
                 ptr + index + count,
-                (capacity - index - count) * sizeof(T),
+                (capacity - index - count) * sizeof(T), // should be fine if debug check passes
                 elementsToShift * sizeof(T));
         }
 
         /// <summary>
         ///     Shifts the left. Delete Element at index
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Generic Parameter</typeparam>
         /// <param name="ptr">The PTR.</param>
         /// <param name="index">The index.</param>
         /// <param name="count">The count.</param>
@@ -112,10 +113,12 @@ namespace ExtendedSystemObjects.Helper
                 return;
             }
 
+            var dstSize = (length - index) * sizeof(T); // full space after index
+
             Buffer.MemoryCopy(
                 ptr + index + count,
                 ptr + index,
-                elementsToShift * sizeof(T),
+                dstSize,
                 elementsToShift * sizeof(T));
         }
 
@@ -148,7 +151,7 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe void Fill<T>(T* ptr, T value, int count) where T : unmanaged
         {
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 ptr[i] = value;
             }
@@ -160,10 +163,12 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe int IndexOf<T>(T* ptr, T value, int length) where T : unmanaged, IEquatable<T>
         {
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 if (ptr[i].Equals(value))
+                {
                     return i;
+                }
             }
 
             return -1;
@@ -175,11 +180,12 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe void Swap<T>(T* ptr, int indexA, int indexB) where T : unmanaged
         {
-            if (indexA == indexB) return;
+            if (indexA == indexB)
+            {
+                return;
+            }
 
-            T temp = ptr[indexA];
-            ptr[indexA] = ptr[indexB];
-            ptr[indexB] = temp;
+            (ptr[indexA], ptr[indexB]) = (ptr[indexB], ptr[indexA]);
         }
     }
 }

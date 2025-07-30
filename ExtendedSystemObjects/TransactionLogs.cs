@@ -43,7 +43,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         ///     The lock used to synchronize operations that require thread safety beyond what the ConcurrentDictionary provides.
         /// </summary>
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         /// <summary>
         ///     Flag used to track whether the changelog has been modified.
@@ -129,7 +129,7 @@ namespace ExtendedSystemObjects
             {
                 var entry = GetItem(uniqueIdentifier, LogState.Change);
 
-                if (entry != -1 && Changelog[entry].Data.Equals(item) == false)
+                if (entry != -1 && !Changelog[entry].Data.Equals(item))
                 {
                     Changelog[entry] = new LogEntry
                     {

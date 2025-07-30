@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        ExtendedSystemObjects.Helper/Enumerator.cs
- * PURPOSE:     Since I use an older .etn Version I need to use this helper
+ * PURPOSE:     Since I use an older .net Version I need to use this helper for my arrays and lists. All unmanaged.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -18,7 +18,7 @@ namespace ExtendedSystemObjects.Helper
     /// </summary>
     /// <typeparam name="T">Generic Type, must be unmanaged</typeparam>
     /// <seealso cref="T:System.Collections.Generic.IEnumerator`1" />
-    internal unsafe struct Enumerator<T> : IEnumerator<T> where T : unmanaged
+    public unsafe struct Enumerator<T> : IEnumerator<T> where T : unmanaged
     {
         /// <summary>
         ///     The data

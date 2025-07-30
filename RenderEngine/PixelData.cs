@@ -6,7 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging
+namespace RenderEngine
 {
     /// <summary>
     ///     Pixel Data Container
