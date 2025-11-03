@@ -12,64 +12,60 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace FileHandler;
-
-/// <summary>
-///     The file handle create class.
-/// </summary>
-public static class FileHandleCreate
+namespace FileHandler
 {
     /// <summary>
-    ///     Create a Folder
+    ///     The file handle create class.
     /// </summary>
-    /// <param name="path">path</param>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static void CreateFolder(string path)
+    public static class FileHandleCreate
     {
-        if (string.IsNullOrEmpty(path))
+        /// <summary>
+        ///     Create a Folder
+        /// </summary>
+        /// <param name="path">path</param>
+        /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
+        public static void CreateFolder(string path)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path)) throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+
+            _ = CreateDirectory(path);
         }
 
-        _ = CreateDirectory(path);
-    }
-
-    /// <summary>
-    ///     Creates a Folder in a specific path, based on the root folder
-    /// </summary>
-    /// <param name="path">Path</param>
-    /// <param name="name">Folder Name</param>
-    /// <returns>If path was generated </returns>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static bool CreateFolder(string path, string name)
-    {
-        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(name))
+        /// <summary>
+        ///     Creates a Folder in a specific path, based on the root folder
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="name">Folder Name</param>
+        /// <returns>If path was generated </returns>
+        /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
+        public static bool CreateFolder(string path, string name)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(name))
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+
+            var root = Path.Combine(path, name);
+
+            return CreateDirectory(root);
         }
 
-        var root = Path.Combine(path, name);
-
-        return CreateDirectory(root);
-    }
-
-    /// <summary>
-    ///     Creates the directory.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>If path was generated </returns>
-    private static bool CreateDirectory(string path)
-    {
-        try
+        /// <summary>
+        ///     Creates the directory.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>If path was generated </returns>
+        private static bool CreateDirectory(string path)
         {
-            _ = Directory.CreateDirectory(path);
-            return true;
-        }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or PathTooLongException)
-        {
-            FileHandlerRegister.AddError(nameof(CreateFolder), path, ex);
-            Trace.WriteLine(ex);
-            return false;
+            try
+            {
+                _ = Directory.CreateDirectory(path);
+                return true;
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or PathTooLongException)
+            {
+                FileHandlerRegister.AddError(nameof(CreateFolder), path, ex);
+                Trace.WriteLine(ex);
+                return false;
+            }
         }
     }
 }

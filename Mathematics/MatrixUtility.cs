@@ -12,163 +12,146 @@
 
 using System;
 
-namespace Mathematics;
-
-/// <summary>
-///     Helper Methods, all unsafe for Matrix operations
-/// </summary>
-public static class MatrixUtility
+namespace Mathematics
 {
     /// <summary>
-    ///     Create an Identity Matrix.
+    ///     Helper Methods, all unsafe for Matrix operations
     /// </summary>
-    /// <param name="n">The size of the identity matrix.</param>
-    /// <returns>An Identity Matrix</returns>
-    public static BaseMatrix MatrixIdentity(int n)
+    public static class MatrixUtility
     {
-        if (n <= 0)
+        /// <summary>
+        ///     Create an Identity Matrix.
+        /// </summary>
+        /// <param name="n">The size of the identity matrix.</param>
+        /// <returns>An Identity Matrix</returns>
+        public static BaseMatrix MatrixIdentity(int n)
         {
-            throw new ArgumentException(MathResources.MatrixErrorNegativeValue, nameof(n));
+            if (n <= 0) throw new ArgumentException(MathResources.MatrixErrorNegativeValue, nameof(n));
+
+            var result = new double[n, n];
+
+            for (var i = 0; i < n; ++i) result[i, i] = 1d;
+
+            return new BaseMatrix(result);
         }
 
-        var result = new double[n, n];
-
-        for (var i = 0; i < n; ++i)
+        /// <summary>
+        ///     Unsafe Matrix multiplication.
+        ///     Source:
+        ///     https://bratched.com/en/?s=matrix
+        /// </summary>
+        /// <param name="mOne">The first Matrix.</param>
+        /// <param name="mTwo">The second Matrix.</param>
+        /// <returns>Multiplied Matrix</returns>
+        internal static unsafe BaseMatrix UnsafeMultiplication(BaseMatrix mOne, BaseMatrix mTwo)
         {
-            result[i, i] = 1d;
-        }
+            var h = mOne.Height;
+            var w = mTwo.Width;
+            var l = mOne.Width;
 
-        return new BaseMatrix(result);
-    }
+            var result = new BaseMatrix(h, w);
 
-    /// <summary>
-    ///     Unsafe Matrix multiplication.
-    ///     Source:
-    ///     https://bratched.com/en/?s=matrix
-    /// </summary>
-    /// <param name="mOne">The first Matrix.</param>
-    /// <param name="mTwo">The second Matrix.</param>
-    /// <returns>Multiplied Matrix</returns>
-    internal static unsafe BaseMatrix UnsafeMultiplication(BaseMatrix mOne, BaseMatrix mTwo)
-    {
-        var h = mOne.Height;
-        var w = mTwo.Width;
-        var l = mOne.Width;
-
-        var result = new BaseMatrix(h, w);
-
-        fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
-        {
-            for (var i = 0; i < h; i++)
+            fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
             {
-                var iOne = i * l;
-
-                for (var j = 0; j < w; j++)
+                for (var i = 0; i < h; i++)
                 {
-                    var iTwo = j;
+                    var iOne = i * l;
 
-                    var res = 0d;
-
-                    for (var k = 0; k < l; k++, iTwo += w)
+                    for (var j = 0; j < w; j++)
                     {
-                        res += pmOne[iOne + k] * pmTwo[iTwo];
-                    }
+                        var iTwo = j;
 
-                    pm[(i * w) + j] = res;
+                        var res = 0d;
+
+                        for (var k = 0; k < l; k++, iTwo += w) res += pmOne[iOne + k] * pmTwo[iTwo];
+
+                        pm[i * w + j] = res;
+                    }
                 }
             }
+
+            return result;
         }
 
-        return result;
-    }
-
-    /// <summary>
-    ///     Unsafe Matrix addition.
-    /// </summary>
-    /// <param name="mOne">The m one.</param>
-    /// <param name="mTwo">The m two.</param>
-    /// <returns>Matrix Addition</returns>
-    internal static unsafe BaseMatrix UnsafeAddition(BaseMatrix mOne, BaseMatrix mTwo)
-    {
-        var h = mOne.Height;
-        var w = mOne.Width;
-
-        var result = new BaseMatrix(h, w);
-
-        fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
+        /// <summary>
+        ///     Unsafe Matrix addition.
+        /// </summary>
+        /// <param name="mOne">The m one.</param>
+        /// <param name="mTwo">The m two.</param>
+        /// <returns>Matrix Addition</returns>
+        internal static unsafe BaseMatrix UnsafeAddition(BaseMatrix mOne, BaseMatrix mTwo)
         {
-            for (var i = 0; i < h; i++)
+            var h = mOne.Height;
+            var w = mOne.Width;
+
+            var result = new BaseMatrix(h, w);
+
+            fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
+            {
+                for (var i = 0; i < h; i++)
                 for (var j = 0; j < w; j++)
                 {
-                    var cursor = i + (j * mOne.Width);
+                    var cursor = i + j * mOne.Width;
 
                     pm[cursor] = pmOne[cursor] + pmTwo[cursor];
                 }
+            }
+
+            return result;
         }
 
-        return result;
-    }
-
-    /// <summary>
-    ///     Unsafe Matrix compare.
-    /// </summary>
-    /// <param name="mOne">The m one.</param>
-    /// <param name="mTwo">The m two.</param>
-    /// <returns>If Matrices are equal with our preconfigured tolerance.</returns>
-    internal static unsafe bool UnsafeCompare(BaseMatrix mOne, BaseMatrix mTwo)
-    {
-        if (mOne.Height != mTwo.Height)
+        /// <summary>
+        ///     Unsafe Matrix compare.
+        /// </summary>
+        /// <param name="mOne">The m one.</param>
+        /// <param name="mTwo">The m two.</param>
+        /// <returns>If Matrices are equal with our preconfigured tolerance.</returns>
+        internal static unsafe bool UnsafeCompare(BaseMatrix mOne, BaseMatrix mTwo)
         {
-            return false;
-        }
+            if (mOne.Height != mTwo.Height) return false;
 
-        if (mOne.Width != mTwo.Width)
-        {
-            return false;
-        }
+            if (mOne.Width != mTwo.Width) return false;
 
-        var h = mOne.Height;
-        var w = mOne.Width;
+            var h = mOne.Height;
+            var w = mOne.Width;
 
-        fixed (double* pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
-        {
-            for (var i = 0; i < h; i++)
+            fixed (double* pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
+            {
+                for (var i = 0; i < h; i++)
                 for (var j = 0; j < w; j++)
                 {
-                    var cursor = i + (j * mOne.Width);
-                    if (Math.Abs(pmOne[cursor] - pmTwo[cursor]) > MathResources.Tolerance)
-                    {
-                        return false;
-                    }
+                    var cursor = i + j * mOne.Width;
+                    if (Math.Abs(pmOne[cursor] - pmTwo[cursor]) > MathResources.Tolerance) return false;
                 }
+            }
+
+            return true;
         }
 
-        return true;
-    }
-
-    /// <summary>
-    ///     Unsafe Matrix subtraction.
-    /// </summary>
-    /// <param name="mOne">The m one.</param>
-    /// <param name="mTwo">The m two.</param>
-    /// <returns>Matrix Subtraction</returns>
-    internal static unsafe BaseMatrix UnsafeSubtraction(BaseMatrix mOne, BaseMatrix mTwo)
-    {
-        var h = mOne.Height;
-        var w = mOne.Width;
-        var result = new BaseMatrix(h, w);
-
-        fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
+        /// <summary>
+        ///     Unsafe Matrix subtraction.
+        /// </summary>
+        /// <param name="mOne">The m one.</param>
+        /// <param name="mTwo">The m two.</param>
+        /// <returns>Matrix Subtraction</returns>
+        internal static unsafe BaseMatrix UnsafeSubtraction(BaseMatrix mOne, BaseMatrix mTwo)
         {
-            for (var i = 0; i < h; i++)
+            var h = mOne.Height;
+            var w = mOne.Width;
+            var result = new BaseMatrix(h, w);
+
+            fixed (double* pm = result.Matrix, pmOne = mOne.Matrix, pmTwo = mTwo.Matrix)
+            {
+                for (var i = 0; i < h; i++)
                 for (var j = 0; j < w; j++)
                 {
-                    var cursor = i + (j * mOne.Width);
+                    var cursor = i + j * mOne.Width;
 
                     pm[cursor] = pmOne[cursor] - pmTwo[cursor];
                 }
-        }
+            }
 
-        return result;
+            return result;
+        }
     }
 }

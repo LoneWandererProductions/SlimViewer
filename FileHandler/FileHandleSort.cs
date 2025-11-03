@@ -13,29 +13,30 @@ using System.Linq;
 // ReSharper disable UnusedMember.Global, it is a library
 // ReSharper disable UnusedType.Global
 
-namespace FileHandler;
-
-/// <summary>
-///     Some Extensions for Search results
-/// </summary>
-/// <summary>
-///     Some Extensions for Search results
-/// </summary>
-public static class FileHandleSort
+namespace FileHandler
 {
     /// <summary>
-    ///     Path Sort. Sorts a list of strings in a more sane way.
+    ///     Some Extensions for Search results
     /// </summary>
-    /// <param name="value">The list.</param>
-    /// <returns>The sorted list.</returns>
-    public static List<string> PathSort(this List<string> value)
+    /// <summary>
+    ///     Some Extensions for Search results
+    /// </summary>
+    public static class FileHandleSort
     {
-        var lst = new List<FilePathStruct>(value.Count);
+        /// <summary>
+        ///     Path Sort. Sorts a list of strings in a more sane way.
+        /// </summary>
+        /// <param name="value">The list.</param>
+        /// <returns>The sorted list.</returns>
+        public static List<string> PathSort(this List<string> value)
+        {
+            var lst = new List<FilePathStruct>(value.Count);
 
-        lst.AddRange(value.Select(element => new FilePathStruct(element)));
+            lst.AddRange(value.Select(element => new FilePathStruct(element)));
 
-        lst.Sort();
+            lst.Sort();
 
-        return lst.ConvertAll(element => element.Path);
+            return lst.ConvertAll(element => element.Path);
+        }
     }
 }

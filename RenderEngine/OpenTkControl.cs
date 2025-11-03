@@ -2,390 +2,299 @@
  * COPYRIGHT:   See COPYING in the top-level directory
  * PROJECT:     Imaging
  * FILE:        Imaging/OpenTkControl.cs
- * PURPOSE:     OpenGL Viewer for WPF applications using OpenTKDrawHelper.
+ * PURPOSE:     OpenGL Viewer for WPF applications.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * NOTES:       Uses https://github.com/opentk/GLControl
+ *              and OpenTK so beware GLControl is a third Party control
  */
 
 #nullable enable
-using OpenTK.GLControl;
-using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using OpenTK.GLControl;
+using OpenTK.Graphics.OpenGL4;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// OpenGL viewer control for WPF, using OpenTKDrawHelper for drawing primitives and textured quads.
-    /// Supports background textures, optional skybox, column overlays, pixel overlays,
-    /// and also accepts raw OpenGL-style vertex data (via Span&lt;float&gt; or Span&lt;byte&gt;).
-    /// </summary>
-    public sealed class OpenTkControl : WindowsFormsHost
+#nullable enable
+    namespace RenderEngine
     {
-        private GLControl? _glControl;
-
-        // Background texture ID
-        private int _backgroundTexture = -1;
-
-        // Skybox related
-        private bool _enableSkybox;
-        private int _skyboxShader;
-        private int _skyboxTexture;
-        private int _skyboxVao, _skyboxVbo;
-
-        // VBO reuse for dynamic rendering
-        private int _vbo;
-        private int _vao;
-
-        // Shader/resource manager
-        private readonly GlResourceManager _resourceManager = new();
-
-        public OpenTkControl()
-        {
-            if (!OpenTkHelper.IsOpenGlCompatible())
-                throw new NotSupportedException("OpenGL not supported on this system.");
-
-            InitializeGlControl();
-            Child = _glControl;
-        }
-
+        /// <inheritdoc />
         /// <summary>
-        /// Enable or disable the skybox rendering.
+        ///     Display Control for OpenGL
         /// </summary>
-        public bool EnableSkybox
+        /// <seealso cref="T:System.Windows.Forms.Integration.WindowsFormsHost" />
+        public sealed class OpenTkControl : WindowsFormsHost
         {
-            get => _enableSkybox;
-            set
+            private int _backgroundTexture;
+            private bool _enableSkybox;
+            private GLControl? _glControl;
+            private int _shaderProgram;
+            private int _skyboxShader;
+            private int _skyboxTexture;
+            private int _skyboxVao, _skyboxVbo;
+            private int _vao, _vbo;
+
+            public OpenTkControl()
             {
-                _enableSkybox = value;
-                _glControl?.Invalidate();
+                if (!OpenTkHelper.IsOpenGlCompatible())
+                {
+                    throw new NotSupportedException(RenderResource.ErrorOpenGl);
+                }
+
+                InitializeGlControl();
+                InitializeShaders();
+                InitializeBuffers();
+
+                Child = _glControl; // Set GLControl as the hosted child
             }
-        }
 
-        /// <summary>
-        /// Initialize the GLControl and set up OpenGL context.
-        /// </summary>
-        private void InitializeGlControl()
-        {
-            _glControl = new GLControl();
-            _glControl.HandleCreated += (s, e) =>
+            public bool EnableSkybox
             {
-                _glControl.MakeCurrent();
+                get => _enableSkybox;
+                set
+                {
+                    _enableSkybox = value;
+                    _glControl?.Invalidate(); // Redraw when toggled
+                }
+            }
 
-                // Set default clear color and enable depth testing
-                GL.ClearColor(0.1f, 0.2f, 0.3f, 1f);
+            private void InitializeGlControl()
+            {
+                _glControl = new GLControl();
+
+                _glControl.HandleCreated += (s, e) =>
+                {
+                    _glControl.MakeCurrent(); // OpenGL context setup
+                    GL.ClearColor(0.1f, 0.2f, 0.3f, 1.0f); // Set background color
+                };
+
                 GL.Enable(EnableCap.DepthTest);
 
-                // Initialize helper static state if required
-                OpenTkDrawHelper.Initialize();
+                _glControl.Paint += GlControl_Paint;
+                _glControl.Resize += GlControl_Resize;
+            }
 
-                // Load a default background texture
-                _backgroundTexture = OpenTkHelper.LoadTextureFromFile("background.jpg");
+            private void InitializeShaders()
+            {
+                _shaderProgram = GL.CreateProgram();
 
-                // Initialize skybox (can be toggled later)
-                InitializeSkybox();
+                var vertexShader =
+                    OpenTkHelper.CompileShader(ShaderType.VertexShader, ShaderResource.VertexShaderSource);
+                var fragmentShader =
+                    OpenTkHelper.CompileShader(ShaderType.FragmentShader, ShaderResource.FragmentShaderSource);
 
-                // Create reusable VAO/VBO for dynamic primitives
+                GL.AttachShader(_shaderProgram, vertexShader);
+                GL.AttachShader(_shaderProgram, fragmentShader);
+                GL.LinkProgram(_shaderProgram);
+
+                GL.DetachShader(_shaderProgram, vertexShader);
+                GL.DetachShader(_shaderProgram, fragmentShader);
+                GL.DeleteShader(vertexShader);
+                GL.DeleteShader(fragmentShader);
+
+                // Load background texture
+                _backgroundTexture = OpenTkHelper.LoadTexture("path_to_your_background_image.jpg");
+            }
+
+            private void InitializeBuffers()
+            {
                 _vao = GL.GenVertexArray();
                 _vbo = GL.GenBuffer();
-            };
 
-            _glControl.Paint += GlControl_Paint;
-            _glControl.Resize += GlControl_Resize;
-        }
+                GL.BindVertexArray(_vao);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
 
-        /// <summary>
-        /// Initializes the skybox shaders and cubemap.
-        /// </summary>
-        private void InitializeSkybox()
-        {
-            _skyboxShader = OpenTkHelper.LoadShader(RenderResource.ShaderSkyboxVertex,
-                RenderResource.ShaderSkyboxFragment);
+                GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+                GL.EnableVertexAttribArray(0);
 
-            _skyboxTexture = OpenTkHelper.LoadCubeMap(new[]
-            {
-                "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"
-            });
-
-            _skyboxVao = GL.GenVertexArray();
-            _skyboxVbo = GL.GenBuffer();
-
-            GL.BindVertexArray(_skyboxVao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _skyboxVbo);
-            GL.BufferData(BufferTarget.ArrayBuffer,
-                ShaderResource.SkyboxVertices.Length * sizeof(float),
-                ShaderResource.SkyboxVertices,
-                BufferUsageHint.StaticDraw);
-        }
-
-        /// <summary>
-        /// Renders the skybox cubemap.
-        /// </summary>
-        private void RenderSkybox()
-        {
-            GL.DepthFunc(DepthFunction.Lequal);
-            GL.UseProgram(_skyboxShader);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.TextureCubeMap, _skyboxTexture);
-
-            GL.BindVertexArray(_skyboxVao);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
-
-            GL.DepthFunc(DepthFunction.Less);
-        }
-
-        /// <summary>
-        /// GLControl Paint event handler.
-        /// Clears the screen, draws background, optionally skybox, then swaps buffers.
-        /// </summary>
-        private void GlControl_Paint(object? sender, PaintEventArgs e)
-        {
-            if (_glControl == null) return;
-
-            if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();
-
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            // Draw background
-            if (_backgroundTexture != -1)
-            {
-                OpenTkDrawHelper.DrawTexturedQuad(
-                    _backgroundTexture,
-                    new Point(0, 0),
-                    new Point(_glControl.Width, 0),
-                    new Point(_glControl.Width, _glControl.Height),
-                    new Point(0, _glControl.Height));
+                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float),
+                    2 * sizeof(float));
+                GL.EnableVertexAttribArray(1);
             }
 
-            // Draw skybox if enabled
-            if (_enableSkybox && _skyboxTexture != -1)
-                RenderSkybox();
+            private void InitializeSkybox()
+            {
+                _skyboxShader = OpenTkHelper.LoadShader(RenderResource.ShaderSkyboxVertex,
+                    RenderResource.ShaderSkyboxFragment);
 
-            _glControl.SwapBuffers();
-        }
+                _skyboxTexture = OpenTkHelper.LoadCubeMap(new[]
+                {
+                    "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"
+                });
 
-        /// <summary>
-        /// GLControl Resize event handler. Updates the OpenGL viewport.
-        /// </summary>
-        private void GlControl_Resize(object? sender, EventArgs e)
-        {
-            if (_glControl == null) return;
+                _skyboxVao = GL.GenVertexArray();
+                _skyboxVbo = GL.GenBuffer();
 
-            if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();
-            GL.Viewport(0, 0, _glControl.Width, _glControl.Height);
-        }
+                GL.BindVertexArray(_skyboxVao);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _skyboxVbo);
+                GL.BufferData(BufferTarget.ArrayBuffer, ShaderResource.SkyboxVertices.Length * sizeof(float),
+                    ShaderResource.SkyboxVertices, BufferUsageHint.StaticDraw);
+            }
 
-        /// <summary>
-        /// Draws column overlays (e.g., debug rectangles) using the reusable VBO.
-        /// </summary>
-        public void RenderColumns(ColumnData[] columns, int screenWidth)
-        {
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            private void RenderSkybox()
+            {
+                GL.DepthFunc(DepthFunction.Lequal);
 
-            // Render background first
-            if (_backgroundTexture != -1)
+                GL.UseProgram(_skyboxShader);
+
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.TextureCubeMap, _skyboxTexture);
+
+                GL.BindVertexArray(_skyboxVao);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+
+                GL.DepthFunc(DepthFunction.Less);
+            }
+
+            private void GlControl_Paint(object? sender, PaintEventArgs e)
+            {
+                if (_glControl == null)
+                {
+                    return;
+                }
+
+                if (_glControl.Context is { IsCurrent: false })
+                {
+                    _glControl.MakeCurrent();
+                }
+
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                if (_backgroundTexture != -1)
+                {
+                    RenderBackground(_backgroundTexture);
+                }
+
+                if (_skyboxTexture != -1)
+                {
+                    RenderSkybox();
+                }
+
+                _glControl.SwapBuffers();
+            }
+
+            private void GlControl_Resize(object? sender, EventArgs e)
+            {
+                if (_glControl == null)
+                {
+                    return;
+                }
+
+                if (!_glControl.Context.IsCurrent)
+                {
+                    _glControl.MakeCurrent();
+                }
+
+                GL.Viewport(0, 0, _glControl.Width, _glControl.Height);
+            }
+
+            private void RenderBackground(int textureId)
+            {
+                GL.UseProgram(_shaderProgram);
+
+                // Bind the background texture
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, textureId);
+
+                // Draw the background as a full-screen quad
+                GL.BindVertexArray(_vao);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, 6); // Full-screen quad (6 vertices)
+            }
+
+            public void RenderColumns(ColumnData[] columns, int screenWidth, int screenHeight)
+            {
+                GL.Clear(ClearBufferMask.ColorBufferBit);
                 RenderBackground(_backgroundTexture);
 
-            var vertexData = new float[columns.Length * 6 * 5]; // 6 vertices per quad, 5 floats per vertex
-            var idx = 0;
-            var columnWidth = (float)screenWidth / columns.Length;
+                var vertexData = OpenTkHelper.GenerateVertexData(columns, screenWidth, screenHeight, column =>
+                    new[] { column.Height / screenHeight, column.Color.X, column.Color.Y, column.Color.Z });
 
-            for (var i = 0; i < columns.Length; i++)
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+                GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
+                    BufferUsageHint.DynamicDraw);
+
+                GL.UseProgram(_shaderProgram);
+                GL.BindVertexArray(_vao);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, columns.Length * 6);
+            }
+
+            /// <summary>
+            ///     Renders the pixels.
+            /// </summary>
+            /// <param name="pixels">The pixels.</param>
+            /// <param name="screenWidth">Width of the screen.</param>
+            /// <param name="screenHeight">Height of the screen.</param>
+            public void RenderPixels(CoordinateData[] pixels, int screenWidth, int screenHeight)
             {
-                var col = columns[i];
-                var x0 = i * columnWidth;
-                var x1 = x0 + columnWidth;
-                const float y0 = 0;
-                var y1 = col.Height;
+                GL.Clear(ClearBufferMask.ColorBufferBit);
+                RenderBackground(_backgroundTexture);
 
-                // Two triangles per column
-                var verts = new[,] { { x0, y0 }, { x1, y0 }, { x1, y1 }, { x1, y1 }, { x0, y1 }, { x0, y0 } };
-
-                for (var v = 0; v < 6; v++)
+                var vertexData = OpenTkHelper.GenerateVertexData(pixels, screenWidth, screenHeight, pixel =>
                 {
-                    vertexData[idx++] = verts[v, 0];
-                    vertexData[idx++] = verts[v, 1];
-                    vertexData[idx++] = col.Color.X;
-                    vertexData[idx++] = col.Color.Y;
-                    vertexData[idx++] = col.Color.Z;
-                }
+                    var pixelWidth = 2.0f / screenWidth;
+                    var pixelHeight = 2.0f / screenHeight;
+
+                    return new[]
+                    {
+                        -1 + (pixel.X * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
+                        -1 + ((pixel.X + 1) * pixelWidth), -1 + (pixel.Y * pixelHeight), 0.0f,
+                        -1 + (pixel.X * pixelWidth), -1 + ((pixel.Y + 1) * pixelHeight), 0.0f, pixel.Color.X,
+                        pixel.Color.Y, pixel.Color.Z
+                    };
+                });
+
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+                GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), vertexData,
+                    BufferUsageHint.DynamicDraw);
+
+                GL.UseProgram(_shaderProgram);
+                GL.BindVertexArray(_vao);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, pixels.Length * 6);
             }
 
-            RenderVertices(vertexData, 5, columns.Length * 6, PrimitiveType.Triangles);
-        }
-
-        /// <summary>
-        /// Draws pixel overlays efficiently using OpenTKDrawHelper and converts Vector3 color to Color.
-        /// </summary>
-        public void RenderPixels(CoordinateData[] pixels, int screenWidth, int screenHeight)
-        {
-            if (_glControl == null) return;
-
-            GL.Clear(ClearBufferMask.ColorBufferBit);
-
-            // Draw background first
-            if (_backgroundTexture != -1)
+            public void CaptureScreenshot(string filePath)
             {
-                OpenTkDrawHelper.DrawTexturedQuad(
-                    _backgroundTexture,
-                    new Point(0, 0),
-                    new Point(screenWidth, 0),
-                    new Point(screenWidth, screenHeight),
-                    new Point(0, screenHeight));
-            }
-
-            foreach (var pixel in pixels)
-            {
-                var px = pixel.X;
-                var py = screenHeight - pixel.Y;
-
-                OpenTkDrawHelper.DrawSolidQuad(
-                    new Point(px, py),
-                    new Point(px + 1, py),
-                    new Point(px + 1, py + 1),
-                    new Point(px, py + 1),
-                    pixel.Color);
-            }
-
-            _glControl.SwapBuffers();
-        }
-
-        /// <summary>
-        /// Generic renderer for raw vertex data provided as float array/span.
-        /// </summary>
-        public void RenderVertices(ReadOnlySpan<float> vertexData, int stride, int vertexCount,
-            PrimitiveType primitiveType)
-        {
-            if (_glControl == null) return;
-
-            if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();
-
-            GL.BindVertexArray(_vao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-
-            unsafe
-            {
-                fixed (float* ptr = vertexData)
+                if (_glControl == null)
                 {
-                    GL.BufferData(BufferTarget.ArrayBuffer, vertexData.Length * sizeof(float), (IntPtr)ptr,
-                        BufferUsageHint.DynamicDraw);
+                    return;
                 }
+
+                var width = _glControl.Width;
+                var height = _glControl.Height;
+
+                var pixels = new byte[width * height * 4];
+                GL.ReadPixels(0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+
+                using var bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                var rect = new Rectangle(0, 0, width, height);
+                var bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly,
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
+
+                bitmap.UnlockBits(bitmapData);
+                bitmap.Save(filePath, ImageFormat.Png);
             }
 
-            // Example: first 2 floats = position, next 3 floats = color
-            GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, stride * sizeof(float), 0);
-
-            if (stride >= 5)
+            protected override void Dispose(bool disposing)
             {
-                GL.EnableVertexAttribArray(1);
-                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, stride * sizeof(float),
-                    2 * sizeof(float));
-            }
-
-            GL.DrawArrays(primitiveType, 0, vertexCount);
-
-            GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-        }
-
-        /// <summary>
-        /// Generic renderer for raw vertex data provided as bytes.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="vertexCount">The vertex count.</param>
-        /// <param name="primitiveType">Type of the primitive.</param>
-        public void RenderRaw(ReadOnlySpan<byte> data, int vertexCount, PrimitiveType primitiveType)
-        {
-            if (_glControl == null) return;
-
-            if (!_glControl.Context.IsCurrent) _glControl.MakeCurrent();
-
-            GL.BindVertexArray(_vao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-
-            unsafe
-            {
-                fixed (byte* ptr = data)
+                if (disposing)
                 {
-                    GL.BufferData(BufferTarget.ArrayBuffer, data.Length, (IntPtr)ptr, BufferUsageHint.DynamicDraw);
+                    GL.DeleteProgram(_shaderProgram);
+                    GL.DeleteVertexArray(_vao);
+                    GL.DeleteBuffer(_vbo);
+                    _glControl?.Dispose();
+                    //TODO add more cleaning here
                 }
+
+                base.Dispose(disposing);
             }
-
-            // Caller must set up their own attrib pointers before drawing
-            GL.DrawArrays(primitiveType, 0, vertexCount);
-        }
-
-        /// <summary>
-        /// Draws a full-screen background using a texture.
-        /// </summary>
-        private void RenderBackground(int textureId)
-        {
-            _resourceManager.UseShader(ShaderTypeApp.TexturedQuad);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
-
-            OpenTkDrawHelper.DrawTexturedQuad(
-                textureId,
-                new Point(0, 0),
-                new Point((int)Width, 0),
-                new Point((int)Width, (int)Height),
-                new Point(0, (int)Height));
-        }
-
-        /// <summary>
-        /// Capture the current framebuffer and save as PNG.
-        /// </summary>
-        public void CaptureScreenshot(string filePath)
-        {
-            if (_glControl == null) return;
-
-            var width = _glControl.Width;
-            var height = _glControl.Height;
-            var pixels = new byte[width * height * 4];
-
-            GL.ReadPixels(0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
-
-            using Bitmap bitmap = new(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            Rectangle rect = new(0, 0, width, height);
-            var bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, bitmap.PixelFormat);
-
-            Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
-            bitmap.UnlockBits(bitmapData);
-            bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
-            bitmap.Save(filePath, ImageFormat.Png);
-        }
-
-        /// <summary>
-        /// Dispose all OpenGL resources and the GLControl.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _glControl?.Dispose();
-
-                GL.DeleteVertexArray(_vao);
-                GL.DeleteBuffer(_vbo);
-
-                GL.DeleteVertexArray(_skyboxVao);
-                GL.DeleteBuffer(_skyboxVbo);
-                GL.DeleteTexture(_skyboxTexture);
-                GL.DeleteTexture(_backgroundTexture);
-                GL.DeleteProgram(_skyboxShader);
-
-                _resourceManager.Dispose(); // Dispose shader/textures
-            }
-
-            base.Dispose(disposing);
         }
     }
 }

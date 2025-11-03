@@ -8,7 +8,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace ViewModel
 {
@@ -34,23 +33,19 @@ namespace ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
         /// <summary>
-        /// Sets the property and raises PropertyChanged if the value changes.
+        ///     Sets the property and raises PropertyChanged if the value changes.
         /// </summary>
         /// <typeparam name="T">Type of the property.</typeparam>
         /// <param name="field">Reference to the field storing the property value.</param>
         /// <param name="value">New value to set.</param>
         /// <param name="propertyName">Name of the property (optional, automatically provided by caller).</param>
-        /// <returns>If property was changed.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        protected void SetProperty<T>(ref T field, T value, string propertyName)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return false;
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
 
             field = value;
             OnPropertyChanged(propertyName);
-            return true;
         }
 
         /// <summary>

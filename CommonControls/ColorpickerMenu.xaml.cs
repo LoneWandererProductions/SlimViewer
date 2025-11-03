@@ -15,112 +15,113 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Imaging;
 
-namespace CommonControls;
-
-/// <inheritdoc cref="UserControl" />
-/// <summary>
-///     Menu ITem for ColorPicker
-/// </summary>
-/// <seealso cref="UserControl" />
-public sealed partial class ColorPickerMenu
+namespace CommonControls
 {
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
-    ///     The Color change delegate.
+    ///     Menu ITem for ColorPicker
     /// </summary>
-    /// <param name="colorHsv">The color HSV.</param>
-    public delegate void DelegateColor(ColorHsv colorHsv);
-
-    /// <summary>
-    ///     The image loaded command dependency property.
-    /// </summary>
-    public static readonly DependencyProperty ColorChangedCommandProperty = DependencyProperty.Register(
-        nameof(ColorChangedCommand),
-        typeof(ICommand),
-        typeof(ColorPickerMenu),
-        new PropertyMetadata(null));
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ColorPickerMenu" /> class.
-    /// </summary>
-    public ColorPickerMenu()
+    /// <seealso cref="UserControl" />
+    public sealed partial class ColorPickerMenu
     {
-        InitializeComponent();
-    }
+        /// <summary>
+        ///     The Color change delegate.
+        /// </summary>
+        /// <param name="colorHsv">The color HSV.</param>
+        public delegate void DelegateColor(ColorHsv colorHsv);
 
-    /// <summary>
-    ///     Gets or sets the color changed command.
-    /// </summary>
-    /// <value>
-    ///     The color changed command.
-    /// </value>
-    public ICommand ColorChangedCommand
-    {
-        get => (ICommand)GetValue(ColorChangedCommandProperty);
-        set => SetValue(ColorChangedCommandProperty, value);
-    }
+        /// <summary>
+        ///     The image loaded command dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ColorChangedCommandProperty = DependencyProperty.Register(
+            nameof(ColorChangedCommand),
+            typeof(ICommand),
+            typeof(ColorPickerMenu),
+            new PropertyMetadata(null));
 
-    /// <summary>
-    ///     Gets the colors.
-    /// </summary>
-    /// <value>
-    ///     The colors.
-    /// </value>
-    public ColorHsv Colors => ColorPickerRegister.Colors;
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ColorPickerMenu" /> class.
+        /// </summary>
+        public ColorPickerMenu()
+        {
+            InitializeComponent();
+        }
 
-    /// <summary>
-    ///     An Image was clicked <see cref="DelegateColor" />.
-    /// </summary>
-    public event DelegateColor ColorChanged;
+        /// <summary>
+        ///     Gets or sets the color changed command.
+        /// </summary>
+        /// <value>
+        ///     The color changed command.
+        /// </value>
+        public ICommand ColorChangedCommand
+        {
+            get => (ICommand)GetValue(ColorChangedCommandProperty);
+            set => SetValue(ColorChangedCommandProperty, value);
+        }
 
-    /// <summary>
-    ///     Set Colors.
-    ///     Call back
-    /// </summary>
-    /// <param name="r"></param>
-    /// <param name="g"></param>
-    /// <param name="b"></param>
-    /// <param name="alpha"></param>
-    public void SetColors(int r, int g, int b, int alpha)
-    {
-        GridPicker.Children.Clear();
+        /// <summary>
+        ///     Gets the colors.
+        /// </summary>
+        /// <value>
+        ///     The colors.
+        /// </value>
+        public ColorHsv Colors => ColorPickerRegister.Colors;
 
-        var colorPick = new ColorPicker(r, g, b, alpha);
-        AddColor(ColorPickerRegister.Colors);
-        _ = GridPicker.Children.Add(colorPick);
-    }
+        /// <summary>
+        ///     An Image was clicked <see cref="DelegateColor" />.
+        /// </summary>
+        public event DelegateColor ColorChanged;
 
-    /// <summary>
-    ///     Handles the Click event of the Button control.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-        Pop.IsOpen = true;
-    }
+        /// <summary>
+        ///     Set Colors.
+        ///     Call back
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="g"></param>
+        /// <param name="b"></param>
+        /// <param name="alpha"></param>
+        public void SetColors(int r, int g, int b, int alpha)
+        {
+            GridPicker.Children.Clear();
 
-    /// <summary>
-    ///     Colors the picker menu color changed.
-    /// </summary>
-    /// <param name="colorHsv">he color Hsv.</param>
-    private void ColorPickerMenu_ColorChanged(ColorHsv colorHsv)
-    {
-        AddColor(colorHsv);
-        ColorChanged?.Invoke(colorHsv);
-        ColorChangedCommand.Execute(colorHsv);
-    }
+            var colorPick = new ColorPicker(r, g, b, alpha);
+            AddColor(ColorPickerRegister.Colors);
+            _ = GridPicker.Children.Add(colorPick);
+        }
 
-    /// <summary>
-    ///     Adds the color.
-    /// </summary>
-    /// <param name="colorHsv">The color HSV.</param>
-    private void AddColor(ColorHsv colorHsv)
-    {
-        CanvasPreview.Children.Clear();
+        /// <summary>
+        ///     Handles the Click event of the Button control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Pop.IsOpen = true;
+        }
 
-        var rectangle = ColorPickerHelper.GetColorPreview(colorHsv);
+        /// <summary>
+        ///     Colors the picker menu color changed.
+        /// </summary>
+        /// <param name="colorHsv">he color Hsv.</param>
+        private void ColorPickerMenu_ColorChanged(ColorHsv colorHsv)
+        {
+            AddColor(colorHsv);
+            ColorChanged?.Invoke(colorHsv);
+            ColorChangedCommand.Execute(colorHsv);
+        }
 
-        _ = CanvasPreview.Children.Add(rectangle);
+        /// <summary>
+        ///     Adds the color.
+        /// </summary>
+        /// <param name="colorHsv">The color HSV.</param>
+        private void AddColor(ColorHsv colorHsv)
+        {
+            CanvasPreview.Children.Clear();
+
+            var rectangle = ColorPickerHelper.GetColorPreview(colorHsv);
+
+            _ = CanvasPreview.Children.Add(rectangle);
+        }
     }
 }

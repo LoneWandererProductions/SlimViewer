@@ -2,14 +2,12 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ViewModel
  * FILE:        ViewModel/DelegateCommand.cs
- * PURPOSE:     Part of the View Model, Generic Variation of the ICommand Implementation.
+ * PURPOSE:     Part of the View Model
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * Sources:     https://msdn.microsoft.com/de-de/library/system.windows.input.icommand%28v=vs.110%29.aspx
  *              https://stackoverflow.com/questions/12422945/how-to-bind-wpf-button-to-a-command-in-viewmodelbase
  *              https://stackoverflow.com/questions/48527651/full-implementation-of-relay-command-can-it-be-applied-to-all-cases
  */
-
-// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Windows.Input;
@@ -30,7 +28,7 @@ namespace ViewModel
         /// <summary>
         ///     The predicate to determine if the command can execute.
         /// </summary>
-        private readonly Predicate<T>? _canExecute;
+        private readonly Predicate<T> _canExecute;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DelegateCommand{T}" /> class.
@@ -41,7 +39,7 @@ namespace ViewModel
         ///     executable.
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
-        public DelegateCommand(Action<T> action, Predicate<T>? canExecute = null)
+        public DelegateCommand(Action<T> action, Predicate<T> canExecute = null)
         {
             _action = action ?? throw new ArgumentNullException(nameof(action));
             _canExecute = canExecute;
@@ -66,14 +64,6 @@ namespace ViewModel
         public bool CanExecute(object parameter)
         {
             return _canExecute?.Invoke((T)parameter) ?? true;
-        }
-
-        /// <summary>
-        ///     Raises the <see cref="CanExecuteChanged"/> event to force WPF to re-query CanExecute.
-        /// </summary>
-        public void RaiseCanExecuteChanged()
-        {
-            CommandManager.InvalidateRequerySuggested();
         }
 
         /// <inheritdoc />

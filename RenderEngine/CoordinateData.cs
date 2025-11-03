@@ -6,27 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.Drawing;
+using OpenTK.Mathematics;
 
-namespace RenderEngine;
-
-/// <summary>
-/// Mostly used to pass coordinate and color data to shaders.
-/// </summary>
-public struct CoordinateData
+namespace RenderEngine
 {
-    /// <summary>
-    /// The x point.
-    /// </summary>
-    public int X;
-
-    /// <summary>
-    /// The y point.
-    /// </summary>
-    public int Y;
-
-    /// <summary>
-    /// The color
-    /// </summary>
-    public Color Color;
+    public struct CoordinateData
+    {
+        public int X;
+        public int Y;
+        public Vector3 Color;
+    }
 }
