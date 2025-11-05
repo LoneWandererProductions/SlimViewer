@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36221.1 d17.14
+VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{A87EE2C4-44A0-47EF-B5BE-5799F5A982F0}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHandler", "FileHandler\FileHandler.csproj", "{36D045E5-D99E-4C98-8BE7-2C9438C6C5EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderEngine", "RenderEngine\RenderEngine.csproj", "{23149D8E-F1D0-D09E-A9DB-FE1C561F4ED9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exp", "Exp\Exp.csproj", "{84E14807-6A76-89D8-05E0-E9E6550ED84D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{23149D8E-F1D0-D09E-A9DB-FE1C561F4ED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23149D8E-F1D0-D09E-A9DB-FE1C561F4ED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23149D8E-F1D0-D09E-A9DB-FE1C561F4ED9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84E14807-6A76-89D8-05E0-E9E6550ED84D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84E14807-6A76-89D8-05E0-E9E6550ED84D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84E14807-6A76-89D8-05E0-E9E6550ED84D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84E14807-6A76-89D8-05E0-E9E6550ED84D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

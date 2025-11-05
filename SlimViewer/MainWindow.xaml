@@ -8,7 +8,6 @@
     xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
     xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
     xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews"
-    d:DataContext="{d:DesignInstance Type=slimviews:ImageView}"
     x:Class="SlimViewer.MainWindow"
     mc:Ignorable="d"
     Title="Slim Viewer"
@@ -67,110 +66,110 @@
                     <MenuItem Header="Filter">
                         <MenuItem Header="Configure Filter" Command="{Binding FilterConfigCommand}" />
                         <Separator />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterSepia'}"
+                            <MenuItem Header="Sepia"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterSepia'}"
+                                  CommandParameter="FilterSepia"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterGrayScale'}"
+                        <MenuItem Header="GrayScale"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterGrayScale'}"
+                                  CommandParameter="FilterGrayScale"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterBlackAndWhite'}"
+                        <MenuItem Header="BlackAndWhite"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterBlackAndWhite'}"
+                                  CommandParameter="FilterBlackAndWhite"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterInvert'}"
+                        <MenuItem Header="Invert"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterInvert'}"
+                                  CommandParameter="FilterInvert"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterPolaroid'}"
+                        <MenuItem Header="Polaroid"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterPolaroid'}"
+                                  CommandParameter="FilterPolaroid"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterContour'}"
+                        <MenuItem Header="Contour"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterContour'}"
+                                  CommandParameter="FilterContour"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterBrightness'}"
+                        <MenuItem Header="Brightness"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterBrightness'}"
+                                  CommandParameter="FilterBrightness"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterContrast'}"
+                        <MenuItem Header="Contrast"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterContrast'}"
+                                  CommandParameter="FilterContrast"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterHueShift'}"
+                        <MenuItem Header="HueShift"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterHueShift'}"
+                                  CommandParameter="FilterHueShift"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterColorBalance'}"
+                        <MenuItem Header="ColorBalance"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterColorBalance'}"
+                                  CommandParameter="FilterColorBalance"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterVintage'}"
+                        <MenuItem Header="Vintage"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterVintage'}"
+                                  CommandParameter="FilterVintage"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterSharpen'}"
+                        <MenuItem Header="Sharpen"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterSharpen'}"
+                                  CommandParameter="FilterSharpen"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterGaussianBlur'}"
+                        <MenuItem Header="GaussianBlur"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterGaussianBlur'}"
+                                  CommandParameter="FilterGaussianBlur"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterEmboss'}"
+                        <MenuItem Header="Emboss"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterEmboss'}"
+                                  CommandParameter="FilterEmboss"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterBoxBlur'}"
+                        <MenuItem Header="BoxBlur"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterBoxBlur'}"
+                                  CommandParameter="FilterBoxBlur"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterLaplacian'}"
+                        <MenuItem Header="Laplacian"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterLaplacian'}"
+                                  CommandParameter="FilterLaplacian"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterEdgeEnhance'}"
+                        <MenuItem Header="EdgeEnhance"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterEdgeEnhance'}"
+                                  CommandParameter="FilterEdgeEnhance"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterMotionBlur'}"
+                        <MenuItem Header="MotionBlur"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterMotionBlur'}"
+                                  CommandParameter="FilterMotionBlur"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterUnsharpMask'}"
+                        <MenuItem Header="UnsharpMask"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterUnsharpMask'}"
+                                  CommandParameter="FilterUnsharpMask"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterDifferenceOfGaussians'}"
+                        <MenuItem Header="DifferenceOfGaussians"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterDifferenceOfGaussians'}"
+                                  CommandParameter="FilterDifferenceOfGaussians"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterCrosshatch'}"
+                        <MenuItem Header="Crosshatch"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterCrosshatch'}"
+                                  CommandParameter="FilterCrosshatch"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterFloydSteinbergDithering'}"
+                        <MenuItem Header="FloydSteinbergDithering"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterFloydSteinbergDithering'}"
+                                  CommandParameter="FilterFloydSteinbergDithering"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterAnisotropicKuwahara'}"
+                        <MenuItem Header="AnisotropicKuwahara"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterAnisotropicKuwahara'}"
+                                  CommandParameter="FilterAnisotropicKuwahara"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterSupersamplingAntialiasing'}"
+                        <MenuItem Header="SupersamplingAntialiasing"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterSupersamplingAntialiasing'}"
+                                  CommandParameter="FilterSupersamplingAntialiasing"
                                   IsEnabled="{Binding Path=IsImageActive}" />
                         <MenuItem
-                            Header="{slimControls:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
+                            Header="PostProcessingAntialiasing"
                             Command="{Binding ApplyFilterCommand}"
-                            CommandParameter="{slimControls:ConstantStringExtension Key='FilterPostProcessingAntialiasing'}"
+                            CommandParameter="FilterPostProcessingAntialiasing"
                             IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='FilterPencilSketchEffect'}"
+                        <MenuItem Header="PencilSketchEffect"
                                   Command="{Binding ApplyFilterCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='FilterPencilSketchEffect'}"
+                                  CommandParameter="FilterPencilSketchEffect"
                                   IsEnabled="{Binding Path=IsImageActive}" />
                         <Separator />
                         <MenuItem Header="Pixelate Image">
@@ -189,37 +188,37 @@
                     <MenuItem Header="Texture">
                         <MenuItem Header="Configure Texture" Command="{Binding TextureConfigCommand}" />
                         <Separator />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureNoise'}"
+                        <MenuItem Header="TextureNoise"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureNoise'}"
+                                  CommandParameter="TextureNoise"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureClouds'}"
+                        <MenuItem Header="TextureClouds"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureClouds'}"
+                                  CommandParameter="TextureClouds"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureMarble'}"
+                        <MenuItem Header="TextureMarble"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureMarble'}"
+                                  CommandParameter="TextureMarble"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureWood'}"
+                        <MenuItem Header="TextureWood"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureWood'}"
+                                  CommandParameter="TextureWood"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureWave'}"
+                        <MenuItem Header="TextureWave"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureWave'}"
+                                  CommandParameter="TextureWave"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureCrosshatch'}"
+                        <MenuItem Header="TextureCrosshatch"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureCrosshatch'}"
+                                  CommandParameter="TextureCrosshatch"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureConcrete'}"
+                        <MenuItem Header="TextureConcrete"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureConcrete'}"
+                                  CommandParameter="TextureConcrete"
                                   IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="{slimControls:ConstantStringExtension Key='TextureCanvas'}"
+                        <MenuItem Header="TextureCanvas"
                                   Command="{Binding ApplyTextureCommand}"
-                                  CommandParameter="{slimControls:ConstantStringExtension Key='TextureCanvas'}"
+                                  CommandParameter="TextureCanvas"
                                   IsEnabled="{Binding Path=IsImageActive}" />
                     </MenuItem>
                     <Separator />

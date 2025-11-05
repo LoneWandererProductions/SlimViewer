@@ -1,3 +1,11 @@
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimControls
+ * FILE:        AreaControl.xaml.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
 using System;
 using System.Diagnostics;
 using System.Windows;

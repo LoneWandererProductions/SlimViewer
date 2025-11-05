@@ -1,4 +1,12 @@
-﻿using System.Windows;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimControls
+ * FILE:        ToolOptions.xaml.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Windows;
 
 namespace SlimControls
 {

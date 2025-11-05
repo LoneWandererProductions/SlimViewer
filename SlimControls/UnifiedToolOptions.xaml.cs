@@ -1,4 +1,12 @@
-﻿using System.Diagnostics;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimControls
+ * FILE:        UnifiedToolOptions.xaml.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CommonControls;
