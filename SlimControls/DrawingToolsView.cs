@@ -1,4 +1,12 @@
-﻿using System.Windows.Input;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimControls
+ * FILE:        DrawingToolsView.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Windows.Input;
 
 namespace SlimControls
 {

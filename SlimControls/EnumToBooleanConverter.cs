@@ -1,4 +1,12 @@
-﻿using System;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimControls
+ * FILE:        EnumToBooleanConverter.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Globalization;
 using System.Windows.Data;
 

@@ -1,12 +1,20 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Exp
- * FILE:        ShapeType.cs
+ * FILE:        AreaMode.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Exp
 {
-    public enum ShapeType { None, Rectangle, Ellipse, Freeform }
+    public enum AreaMode
+    {
+        None,
+        Fill,
+        Texture,
+        Filter,
+        Erase
+    }
+
 }

@@ -1,4 +1,12 @@
-﻿using System.Windows;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimControls
+ * FILE:        DrawingToolBarControl.xaml.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SlimControls

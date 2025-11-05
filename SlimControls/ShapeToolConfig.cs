@@ -1,4 +1,12 @@
-﻿using System.Drawing;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimControls
+ * FILE:        ShapeToolConfig.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System.Drawing;
 
 namespace SlimControls
 {

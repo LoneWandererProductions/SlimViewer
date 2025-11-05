@@ -1,7 +1,7 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     CommonControls
-* FILE:        CommonControls/ColorPicker.xaml.cs
+* FILE:        ColorPicker.xaml.cs
 * PURPOSE:     Basic Color Picker Control
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
@@ -28,12 +28,18 @@ namespace CommonControls
     public sealed partial class ColorSelection
     {
         /// <summary>
-        ///     DependencyProperty: DepColor
-        ///     The selected Color (readonly). Value: DependencyProperty.Register StartColor
+        /// DependencyProperty: DepColor
+        /// The selected Color (readonly). Value: DependencyProperty.Register StartColor
         /// </summary>
-        public static readonly DependencyProperty StartColorProperty = DependencyProperty.Register(nameof(StartColor),
-            typeof(string),
-            typeof(ColorSelection), new UIPropertyMetadata(string.Empty));
+        public static readonly DependencyProperty StartColorProperty =
+            DependencyProperty.Register(
+                nameof(StartColor),
+                typeof(string),
+                typeof(ColorSelection),
+                new FrameworkPropertyMetadata(
+                    string.Empty,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    OnStartColorChanged));
 
         /// <summary>
         ///     The color Dictionary.
@@ -184,6 +190,20 @@ namespace CommonControls
             if (string.IsNullOrEmpty(StartColor)) return;
 
             CmbColor.SelectedItem = typeof(Colors).GetProperty(StartColor);
+        }
+
+        /// <summary>
+        /// Called when [start color changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnStartColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorSelection picker && e.NewValue is string newColor)
+            {
+                picker.SwitchColor();
+                picker.ColorChanged?.Invoke(picker, newColor);
+            }
         }
 
         /// <summary>

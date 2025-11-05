@@ -1,12 +1,12 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Exp
- * FILE:        ShapeType.cs
+ * FILE:        DrawTool.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Exp
 {
-    public enum ShapeType { None, Rectangle, Ellipse, Freeform }
+    public enum DrawTool { None, Pencil, Eraser, Shape }
 }

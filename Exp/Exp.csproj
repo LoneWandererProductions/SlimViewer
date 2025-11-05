@@ -6,6 +6,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="DrawingToolBarControl.xaml.cs">
 	    <SubType>Code</SubType>
 	  </Compile>
