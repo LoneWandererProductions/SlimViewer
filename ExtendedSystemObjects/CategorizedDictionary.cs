@@ -191,7 +191,10 @@ namespace ExtendedSystemObjects
 
                 throw new KeyNotFoundException();
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
