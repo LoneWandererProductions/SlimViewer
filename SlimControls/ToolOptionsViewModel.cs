@@ -22,13 +22,21 @@ namespace SlimControls
         public ShapeTool? SelectedShape
         {
             get => _selectedShape;
-            set { _selectedShape = value; OnPropertyChanged(); }
+            set
+            {
+                _selectedShape = value;
+                OnPropertyChanged();
+            }
         }
 
         public AreaOperation? SelectedOperation
         {
             get => _selectedOperation;
-            set { _selectedOperation = value; OnPropertyChanged(); }
+            set
+            {
+                _selectedOperation = value;
+                OnPropertyChanged();
+            }
         }
 
         // Command to execute an operation
@@ -52,6 +60,7 @@ namespace SlimControls
         public RelayCommand FilterCommand { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

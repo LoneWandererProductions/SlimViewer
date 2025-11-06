@@ -29,5 +29,4 @@ namespace SlimControls
 
         // Erase area config maybe threshold etc later
     }
-
 }

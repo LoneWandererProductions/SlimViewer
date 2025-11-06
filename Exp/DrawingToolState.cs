@@ -28,18 +28,29 @@ namespace Exp
         }
 
         private ShapeType _activeShape;
+
         public ShapeType ActiveShape
         {
             get => _activeShape;
-            set { if (_activeShape == value) return; _activeShape = value; OnChanged(nameof(ActiveShape)); }
+            set
+            {
+                if (_activeShape == value) return;
+                _activeShape = value;
+                OnChanged(nameof(ActiveShape));
+            }
         }
 
 
         private AreaMode _activeAreaMode;
+
         public AreaMode ActiveAreaMode
         {
             get => _activeAreaMode;
-            set { _activeAreaMode = value; OnChanged(nameof(ActiveAreaMode)); }
+            set
+            {
+                _activeAreaMode = value;
+                OnChanged(nameof(ActiveAreaMode));
+            }
         }
 
         public double BrushSize { get; set; } = 5;

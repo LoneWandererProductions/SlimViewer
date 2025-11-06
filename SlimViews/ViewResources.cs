@@ -175,11 +175,6 @@ namespace SlimViews
         internal const string ErrorFileNotFoundMessage = "File not found: ";
 
         /// <summary>
-        ///     The error source (const). Value:  "Error Source: "
-        /// </summary>
-        internal const string ErrorSourceMessage = "Error Source: ";
-
-        /// <summary>
         ///     The directory error message (const). Value: "Error Dictionary not found.".
         /// </summary>
         internal const string ErrorDirectoryMessage = "Error Dictionary not found.";

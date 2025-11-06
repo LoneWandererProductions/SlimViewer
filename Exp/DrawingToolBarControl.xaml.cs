@@ -28,9 +28,9 @@ namespace Exp
 
         public static readonly DependencyProperty ToolStateProperty =
             DependencyProperty.Register(nameof(ToolState),
-                                        typeof(DrawingState),
-                                        typeof(DrawingToolBarControl),
-                                        new PropertyMetadata(null, OnToolStateChanged));
+                typeof(DrawingState),
+                typeof(DrawingToolBarControl),
+                new PropertyMetadata(null, OnToolStateChanged));
 
         private static void OnToolStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

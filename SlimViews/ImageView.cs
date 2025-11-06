@@ -529,7 +529,7 @@ namespace SlimViews
             {
                 if (value is >= 0 and <= 100) // Only set if value is within valid range
                 {
-                    var  similitary = value;
+                    var similitary = value;
                     SetProperty(ref similitary, value, nameof(Similarity));
                     _image.Similarity = similitary;
                     SlimViewerRegister.MainSimilarity = similitary;
@@ -554,7 +554,6 @@ namespace SlimViews
                     SetProperty(ref pixelWidth, value, nameof(PixelWidth));
                     _image.PixelWidth = pixelWidth;
                 }
-                    
             }
         }
 
@@ -1215,7 +1214,7 @@ namespace SlimViews
 
         private UiState _uiState = new();
 
-        public UiState UIState
+        public UiState UiState
         {
             get => _uiState;
             private set => SetProperty(ref _uiState, value); // notify bindings
@@ -2173,7 +2172,8 @@ namespace SlimViews
 
             if (_file.IsFilesEmpty) return;
 
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, _uiState.SubFolders);
+            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix,
+                _uiState.SubFolders);
 
             if (lst == null) return;
 
@@ -2417,7 +2417,8 @@ namespace SlimViews
             StatusImage = string.Empty;
             StatusImage = _redIcon;
 
-            _file.Files = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _uiState.SubFolders);
+            _file.Files =
+                FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _uiState.SubFolders);
 
             //decrease File Count
             if (_file.IsFilesEmpty)
@@ -2472,7 +2473,8 @@ namespace SlimViews
             else
             {
                 // Set visibility based on _currentId and _count
-                _uiState.RightButtonVisibility = _file.CurrentId == _file.Count - 1 ? Visibility.Hidden : Visibility.Visible;
+                _uiState.RightButtonVisibility =
+                    _file.CurrentId == _file.Count - 1 ? Visibility.Hidden : Visibility.Visible;
                 _uiState.LeftButtonVisibility = _file.CurrentId <= 0 ? Visibility.Hidden : Visibility.Visible;
             }
 

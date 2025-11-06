@@ -17,5 +17,4 @@ namespace SlimControls
         public double Opacity { get; init; }
         public Color Color { get; init; }
     }
-
 }

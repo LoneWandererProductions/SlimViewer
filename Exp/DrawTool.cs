@@ -8,5 +8,11 @@
 
 namespace Exp
 {
-    public enum DrawTool { None, Pencil, Eraser, Shape }
+    public enum DrawTool
+    {
+        None,
+        Pencil,
+        Eraser,
+        Shape
+    }
 }

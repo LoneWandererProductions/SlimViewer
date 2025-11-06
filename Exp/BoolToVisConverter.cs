@@ -25,6 +25,7 @@ namespace Exp
                 bool result = Invert ? !b : b;
                 return result ? Visibility.Visible : Visibility.Collapsed;
             }
+
             return Visibility.Collapsed;
         }
 
@@ -35,6 +36,7 @@ namespace Exp
                 bool result = v == Visibility.Visible;
                 return Invert ? !result : result;
             }
+
             return false;
         }
     }

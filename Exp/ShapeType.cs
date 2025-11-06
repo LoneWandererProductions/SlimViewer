@@ -8,5 +8,11 @@
 
 namespace Exp
 {
-    public enum ShapeType { None, Rectangle, Ellipse, Freeform }
+    public enum ShapeType
+    {
+        None,
+        Rectangle,
+        Ellipse,
+        Freeform
+    }
 }

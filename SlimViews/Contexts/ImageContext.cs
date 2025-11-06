@@ -13,7 +13,7 @@ namespace SlimViews.Contexts
     {
         // Core image data
         public Bitmap Bitmap { get; set; }
-         
+
         public BitmapImage BitmapImage { get; set; }
 
         public BitmapImage BitmapSource => Bitmap.ToBitmapImage();

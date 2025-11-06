@@ -13,17 +13,28 @@ namespace Exp
     public class DrawingState : INotifyPropertyChanged
     {
         private DrawTool _activeTool;
+
         public DrawTool ActiveTool
         {
             get => _activeTool;
-            set { _activeTool = value; OnPropertyChanged(nameof(ActiveTool)); }
+            set
+            {
+                _activeTool = value;
+                OnPropertyChanged(nameof(ActiveTool));
+            }
         }
 
         private AreaMode _activeAreaMode;
+
         public AreaMode ActiveAreaMode
         {
             get => _activeAreaMode;
-            set { _activeAreaMode = value; OnPropertyChanged(nameof(ActiveAreaMode)); UpdateSubStates(); }
+            set
+            {
+                _activeAreaMode = value;
+                OnPropertyChanged(nameof(ActiveAreaMode));
+                UpdateSubStates();
+            }
         }
 
         public double BrushSize { get; set; } = 5;
@@ -45,6 +56,7 @@ namespace Exp
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

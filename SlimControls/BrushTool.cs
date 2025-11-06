@@ -13,5 +13,4 @@ namespace SlimControls
         Pencil,
         Eraser
     }
-
 }

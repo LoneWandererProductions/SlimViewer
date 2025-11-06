@@ -103,6 +103,7 @@ namespace SlimViews
 
         /// <summary>
         ///     Gets or sets a value indicating whether [main compress cif].
+        /// TODo make use of it
         /// </summary>
         /// <value>
         ///     <c>true</c> if [main compress cif]; otherwise, <c>false</c>.

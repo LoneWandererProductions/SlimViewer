@@ -7,9 +7,9 @@ namespace SlimViews.Contexts
     {
         public Dictionary<int, string> Observer { get; set; }
 
-        internal int Count { get; set;  }
+        internal int Count { get; set; }
 
-        internal List<string> Files { get; set; } = [];
+        internal List<string> Files { get; set; } =  [];
 
         internal int CurrentId { get; set; }
 

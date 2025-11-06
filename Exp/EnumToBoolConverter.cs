@@ -20,5 +20,4 @@ namespace Exp
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             => (bool)value ? Enum.Parse(targetType, parameter.ToString()) : Binding.DoNothing;
     }
-
 }

@@ -315,7 +315,7 @@
                                              SelectedToolCode="{Binding ToolCode, Mode=TwoWay}"
                                              Grid.RowSpan="4" />
             <exp:DrawingToolBarControl Grid.Row="0" Grid.Column="8" Grid.RowSpan="4" />
-            
+
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"

@@ -47,7 +47,7 @@ namespace SlimViewer
 
             //TODO rework and set:
             _view = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
-                obj.MainAutoClean, ImageControl) { UIState = { Main = this, Thumb = Thumbnail }, Picker = ColorPick };
+                obj.MainAutoClean, ImageControl) { UiState = { Main = this, Thumb = Thumbnail }, Picker = ColorPick };
 
             DataContext = _view;
 

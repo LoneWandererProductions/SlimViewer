@@ -13,15 +13,21 @@ namespace Exp
     public class FilterSettings : INotifyPropertyChanged
     {
         private bool _enabled;
+
         public bool Enabled
         {
             get => _enabled;
-            set { _enabled = value; OnPropertyChanged(nameof(Enabled)); }
+            set
+            {
+                _enabled = value;
+                OnPropertyChanged(nameof(Enabled));
+            }
         }
 
         public string FilterName { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

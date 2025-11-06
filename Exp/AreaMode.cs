@@ -16,5 +16,4 @@ namespace Exp
         Filter,
         Erase
     }
-
 }
