@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <ProjectReference Include="..\Exp\Exp.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
     <ProjectReference Include="..\SlimControls\SlimControls.csproj" />
     <ProjectReference Include="..\SlimViews\SlimViews.csproj" />

@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
     xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
-    xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews"
+    xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews" xmlns:exp="clr-namespace:Exp;assembly=Exp"
     x:Class="SlimViewer.MainWindow"
     mc:Ignorable="d"
     Title="Slim Viewer"
@@ -66,7 +66,7 @@
                     <MenuItem Header="Filter">
                         <MenuItem Header="Configure Filter" Command="{Binding FilterConfigCommand}" />
                         <Separator />
-                            <MenuItem Header="Sepia"
+                        <MenuItem Header="Sepia"
                                   Command="{Binding ApplyFilterCommand}"
                                   CommandParameter="FilterSepia"
                                   IsEnabled="{Binding Path=IsImageActive}" />
@@ -303,9 +303,9 @@
                     Command="{Binding ClearCommand}" IsEnabled="{Binding Path =IsActive}" />
             <Label Content="File Count" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" />
             <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="4" />
-            <ComboBox Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Tooling}"
+            <ComboBox Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Tooling}"
                       SelectedItem="{Binding SelectedTool}" />
-            <slimControls:UnifiedToolOptions Grid.Row="0" Grid.Column="8"
+            <slimControls:UnifiedToolOptions Grid.Row="0" Grid.Column="6"
                                              SelectedTool="{Binding SelectedTool}"
                                              ToolChangedCommand="{Binding ToolChangedCommand}"
                                              FilterCommand="{Binding FilterConfigCommand}"
@@ -314,6 +314,8 @@
                                              EraseRadius="{Binding EraseRadius}"
                                              SelectedToolCode="{Binding ToolCode, Mode=TwoWay}"
                                              Grid.RowSpan="4" />
+            <exp:DrawingToolBarControl Grid.Row="0" Grid.Column="8" Grid.RowSpan="4" />
+            
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding ColorChangedCommand}" />
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"

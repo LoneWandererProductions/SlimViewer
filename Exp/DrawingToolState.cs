@@ -14,10 +14,17 @@ namespace Exp
     public class DrawingToolState : INotifyPropertyChanged
     {
         private DrawTool _activeTool;
+
         public DrawTool ActiveTool
         {
             get => _activeTool;
-            set { if (_activeTool == value) return; _activeTool = value; OnChanged(nameof(ActiveTool)); }
+            set
+            {
+                if (_activeTool == value) return;
+                _activeTool = value;
+                OnChanged(nameof(ActiveTool));
+                OnToolOrModeChanged();
+            }
         }
 
         private ShapeType _activeShape;
@@ -119,5 +126,11 @@ namespace Exp
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        // event that external subscribers can listen to
+        public event EventHandler ToolOrModeChanged;
+
+        protected virtual void OnToolOrModeChanged()
+            => ToolOrModeChanged?.Invoke(this, EventArgs.Empty);
     }
 }

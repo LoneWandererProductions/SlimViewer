@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Exp"
              x:Name="RootToolbar"
-             Height="450" Width="800">
+             Height="200" Width="300">
 
     <UserControl.Resources>
         <local:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
@@ -16,11 +16,16 @@
             <!-- Tools Tab -->
             <TabItem Header="Tools">
                 <StackPanel Orientation="Horizontal">
-                    <ToggleButton Content="Pencil"
-                                  IsChecked="{Binding ActiveTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Pencil}" />
-                    <ToggleButton Content="Eraser"
-                                  IsChecked="{Binding ActiveTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Eraser}" />
+                    <RadioButton Content="Pencil"
+                     GroupName="ToolGroup"
+                     IsChecked="{Binding ActiveTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Pencil}" />
+
+                    <RadioButton Content="Eraser"
+                     GroupName="ToolGroup"
+                     IsChecked="{Binding ActiveTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Eraser}" />
+
                     <CommonControls:ColorSelection StartColor="{Binding BrushColor, Mode=TwoWay}" Width="150" Margin="5"/>
+
                     <StackPanel Margin="10,0">
                         <TextBlock Text="Brush Size" />
                         <Slider Minimum="1" Maximum="50" Value="{Binding BrushSize}" Width="120"/>
@@ -28,6 +33,7 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
+
 
             <!-- Area Tools Tab -->
             <TabItem Header="Area Tools">
