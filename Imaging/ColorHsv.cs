@@ -2,7 +2,7 @@
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     Imaging
 * FILE:        Imaging/ColorHsv.cs
-* PURPOSE:     General Conversions of all Types of Color Displays, Todo Sort out Degree and radian a bit more
+* PURPOSE:     General Conversions of all Types of Color Displays.
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 * SOURCE:      https://manufacture.tistory.com/33
 *              https://www.rapidtables.com/convert/color/rgb-to-hsv.html

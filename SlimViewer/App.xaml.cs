@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+//System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Warning | System.Diagnostics.SourceLevels.Error;
+
 namespace SlimViewer
 {
     /// <inheritdoc />
@@ -14,5 +16,6 @@ namespace SlimViewer
     /// </summary>
     internal sealed partial class App
     {
+
     }
 }

@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
     xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
-    xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews" xmlns:exp="clr-namespace:Exp;assembly=Exp"
+    xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews" xmlns:exp="clr-namespace:Exp;assembly=Exp" d:DataContext="{d:DesignInstance Type=slimviews:ImageView}"
     x:Class="SlimViewer.MainWindow"
     mc:Ignorable="d"
     Title="Slim Viewer"

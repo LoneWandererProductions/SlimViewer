@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -23,17 +24,16 @@ namespace ViewModel
         /// <summary>
         ///     Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         ///     Called when [property changed].
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
 
         /// <summary>
         /// Sets the property and raises PropertyChanged if the value changes.
@@ -52,6 +52,27 @@ namespace ViewModel
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        /// <summary>
+        /// Sets the nested property.
+        /// </summary>
+        /// <typeparam name="T">Type of the property.</typeparam>
+        /// <param name="getter">The getter.</param>
+        /// <param name="setter">The setter.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns>If property was changed.</returns>
+        protected bool SetNestedProperty<T>(Func<T> getter, Action<T> setter, T value, [CallerMemberName] string? propertyName = null)
+        {
+            var current = getter();
+            if (EqualityComparer<T>.Default.Equals(current, value))
+                return false;
+
+            setter(value);
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
 
         /// <summary>
         ///     Gets a value indicating whether this instance can execute.

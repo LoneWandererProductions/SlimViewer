@@ -46,8 +46,12 @@ namespace SlimViewer
             SlimViewerRegister.SetRegister(obj);
 
             //TODO rework and set:
+            //_view = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
+            //    obj.MainAutoClean, ImageControl) { UiState = { Main = this, Thumb = Thumbnail }, Picker = ColorPick };
+
             _view = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
-                obj.MainAutoClean, ImageControl) { UiState = { Main = this, Thumb = Thumbnail }, Picker = ColorPick };
+                obj.MainAutoClean, ImageControl, this, Thumbnail)
+            { Picker = ColorPick };
 
             DataContext = _view;
 
