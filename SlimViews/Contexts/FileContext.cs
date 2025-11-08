@@ -15,7 +15,13 @@ namespace SlimViews.Contexts
         /// </value>
         internal int Count { get; set; }
 
-        public Dictionary<int, string> Observer { get; set; }
+        /// <summary>
+        /// Gets or sets the observer.
+        /// </summary>
+        /// <value>
+        /// The observer.
+        /// </value>
+        public Dictionary<int, string> Observer { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the name of the file.
@@ -33,6 +39,12 @@ namespace SlimViews.Contexts
         /// </value>
         internal List<string> Files { get; set; } =  [];
 
+        /// <summary>
+        /// Gets or sets the current identifier.
+        /// </summary>
+        /// <value>
+        /// The current identifier.
+        /// </value>
         internal int CurrentId { get; set; }
 
         internal string CurrentName { get; set; }
