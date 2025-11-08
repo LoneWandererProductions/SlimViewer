@@ -1,4 +1,5 @@
-﻿using CommonControls;
+﻿#nullable enable
+using CommonControls;
 using Imaging;
 using Point = System.Windows.Point;
 using ViewModel;
@@ -37,7 +38,6 @@ namespace SlimViews
         public ICommand AnalyzerWindow { get; }
         public ICommand ExportString { get; }
         public ICommand ResizerWindow { get; }
-
         public ICommand ApplyFilter { get; }
         public ICommand ApplyTexture { get; }
         public ICommand FilterConfig { get; }
@@ -106,5 +106,4 @@ namespace SlimViews
             ToolChanged = new DelegateCommand<ImageZoomTools>(owner.ToolChangedAction, CanRun);
         }
     }
-
 }

@@ -16,10 +16,7 @@
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows.Media;
-using ExtendedSystemObjects;
 
 namespace Imaging
 {
@@ -100,7 +97,9 @@ namespace Imaging
         /// <summary>
         /// Prevents a default instance of the <see cref="ColorHsv"/> class from being created.
         /// </summary>
-        private ColorHsv() { } // internal factory use
+        private ColorHsv()
+        {
+        } // internal factory use
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorHsv"/> class.
@@ -262,9 +261,9 @@ namespace Imaging
         /// </returns>
         public int CompareTo(ColorHsv? other)
             => other == null ? 1 :
-               H != other.H ? H.CompareTo(other.H) :
-               S != other.S ? S.CompareTo(other.S) :
-               V.CompareTo(other.V);
+                H != other.H ? H.CompareTo(other.H) :
+                S != other.S ? S.CompareTo(other.S) :
+                V.CompareTo(other.V);
 
         /// <summary>
         /// Implements the operator ==.
@@ -355,12 +354,36 @@ namespace Imaging
 
             double r = 0, g = 0, b = 0;
 
-            if (H < 60) { r = c; g = x; }
-            else if (H < 120) { r = x; g = c; }
-            else if (H < 180) { g = c; b = x; }
-            else if (H < 240) { g = x; b = c; }
-            else if (H < 300) { r = x; b = c; }
-            else { r = c; b = x; }
+            if (H < 60)
+            {
+                r = c;
+                g = x;
+            }
+            else if (H < 120)
+            {
+                r = x;
+                g = c;
+            }
+            else if (H < 180)
+            {
+                g = c;
+                b = x;
+            }
+            else if (H < 240)
+            {
+                g = x;
+                b = c;
+            }
+            else if (H < 300)
+            {
+                r = x;
+                b = c;
+            }
+            else
+            {
+                r = c;
+                b = x;
+            }
 
             R = (int)((r + m) * 255);
             G = (int)((g + m) * 255);

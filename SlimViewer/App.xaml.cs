@@ -16,6 +16,5 @@ namespace SlimViewer
     /// </summary>
     internal sealed partial class App
     {
-
     }
 }

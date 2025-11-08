@@ -260,7 +260,7 @@ public interface IImageRender
     /// <see cref="BitmapImage" />
     /// .
     /// <exception cref="ArgumentNullException"></exception>
-    BitmapImage BitmapToBitmapImage(Bitmap image);
+    BitmapImage? BitmapToBitmapImage(Bitmap image);
 
     /// <summary>
     ///     Bitmaps the image  bitmap.

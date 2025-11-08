@@ -62,7 +62,8 @@ namespace ViewModel
         /// <param name="value">The value.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>If property was changed.</returns>
-        protected bool SetNestedProperty<T>(Func<T> getter, Action<T> setter, T value, [CallerMemberName] string? propertyName = null)
+        protected bool SetNestedProperty<T>(Func<T> getter, Action<T> setter, T value,
+            [CallerMemberName] string? propertyName = null)
         {
             var current = getter();
             if (EqualityComparer<T>.Default.Equals(current, value))

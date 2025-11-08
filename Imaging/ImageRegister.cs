@@ -514,7 +514,8 @@ public sealed class ImageRegister
     /// <returns>List of properties needed for our Filters</returns>
     public HashSet<string> GetUsedProperties(FiltersType filter)
     {
-        return _filterPropertyMap.TryGetValue(filter, out var properties) ? properties : [];
+        return _filterPropertyMap.TryGetValue(filter, out var properties) ? properties : []
+        ;
     }
 
     /// <summary>
@@ -547,7 +548,8 @@ public sealed class ImageRegister
     {
         return _texturePropertyMap.TryGetValue(textureType, out var properties)
             ? properties
-            : [];
+            : []
+        ;
     }
 
     /// <summary>

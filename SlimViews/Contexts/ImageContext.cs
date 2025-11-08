@@ -1,4 +1,5 @@
-﻿using Imaging;
+﻿#nullable enable
+using Imaging;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 
@@ -11,7 +12,7 @@ namespace SlimViews.Contexts
     public sealed class ImageContext
     {
         // Core image data
-        public Bitmap Bitmap { get; set; }
+        public Bitmap? Bitmap { get; set; }
 
         /// <summary>
         /// Gets or sets the custom image format.
@@ -20,7 +21,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The custom image format.
         /// </value>
-        internal CustomImageFormat CustomImageFormat { get; set; }
+        internal CustomImageFormat? CustomImageFormat { get; set; }
 
         /// <summary>
         /// Gets or sets the bitmap image.
@@ -29,7 +30,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The bitmap image.
         /// </value>
-        internal BitmapImage BitmapImage { get; set; }
+        internal BitmapImage? BitmapImage { get; set; }
 
         // Filters, textures, and processing
 
@@ -61,7 +62,6 @@ namespace SlimViews.Contexts
 
         // Cached flags
 
-        public bool IsModified { get; set; }
         public int PixelWidth { get; internal set; }
 
         internal bool HasImage => Bitmap != null || BitmapSource != null;
@@ -74,9 +74,10 @@ namespace SlimViews.Contexts
         /// <value>
         /// The bitmap source.
         /// </value>
-        internal BitmapImage BitmapSource => Bitmap.ToBitmapImage();
+        internal BitmapImage? BitmapSource => Bitmap?.ToBitmapImage();
 
         public int BrushSize { get; internal set; }
+
         public string Information { get; internal set; }
 
         /// <summary>
@@ -86,7 +87,6 @@ namespace SlimViews.Contexts
         {
             Bitmap?.Dispose();
             Bitmap = null;
-            IsModified = false;
             IsImageActive = false;
         }
     }

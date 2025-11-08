@@ -12,6 +12,7 @@
 // ReSharper disable MissingSpace
 // ReSharper disable WrongIndentSize
 
+#nullable enable
 using CommonControls;
 using CommonDialogs;
 using ExtendedSystemObjects;
@@ -78,6 +79,7 @@ namespace SlimViews
         ///     The tolerance
         /// </summary>
         private int _tolerance;
+
         private double _eraseRadius;
         private ImageZoomTools _imageZoomTool;
 
@@ -106,6 +108,7 @@ namespace SlimViews
         /// <param name="imageZoom">The image zoom.</param>
         /// <param name="mainWindow">The main window.</param>
         /// <param name="thumb">The thumb.</param>
+        /// <param name="colorPick">The color pick.</param>
         public ImageView(
             bool subFolders,
             bool compressCif,
@@ -449,18 +452,14 @@ namespace SlimViews
         /// </value>
         public bool AutoClean
         {
-            get
-            {
-                return _uiState.AutoClean;
-            }
+            get => _uiState.AutoClean;
             set
             {
-                if (_uiState.AutoClean != value)
-                {
-                    _uiState.AutoClean = value;
-                    OnPropertyChanged(nameof(AutoClean)); // notify WPF
-                    SlimViewerRegister.MainAutoClean = value;
-                }
+                if (_uiState.AutoClean == value) return;
+
+                _uiState.AutoClean = value;
+                OnPropertyChanged(nameof(AutoClean)); // notify WPF
+                SlimViewerRegister.MainAutoClean = value;
             }
         }
 
@@ -529,16 +528,15 @@ namespace SlimViews
         /// <value>
         ///     The BitmapImage.
         /// </value>
-        public BitmapImage Bmp
+        public BitmapImage? Bmp
         {
             get => _image.BitmapImage;
             set
             {
-                if (_image.BitmapImage != value)
-                {
-                    _image.BitmapImage = value;
-                    OnPropertyChanged(nameof(Bmp)); // notify WPF
-                }
+                if (_image.BitmapImage == value) return;
+
+                _image.BitmapImage = value;
+                OnPropertyChanged(nameof(Bmp)); // notify WPF
             }
         }
 
@@ -592,14 +590,6 @@ namespace SlimViews
             get => _imageZoomTool;
             set => SetProperty(ref _imageZoomTool, value, nameof(ImageZoomTool));
         }
-
-        /// <summary>
-        ///     Gets the tool changed command.
-        /// </summary>
-        /// <value>
-        ///     The tool changed command.
-        /// </value>
-        public ICommand ToolChangedCommand { get; }
 
         private readonly ImageContext _image = new();
 
@@ -710,7 +700,6 @@ namespace SlimViews
             switch (ToolCode)
             {
                 case EnumTools.Paint:
-                    if (Color == null) return;
 
                     var color = Color.GetDrawingColor();
 
@@ -751,7 +740,6 @@ namespace SlimViews
                 case EnumTools.Move:
                     break;
                 case EnumTools.SolidColor:
-                    if (Color == null) return;
 
                     var color = Color.GetDrawingColor();
 
@@ -814,7 +802,7 @@ namespace SlimViews
             }
 
             //check if file extension is supported
-            if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
+            if (!ImagingResources.Appendix.Contains(pathObj.Extension?.ToLower()))
             {
                 _ = MessageBox.Show(string.Concat(ViewResources.ErrorFileNotSupported, pathObj.Extension),
                     ViewResources.ErrorMessage);
@@ -837,7 +825,7 @@ namespace SlimViews
             var pathObj =
                 DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             GenerateCbrView(pathObj);
 
@@ -854,7 +842,7 @@ namespace SlimViews
             var pathObj =
                 DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             _image.Bitmap = _image.CustomImageFormat.GetImageFromCif(pathObj.FilePath);
 
@@ -879,7 +867,7 @@ namespace SlimViews
         {
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             if (CompressCif) _image.CustomImageFormat.GenerateCifCompressedFromBitmap(_image.Bitmap, pathObj.FilePath);
             else _image.CustomImageFormat.GenerateBitmapToCifFile(_image.Bitmap, pathObj.FilePath);
@@ -1065,7 +1053,7 @@ namespace SlimViews
 
             if (!Observer.TryGetValue(_file.CurrentId, out string file)) return;
 
-            if (!System.IO.File.Exists(file)) return;
+            if (!File.Exists(file)) return;
 
             var folder = Path.GetDirectoryName(file);
             if (string.IsNullOrEmpty(folder)) return;
@@ -1073,7 +1061,7 @@ namespace SlimViews
             var filePath = Path.Combine(folder, FileName);
 
             // Check if we have a duplicate; if true, shall we overwrite?
-            if (System.IO.File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 var dialogResult = await Task.Run(() =>
                     _ = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
@@ -1210,7 +1198,7 @@ namespace SlimViews
         {
             if (!Directory.Exists(SlimViewerRegister.CurrentFolder)) return;
 
-            var argument = !System.IO.File.Exists(_file.FilePath)
+            var argument = !File.Exists(_file.FilePath)
                 ? SlimViewerRegister.CurrentFolder
                 : string.Concat(ViewResources.Select, _file.FilePath, ViewResources.Close);
             _ = Process.Start(ViewResources.Explorer, argument);
@@ -1469,7 +1457,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void MoveAction(object obj)
         {
-            if (!System.IO.File.Exists(FileName) && _uiState.Thumb.Selection.IsNullOrEmpty()) return;
+            if (!File.Exists(FileName) && _uiState.Thumb.Selection.IsNullOrEmpty()) return;
             //Initiate Folder
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -1486,13 +1474,13 @@ namespace SlimViews
                     if (!Directory.Exists(path)) return;
 
                     var fileName = Observer[id];
-                    if (!System.IO.File.Exists(fileName)) continue;
+                    if (!File.Exists(fileName)) continue;
 
                     //Copy Single File
                     var info = new FileInfo(fileName);
                     var target = Path.Combine(path, info.Name);
 
-                    if (System.IO.File.Exists(target))
+                    if (File.Exists(target))
                     {
                         var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
                             ViewResources.CaptionFileAlreadyExists,
@@ -1515,7 +1503,7 @@ namespace SlimViews
                 var info = new FileInfo(FileName);
                 var target = Path.Combine(path, info.Name);
 
-                if (System.IO.File.Exists(target))
+                if (File.Exists(target))
                 {
                     var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
                         ViewResources.CaptionFileAlreadyExists,
@@ -1544,7 +1532,8 @@ namespace SlimViews
 
             if (_file.IsFilesEmpty) return;
 
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, _uiState.UseSubFolders);
+            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix,
+                _uiState.UseSubFolders);
 
             if (lst == null) return;
 
@@ -1622,7 +1611,7 @@ namespace SlimViews
         public void ChangeImage(string filePath)
         {
             //check if it exists
-            if (!System.IO.File.Exists(filePath)) return;
+            if (!File.Exists(filePath)) return;
 
             //check if we even handle this file type
             if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
@@ -1649,7 +1638,7 @@ namespace SlimViews
         internal void ChangeImage(IEnumerable<string> files, string filePath, string info)
         {
             //check if it exists
-            if (!System.IO.File.Exists(filePath)) return;
+            if (!File.Exists(filePath)) return;
 
             //check if we even handle this file type
             if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
@@ -1787,7 +1776,8 @@ namespace SlimViews
             StatusImage = string.Empty;
             StatusImage = _uiState.RedIconPath;
 
-            _file.Files = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _uiState.UseSubFolders);
+            _file.Files =
+                FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _uiState.UseSubFolders);
 
             //decrease File Count
             if (_file.IsFilesEmpty)

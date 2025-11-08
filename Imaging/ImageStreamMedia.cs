@@ -148,7 +148,7 @@ public static class ImageStreamMedia
     /// <see cref="BitmapImage" />
     /// .
     /// <exception cref="ArgumentNullException">if Image is null</exception>
-    internal static BitmapImage BitmapToBitmapImage(Bitmap image)
+    internal static BitmapImage? BitmapToBitmapImage(Bitmap image)
     {
         ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), image);
 

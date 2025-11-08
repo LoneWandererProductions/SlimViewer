@@ -8,7 +8,6 @@
 
 using System;
 using CommonControls;
-using Imaging;
 using Imaging.Enums;
 
 namespace SlimControls

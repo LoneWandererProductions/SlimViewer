@@ -51,7 +51,7 @@ namespace SlimViewer
 
             _view = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
                 obj.MainAutoClean, ImageControl, this, Thumbnail, ColorPick);
-           
+
             DataContext = _view;
 
             ImageControl.AutoplayGifImage = obj.MainAutoPlayGif;

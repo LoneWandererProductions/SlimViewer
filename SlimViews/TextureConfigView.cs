@@ -601,6 +601,15 @@ namespace SlimViews
         /// </value>
         public bool IsXyPeriodActive { get; set; }
 
+        public bool IsRandomizationFactorActive { get; set; }
+        public bool IsEdgeJaggednessLimitActive { get; set; }
+
+        public bool IsJaggednessThresholdActive { get; set; }
+
+        public bool IsWaveFrequencyActive { get; set; }
+
+        public bool IsWaveAmplitudeActive { get; set; }
+
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is line spacing active.
         /// </summary>
@@ -768,6 +777,11 @@ namespace SlimViews
             IsUseSmoothNoiseActive = usedProperties.Contains(nameof(UseSmoothNoise));
             IsUseTurbulenceActive = usedProperties.Contains(nameof(UseTurbulence));
             IsXyPeriodActive = usedProperties.Contains(nameof(XyPeriod));
+            IsRandomizationFactorActive = usedProperties.Contains(nameof(IsRandomizationFactorActive));
+            IsEdgeJaggednessLimitActive = usedProperties.Contains(nameof(IsEdgeJaggednessLimitActive));
+            IsJaggednessThresholdActive = usedProperties.Contains(nameof(IsJaggednessThresholdActive));
+            IsWaveFrequencyActive = usedProperties.Contains(nameof(IsWaveFrequencyActive));
+            IsWaveAmplitudeActive = usedProperties.Contains(nameof(IsWaveAmplitudeActive));
 
 
             // Retrieve the saved settings for the selected texture

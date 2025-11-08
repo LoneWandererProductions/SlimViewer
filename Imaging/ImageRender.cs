@@ -365,7 +365,7 @@ public sealed class ImageRender : IImageRender
     /// <see cref="BitmapImage" />
     /// .
     /// <exception cref="ArgumentNullException"></exception>
-    public BitmapImage BitmapToBitmapImage(Bitmap image)
+    public BitmapImage? BitmapToBitmapImage(Bitmap image)
     {
         return ImageStreamMedia.BitmapToBitmapImage(image);
     }
