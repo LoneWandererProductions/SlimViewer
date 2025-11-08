@@ -1,6 +1,8 @@
 ﻿using FileHandler;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace SlimViews.Contexts
@@ -65,12 +67,21 @@ namespace SlimViews.Contexts
         /// </value>
         internal string FilePath { get; set; }
 
+        /// <summary>
+        /// Currents the identifier get identifier by file path.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>Id of Image</returns>
+        internal int CurrentIdGetIdByFilePath(string filePath) => Observer.FirstOrDefault(x => x.Value == filePath).Key;
 
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
         internal void Clear()
         {
             Count = 0;
-            GifPath = null;
             Observer = null;
+            GifPath = null;
         }
     }
 }

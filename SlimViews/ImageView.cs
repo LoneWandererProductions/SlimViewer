@@ -55,217 +55,9 @@ namespace SlimViews
     public sealed class ImageView : ViewModelBase
     {
         /// <summary>
-        ///     The analyzer window command
-        /// </summary>
-        private ICommand _analyzerWindowCommand;
-
-        /// <summary>
-        ///     The apply filter command
-        /// </summary>
-        private ICommand _applyFilterCommand;
-
-        /// <summary>
-        ///     The apply texture command
-        /// </summary>
-        private ICommand _applyTextureCommand;
-
-        /// <summary>
-        ///     The brighten command
-        /// </summary>
-        private ICommand _brightenCommand;
-
-        /// <summary>
-        ///     Clean the temporary folder
-        /// </summary>
-        private ICommand _cleanTempFolder;
-
-        /// <summary>
-        ///     The clear command.
-        /// </summary>
-        private ICommand _clearCommand;
-
-        /// <summary>
-        ///     The close command.
-        /// </summary>
-        private ICommand _closeCommand;
-
-        /// <summary>
-        ///     The color changed command
-        /// </summary>
-        private ICommand _colorChangedCommand;
-
-        /// <summary>
-        ///     The convert cif command.
-        /// </summary>
-        private ICommand _convertCommandCif;
-
-        /// <summary>
-        ///     The darken command
-        /// </summary>
-        private ICommand _darkenCommand;
-
-        /// <summary>
-        ///     The delete command
-        /// </summary>
-        private ICommand _deleteCommand;
-
-        /// <summary>
-        ///     The duplicate command
-        /// </summary>
-        private ICommand _duplicateCommand;
-
-        /// <summary>
-        ///     The erase radius
-        /// </summary>
-        private double _eraseRadius;
-
-        /// <summary>
-        ///     The explorer command
-        /// </summary>
-        private ICommand _explorerCommand;
-
-        /// <summary>
-        ///     The export string command
-        /// </summary>
-        private ICommand _exportStringCommand;
-
-        /// <summary>
-        ///     The filter configuration command
-        /// </summary>
-        private ICommand _filterConfigCommand;
-
-        /// <summary>
-        ///     The folder command
-        /// </summary>
-        private ICommand _folderCommand;
-
-        /// <summary>
-        ///     The folder convert command
-        /// </summary>
-        private ICommand _folderConvertCommand;
-
-        /// <summary>
-        ///     The folder rename command
-        /// </summary>
-        private ICommand _folderRenameCommand;
-
-        /// <summary>
-        ///     The GIF window command
-        /// </summary>
-        private ICommand _gifWindowCommand;
-
-        /// <summary>
-        ///     The image loaded command
-        /// </summary>
-        private ICommand _imageLoadedCommand;
-
-        /// <summary>
-        ///     The selection tool
-        /// </summary>
-        private ImageZoomTools _imageZoomTool;
-
-        /// <summary>
-        ///     Is the Menu active
-        /// </summary>
-        private bool _isActive;
-
-        /// <summary>
-        ///     The mirror command
-        /// </summary>
-        private ICommand _mirrorCommand;
-
-        /// <summary>
-        ///     The move all command
-        /// </summary>
-        private ICommand _moveAllCommand;
-
-        /// <summary>
-        ///     The move command
-        /// </summary>
-        private ICommand _moveCommand;
-
-        /// <summary>
-        ///     The next command
-        /// </summary>
-        private ICommand _nextCommand;
-
-        /// <summary>
-        ///     The open CBZ command.
-        /// </summary>
-        private ICommand _openCbzCommand;
-
-        /// <summary>
-        ///     The open command
-        /// </summary>
-        private ICommand _openCommand;
-
-        /// <summary>
-        ///     The open cif command.
-        /// </summary>
-        private ICommand _openCommandCif;
-
-        /// <summary>
-        ///     The pixelate command
-        /// </summary>
-        private ICommand _pixelateCommand;
-
-        /// <summary>
         ///     The pixel width
         /// </summary>
         private int _pixelWidth;
-
-        /// <summary>
-        ///     The previous command
-        /// </summary>
-        private ICommand _previousCommand;
-
-        /// <summary>
-        ///     The refresh command
-        /// </summary>
-        private ICommand _refreshCommand;
-
-        /// <summary>
-        ///     The rename command
-        /// </summary>
-        private ICommand _renameCommand;
-
-        /// <summary>
-        ///     The resize window command
-        /// </summary>
-        private ICommand _resizeWindowCommand;
-
-        /// <summary>
-        ///     Gets or sets the root.
-        /// </summary>
-        /// <value>
-        ///     The root.
-        /// </value>
-        private string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        /// <summary>
-        ///     The rotate backward command
-        /// </summary>
-        private ICommand _rotateBackwardCommandCommand;
-
-        /// <summary>
-        ///     The rotate forward command
-        /// </summary>
-        private ICommand _rotateForwardCommand;
-
-        /// <summary>
-        ///     The save command
-        /// </summary>
-        private ICommand _saveCommand;
-
-        /// <summary>
-        ///     The scale command
-        /// </summary>
-        private ICommand _scaleCommand;
-
-        /// <summary>
-        ///     The search command
-        /// </summary>
-        private ICommand _searchCommand;
 
         /// <summary>
         ///     The selected filter
@@ -273,17 +65,7 @@ namespace SlimViews
         private string _selectedFilter;
 
         /// <summary>
-        ///     The selected frame command
-        /// </summary>
-        private ICommand _selectedFrameCommand;
-
-        /// <summary>
-        ///     The selected point command
-        /// </summary>
-        private ICommand _selectedPointCommand;
-
-        /// <summary>
-        ///     The selected texture
+        /// The selected texture
         /// </summary>
         private string _selectedTexture;
 
@@ -293,40 +75,23 @@ namespace SlimViews
         private ImageTools _selectedTool;
 
         /// <summary>
-        ///     The similar command
-        /// </summary>
-        private ICommand _similarCommand;
-
-        /// <summary>
-        ///     The texture configuration command
-        /// </summary>
-        private ICommand _textureConfigCommand;
-
-        /// <summary>
-        ///     The thumb image clicked command
-        /// </summary>
-        private ICommand _thumbImageClickedCommand;
-
-        /// <summary>
-        ///     Check if we show thumbnails.
-        /// </summary>
-        private bool _thumbs = true;
-
-        /// <summary>
         ///     The tolerance
         /// </summary>
         private int _tolerance;
+        private double _eraseRadius;
+        private ImageZoomTools _imageZoomTool;
 
-        /// <summary>
-        ///     The tool changed command
-        /// </summary>
-        private ICommand _toolChangedCommand;
+        public ImageViewCommands Commands { get; }
+
+        public bool CanRun(object? arg) => CanExecute(arg);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageView"/> class.
         /// </summary>
         public ImageView()
         {
+            Commands = new ImageViewCommands(this);
+
             Initialize();
         }
 
@@ -341,7 +106,16 @@ namespace SlimViews
         /// <param name="imageZoom">The image zoom.</param>
         /// <param name="mainWindow">The main window.</param>
         /// <param name="thumb">The thumb.</param>
-        public ImageView(bool subFolders, bool compressCif, int similarity, bool autoClean, ImageZoom imageZoom, Window mainWindow, Thumbnails thumb)
+        public ImageView(
+            bool subFolders,
+            bool compressCif,
+            int similarity,
+            bool autoClean,
+            ImageZoom imageZoom,
+            Window mainWindow,
+            Thumbnails thumb,
+            ColorPickerMenu colorPick)
+            : this()
         {
             UseSubFolders = subFolders;
             CompressCif = compressCif;
@@ -350,6 +124,7 @@ namespace SlimViews
             _uiState.ImageZoomControl = imageZoom;
             _uiState.Main = mainWindow;
             _uiState.Thumb = thumb;
+            _uiState.Picker = colorPick;
 
             Initialize();
         }
@@ -385,14 +160,6 @@ namespace SlimViews
         ///     The color.
         /// </value>
         public ColorHsv Color { get; set; }
-
-        /// <summary>
-        ///     Sets the status.
-        /// </summary>
-        /// <value>
-        ///     The status.
-        /// </value>
-        public ColorPickerMenu Picker { get; init; }
 
         /// <summary>
         ///     Gets or sets the tool code.
@@ -695,8 +462,7 @@ namespace SlimViews
                     SlimViewerRegister.MainAutoClean = value;
                 }
             }
-
-}
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this <see cref="ImageView" /> shows Thumbnails.
@@ -704,13 +470,17 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if thumbs; otherwise, <c>false</c>.
         /// </value>
-        public bool ShowThumbs
+        public bool IsThumbsVisible
         {
-            get => _thumbs;
+            get => _uiState.IsThumbsVisible;
             set
             {
-                SetProperty(ref _thumbs, value, nameof(ShowThumbs));
-                NavigationLogic();
+                if (_uiState.IsThumbsVisible != value)
+                {
+                    _uiState.IsThumbsVisible = value;
+                    OnPropertyChanged(nameof(IsThumbsVisible)); // notify WPF
+                    NavigationLogic();
+                }
             }
         }
 
@@ -748,6 +518,7 @@ namespace SlimViews
                 {
                     _file.Observer = value;
                     OnPropertyChanged(nameof(Observer)); // notify WPF
+                    NavigationLogic();
                 }
             }
         }
@@ -770,7 +541,6 @@ namespace SlimViews
                 }
             }
         }
-
 
         /// <summary>
         ///     Gets or sets the status image.
@@ -824,393 +594,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the close command.
-        /// </summary>
-        /// <value>
-        ///     The close command.
-        /// </value>
-        public ICommand CloseCommand =>
-            _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the open CBZ command.
-        /// </summary>
-        /// <value>
-        ///     The open CBZ command.
-        /// </value>
-        public ICommand OpenCbzCommand =>
-            _openCbzCommand ??= new DelegateCommand<object>(OpenCbzAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the open command.
-        /// </summary>
-        /// <value>
-        ///     The open command.
-        /// </value>
-        public ICommand OpenCommand =>
-            _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the open command.
-        /// </summary>
-        /// <value>
-        ///     s
-        ///     The open command.
-        /// </value>
-        public ICommand SaveCommand =>
-            _saveCommand ??= new DelegateCommand<object>(SaveAction, CanExecute);
-
-
-        /// <summary>
-        ///     Gets the delete command.
-        /// </summary>
-        /// <value>
-        ///     The delete command.
-        /// </value>
-        public ICommand DeleteCommand =>
-            _deleteCommand ??= new DelegateCommand<object>(DeleteAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the refresh command.
-        /// </summary>
-        /// <value>
-        ///     The refresh command.
-        /// </value>
-        public ICommand RefreshCommand =>
-            _refreshCommand ??= new DelegateCommand<object>(RefreshAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the pixelate.
-        /// </summary>
-        /// <value>
-        ///     The pixelate.
-        /// </value>
-        public ICommand Pixelate =>
-            _pixelateCommand ??= new DelegateCommand<object>(PixelateAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the compare command.
-        /// </summary>
-        /// <value>
-        ///     The compare command.
-        /// </value>
-        public ICommand SimilarCommand =>
-            _similarCommand ??= new DelegateCommand<object>(SimilarWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the compare command.
-        /// </summary>
-        /// <value>
-        ///     The compare command.
-        /// </value>
-        public ICommand DuplicateCommand =>
-            _duplicateCommand ??= new DelegateCommand<object>(DuplicateWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the rename command.
-        /// </summary>
-        /// <value>
-        ///     The rename command.
-        /// </value>
-        public ICommand RenameCommand =>
-            _renameCommand ??= new AsyncDelegateCommand<object>(RenameAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the folder command.
-        /// </summary>
-        /// <value>
-        ///     The folder command.
-        /// </value>
-        public ICommand FolderCommand =>
-            _folderCommand ??= new DelegateCommand<object>(FolderAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the mirror command.
-        /// </summary>
-        /// <value>
-        ///     The mirror command.
-        /// </value>
-        public ICommand MirrorCommand =>
-            _mirrorCommand ??= new DelegateCommand<object>(MirrorAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the rotate forward command.
-        /// </summary>
-        /// <value>
-        ///     The rotate forward command.
-        /// </value>
-        public ICommand RotateForwardCommand =>
-            _rotateForwardCommand ??= new DelegateCommand<object>(RotateForwardAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the rotate backward command.
-        /// </summary>
-        /// <value>
-        ///     The rotate backward command.
-        /// </value>
-        public ICommand RotateBackwardCommand => _rotateBackwardCommandCommand ??=
-            new DelegateCommand<object>(RotateBackwardAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the explorer command.
-        /// </summary>
-        /// <value>
-        ///     The explorer command.
-        /// </value>
-        public ICommand ExplorerCommand => _explorerCommand ??= new DelegateCommand<object>(ExplorerAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the scale command.
-        /// </summary>
-        /// <value>
-        ///     The scale command.
-        /// </value>
-        public ICommand ScaleCommand =>
-            _scaleCommand ??= new DelegateCommand<object>(ScaleWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the folder rename command.
-        /// </summary>
-        /// <value>
-        ///     The folder rename command.
-        /// </value>
-        public ICommand FolderRenameCommand =>
-            _folderRenameCommand ??= new DelegateCommand<object>(FolderRenameWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the folder convert command.
-        /// </summary>
-        /// <value>
-        ///     The folder convert command.
-        /// </value>
-        public ICommand FolderConvertCommand =>
-            _folderConvertCommand ??= new DelegateCommand<object>(FolderConvertWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the folder convert command.
-        /// </summary>
-        /// <value>
-        ///     The folder convert command.
-        /// </value>
-        public ICommand ClearCommand => _clearCommand ??= new DelegateCommand<object>(ClearAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the folder convert command.
-        /// </summary>
-        /// <value>
-        ///     The folder convert command.
-        /// </value>
-        public ICommand CleanTempFolder =>
-            _cleanTempFolder ??= new DelegateCommand<object>(CleanTempAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the folder search command.
-        /// </summary>
-        /// <value>
-        ///     The folder search command.
-        /// </value>
-        public ICommand FolderSearchCommand =>
-            _searchCommand ??= new DelegateCommand<object>(SearchWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the move command.
-        /// </summary>
-        /// <value>
-        ///     The move command.
-        /// </value>
-        public ICommand MoveCommand =>
-            _moveCommand ??= new DelegateCommand<object>(MoveAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the move all command.
-        /// </summary>
-        /// <value>
-        ///     The move all command.
-        /// </value>
-        public ICommand MoveAllCommand =>
-            _moveAllCommand ??= new DelegateCommand<object>(MoveAllAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the open Cif command.
-        /// </summary>
-        /// <value>
-        ///     The open Cif command.
-        /// </value>
-        public ICommand OpenCommandCif =>
-            _openCommandCif ??= new DelegateCommand<object>(OpenCifAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the convert cif command.
-        /// </summary>
-        /// <value>
-        ///     The convert cif command.
-        /// </value>
-        public ICommand ConvertCommandCif =>
-            _convertCommandCif ??= new DelegateCommand<object>(ConvertCifAction, CanExecute);
-
-        /// <summary>
-        ///     The GIF window command.
-        /// </summary>
-        /// <value>
-        ///     The GIF window command.
-        /// </value>
-        public ICommand GifWindowCommand =>
-            _gifWindowCommand ??= new DelegateCommand<object>(GifWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the analyzer window command.
-        /// </summary>
-        /// <value>
-        ///     The analyzer window command.
-        /// </value>
-        public ICommand AnalyzerWindowCommand =>
-            _analyzerWindowCommand ??= new DelegateCommand<object>(AnalyzerWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the export string command.
-        /// </summary>
-        /// <value>
-        ///     The export string command.
-        /// </value>
-        public ICommand ExportStringCommand =>
-            _exportStringCommand ??= new DelegateCommand<object>(ExportStringAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the resizer window command.
-        /// </summary>
-        /// <value>
-        ///     The resizer window command.
-        /// </value>
-        public ICommand ResizerWindowCommand =>
-            _resizeWindowCommand ??= new DelegateCommand<object>(ResizerWindowAction, CanExecute);
-
-
-        /// <summary>
-        ///     Gets the apply filter command.
-        /// </summary>
-        /// <value>
-        ///     The apply filter command.
-        /// </value>
-        public ICommand ApplyFilterCommand =>
-            _applyFilterCommand ??= new DelegateCommand<string>(ApplyFilterAction, CanExecute);
-
-
-        /// <summary>
-        ///     Gets the apply texture command.
-        /// </summary>
-        /// <value>
-        ///     The apply texture command.
-        /// </value>
-        public ICommand ApplyTextureCommand =>
-            _applyTextureCommand ??= new DelegateCommand<string>(ApplyTextureAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the filter configuration command.
-        /// </summary>
-        /// <value>
-        ///     The filter configuration command.
-        /// </value>
-        public ICommand FilterConfigCommand =>
-            _filterConfigCommand ??= new DelegateCommand<string>(FilterConfigWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the filter configuration command.
-        /// </summary>
-        /// <value>
-        ///     The filter configuration command.
-        /// </value>
-        public ICommand TextureConfigCommand =>
-            _textureConfigCommand ??= new DelegateCommand<string>(TextureConfigWindowAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the brighten command.
-        /// </summary>
-        /// <value>
-        ///     The brighten command.
-        /// </value>
-        public ICommand BrightenCommand =>
-            _brightenCommand ??= new DelegateCommand<string>(BrightenAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the darken command.
-        /// </summary>
-        /// <value>
-        ///     The darken command.
-        /// </value>
-        public ICommand DarkenCommand =>
-            _darkenCommand ??= new DelegateCommand<string>(DarkenAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the thumb image clicked command.
-        /// </summary>
-        /// <value>
-        ///     The thumb image clicked command.
-        /// </value>
-        public ICommand ThumbImageClickedCommand =>
-            _thumbImageClickedCommand ??= new DelegateCommand<ImageEventArgs>(ThumbImageClickedAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the image loaded command.
-        /// </summary>
-        /// <value>
-        ///     The image loaded command.
-        /// </value>
-        public ICommand ImageLoadedCommand =>
-            _imageLoadedCommand ??= new DelegateCommand<object>(ImageLoadedCommandAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the selected point command.
-        /// </summary>
-        /// <value>
-        ///     The selected point command.
-        /// </value>
-        public ICommand SelectedPointCommand =>
-            _selectedPointCommand ??= new DelegateCommand<Point>(SelectedPointAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the selected frame command.
-        /// </summary>
-        /// <value>
-        ///     The selected frame command.
-        /// </value>
-        public ICommand SelectedFrameCommand =>
-            _selectedFrameCommand ??= new DelegateCommand<SelectionFrame>(SelectedFrameAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the color changed command.
-        /// </summary>
-        /// <value>
-        ///     The color changed command.
-        /// </value>
-        public ICommand ColorChangedCommand =>
-            _colorChangedCommand ??= new DelegateCommand<ColorHsv>(ColorChangedAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the next command.
-        /// </summary>
-        /// <value>
-        ///     The next command.
-        /// </value>
-        public ICommand NextCommand =>
-            _nextCommand ??= new DelegateCommand<object>(NextAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the previous command.
-        /// </summary>
-        /// <value>
-        ///     The previous command.
-        /// </value>
-        public ICommand PreviousCommand =>
-            _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
-
-        /// <summary>
         ///     Gets the tool changed command.
         /// </summary>
         /// <value>
         ///     The tool changed command.
         /// </value>
-        public ICommand ToolChangedCommand =>
-            _toolChangedCommand ??= new DelegateCommand<ImageZoomTools>(ToolChangedAction, CanExecute);
+        public ICommand ToolChangedCommand { get; }
 
         private readonly ImageContext _image = new();
 
@@ -1243,12 +632,12 @@ namespace SlimViews
             // Initialize key bindings using DelegateCommand<T>
             CommandBindings = new Dictionary<Key, ICommand>
             {
-                { Key.O, OpenCommand },
-                { Key.S, SaveCommand },
-                { Key.Delete, DeleteCommand },
-                { Key.F5, RefreshCommand },
-                { Key.Left, PreviousCommand },
-                { Key.Right, NextCommand }
+                { Key.O, Commands.Open },
+                { Key.S, Commands.Save },
+                { Key.Delete, Commands.Delete },
+                { Key.F5, Commands.Refresh },
+                { Key.Left, Commands.Previous },
+                { Key.Right, Commands.Next }
             };
 
             PropertyChanged += OnPropertyChanged;
@@ -1295,7 +684,7 @@ namespace SlimViews
         ///     Tools the changed action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ToolChangedAction(ImageZoomTools obj)
+        internal void ToolChangedAction(ImageZoomTools obj)
         {
             if (_uiState.ImageZoomControl != null)
                 ImageZoomTool = obj;
@@ -1305,7 +694,7 @@ namespace SlimViews
         ///     Thumbs the image clicked action.
         /// </summary>
         /// <param name="obj">The identifier.</param>
-        private void ThumbImageClickedAction(ImageEventArgs obj)
+        internal void ThumbImageClickedAction(ImageEventArgs obj)
         {
             ChangeImage(obj.Id);
         }
@@ -1314,7 +703,7 @@ namespace SlimViews
         ///     Set the selected point.
         /// </summary>
         /// <param name="wPoint">The w point.</param>
-        private void SelectedPointAction(Point wPoint)
+        internal void SelectedPointAction(Point wPoint)
         {
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
@@ -1332,8 +721,8 @@ namespace SlimViews
 
                 case EnumTools.ColorSelect:
                     Color = ImageProcessor.GetPixel(_image.Bitmap, point, Tolerance);
-                    Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
-                    Color = Picker.Colors;
+                    _uiState.Picker.SetColors(Color.R, Color.G, Color.B, Color.A);
+                    Color = _uiState.Picker.Colors;
                     return;
                 case EnumTools.Move:
                 case EnumTools.Erase:
@@ -1347,7 +736,7 @@ namespace SlimViews
         ///     Selected frame.
         /// </summary>
         /// <param name="frame">The selected area.</param>
-        private void SelectedFrameAction(SelectionFrame frame)
+        internal void SelectedFrameAction(SelectionFrame frame)
         {
             if (ImageZoomTool == ImageZoomTools.Move)
                 return;
@@ -1378,24 +767,23 @@ namespace SlimViews
                     throw new ArgumentOutOfRangeException();
             }
 
-            Bmp = _image.Bitmap.ToBitmapImage();
+            Bmp = _image.BitmapSource;
         }
 
         /// <summary>
         ///     Colors the changed action.
         /// </summary>
         /// <param name="colorHsv">The color HSV.</param>
-        private void ColorChangedAction(ColorHsv colorHsv)
+        internal void ColorChangedAction(ColorHsv colorHsv)
         {
             Color = colorHsv;
         }
-
 
         /// <summary>
         ///     Closes the app
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void CloseAction(object obj)
+        internal void CloseAction(object obj)
         {
             var config = SlimViewerRegister.GetRegister();
             config.MainAutoPlayGif = _uiState.ImageZoomControl.AutoplayGifImage;
@@ -1410,7 +798,7 @@ namespace SlimViews
         ///     Opens a picture
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void OpenAction(object obj)
+        internal void OpenAction(object obj)
         {
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
@@ -1444,12 +832,12 @@ namespace SlimViews
         ///     Opens a CBR Format.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void OpenCbzAction(object obj)
+        internal void OpenCbzAction(object obj)
         {
             var pathObj =
                 DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
 
             GenerateCbrView(pathObj);
 
@@ -1459,15 +847,14 @@ namespace SlimViews
 
         /// <summary>
         ///     Open the cif Format.
-        ///     Todo TEST
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void OpenCifAction(object obj)
+        internal void OpenCifAction(object obj)
         {
             var pathObj =
                 DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
 
             _image.Bitmap = _image.CustomImageFormat.GetImageFromCif(pathObj.FilePath);
 
@@ -1476,7 +863,7 @@ namespace SlimViews
             //activate Menus
             if (_image.BitmapImage != null) IsImageActive = true;
 
-            Bmp = _image.Bitmap.ToBitmapImage();
+            Bmp = _image.BitmapSource;
 
             //set Filename
             FileName = Path.GetFileName(_file.FilePath);
@@ -1488,11 +875,11 @@ namespace SlimViews
         ///     Convert the cif Format.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ConvertCifAction(object obj)
+        internal void ConvertCifAction(object obj)
         {
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
 
             if (CompressCif) _image.CustomImageFormat.GenerateCifCompressedFromBitmap(_image.Bitmap, pathObj.FilePath);
             else _image.CustomImageFormat.GenerateBitmapToCifFile(_image.Bitmap, pathObj.FilePath);
@@ -1502,7 +889,7 @@ namespace SlimViews
         ///     Saves the picture.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void SaveAction(object obj)
+        internal void SaveAction(object obj)
         {
             if (Bmp == null) return;
 
@@ -1531,7 +918,7 @@ namespace SlimViews
         ///     Next Image.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void NextAction(object obj)
+        internal void NextAction(object obj)
         {
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
@@ -1545,7 +932,7 @@ namespace SlimViews
         ///     Previous Image.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void PreviousAction(object obj)
+        internal void PreviousAction(object obj)
         {
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
@@ -1559,7 +946,7 @@ namespace SlimViews
         ///     Applies the filter.
         /// </summary>
         /// <param name="filterName">The filter name.</param>
-        private void ApplyFilterAction(string filterName)
+        internal void ApplyFilterAction(string filterName)
         {
             var filter = Translator.GetFilterFromString(filterName);
 
@@ -1571,7 +958,7 @@ namespace SlimViews
         ///     Applies the texture.
         /// </summary>
         /// <param name="textureName">The name of the texture.</param>
-        private void ApplyTextureAction(string textureName)
+        internal void ApplyTextureAction(string textureName)
         {
             var texture = Translator.GetTextureFromString(textureName);
 
@@ -1583,7 +970,7 @@ namespace SlimViews
         ///     Brightens the action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void BrightenAction(object obj)
+        internal void BrightenAction(object obj)
         {
             var btm = ImageProcessor.DBrighten(_image.Bitmap);
             Bmp = btm.ToBitmapImage();
@@ -1593,7 +980,7 @@ namespace SlimViews
         ///     Darkens the action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void DarkenAction(object obj)
+        internal void DarkenAction(object obj)
         {
             var btm = ImageProcessor.Darken(_image.Bitmap);
             Bmp = btm.ToBitmapImage();
@@ -1603,7 +990,7 @@ namespace SlimViews
         ///     Pixelate action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void PixelateAction(object obj)
+        internal void PixelateAction(object obj)
         {
             var btm = ImageProcessor.Pixelate(_image.Bitmap, PixelWidth);
             Bmp = btm.ToBitmapImage();
@@ -1613,7 +1000,7 @@ namespace SlimViews
         ///     Deletes the Image.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void DeleteAction(object obj)
+        internal void DeleteAction(object obj)
         {
             if (!Observer.ContainsKey(_file.CurrentId) && _uiState.Thumb.Selection.IsNullOrEmpty()) return;
 
@@ -1672,13 +1059,13 @@ namespace SlimViews
         ///     Renames the Image.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private async Task RenameAction(object obj)
+        internal async Task RenameAction(object obj)
         {
             if (!IsImageActive) return;
-            if (!Observer.ContainsKey(_file.CurrentId)) return;
 
-            var file = Observer[_file.CurrentId];
-            if (!File.Exists(file)) return;
+            if (!Observer.TryGetValue(_file.CurrentId, out string file)) return;
+
+            if (!System.IO.File.Exists(file)) return;
 
             var folder = Path.GetDirectoryName(file);
             if (string.IsNullOrEmpty(folder)) return;
@@ -1686,7 +1073,7 @@ namespace SlimViews
             var filePath = Path.Combine(folder, FileName);
 
             // Check if we have a duplicate; if true, shall we overwrite?
-            if (File.Exists(filePath))
+            if (System.IO.File.Exists(filePath))
             {
                 var dialogResult = await Task.Run(() =>
                     _ = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
@@ -1716,7 +1103,7 @@ namespace SlimViews
         ///     Refresh the Control
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void RefreshAction(object obj)
+        internal void RefreshAction(object obj)
         {
             _file.CurrentId = -1;
             _file.FilePath = string.Empty;
@@ -1736,7 +1123,7 @@ namespace SlimViews
         ///     Exports the string action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ExportStringAction(object obj)
+        internal void ExportStringAction(object obj)
         {
             ImageProcessor.ExportString(_image.Bitmap);
         }
@@ -1745,39 +1132,39 @@ namespace SlimViews
         ///     Rotates the backward action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void RotateBackwardAction(object obj)
+        internal void RotateBackwardAction(object obj)
         {
             _image.Bitmap = ImageProcessor.RotateImage(_image.Bitmap, -90);
-            Bmp = _image.Bitmap.ToBitmapImage();
+            Bmp = _image.BitmapSource;
         }
 
         /// <summary>
         ///     Rotates the forward action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void RotateForwardAction(object obj)
+        internal void RotateForwardAction(object obj)
         {
             _image.Bitmap = ImageProcessor.RotateImage(_image.Bitmap, 90);
-            Bmp = _image.Bitmap.ToBitmapImage();
+            Bmp = _image.BitmapSource;
         }
 
         /// <summary>
         ///     Mirrors the action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void MirrorAction(object obj)
+        internal void MirrorAction(object obj)
         {
             if (_image.Bitmap == null) return;
 
             _image.Bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
-            Bmp = _image.Bitmap.ToBitmapImage();
+            Bmp = _image.BitmapSource;
         }
 
         /// <summary>
         ///     Open Folder
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void FolderAction(object obj)
+        internal void FolderAction(object obj)
         {
             //get target Folder
             var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
@@ -1794,7 +1181,7 @@ namespace SlimViews
         ///     Clears the Image the current View.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ClearAction(object obj)
+        internal void ClearAction(object obj)
         {
             if (!Observer.ContainsKey(_file.CurrentId)) return;
 
@@ -1819,11 +1206,11 @@ namespace SlimViews
         ///     https://ss64.com/nt/explorer.html
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ExplorerAction(object obj)
+        internal void ExplorerAction(object obj)
         {
             if (!Directory.Exists(SlimViewerRegister.CurrentFolder)) return;
 
-            var argument = !File.Exists(_file.FilePath)
+            var argument = !System.IO.File.Exists(_file.FilePath)
                 ? SlimViewerRegister.CurrentFolder
                 : string.Concat(ViewResources.Select, _file.FilePath, ViewResources.Close);
             _ = Process.Start(ViewResources.Explorer, argument);
@@ -1833,7 +1220,7 @@ namespace SlimViews
         ///     Filter configuration Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void FilterConfigWindowAction(string obj)
+        internal void FilterConfigWindowAction(string obj)
         {
             var filterConfig = new FilterConfig
             {
@@ -1860,7 +1247,7 @@ namespace SlimViews
         ///     Textures the configuration Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void TextureConfigWindowAction(string obj)
+        internal void TextureConfigWindowAction(string obj)
         {
             var textureConfig = new TextureConfig
             {
@@ -1887,7 +1274,7 @@ namespace SlimViews
         ///     Rename the Folder action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void FolderRenameWindowAction(object obj)
+        internal void FolderRenameWindowAction(object obj)
         {
             SlimViewerRegister.ResetRenaming();
 
@@ -1918,7 +1305,7 @@ namespace SlimViews
         ///     Image Scaling Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ScaleWindowAction(object obj)
+        internal void ScaleWindowAction(object obj)
         {
             SlimViewerRegister.ResetScaling();
 
@@ -1933,14 +1320,14 @@ namespace SlimViews
             _image.Bitmap = ImageProcessor.BitmapScaling(_image.Bitmap, SlimViewerRegister.Scaling);
             _image.Bitmap = ImageProcessor.RotateImage(_image.Bitmap, SlimViewerRegister.Degree);
             _image.Bitmap = ImageProcessor.CropImage(_image.Bitmap);
-            Bmp = _image.Bitmap.ToBitmapImage();
+            Bmp = _image.BitmapSource;
         }
 
         /// <summary>
         ///     Folder convert Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void FolderConvertWindowAction(object obj)
+        internal void FolderConvertWindowAction(object obj)
         {
             SlimViewerRegister.ResetConvert();
 
@@ -1954,9 +1341,6 @@ namespace SlimViews
             if (string.IsNullOrEmpty(SlimViewerRegister.Target) ||
                 string.IsNullOrEmpty(SlimViewerRegister.Source)) return;
 
-            //TODO implement a viewmodel
-
-
             ImageProcessor.FolderConvert(SlimViewerRegister.Target, SlimViewerRegister.Source, _file.Observer);
         }
 
@@ -1964,7 +1348,7 @@ namespace SlimViews
         ///     Similar Action Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void SimilarWindowAction(object obj)
+        internal void SimilarWindowAction(object obj)
         {
             var compareWindow = new Compare(UseSubFolders, SlimViewerRegister.CurrentFolder, this, Similarity)
             {
@@ -1981,7 +1365,7 @@ namespace SlimViews
         ///     Duplicate Action Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void DuplicateWindowAction(object obj)
+        internal void DuplicateWindowAction(object obj)
         {
             var compareWindow = new Compare(UseSubFolders, SlimViewerRegister.CurrentFolder, this)
             {
@@ -1997,7 +1381,7 @@ namespace SlimViews
         ///     GIFs window action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void GifWindowAction(object obj)
+        internal void GifWindowAction(object obj)
         {
             var gifWindow = new Gif
             {
@@ -2011,7 +1395,7 @@ namespace SlimViews
         ///     Analyzer Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void AnalyzerWindowAction(object obj)
+        internal void AnalyzerWindowAction(object obj)
         {
             var detailWindow = new DetailCompare
             {
@@ -2025,7 +1409,7 @@ namespace SlimViews
         ///     Resizer Window.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ResizerWindowAction(object obj)
+        internal void ResizerWindowAction(object obj)
         {
             var resizer = new Resizer
             {
@@ -2039,7 +1423,7 @@ namespace SlimViews
         ///     Searches Window action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void SearchWindowAction(object obj)
+        internal void SearchWindowAction(object obj)
         {
             var searchWindow = new Search(UseSubFolders, SlimViewerRegister.CurrentFolder, this, Color)
             {
@@ -2053,7 +1437,7 @@ namespace SlimViews
         ///     Cleans the temporary Folder action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void CleanTempAction(object obj)
+        internal void CleanTempAction(object obj)
         {
             var check = false;
 
@@ -2083,9 +1467,9 @@ namespace SlimViews
         ///     Moves selected Image
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void MoveAction(object obj)
+        internal void MoveAction(object obj)
         {
-            if (!File.Exists(FileName) && _uiState.Thumb.Selection.IsNullOrEmpty()) return;
+            if (!System.IO.File.Exists(FileName) && _uiState.Thumb.Selection.IsNullOrEmpty()) return;
             //Initiate Folder
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -2102,13 +1486,13 @@ namespace SlimViews
                     if (!Directory.Exists(path)) return;
 
                     var fileName = Observer[id];
-                    if (!File.Exists(fileName)) continue;
+                    if (!System.IO.File.Exists(fileName)) continue;
 
                     //Copy Single File
                     var info = new FileInfo(fileName);
                     var target = Path.Combine(path, info.Name);
 
-                    if (File.Exists(target))
+                    if (System.IO.File.Exists(target))
                     {
                         var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
                             ViewResources.CaptionFileAlreadyExists,
@@ -2131,7 +1515,7 @@ namespace SlimViews
                 var info = new FileInfo(FileName);
                 var target = Path.Combine(path, info.Name);
 
-                if (File.Exists(target))
+                if (System.IO.File.Exists(target))
                 {
                     var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
                         ViewResources.CaptionFileAlreadyExists,
@@ -2147,18 +1531,18 @@ namespace SlimViews
         ///     Moves all Images.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void MoveAllAction(object obj)
+        internal void MoveAllAction(object obj)
         {
             //Initiate Folder
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
-                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(_uiState.Root);
 
             //get target Folder
             var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
 
             if (!Directory.Exists(path)) return;
 
-            if (_file.Files.IsNullOrEmpty()) return;
+            if (_file.IsFilesEmpty) return;
 
             var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, _uiState.UseSubFolders);
 
@@ -2238,7 +1622,7 @@ namespace SlimViews
         public void ChangeImage(string filePath)
         {
             //check if it exists
-            if (!File.Exists(filePath)) return;
+            if (!System.IO.File.Exists(filePath)) return;
 
             //check if we even handle this file type
             if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
@@ -2253,7 +1637,7 @@ namespace SlimViews
             LoadThumbs(folder, filePath);
 
             //set the Id of the loaded Image
-            _file.CurrentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
+            _file.CurrentId = _file.CurrentIdGetIdByFilePath(filePath);
         }
 
         /// <summary>
@@ -2265,7 +1649,7 @@ namespace SlimViews
         internal void ChangeImage(IEnumerable<string> files, string filePath, string info)
         {
             //check if it exists
-            if (!File.Exists(filePath)) return;
+            if (!System.IO.File.Exists(filePath)) return;
 
             //check if we even handle this file type
             if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
@@ -2278,7 +1662,7 @@ namespace SlimViews
             GenerateImage(filePath);
 
             //set the Id of the loaded Image
-            _file.CurrentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
+            _file.CurrentId = _file.CurrentIdGetIdByFilePath(filePath);
 
             //set new Information
             Information = info;
@@ -2351,7 +1735,7 @@ namespace SlimViews
                     //reset gif Image
                     GifPath = null;
 
-                    Bmp = _image.Bitmap.ToBitmapImage();
+                    Bmp = _image.BitmapSource;
                     //set Infos
                     Information = ViewResources.BuildImageInformation(filePath, FileName, Bmp);
                 }
@@ -2381,7 +1765,7 @@ namespace SlimViews
             // If filePath is provided, get the Id of the displayed image.
             if (!string.IsNullOrEmpty(filePath))
             {
-                _file.CurrentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
+                _file.CurrentId = _file.CurrentIdGetIdByFilePath(filePath);
             }
             else
             {
@@ -2406,12 +1790,13 @@ namespace SlimViews
             _file.Files = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _uiState.UseSubFolders);
 
             //decrease File Count
-            if (_file.Files.IsNullOrEmpty())
+            if (_file.IsFilesEmpty)
             {
                 Count = 0;
                 Observer = null;
-                Bmp = null;
                 GifPath = null;
+                Bmp = null;
+
                 return;
             }
 
@@ -2420,7 +1805,7 @@ namespace SlimViews
             // ReSharper disable once PossibleNullReferenceException, already checked
             Count = _file.Files.Count;
 
-            _file.Files = _file.Files.PathSort();
+            _file.Files = _file.FilesSorted;
 
             _ = GenerateThumbView(_file.Files);
         }
@@ -2432,18 +1817,12 @@ namespace SlimViews
         private async Task GenerateThumbView(IReadOnlyCollection<string> lst)
         {
             //if we don't want to generate Thumbs don't
-            if (!ShowThumbs) return;
-
-            _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            if (string.IsNullOrEmpty(_root)) return;
+            if (!IsThumbsVisible) return;
 
             StatusImage = _uiState.RedIconPath;
 
             //load Thumbnails
             _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
-
-            NavigationLogic();
         }
 
         /// <summary>
@@ -2453,7 +1832,7 @@ namespace SlimViews
         {
             if (_file.Count <= 1)
             {
-                LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
+                _uiState.HideButtons();
             }
             else
             {
@@ -2463,12 +1842,11 @@ namespace SlimViews
             }
 
             // show or hide the Thumbnail Bar
-            ThumbnailVisibility = ShowThumbs ? Visibility.Visible : Visibility.Hidden;
+            ThumbnailVisibility = _uiState.ThumbnailState();
 
             //show or hide image edit
             IsImageActive = _image.Bitmap != null;
         }
-
 
         /// <summary>
         ///     Saves the image.

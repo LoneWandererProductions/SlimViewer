@@ -50,9 +50,8 @@ namespace SlimViewer
             //    obj.MainAutoClean, ImageControl) { UiState = { Main = this, Thumb = Thumbnail }, Picker = ColorPick };
 
             _view = new ImageView(obj.MainSubFolders, obj.MainCompressCif, obj.MainSimilarity,
-                obj.MainAutoClean, ImageControl, this, Thumbnail)
-            { Picker = ColorPick };
-
+                obj.MainAutoClean, ImageControl, this, Thumbnail, ColorPick);
+           
             DataContext = _view;
 
             ImageControl.AutoplayGifImage = obj.MainAutoPlayGif;
@@ -87,7 +86,7 @@ namespace SlimViewer
             e.Cancel = true;
             if (_view == null) return;
 
-            _view.CloseCommand.Execute(null);
+            _view.Commands.Close.Execute(null);
         }
     }
 }

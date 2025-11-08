@@ -1,4 +1,5 @@
 ﻿using CommonControls;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -90,6 +91,14 @@ namespace SlimViews.Contexts
         /// </value>
         internal Thumbnails Thumb { get; set; }
 
+        /// <summary>
+        /// Gets or sets the picker.
+        /// </summary>
+        /// <value>
+        /// The picker.
+        /// </value>
+        internal ColorPickerMenu Picker { get; set; }
+
         //Internal control settings
 
         /// <summary>
@@ -100,7 +109,7 @@ namespace SlimViews.Contexts
         /// </value>
         internal bool AutoClean { get; set; }
 
-        internal bool IsThumbsVisible { get; set; }
+        internal bool IsThumbsVisible { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether [use sub folders].
@@ -109,5 +118,19 @@ namespace SlimViews.Contexts
         ///   <c>true</c> if [use sub folders]; otherwise, <c>false</c>.
         /// </value>
         internal bool UseSubFolders { get; set; }
+
+
+        //Internal methods
+
+        /// <summary>
+        /// Hides the buttons.
+        /// </summary>
+        internal void HideButtons() => LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
+
+        /// <summary>
+        /// Thumbnails the state.
+        /// </summary>
+        /// <returns>State of Thumbnail Visibility</returns>
+        internal Visibility ThumbnailState() => IsThumbsVisible ? Visibility.Visible : Visibility.Hidden;
     }
 }
