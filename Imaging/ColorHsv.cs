@@ -1,8 +1,8 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     Imaging
-* FILE:        Imaging/ColorHsv.cs
-* PURPOSE:     General Conversions of all Types of Color Displays.
+* FILE:        ColorHsv.cs
+* PURPOSE:     General Conversions of all Types of Color Displays, Todo Sort out Degree and radian a bit more
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 * SOURCE:      https://manufacture.tistory.com/33
 *              https://www.rapidtables.com/convert/color/rgb-to-hsv.html
@@ -28,507 +28,384 @@ namespace Imaging
     ///     HSV to RGP
     ///     And other Conversions
     /// </summary>
-    public sealed class ColorHsv : IEquatable<ColorHsv>
+    public sealed class ColorHsv : IEquatable<ColorHsv>, IComparable<ColorHsv>
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ColorHsv" /> class.
+        /// Hue [0..360]
         /// </summary>
-        /// <param name="color">The color.</param>
-        public ColorHsv(int color)
-        {
-            ColorToHsv(color);
-        }
+        /// <value>
+        /// The h.
+        /// </value>
+        public double H { get; set; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ColorHsv" /> class.
+        /// Saturation [0..1]
         /// </summary>
-        /// <param name="h">The h. Hue.</param>
-        /// <param name="s">The s. Saturation</param>
-        /// <param name="v">The v. Value</param>
-        /// <param name="a">The Hue value.</param>
-        public ColorHsv(double h, double s, double v, int a)
-        {
-            RgbFromHsv(h, s, v, a);
-        }
+        /// <value>
+        /// The s.
+        /// </value>
+        public double S { get; set; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ColorHsv" /> class.
+        /// Value [0..1]
+        /// </summary>
+        /// <value>
+        /// The v.
+        /// </value>
+        public double V { get; set; }
+
+        /// <summary>
+        /// Alpha [0..255]
+        /// </summary>
+        /// <value>
+        /// a.
+        /// </value>
+        public int A { get; set; }
+
+        /// <summary>
+        /// Red [0..255]
+        /// </summary>
+        /// <value>
+        /// The r.
+        /// </value>
+        public int R { get; set; }
+
+        /// <summary>
+        /// Green [0..255]
+        /// </summary>
+        /// <value>
+        /// The g.
+        /// </value>
+        public int G { get; set; }
+
+        /// <summary>Blue [0..255]</summary>
+        public int B { get; set; }
+
+        /// <summary>
+        /// Gets the hexadecimal.
+        /// </summary>
+        /// <value>
+        /// The hexadecimal.
+        /// </value>
+        public string Hex => $"#{R:X2}{G:X2}{B:X2}";
+
+        /// <summary>
+        /// Gets the color of the open tk.
+        /// </summary>
+        /// <value>
+        /// The color of the open tk.
+        /// </value>
+        public float[] OpenTkColor => new[] { R / 255f, G / 255f, B / 255f, A / 255f };
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ColorHsv"/> class from being created.
+        /// </summary>
+        private ColorHsv() { } // internal factory use
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColorHsv"/> class.
         /// </summary>
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>
         /// <param name="b">The b.</param>
-        /// <param name="a">The Hue value.</param>
-        public ColorHsv(int r, int g, int b, int a)
-        {
-            if (r == -1)
-            {
-                return;
-            }
-
-            if (g == -1)
-            {
-                return;
-            }
-
-            if (b == -1)
-            {
-                return;
-            }
-
-            ColorToHsv(r, g, b, a);
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ColorHsv" /> class.
-        /// </summary>
-        /// <param name="hex">The hexadecimal.</param>
-        /// <param name="a">The Hue value.</param>
-        public ColorHsv(string hex, int a)
-        {
-            RbgHex(hex);
-            A = a;
-        }
-
-        /// <summary>
-        ///     The Hue Value, in our Case x.
-        /// </summary>
-        public double H { get; set; }
-
-        /// <summary>
-        ///     The s Value, saturation.
-        /// </summary>
-        public double S { get; set; }
-
-        /// <summary>
-        ///     The v, value
-        /// </summary>
-        public double V { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the l.
-        ///     New properties for HSL
-        /// </summary>
-        /// <value>
-        ///     The l.
-        /// </value>
-        public double L { get; set; }
-
-        /// <summary>
-        ///     The Hue Value, in our Case x.
-        /// </summary>
-        public int R { get; internal set; }
-
-        /// <summary>
-        ///     The s Value, saturation.
-        /// </summary>
-        public int G { get; internal set; }
-
-        /// <summary>
-        ///     The v, value
-        /// </summary>
-        public int B { get; internal set; }
-
-        /// <summary>
-        ///     The A, value, Alpha Channel
-        /// </summary>
-        public int A { get; private set; }
-
-        /// <summary>
-        ///     Hex Value of Color
-        /// </summary>
-        public string Hex { get; private set; }
-
-        /// <summary>
-        ///     Gets the color of the open tk.
-        /// </summary>
-        /// <value>
-        ///     The color of the open tk.
-        /// </value>
-        public float[] OpenTkColor { get; private set; }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     HSV, A Values are enough to check equality
-        /// </summary>
-        /// <param name="other">ColorHsv Object</param>
-        /// <returns>If equal or not</returns>
-        public bool Equals(ColorHsv other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (R != other.R)
-            {
-                return false;
-            }
-
-            if (G != other.G)
-            {
-                return false;
-            }
-
-            if (B != other.B)
-            {
-                return false;
-            }
-
-            return A == other.A;
-        }
-
-        /// <summary>
-        ///     RGBs from HSV.
-        ///     https://stackoverflow.com/questions/1335426/is-there-a-built-in-c-net-system-api-for-hsv-to-rgb
-        /// </summary>
-        /// <param name="h">The h. Degree, max 360 degree</param>
-        /// <param name="s">The s. in our case x.</param>
-        /// <param name="v">The v.</param>
-        /// <param name="a">The A. Alpha Channel.</param>
-        public void RgbFromHsv(double h, double s, double v, int a)
-        {
-            H = h;
-            S = s;
-            V = v;
-            A = a;
-
-            var degree = h * 180 / Math.PI;
-
-            if (degree is > 360 or < 0 || s is > 1 or < 0 || v is > 1 or < 0)
-            {
-                return;
-            }
-
-            var c = v * s;
-            var x = c * (1 - Math.Abs((degree / 60 % 2) - 1));
-            var m = v - c;
-
-            double r = 0, g = 0, b = 0;
-
-            if (degree is < 60 and > 0)
-            {
-                r = c;
-                g = x;
-            }
-
-            if (degree is < 120 and > 60)
-            {
-                r = x;
-                g = c;
-            }
-
-            if (degree is < 180 and > 120)
-            {
-                g = c;
-                b = x;
-            }
-
-            if (degree is < 240 and > 180)
-            {
-                g = x;
-                b = c;
-            }
-
-            if (degree is < 300 and > 240)
-            {
-                r = x;
-                b = c;
-            }
-
-            if (degree is < 360 and > 300)
-            {
-                r = c;
-                b = x;
-            }
-
-            R = (int)((r + m) * 255);
-            G = (int)((g + m) * 255);
-            B = (int)((b + m) * 255);
-
-            GetHex();
-            GetFloatArray();
-        }
-
-        /// <summary>
-        ///     RBGs the hexadecimal.
-        /// </summary>
-        /// <param name="hex">The hexadecimal.</param>
-        public void RbgHex(string hex)
-        {
-            if (string.IsNullOrEmpty(hex))
-            {
-                return;
-            }
-
-            Color color;
-
-            try
-            {
-                color = (Color)ColorConverter.ConvertFromString(hex);
-            }
-            catch (Exception ex) when (ex is NullReferenceException or FormatException)
-            {
-                Trace.WriteLine(ex);
-                return;
-            }
-
-            Hex = hex;
-            ColorToHsv(color.R, color.G, color.B, color.A);
-        }
-
-        /// <summary>
-        ///     Colors to HSV.
-        /// </summary>
-        /// <param name="r">The r. Red.</param>
-        /// <param name="g">The g. Green.</param>
-        /// <param name="b">The b. Blue.</param>
-        /// <param name="a">The A. Alpha Channel.</param>
-        public void ColorToHsv(int r, int g, int b, int a)
+        /// <param name="a">a.</param>
+        public ColorHsv(byte r, byte g, byte b, byte a)
         {
             R = r;
             G = g;
             B = b;
             A = a;
-
-            var max = Math.Max(r, Math.Max(g, b));
-            var min = Math.Min(r, Math.Min(g, b));
-
-            H = GetHue(r, g, b);
-            S = max == 0 ? 0 : 1d - (1d * min / max);
-            V = max / 255d;
-
-            GetHex();
-            GetFloatArray();
         }
 
         /// <summary>
-        ///     Gets the RGBA values from an int.
+        /// Froms the RGB.
         /// </summary>
-        /// <returns>A tuple containing the RGBA values.</returns>
-        public void ColorToHsv(int color)
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        /// <returns>Color HSV object.</returns>
+        public static ColorHsv FromRgb(int r, int g, int b, int a = 255)
         {
-            // Extract ARGB values from the unsigned integer
-            A = (byte)((color >> 24) & 0xFF); // Alpha
-            R = (byte)((color >> 16) & 0xFF); // Red
-            G = (byte)((color >> 8) & 0xFF); // Green
-            B = (byte)(color & 0xFF); // Blue
+            ValidateRgb(r, g, b, a);
 
-            // Calculate max and min values for HSV conversion
-            var max = Math.Max(R, Math.Max(G, B));
-            var min = Math.Min(R, Math.Min(G, B));
+            var hsv = new ColorHsv
+            {
+                R = r,
+                G = g,
+                B = b,
+                A = a
+            };
 
-            // Calculate the hue, saturation, and value
-            H = GetHue(R, G, B);
-            S = max == 0 ? 0 : 1d - (1d * min / max);
-            V = max / 255d;
-
-            // Update the hex representation of the color
-            GetHex();
-            GetFloatArray();
+            hsv.ToHsv();
+            return hsv;
         }
 
         /// <summary>
-        ///     Hexadecimals to color.
+        /// Froms the HSV.
+        /// </summary>
+        /// <param name="h">The h.</param>
+        /// <param name="s">The s.</param>
+        /// <param name="v">The v.</param>
+        /// <param name="a">a.</param>
+        /// <returns>Color HSV object.</returns>
+        public static ColorHsv FromHsv(double h, double s, double v, int a = 255)
+        {
+            ValidateHsv(h, s, v, a);
+
+            var hsv = new ColorHsv
+            {
+                H = h,
+                S = s,
+                V = v,
+                A = a
+            };
+
+            hsv.ToRgb();
+            return hsv;
+        }
+
+        /// <summary>
+        /// Froms the hexadecimal.
         /// </summary>
         /// <param name="hex">The hexadecimal.</param>
-        public void HexToColor(string hex)
+        /// <param name="a">a.</param>
+        /// <returns>Color HSV object.</returns>
+        /// <exception cref="System.ArgumentException">Hex string cannot be null or empty.</exception>
+        public static ColorHsv FromHex(string hex, int a = 255)
         {
-            if (string.IsNullOrEmpty(hex))
-            {
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(hex))
+                throw new ArgumentException("Hex string cannot be null or empty.");
 
             var color = (Color)ColorConverter.ConvertFromString(hex);
 
-            R = color.R;
-            G = color.G;
-            B = color.B;
-            A = color.A;
-
-            ColorToHsv(R, G, B, A);
+            return FromRgb(color.R, color.G, color.B, a);
         }
 
         /// <summary>
-        ///     Gets the color, Media Name Space
+        /// Froms the ARGB int.
         /// </summary>
-        /// <returns>Color Value</returns>
-        public Color GetColor()
+        /// <param name="argb">The ARGB.</param>
+        /// <returns>Color HSV object.</returns>
+        public static ColorHsv FromArgbInt(int argb)
         {
-            return Color.FromArgb((byte)R, (byte)G, (byte)B, (byte)A);
+            int a = (argb >> 24) & 0xFF;
+            int r = (argb >> 16) & 0xFF;
+            int g = (argb >> 8) & 0xFF;
+            int b = argb & 0xFF;
+
+            return FromRgb(r, g, b, a);
         }
 
         /// <summary>
-        ///     Gets the color of the drawing.
+        /// Gets the color of the drawing.
         /// </summary>
-        /// <returns>Color as System.Drawing</returns>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        /// <returns>Color Object from drawing.</returns>
+        public static System.Drawing.Color GetDrawingColor(int r, int g, int b, int a = 255)
+        {
+            ValidateRgb(r, g, b, a);
+            return System.Drawing.Color.FromArgb(a, r, g, b);
+        }
+
+        /// <summary>
+        /// Gets the color of the drawing.
+        /// </summary>
+        /// <returns>Color Object from drawing.</returns>
         public System.Drawing.Color GetDrawingColor()
         {
+            ValidateRgb(R, G, B, A);
             return System.Drawing.Color.FromArgb(A, R, G, B);
         }
 
         /// <summary>
-        ///     Override Equals
+        /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
-        /// <param name="obj">ColorHsv Object</param>
-        /// <returns>If equal or not</returns>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
+        /// </returns>
+        public bool Equals(ColorHsv other)
+            => other is not null &&
+               R == other.R && G == other.G && B == other.B && A == other.A;
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
-        {
-            return obj is ColorHsv other && Equals(other);
-        }
+            => obj is ColorHsv c && Equals(c);
 
         /// <summary>
-        ///     Generates hash for our object
-        ///     Generated from Hex and Alpha Channel
+        /// Returns a hash code for this instance.
         /// </summary>
-        /// <returns>The Hash Code</returns>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
-        {
-            return Convert.ToInt32($"{Hex}{A}");
-        }
+            => HashCode.Combine(R, G, B, A);
 
+        // Sort by hue, then saturation, then value
         /// <summary>
-        ///     Implements the operator ==.
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
         /// </summary>
-        /// <param name="left">The left.</param>
-        /// <param name="right">The right.</param>
+        /// <param name="other">An object to compare with this instance.</param>
         /// <returns>
-        ///     The result of the operator.
+        /// A value that indicates the relative order of the objects being compared. The return value has these meanings:
+        /// <list type="table"><listheader><term> Value</term><description> Meaning</description></listheader><item><term> Less than zero</term><description> This instance precedes <paramref name="other" /> in the sort order.</description></item><item><term> Zero</term><description> This instance occurs in the same position in the sort order as <paramref name="other" />.</description></item><item><term> Greater than zero</term><description> This instance follows <paramref name="other" /> in the sort order.</description></item></list>
         /// </returns>
-        public static bool operator ==(ColorHsv left, ColorHsv right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true; // Same reference
-            }
-
-            if (left is null || right is null)
-            {
-                return false; // One is null
-            }
-
-            return left.Equals(right);
-        }
+        public int CompareTo(ColorHsv? other)
+            => other == null ? 1 :
+               H != other.H ? H.CompareTo(other.H) :
+               S != other.S ? S.CompareTo(other.S) :
+               V.CompareTo(other.V);
 
         /// <summary>
-        ///     Overwrite not equal
+        /// Implements the operator ==.
         /// </summary>
-        /// <param name="left">The left Operator</param>
-        /// <param name="right">The right Operator</param>
-        /// <returns>Check if it is not equal</returns>
-        public static bool operator !=(ColorHsv left, ColorHsv right)
-        {
-            return !(left == right);
-        }
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(ColorHsv a, ColorHsv b) => Equals(a, b);
 
         /// <summary>
-        ///     Overwrite smaller as
+        /// Implements the operator !=.
         /// </summary>
-        /// <param name="left">The left Operator</param>
-        /// <param name="right">The right Operator</param>
-        /// <returns>Check if smaller</returns>
-        public static bool operator <(ColorHsv left, ColorHsv right)
-        {
-            return left.H < right.H;
-        }
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(ColorHsv a, ColorHsv b) => !Equals(a, b);
 
         /// <summary>
-        ///     Overwrite bigger as
+        /// Implements the operator &lt;.
         /// </summary>
-        /// <param name="left">The left Operator</param>
-        /// <param name="right">The right Operator</param>
-        /// <returns>Check if bigger</returns>
-        public static bool operator >(ColorHsv left, ColorHsv right)
-        {
-            return left.H > right.H;
-        }
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator <(ColorHsv a, ColorHsv b) => a.CompareTo(b) < 0;
 
         /// <summary>
-        ///     Gets the hue.
+        /// Implements the operator &gt;.
         /// </summary>
-        /// <param name="r">The r. Red.</param>
-        /// <param name="g">The g. Green.</param>
-        /// <param name="b">The b. Blue.</param>
-        /// <returns>The hue Value</returns>
-        private static double GetHue(int r, int g, int b)
+        /// <param name="a">a.</param>
+        /// <param name="b">The b.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator >(ColorHsv a, ColorHsv b) => a.CompareTo(b) > 0;
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString() => $"{Hex} (H:{H:F1}° S:{S:F2} V:{V:F2})";
+
+        /// <summary>
+        /// Converts to hsv.
+        /// </summary>
+        private void ToHsv()
         {
-            double min = Math.Min(Math.Min(r, g), b);
-            double max = Math.Max(Math.Max(r, g), b);
+            double r = R / 255d;
+            double g = G / 255d;
+            double b = B / 255d;
 
-            if (min.IsEqualTo(max, 10))
-            {
-                return 0;
-            }
+            double max = Math.Max(r, Math.Max(g, b));
+            double min = Math.Min(r, Math.Min(g, b));
+            double delta = max - min;
 
-            double hue;
-
-            if (max.IsEqualTo(r, 10))
-            {
-                hue = (g - b) / (max - min);
-            }
-            else if (max.IsEqualTo(g, 10))
-            {
-                hue = 2f + ((b - r) / (max - min));
-            }
+            // Hue
+            if (delta == 0)
+                H = 0;
+            else if (max == r)
+                H = 60 * (((g - b) / delta) % 6);
+            else if (max == g)
+                H = 60 * (((b - r) / delta) + 2);
             else
-            {
-                hue = 4f + ((r - g) / (max - min));
-            }
+                H = 60 * (((r - g) / delta) + 4);
 
-            hue *= 60;
+            if (H < 0) H += 360;
 
-            if (hue < 0)
-            {
-                hue += 360;
-            }
-
-            return hue * Math.PI / 180;
+            // Saturation & Value
+            S = max == 0 ? 0 : (delta / max);
+            V = max;
         }
 
         /// <summary>
-        ///     Gets the hexadecimal.
+        /// Converts to rgb.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void GetHex()
+        private void ToRgb()
         {
-            Hex = string.Concat("#", $"{R:X2}{G:X2}{B:X2}");
+            double c = V * S;
+            double x = c * (1 - Math.Abs((H / 60 % 2) - 1));
+            double m = V - c;
+
+            double r = 0, g = 0, b = 0;
+
+            if (H < 60) { r = c; g = x; }
+            else if (H < 120) { r = x; g = c; }
+            else if (H < 180) { g = c; b = x; }
+            else if (H < 240) { g = x; b = c; }
+            else if (H < 300) { r = x; b = c; }
+            else { r = c; b = x; }
+
+            R = (int)((r + m) * 255);
+            G = (int)((g + m) * 255);
+            B = (int)((b + m) * 255);
         }
 
         /// <summary>
-        ///     Rgbas to float array.
+        /// Validates the RGB.
         /// </summary>
-        private void GetFloatArray()
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">RGB values must be 0–255</exception>
+        private static void ValidateRgb(int r, int g, int b, int a)
         {
-            // Normalize the RGBA values to the [0.0f, 1.0f] range
-            var normalizedR = Normalize(R);
-            var normalizedG = Normalize(G);
-            var normalizedB = Normalize(B);
-            var normalizedA = Normalize(A);
-
-            // Return as float[] in the range [0.0f, 1.0f]
-            OpenTkColor = new[] { normalizedR, normalizedG, normalizedB, normalizedA };
+            if (r < 0 || r > 255 ||
+                g < 0 || g > 255 ||
+                b < 0 || b > 255 ||
+                a < 0 || a > 255)
+                throw new ArgumentOutOfRangeException("RGB values must be 0–255");
         }
 
         /// <summary>
-        ///     Normalizes the specified value.
+        /// Validates the HSV.
         /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>Normalized value.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float Normalize(int value)
+        /// <param name="h">The h.</param>
+        /// <param name="s">The s.</param>
+        /// <param name="v">The v.</param>
+        /// <param name="a">a.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// Hue must be 0–360
+        /// or
+        /// Saturation must be 0–1
+        /// or
+        /// Value must be 0–1
+        /// or
+        /// Alpha must be 0–255
+        /// </exception>
+        private static void ValidateHsv(double h, double s, double v, int a)
         {
-            return value / 255f;
-        }
-
-        /// <summary>
-        ///     Converts to a hex string.
-        ///     Will be used for gifs later
-        /// </summary>
-        /// <returns>
-        ///     A <see cref="string" /> that represents this instance.
-        /// </returns>
-        public override string ToString()
-        {
-            return $"{R:X2} {G:X2} {B:X2}";
+            if (h < 0 || h > 360) throw new ArgumentOutOfRangeException("Hue must be 0–360");
+            if (s < 0 || s > 1) throw new ArgumentOutOfRangeException("Saturation must be 0–1");
+            if (v < 0 || v > 1) throw new ArgumentOutOfRangeException("Value must be 0–1");
+            if (a < 0 || a > 255) throw new ArgumentOutOfRangeException("Alpha must be 0–255");
         }
     }
 }

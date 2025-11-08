@@ -21,6 +21,7 @@ using System.Linq;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using Imaging.Enums;
 
 namespace ImageCompare
 {

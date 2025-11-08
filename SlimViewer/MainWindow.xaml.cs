@@ -71,7 +71,7 @@ namespace SlimViewer
 
             if (files == null || files.Length == 0 || _view == null) return;
 
-            _view.IsActive = true;
+            _view.IsImageActive = true;
 
             if (files.Length == 1) _view.ChangeImage(files[0]);
             else _view.ChangeImage(files);

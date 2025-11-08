@@ -19,6 +19,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using Imaging.Enums;
 using ViewModel;
 
 namespace SlimViews

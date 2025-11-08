@@ -1,5 +1,4 @@
-﻿using CommonControls;
-using Imaging;
+﻿using Imaging;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 
@@ -76,6 +75,9 @@ namespace SlimViews.Contexts
         /// The bitmap source.
         /// </value>
         internal BitmapImage BitmapSource => Bitmap.ToBitmapImage();
+
+        public int BrushSize { get; internal set; }
+        public string Information { get; internal set; }
 
         /// <summary>
         /// Optional helper: reset without reallocating the object

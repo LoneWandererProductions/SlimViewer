@@ -1,10 +1,44 @@
 ﻿using CommonControls;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace SlimViews.Contexts
 {
     public record UiState
     {
+        /// <summary>
+        ///     Gets or sets the root.
+        /// </summary>
+        /// <value>
+        ///     The root.
+        /// </value>
+        internal string Root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
+        /// Gets or sets the status image.
+        /// </summary>
+        /// <value>
+        /// The status image.
+        /// </value>
+        internal string StatusImage { get; set; }
+
+        /// <summary>
+        /// Gets the green icon path.
+        /// </summary>
+        /// <value>
+        /// The green icon path.
+        /// </value>
+        internal string GreenIconPath => Path.Combine(Root, ViewResources.IconPathGreen);
+
+        /// <summary>
+        /// Gets the red icon path.
+        /// </summary>
+        /// <value>
+        /// The red icon path.
+        /// </value>
+        internal string RedIconPath => Path.Combine(Root, ViewResources.IconPathRed);
+
         /// <summary>
         /// Gets or sets the left button visibility.
         /// </summary>
@@ -58,10 +92,22 @@ namespace SlimViews.Contexts
 
         //Internal control settings
 
-        public bool AutoClean { get; internal set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether [automatic clean].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [automatic clean]; otherwise, <c>false</c>.
+        /// </value>
+        internal bool AutoClean { get; set; }
 
-        public bool IsThumbsVisible { get; set; }
+        internal bool IsThumbsVisible { get; set; }
 
-        public bool UseSubFolders { get; internal set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether [use sub folders].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [use sub folders]; otherwise, <c>false</c>.
+        /// </value>
+        internal bool UseSubFolders { get; set; }
     }
 }

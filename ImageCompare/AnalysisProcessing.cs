@@ -16,6 +16,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExtendedSystemObjects;
 using Imaging;
+using Imaging.Enums;
+using Imaging.Interfaces;
 
 namespace ImageCompare
 {

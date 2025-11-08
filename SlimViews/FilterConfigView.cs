@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using Imaging;
+using Imaging.Enums;
 using ViewModel;
 
 namespace SlimViews

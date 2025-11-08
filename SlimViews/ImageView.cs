@@ -17,7 +17,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
-using Microsoft.VisualBasic;
+using Imaging.Enums;
 using SlimControls;
 using SlimViews.Contexts;
 using System;
@@ -70,19 +70,9 @@ namespace SlimViews
         private ICommand _applyTextureCommand;
 
         /// <summary>
-        ///     The automatic clean
-        /// </summary>
-        private bool _autoClean;
-
-        /// <summary>
         ///     The brighten command
         /// </summary>
         private ICommand _brightenCommand;
-
-        /// <summary>
-        ///     The brush size
-        /// </summary>
-        private int _brushSize;
 
         /// <summary>
         ///     Clean the temporary folder
@@ -108,16 +98,6 @@ namespace SlimViews
         ///     The convert cif command.
         /// </summary>
         private ICommand _convertCommandCif;
-
-        /// <summary>
-        ///     The File count
-        /// </summary>
-        private int _count;
-
-        /// <summary>
-        ///     The current identifier of the Image
-        /// </summary>
-        private int _currentId;
 
         /// <summary>
         ///     The darken command
@@ -150,23 +130,6 @@ namespace SlimViews
         private ICommand _exportStringCommand;
 
         /// <summary>
-        ///     The file list
-        ///     Holds the current List of Files we are viewing.
-        ///     Needed for Move Files
-        /// </summary>
-        private List<string> _fileList;
-
-        /// <summary>
-        ///     The file name
-        /// </summary>
-        private string _fileName;
-
-        /// <summary>
-        ///     The current path
-        /// </summary>
-        private string _filePath;
-
-        /// <summary>
         ///     The filter configuration command
         /// </summary>
         private ICommand _filterConfigCommand;
@@ -187,19 +150,9 @@ namespace SlimViews
         private ICommand _folderRenameCommand;
 
         /// <summary>
-        ///     The GIF path
-        /// </summary>
-        private string _gifPath;
-
-        /// <summary>
         ///     The GIF window command
         /// </summary>
         private ICommand _gifWindowCommand;
-
-        /// <summary>
-        ///     The green icon
-        /// </summary>
-        private string _greenIcon;
 
         /// <summary>
         ///     The image loaded command
@@ -210,11 +163,6 @@ namespace SlimViews
         ///     The selection tool
         /// </summary>
         private ImageZoomTools _imageZoomTool;
-
-        /// <summary>
-        ///     The information
-        /// </summary>
-        private string _information;
 
         /// <summary>
         ///     Is the Menu active
@@ -240,11 +188,6 @@ namespace SlimViews
         ///     The next command
         /// </summary>
         private ICommand _nextCommand;
-
-        /// <summary>
-        ///     The observer
-        /// </summary>
-        private Dictionary<int, string> _observer;
 
         /// <summary>
         ///     The open CBZ command.
@@ -275,11 +218,6 @@ namespace SlimViews
         ///     The previous command
         /// </summary>
         private ICommand _previousCommand;
-
-        /// <summary>
-        ///     The red icon
-        /// </summary>
-        private string _redIcon;
 
         /// <summary>
         ///     The refresh command
@@ -360,16 +298,6 @@ namespace SlimViews
         private ICommand _similarCommand;
 
         /// <summary>
-        ///     The status image
-        /// </summary>
-        private string _statusImage;
-
-        /// <summary>
-        ///     Check if Subfolders should be used too
-        /// </summary>
-        private bool _subFolders;
-
-        /// <summary>
         ///     The texture configuration command
         /// </summary>
         private ICommand _textureConfigCommand;
@@ -394,6 +322,9 @@ namespace SlimViews
         /// </summary>
         private ICommand _toolChangedCommand;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageView"/> class.
+        /// </summary>
         public ImageView()
         {
             Initialize();
@@ -412,7 +343,7 @@ namespace SlimViews
         /// <param name="thumb">The thumb.</param>
         public ImageView(bool subFolders, bool compressCif, int similarity, bool autoClean, ImageZoom imageZoom, Window mainWindow, Thumbnails thumb)
         {
-            SubFolders = subFolders;
+            UseSubFolders = subFolders;
             CompressCif = compressCif;
             Similarity = similarity;
             AutoClean = autoClean;
@@ -491,8 +422,15 @@ namespace SlimViews
         /// </value>
         public int BrushSize
         {
-            get => _brushSize;
-            set => SetProperty(ref _brushSize, value, nameof(BrushSize));
+            get => _image.BrushSize;
+            set
+            {
+                if (_image.BrushSize != value)
+                {
+                    _image.BrushSize = value;
+                    OnPropertyChanged(nameof(BrushSize)); // notify WPF
+                }
+            }
         }
 
         /// <summary>
@@ -551,8 +489,15 @@ namespace SlimViews
         /// </value>
         public string Information
         {
-            get => _information;
-            set => SetProperty(ref _information, value, nameof(Information));
+            get => _image.Information;
+            set
+            {
+                if (_image.Information != value)
+                {
+                    _image.Information = value;
+                    OnPropertyChanged(nameof(Information)); // notify WPF
+                }
+            }
         }
 
         /// <summary>
@@ -601,11 +546,15 @@ namespace SlimViews
         /// </value>
         public int Count
         {
-            get => _count;
+            get => _file.Count;
             set
             {
-                SetProperty(ref _count, value, nameof(Count));
-                NavigationLogic();
+                if (_file.Count != value)
+                {
+                    _file.Count = value;
+                    OnPropertyChanged(nameof(Count)); // notify WPF
+                    NavigationLogic();
+                }
             }
         }
 
@@ -617,20 +566,15 @@ namespace SlimViews
         /// </value>
         public string FileName
         {
-            get => _fileName;
-            set => SetProperty(ref _fileName, value, nameof(FileName));
-        }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether this instance is active.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsActive
-        {
-            get => _isActive;
-            set => SetProperty(ref _isActive, value, nameof(IsActive));
+            get => _file.FileName;
+            set
+            {
+                if (_file.FileName != value)
+                {
+                    _file.FileName = value;
+                    OnPropertyChanged(nameof(FileName)); // notify WPF
+                }
+            }
         }
 
         /// <summary>
@@ -716,13 +660,17 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [sub folders]; otherwise, <c>false</c>.
         /// </value>
-        public bool SubFolders
+        public bool UseSubFolders
         {
-            get => _subFolders;
+            get => _uiState.UseSubFolders;
             set
             {
-                SetProperty(ref _subFolders, value, nameof(SubFolders));
-                SlimViewerRegister.MainSubFolders = value;
+                if (_uiState.UseSubFolders != value)
+                {
+                    _uiState.UseSubFolders = value;
+                    OnPropertyChanged(nameof(UseSubFolders)); // notify WPF
+                    SlimViewerRegister.MainSubFolders = value;
+                }
             }
         }
 
@@ -734,13 +682,21 @@ namespace SlimViews
         /// </value>
         public bool AutoClean
         {
-            get => _autoClean;
+            get
+            {
+                return _uiState.AutoClean;
+            }
             set
             {
-                SetProperty(ref _autoClean, value, nameof(AutoClean));
-                SlimViewerRegister.MainAutoClean = value;
+                if (_uiState.AutoClean != value)
+                {
+                    _uiState.AutoClean = value;
+                    OnPropertyChanged(nameof(AutoClean)); // notify WPF
+                    SlimViewerRegister.MainAutoClean = value;
+                }
             }
-        }
+
+}
 
         /// <summary>
         ///     Gets or sets a value indicating whether this <see cref="ImageView" /> shows Thumbnails.
@@ -748,12 +704,12 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if thumbs; otherwise, <c>false</c>.
         /// </value>
-        public bool Thumbs
+        public bool ShowThumbs
         {
             get => _thumbs;
             set
             {
-                SetProperty(ref _thumbs, value, nameof(Thumbs));
+                SetProperty(ref _thumbs, value, nameof(ShowThumbs));
                 NavigationLogic();
             }
         }
@@ -785,8 +741,15 @@ namespace SlimViews
         /// </value>
         public Dictionary<int, string> Observer
         {
-            get => _observer;
-            set => SetProperty(ref _observer, value, nameof(Observer));
+            get => _file.Observer;
+            set
+            {
+                if (_file.Observer != value)
+                {
+                    _file.Observer = value;
+                    OnPropertyChanged(nameof(Observer)); // notify WPF
+                }
+            }
         }
 
         /// <summary>
@@ -811,14 +774,22 @@ namespace SlimViews
 
         /// <summary>
         ///     Gets or sets the status image.
+        ///     Red or Green Icon
         /// </summary>
         /// <value>
         ///     The status image.
         /// </value>
         public string StatusImage
         {
-            get => _statusImage;
-            set => SetProperty(ref _statusImage, value, nameof(StatusImage));
+            get => _uiState.StatusImage;
+            set
+            {
+                if (_uiState.StatusImage != value)
+                {
+                    _uiState.StatusImage = value;
+                    OnPropertyChanged(nameof(StatusImage)); // notify WPF
+                }
+            }
         }
 
         /// <summary>
@@ -829,8 +800,15 @@ namespace SlimViews
         /// </value>
         public string GifPath
         {
-            get => _gifPath;
-            set => SetProperty(ref _gifPath, value, nameof(GifPath));
+            get => _file.GifPath;
+            set
+            {
+                if (_file.GifPath != value)
+                {
+                    _file.GifPath = value;
+                    OnPropertyChanged(nameof(GifPath)); // notify WPF
+                }
+            }
         }
 
         /// <summary>
@@ -1119,7 +1097,6 @@ namespace SlimViews
 
         /// <summary>
         ///     Gets the apply texture command.
-        ///     TODO implement
         /// </summary>
         /// <value>
         ///     The apply texture command.
@@ -1144,7 +1121,6 @@ namespace SlimViews
         /// </value>
         public ICommand TextureConfigCommand =>
             _textureConfigCommand ??= new DelegateCommand<string>(TextureConfigWindowAction, CanExecute);
-
 
         /// <summary>
         ///     Gets the brighten command.
@@ -1240,6 +1216,8 @@ namespace SlimViews
 
         private readonly UiState _uiState = new();
 
+        private readonly FileContext _file = new();
+
         /// <summary>
         ///     Gets the selections.
         /// </summary>
@@ -1257,9 +1235,6 @@ namespace SlimViews
         {
             _image.CustomImageFormat = new CustomImageFormat();
             Observer = new Dictionary<int, string>();
-
-            _greenIcon = Path.Combine(_root, ViewResources.IconPathGreen);
-            _redIcon = Path.Combine(_root, ViewResources.IconPathRed);
 
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
@@ -1462,7 +1437,7 @@ namespace SlimViews
             LoadThumbs(pathObj.Folder, pathObj.FilePath);
 
             //activate Menus
-            if (_image.BitmapImage != null) IsActive = true;
+            if (_image.BitmapImage != null) IsImageActive = true;
         }
 
         /// <summary>
@@ -1479,7 +1454,7 @@ namespace SlimViews
             GenerateCbrView(pathObj);
 
             //activate Menus
-            if (_image.BitmapImage != null) IsActive = true;
+            if (_image.BitmapImage != null) IsImageActive = true;
         }
 
         /// <summary>
@@ -1499,14 +1474,14 @@ namespace SlimViews
             if (_image.Bitmap == null) return;
 
             //activate Menus
-            if (_image.BitmapImage != null) IsActive = true;
+            if (_image.BitmapImage != null) IsImageActive = true;
 
             Bmp = _image.Bitmap.ToBitmapImage();
 
             //set Filename
-            FileName = Path.GetFileName(_filePath);
+            FileName = Path.GetFileName(_file.FilePath);
             //set Infos
-            Information = ViewResources.BuildImageInformation(_filePath, FileName, Bmp);
+            Information = ViewResources.BuildImageInformation(_file.FilePath, FileName, Bmp);
         }
 
         /// <summary>
@@ -1537,8 +1512,8 @@ namespace SlimViews
 
             if (pathObj == null) return;
 
-            if (string.Equals(pathObj.FilePath, _filePath, StringComparison.OrdinalIgnoreCase))
-                _ = FileHandleDelete.DeleteFile(_filePath);
+            if (string.Equals(pathObj.FilePath, _file.FilePath, StringComparison.OrdinalIgnoreCase))
+                _ = FileHandleDelete.DeleteFile(_file.FilePath);
 
             try
             {
@@ -1561,7 +1536,7 @@ namespace SlimViews
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
 
-            ChangeImage(Utility.GetNextElement(_currentId, lst));
+            ChangeImage(Utility.GetNextElement(_file.CurrentId, lst));
             _uiState.Thumb.Next();
             NavigationLogic();
         }
@@ -1575,7 +1550,7 @@ namespace SlimViews
             var lst = Observer.Keys.ToList();
             if (lst.IsNullOrEmpty()) return;
 
-            ChangeImage(Utility.GetPreviousElement(_currentId, lst));
+            ChangeImage(Utility.GetPreviousElement(_file.CurrentId, lst));
             _uiState.Thumb.Previous();
             NavigationLogic();
         }
@@ -1640,7 +1615,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void DeleteAction(object obj)
         {
-            if (!Observer.ContainsKey(_currentId) && _uiState.Thumb.Selection.IsNullOrEmpty()) return;
+            if (!Observer.ContainsKey(_file.CurrentId) && _uiState.Thumb.Selection.IsNullOrEmpty()) return;
 
             if (!_uiState.Thumb.Selection.IsNullOrEmpty())
             {
@@ -1671,11 +1646,11 @@ namespace SlimViews
                 Bmp = null;
                 _image.Bitmap = null;
                 GifPath = null;
-                _gifPath = null;
+                _file.GifPath = null;
 
                 try
                 {
-                    var check = FileHandleSafeDelete.DeleteFile(Observer[_currentId]);
+                    var check = FileHandleSafeDelete.DeleteFile(Observer[_file.CurrentId]);
 
                     //decrease File Count
                     if (Count > 0 && check) Count--;
@@ -1687,7 +1662,7 @@ namespace SlimViews
                         string.Concat(ViewResources.ErrorMessage, nameof(DeleteAction)));
                 }
 
-                _uiState.Thumb.RemoveSingleItem(_currentId);
+                _uiState.Thumb.RemoveSingleItem(_file.CurrentId);
 
                 NextAction(this);
             }
@@ -1699,10 +1674,10 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private async Task RenameAction(object obj)
         {
-            if (!IsActive) return;
-            if (!Observer.ContainsKey(_currentId)) return;
+            if (!IsImageActive) return;
+            if (!Observer.ContainsKey(_file.CurrentId)) return;
 
-            var file = Observer[_currentId];
+            var file = Observer[_file.CurrentId];
             if (!File.Exists(file)) return;
 
             var folder = Path.GetDirectoryName(file);
@@ -1733,7 +1708,7 @@ namespace SlimViews
                     string.Concat(ViewResources.ErrorMessage, nameof(RenameAction)));
             }
 
-            Observer[_currentId] = filePath;
+            Observer[_file.CurrentId] = filePath;
             GenerateView(filePath);
         }
 
@@ -1743,8 +1718,8 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void RefreshAction(object obj)
         {
-            _currentId = -1;
-            _filePath = string.Empty;
+            _file.CurrentId = -1;
+            _file.FilePath = string.Empty;
             Bmp = null;
             GifPath = null;
 
@@ -1812,7 +1787,7 @@ namespace SlimViews
             LoadThumbs(path);
 
             //activate Menus
-            if (!string.IsNullOrEmpty(path)) IsActive = true;
+            if (!string.IsNullOrEmpty(path)) IsImageActive = true;
         }
 
         /// <summary>
@@ -1821,12 +1796,12 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void ClearAction(object obj)
         {
-            if (!Observer.ContainsKey(_currentId)) return;
+            if (!Observer.ContainsKey(_file.CurrentId)) return;
 
             Bmp = null;
             GifPath = null;
 
-            _uiState.Thumb.RemoveSingleItem(_currentId);
+            _uiState.Thumb.RemoveSingleItem(_file.CurrentId);
 
             //decrease File Count
             if (Count > 0) Count--;
@@ -1834,7 +1809,7 @@ namespace SlimViews
             _image.Bitmap = null;
             Bmp = null;
             GifPath = null;
-            _gifPath = null;
+            _file.GifPath = null;
 
             NextAction(this);
         }
@@ -1848,9 +1823,9 @@ namespace SlimViews
         {
             if (!Directory.Exists(SlimViewerRegister.CurrentFolder)) return;
 
-            var argument = !File.Exists(_filePath)
+            var argument = !File.Exists(_file.FilePath)
                 ? SlimViewerRegister.CurrentFolder
-                : string.Concat(ViewResources.Select, _filePath, ViewResources.Close);
+                : string.Concat(ViewResources.Select, _file.FilePath, ViewResources.Close);
             _ = Process.Start(ViewResources.Explorer, argument);
         }
 
@@ -1919,10 +1894,10 @@ namespace SlimViews
             var dct = new Dictionary<int, string>();
 
             if (!_uiState.Thumb.Selection.IsNullOrEmpty())
-                foreach (var id in _uiState.Thumb.Selection.Where(id => _observer.ContainsKey(id)))
-                    dct.Add(id, _observer[id]);
+                foreach (var id in _uiState.Thumb.Selection.Where(id => _file.Observer.ContainsKey(id)))
+                    dct.Add(id, _file.Observer[id]);
             else
-                dct = new Dictionary<int, string>(_observer);
+                dct = new Dictionary<int, string>(_file.Observer);
 
             var rename = new Rename(dct)
             {
@@ -1933,10 +1908,10 @@ namespace SlimViews
 
             //refresh the Filename, no need to refresh all, we don't need to reload everything, to save time
             if (SlimViewerRegister.Changed && _uiState.Thumb.Selection.IsNullOrEmpty())
-                _observer = rename.Observer;
+                _file.Observer = rename.Observer;
             else
                 foreach (var (key, value) in rename.Observer)
-                    _observer[key] = value;
+                    _file.Observer[key] = value;
         }
 
         /// <summary>
@@ -1982,7 +1957,7 @@ namespace SlimViews
             //TODO implement a viewmodel
 
 
-            ImageProcessor.FolderConvert(SlimViewerRegister.Target, SlimViewerRegister.Source, _observer);
+            ImageProcessor.FolderConvert(SlimViewerRegister.Target, SlimViewerRegister.Source, _file.Observer);
         }
 
         /// <summary>
@@ -1991,7 +1966,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SimilarWindowAction(object obj)
         {
-            var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this, Similarity)
+            var compareWindow = new Compare(UseSubFolders, SlimViewerRegister.CurrentFolder, this, Similarity)
             {
                 Topmost = true,
                 Owner = _uiState.Main
@@ -2008,7 +1983,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void DuplicateWindowAction(object obj)
         {
-            var compareWindow = new Compare(SubFolders, SlimViewerRegister.CurrentFolder, this)
+            var compareWindow = new Compare(UseSubFolders, SlimViewerRegister.CurrentFolder, this)
             {
                 Topmost = true,
                 Owner = _uiState.Main
@@ -2066,7 +2041,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void SearchWindowAction(object obj)
         {
-            var searchWindow = new Search(SubFolders, SlimViewerRegister.CurrentFolder, this, Color)
+            var searchWindow = new Search(UseSubFolders, SlimViewerRegister.CurrentFolder, this, Color)
             {
                 Topmost = true,
                 Owner = _uiState.Main
@@ -2183,13 +2158,13 @@ namespace SlimViews
 
             if (!Directory.Exists(path)) return;
 
-            if (_fileList.IsNullOrEmpty()) return;
+            if (_file.Files.IsNullOrEmpty()) return;
 
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, _subFolders);
+            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, _uiState.UseSubFolders);
 
             if (lst == null) return;
 
-            var i = _fileList.Intersect(lst);
+            var i = _file.Files.Intersect(lst);
 
             if (i.Any())
             {
@@ -2200,7 +2175,7 @@ namespace SlimViews
             }
 
             //Move all Contents from this folder into another
-            _ = FileHandleCut.CutFiles(_fileList, path, false);
+            _ = FileHandleCut.CutFiles(_file.Files, path, false);
         }
 
         /// <summary>
@@ -2211,7 +2186,7 @@ namespace SlimViews
         {
             if (!Observer.ContainsKey(id)) return;
 
-            _currentId = id;
+            _file.CurrentId = id;
             NavigationLogic();
 
             var filePath = Observer[id];
@@ -2225,14 +2200,13 @@ namespace SlimViews
         public void ChangeImage(IEnumerable<string> files)
         {
             //no need to check for null it was already checked
-            var lst = files.ToList();
-            _fileList = lst;
+            _file.Files = files.ToList();
 
-            Count = lst.Count;
+            Count = _file.Files.Count;
 
             try
             {
-                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(lst[0]);
+                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(files.ToList()[0]);
             }
             catch (ArgumentException ex)
             {
@@ -2251,10 +2225,10 @@ namespace SlimViews
             Bmp = null;
             GifPath = null;
 
-            _currentId = -1;
+            _file.CurrentId = -1;
 
-            _ = GenerateThumbView(lst);
-            _information = string.Concat(ViewResources.DisplayImages, lst.Count);
+            _ = GenerateThumbView(_file.Files);
+            _image.Information = string.Concat(ViewResources.DisplayImages, _file.Files.Count);
         }
 
         /// <summary>
@@ -2279,7 +2253,7 @@ namespace SlimViews
             LoadThumbs(folder, filePath);
 
             //set the Id of the loaded Image
-            _currentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
+            _file.CurrentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
         }
 
         /// <summary>
@@ -2304,7 +2278,7 @@ namespace SlimViews
             GenerateImage(filePath);
 
             //set the Id of the loaded Image
-            _currentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
+            _file.CurrentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
 
             //set new Information
             Information = info;
@@ -2318,7 +2292,7 @@ namespace SlimViews
         {
             if (pathObj == null) return;
 
-            _subFolders = true;
+            _uiState.UseSubFolders = true;
             var folder = ImageProcessor.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
             if (!string.IsNullOrEmpty(folder)) SlimViewerRegister.CurrentFolder = folder;
             var file = ImageProcessor.UnpackFile(folder);
@@ -2382,7 +2356,7 @@ namespace SlimViews
                     Information = ViewResources.BuildImageInformation(filePath, FileName, Bmp);
                 }
 
-                _filePath = filePath;
+                _file.FilePath = filePath;
                 //set Filename
                 FileName = Path.GetFileName(filePath);
             }
@@ -2407,12 +2381,12 @@ namespace SlimViews
             // If filePath is provided, get the Id of the displayed image.
             if (!string.IsNullOrEmpty(filePath))
             {
-                _currentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
+                _file.CurrentId = Observer.FirstOrDefault(x => x.Value == filePath).Key;
             }
             else
             {
                 // Reset the Id of the displayed image if no file path is provided.
-                _currentId = -1;
+                _file.CurrentId = -1;
                 Bmp = null;
                 GifPath = null;
             }
@@ -2427,12 +2401,12 @@ namespace SlimViews
             //initiate Basic values
             SlimViewerRegister.CurrentFolder = folder;
             StatusImage = string.Empty;
-            StatusImage = _redIcon;
+            StatusImage = _uiState.RedIconPath;
 
-            _fileList = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _subFolders);
+            _file.Files = FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, _uiState.UseSubFolders);
 
             //decrease File Count
-            if (_fileList.IsNullOrEmpty())
+            if (_file.Files.IsNullOrEmpty())
             {
                 Count = 0;
                 Observer = null;
@@ -2444,11 +2418,11 @@ namespace SlimViews
             NavigationLogic();
 
             // ReSharper disable once PossibleNullReferenceException, already checked
-            Count = _fileList.Count;
+            Count = _file.Files.Count;
 
-            _fileList = _fileList.PathSort();
+            _file.Files = _file.Files.PathSort();
 
-            _ = GenerateThumbView(_fileList);
+            _ = GenerateThumbView(_file.Files);
         }
 
         /// <summary>
@@ -2458,13 +2432,13 @@ namespace SlimViews
         private async Task GenerateThumbView(IReadOnlyCollection<string> lst)
         {
             //if we don't want to generate Thumbs don't
-            if (!Thumbs) return;
+            if (!ShowThumbs) return;
 
             _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             if (string.IsNullOrEmpty(_root)) return;
 
-            StatusImage = _redIcon;
+            StatusImage = _uiState.RedIconPath;
 
             //load Thumbnails
             _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
@@ -2477,19 +2451,19 @@ namespace SlimViews
         /// </summary>
         private void NavigationLogic()
         {
-            if (_count <= 1)
+            if (_file.Count <= 1)
             {
                 LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             }
             else
             {
-                // Set visibility based on _currentId and _count
-                RightButtonVisibility = _currentId == _count - 1 ? Visibility.Hidden : Visibility.Visible;
-                LeftButtonVisibility = _currentId <= 0 ? Visibility.Hidden : Visibility.Visible;
+                // Set visibility based on _file.CurrentId and _file.Count
+                RightButtonVisibility = _file.CurrentId == _file.Count - 1 ? Visibility.Hidden : Visibility.Visible;
+                LeftButtonVisibility = _file.CurrentId <= 0 ? Visibility.Hidden : Visibility.Visible;
             }
 
             // show or hide the Thumbnail Bar
-            ThumbnailVisibility = Thumbs ? Visibility.Visible : Visibility.Hidden;
+            ThumbnailVisibility = ShowThumbs ? Visibility.Visible : Visibility.Hidden;
 
             //show or hide image edit
             IsImageActive = _image.Bitmap != null;
@@ -2507,10 +2481,10 @@ namespace SlimViews
         /// </returns>
         internal bool SaveImage(string path, string extension, Bitmap btm)
         {
-            StatusImage = _redIcon;
+            StatusImage = _uiState.RedIconPath;
 
             var check = ImageProcessor.SaveImage(path, extension, btm);
-            StatusImage = _greenIcon;
+            StatusImage = _uiState.GreenIconPath;
 
             return check;
         }
@@ -2523,7 +2497,7 @@ namespace SlimViews
             //if (Status == null) return;
             if (string.IsNullOrEmpty(StatusImage)) return;
 
-            StatusImage = _greenIcon;
+            StatusImage = _uiState.GreenIconPath;
         }
     }
 }

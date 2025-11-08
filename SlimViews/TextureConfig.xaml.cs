@@ -8,6 +8,7 @@
 
 using System.Windows;
 using Imaging;
+using Imaging.Enums;
 
 namespace SlimViews
 {

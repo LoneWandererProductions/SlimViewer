@@ -23,6 +23,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using Imaging.Enums;
 using SlimControls;
 using Point = System.Drawing.Point;
 
