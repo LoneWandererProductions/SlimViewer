@@ -120,6 +120,14 @@ namespace SlimViews
         internal static bool CompareView { get; set; }
 
         /// <summary>
+        /// Gets a value indicating whether this instance is paths set.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is paths set; otherwise, <c>false</c>.
+        /// </value>
+        internal static bool IsPathsSet => !string.IsNullOrEmpty(Source) && !string.IsNullOrEmpty(Target);
+
+        /// <summary>
         ///     Resets the scaling.
         /// </summary>
         internal static void ResetScaling()

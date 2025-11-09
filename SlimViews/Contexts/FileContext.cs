@@ -57,6 +57,15 @@ namespace SlimViews.Contexts
         internal List<string> FilesSorted => Files.PathSort();
 
         /// <summary>
+        /// Determines whether [is key in observer] [the specified key].
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>
+        ///   <c>true</c> if [is key in observer] [the specified key]; otherwise, <c>false</c>.
+        /// </returns>
+        internal bool IsKeyInObserver(int key) => Observer.ContainsKey(key);
+
+        /// <summary>
         /// Gets or sets the file path.
         /// </summary>
         /// <value>
