@@ -41,7 +41,7 @@ internal static class ImageStream
     ///     The Image as <see cref="Bitmap" />.
     /// </returns>
     /// <exception cref="IOException">File not Found</exception>
-    internal static Bitmap LoadBitmapFromFile(string path)
+    internal static Bitmap LoadBitmapFromFile(string? path)
     {
         ImageHelper.ValidateFilePath(path);
 
@@ -64,7 +64,7 @@ internal static class ImageStream
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="NotSupportedException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    internal static Bitmap GetOriginalBitmap(string path)
+    internal static Bitmap GetOriginalBitmap(string? path)
     {
         ImageHelper.ValidateFilePath(path);
 

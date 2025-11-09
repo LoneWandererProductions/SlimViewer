@@ -40,7 +40,7 @@ public static class ImageGifHandler
     /// </summary>
     /// <param name="path">The path.</param>
     /// <returns>gif Infos</returns>
-    public static ImageGifInfo? GetImageInfo(string path)
+    public static ImageGifInfo? GetImageInfo(string? path)
     {
         ImageGifInfo? info = null;
 
@@ -67,7 +67,7 @@ public static class ImageGifHandler
     /// </summary>
     /// <param name="path">The path.</param>
     /// <returns>List of Images from gif</returns>
-    internal static async Task<List<Bitmap>> SplitGifAsync(string path)
+    internal static async Task<List<Bitmap>> SplitGifAsync(string? path)
     {
         if (string.IsNullOrEmpty(path) || !File.Exists(path))
         {
@@ -128,7 +128,7 @@ public static class ImageGifHandler
     /// </summary>
     /// <param name="path">The path.</param>
     /// <returns>List of Images from gif as ImageSource</returns>
-    internal static async Task<List<ImageSource>> LoadGif(string path)
+    internal static async Task<List<ImageSource>> LoadGif(string? path)
     {
         // Await the result from the async SplitGifAsync method
         var bitmapList = await SplitGifAsync(path);

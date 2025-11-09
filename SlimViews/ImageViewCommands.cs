@@ -55,7 +55,11 @@ namespace SlimViews
         public ICommand ToolChanged { get; }
 
         private readonly ImageMassProcessingCommands _imageMassService = new();
-        private ImageView _owner;
+
+        /// <summary>
+        /// The owner
+        /// </summary>
+        private readonly ImageView _owner;
 
         /// <summary>
         /// Scales the window action.
@@ -88,7 +92,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="_">The empty parameter</param>
         public void SimilarWindowAction(object? _) => _imageMassService.SimilarWindow(_owner);
-        
+
         /// <summary>
         /// Folders the search action.
         /// </summary>
@@ -132,6 +136,7 @@ namespace SlimViews
         public ImageViewCommands(ImageView owner)
         {
             _owner = owner;
+
             // Generic helper that adapts automatically to all command types.
             bool CanRun<T>(T? arg) => owner.CanRun(arg);
 

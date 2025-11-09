@@ -58,8 +58,10 @@
                     <MenuItem Header="Open" Command="{Binding Commands.Open}" />
                     <MenuItem Header="Open CBZ" Command="{Binding Commands.OpenCbz}" />
                     <MenuItem Header="Save" Command="{Binding Commands.Save}" IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Delete" Command="{Binding Commands.Delete}" IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Refresh" Command="{Binding Commands.Refresh}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Delete" Command="{Binding Commands.Delete}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Refresh" Command="{Binding Commands.Refresh}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
                     <Separator />
                     <MenuItem Header="Close" Command="{Binding Commands.Close}" />
                 </MenuItem>

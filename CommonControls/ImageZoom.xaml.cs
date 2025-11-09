@@ -212,7 +212,7 @@ public sealed partial class ImageZoom : IDisposable
     /// <value>
     ///     The gif image path.
     /// </value>
-    public string ImageGifPath
+    public string? ImageGifPath
     {
         get => (string)GetValue(ImageGifSourceProperty);
         set => SetValue(ImageSourceProperty, value);

@@ -36,7 +36,7 @@ public interface IImageRender
     ///     The Image as <see cref="Bitmap" />.
     /// </returns>
     /// <exception cref="IOException"></exception>
-    Bitmap GetBitmapFile(string path);
+    Bitmap GetBitmapFile(string? path);
 
     /// <summary>
     ///     Gets the original bitmap file.
@@ -48,7 +48,7 @@ public interface IImageRender
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="NotSupportedException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    Bitmap GetOriginalBitmap(string path);
+    Bitmap GetOriginalBitmap(string? path);
 
     /// <summary>
     ///     Resizes an image
@@ -203,7 +203,7 @@ public interface IImageRender
     /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
     /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
     /// <exception cref="IOException">Could not find the File</exception>
-    BitmapImage GetBitmapImage(string path);
+    BitmapImage GetBitmapImage(string? path);
 
     /// <summary>
     ///     Loads File one Time
@@ -220,7 +220,7 @@ public interface IImageRender
     /// <exception cref="UriFormatException"></exception>
     /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
     /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-    BitmapImage GetBitmapImage(string path, int width, int height);
+    BitmapImage GetBitmapImage(string? path, int width, int height);
 
     /// <summary>
     ///     Loads File in a Stream
@@ -233,7 +233,7 @@ public interface IImageRender
     /// <exception cref="IOException">Error while we try to access the File</exception>
     /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
     /// <exception cref="IOException">Could not find the File</exception>
-    BitmapImage GetBitmapImageFileStream(string path);
+    BitmapImage GetBitmapImageFileStream(string? path);
 
     /// <summary>
     ///     Loads File in a Stream
@@ -250,7 +250,7 @@ public interface IImageRender
     /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
     /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
     /// <exception cref="IOException">Error while we try to access the File</exception>
-    BitmapImage GetBitmapImageFileStream(string path, int width, int height);
+    BitmapImage GetBitmapImageFileStream(string? path, int width, int height);
 
     /// <summary>
     ///     Converts to bitmap image.
@@ -530,7 +530,7 @@ public interface IImageRender
     /// <param name="path">The path.</param>
     /// <returns>List of Images from gif</returns>
     /// <exception cref="IOException">Could not find the File</exception>
-    Task<List<Bitmap>> SplitGif(string path);
+    Task<List<Bitmap>> SplitGif(string? path);
 
     /// <summary>
     ///     Loads the GIF.
@@ -538,7 +538,7 @@ public interface IImageRender
     /// <param name="path">The path.</param>
     /// <returns>List of Images from gif as ImageSource</returns>
     /// <exception cref="IOException">Could not find the File</exception>
-    Task<List<ImageSource>> LoadGifAsync(string path);
+    Task<List<ImageSource>> LoadGifAsync(string? path);
 
     /// <summary>
     ///     Creates a gif.

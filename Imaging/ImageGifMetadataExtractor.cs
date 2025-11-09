@@ -23,7 +23,7 @@ internal static class ImageGifMetadataExtractor
     /// <returns>Metadata of the gif in question.</returns>
     /// <exception cref="FileNotFoundException">File not found.</exception>
     /// <exception cref="InvalidDataException">Not a valid GIF file.</exception>
-    internal static ImageGifInfo? ExtractGifMetadata(string filePath)
+    internal static ImageGifInfo? ExtractGifMetadata(string? filePath)
     {
         if (!File.Exists(filePath))
         {

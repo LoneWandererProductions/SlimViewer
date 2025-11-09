@@ -26,7 +26,8 @@ namespace SlimViews
 
             if (SlimViewerRegister.IsPathsSet) return;
 
-            ImageProcessor.FolderConvert(SlimViewerRegister.Target, SlimViewerRegister.Source, owner.FileContext.Observer);
+            ImageProcessor.FolderConvert(SlimViewerRegister.Target, SlimViewerRegister.Source,
+                owner.FileContext.Observer);
         }
 
         /// <summary>
@@ -217,11 +218,12 @@ namespace SlimViews
         /// <param name="owner">The owner.</param>
         internal void SimilarWindow(ImageView owner)
         {
-            var compareWindow = new Compare(owner.UseSubFolders, SlimViewerRegister.CurrentFolder, owner, owner.Similarity)
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
+            var compareWindow =
+                new Compare(owner.UseSubFolders, SlimViewerRegister.CurrentFolder, owner, owner.Similarity)
+                {
+                    Topmost = true,
+                    Owner = owner.UiState.Main
+                };
             compareWindow.Show();
 
             SlimViewerRegister.CompareView = true;

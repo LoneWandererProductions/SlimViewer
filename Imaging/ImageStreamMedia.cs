@@ -37,7 +37,7 @@ public static class ImageStreamMedia
     /// <exception cref="UriFormatException"></exception>
     /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
     /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-    public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
+    public static BitmapImage GetBitmapImage(string? path, int width = 0, int height = 0)
     {
         ImageHelper.ValidateFilePath(path);
         try
@@ -82,7 +82,7 @@ public static class ImageStreamMedia
     /// <exception cref="ArgumentException">No Correct Argument were provided</exception>
     /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
     /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
-    public static BitmapImage GetBitmapImageFileStream(string path, int width = 0, int height = 0)
+    public static BitmapImage GetBitmapImageFileStream(string? path, int width = 0, int height = 0)
     {
         ImageHelper.ValidateFilePath(path);
 

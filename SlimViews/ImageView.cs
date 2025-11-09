@@ -508,7 +508,7 @@ namespace SlimViews
         /// <value>
         ///     The observer.
         /// </value>
-        public Dictionary<int, string> Observer
+        public Dictionary<int, string?> Observer
         {
             get => FileContext.Observer;
             set
@@ -566,7 +566,7 @@ namespace SlimViews
         /// <value>
         ///     The GIF path.
         /// </value>
-        public string GifPath
+        public string? GifPath
         {
             get => FileContext.GifPath;
             set
@@ -613,7 +613,7 @@ namespace SlimViews
         private void Initialize()
         {
             Image.CustomImageFormat = new CustomImageFormat();
-            Observer = new Dictionary<int, string>();
+            Observer = new Dictionary<int, string?>();
 
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
@@ -825,7 +825,7 @@ namespace SlimViews
             var pathObj =
                 DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             GenerateCbrView(pathObj);
 
@@ -842,7 +842,7 @@ namespace SlimViews
             var pathObj =
                 DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             Image.Bitmap = Image.CustomImageFormat.GetImageFromCif(pathObj.FilePath);
 
@@ -867,7 +867,7 @@ namespace SlimViews
         {
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
 
-            if (pathObj == null || !System.IO.File.Exists(pathObj.FilePath)) return;
+            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             if (CompressCif) Image.CustomImageFormat.GenerateCifCompressedFromBitmap(Image.Bitmap, pathObj.FilePath);
             else Image.CustomImageFormat.GenerateBitmapToCifFile(Image.Bitmap, pathObj.FilePath);
@@ -1051,9 +1051,9 @@ namespace SlimViews
         {
             if (!IsImageActive) return;
 
-            if (!Observer.TryGetValue(FileContext.CurrentId, out string file)) return;
+            if (!Observer.TryGetValue(FileContext.CurrentId, out string? file)) return;
 
-            if (!System.IO.File.Exists(file)) return;
+            if (!File.Exists(file)) return;
 
             var folder = Path.GetDirectoryName(file);
             if (string.IsNullOrEmpty(folder)) return;
@@ -1061,7 +1061,7 @@ namespace SlimViews
             var filePath = Path.Combine(folder, FileName);
 
             // Check if we have a duplicate; if true, shall we overwrite?
-            if (System.IO.File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 var dialogResult = await Task.Run(() =>
                     _ = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
@@ -1198,7 +1198,7 @@ namespace SlimViews
         {
             if (!Directory.Exists(SlimViewerRegister.CurrentFolder)) return;
 
-            var argument = !System.IO.File.Exists(FileContext.FilePath)
+            var argument = !File.Exists(FileContext.FilePath)
                 ? SlimViewerRegister.CurrentFolder
                 : string.Concat(ViewResources.Select, FileContext.FilePath, ViewResources.Close);
             _ = Process.Start(ViewResources.Explorer, argument);
@@ -1240,7 +1240,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void MoveAction(object obj)
         {
-            if (!System.IO.File.Exists(FileName) && UiState.Thumb.Selection.IsNullOrEmpty()) return;
+            if (!File.Exists(FileName) && UiState.Thumb.Selection.IsNullOrEmpty()) return;
             //Initiate Folder
             if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
                 SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -1257,13 +1257,13 @@ namespace SlimViews
                     if (!Directory.Exists(path)) return;
 
                     var fileName = Observer[id];
-                    if (!System.IO.File.Exists(fileName)) continue;
+                    if (!File.Exists(fileName)) continue;
 
                     //Copy Single File
                     var info = new FileInfo(fileName);
                     var target = Path.Combine(path, info.Name);
 
-                    if (System.IO.File.Exists(target))
+                    if (File.Exists(target))
                     {
                         var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
                             ViewResources.CaptionFileAlreadyExists,
@@ -1286,7 +1286,7 @@ namespace SlimViews
                 var info = new FileInfo(FileName);
                 var target = Path.Combine(path, info.Name);
 
-                if (System.IO.File.Exists(target))
+                if (File.Exists(target))
                 {
                     var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
                         ViewResources.CaptionFileAlreadyExists,
@@ -1391,10 +1391,10 @@ namespace SlimViews
         ///     Changes the image.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        public void ChangeImage(string filePath)
+        public void ChangeImage(string? filePath)
         {
             //check if it exists
-            if (!System.IO.File.Exists(filePath)) return;
+            if (!File.Exists(filePath)) return;
 
             //check if we even handle this file type
             if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
@@ -1418,10 +1418,10 @@ namespace SlimViews
         /// <param name="files">The files.</param>
         /// <param name="filePath">The file path.</param>
         /// <param name="info">The information about the selected Images.</param>
-        internal void ChangeImage(IEnumerable<string> files, string filePath, string info)
+        internal void ChangeImage(IEnumerable<string?> files, string? filePath, string info)
         {
             //check if it exists
-            if (!System.IO.File.Exists(filePath)) return;
+            if (!File.Exists(filePath)) return;
 
             //check if we even handle this file type
             if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
@@ -1463,7 +1463,7 @@ namespace SlimViews
         ///     Generates the view.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        private void GenerateView(string filePath)
+        private void GenerateView(string? filePath)
         {
             var info = FileHandleSearch.GetFileDetails(filePath);
 
@@ -1483,7 +1483,7 @@ namespace SlimViews
         ///     Generates the image.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        private void GenerateImage(string filePath)
+        private void GenerateImage(string? filePath)
         {
             try
             {
@@ -1530,7 +1530,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="folder">The folder.</param>
         /// <param name="filePath">The file path, optional.</param>
-        private void LoadThumbs(string folder, string filePath = null)
+        private void LoadThumbs(string folder, string? filePath = null)
         {
             GenerateThumbView(folder);
 
@@ -1587,7 +1587,7 @@ namespace SlimViews
         ///     Generates the thumb view.
         /// </summary>
         /// <param name="lst">The File List.</param>
-        private async Task GenerateThumbView(IReadOnlyCollection<string> lst)
+        private async Task GenerateThumbView(IReadOnlyCollection<string?> lst)
         {
             //if we don't want to generate Thumbs don't
             if (!IsThumbsVisible) return;
@@ -1610,7 +1610,9 @@ namespace SlimViews
             else
             {
                 // Set visibility based on _file.CurrentId and _file.Count
-                RightButtonVisibility = FileContext.CurrentId == FileContext.Count - 1 ? Visibility.Hidden : Visibility.Visible;
+                RightButtonVisibility = FileContext.CurrentId == FileContext.Count - 1
+                    ? Visibility.Hidden
+                    : Visibility.Visible;
                 LeftButtonVisibility = FileContext.CurrentId <= 0 ? Visibility.Hidden : Visibility.Visible;
             }
 

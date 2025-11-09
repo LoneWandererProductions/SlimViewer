@@ -97,7 +97,7 @@ public sealed class ImageGif : Image, IDisposable
     /// <summary>
     ///     Gets or sets the GIF source.
     /// </summary>
-    public string GifSource
+    public string? GifSource
     {
         get => (string)GetValue(GifSourceProperty);
         set => SetValue(GifSourceProperty, value);
