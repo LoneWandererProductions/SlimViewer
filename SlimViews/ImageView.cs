@@ -931,60 +931,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Applies the filter.
-        /// </summary>
-        /// <param name="filterName">The filter name.</param>
-        internal void ApplyFilterAction(string filterName)
-        {
-            var filter = Translator.GetFilterFromString(filterName);
-
-            var btm = ImageProcessor.Filter(Image.Bitmap, filter);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Applies the texture.
-        /// </summary>
-        /// <param name="textureName">The name of the texture.</param>
-        internal void ApplyTextureAction(string textureName)
-        {
-            var texture = Translator.GetTextureFromString(textureName);
-
-            var btm = ImageProcessor.Texture(Image.Bitmap, texture);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Brightens the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void BrightenAction(object obj)
-        {
-            var btm = ImageProcessor.DBrighten(Image.Bitmap);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Darkens the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void DarkenAction(object obj)
-        {
-            var btm = ImageProcessor.Darken(Image.Bitmap);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Pixelate action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void PixelateAction(object obj)
-        {
-            var btm = ImageProcessor.Pixelate(Image.Bitmap, PixelWidth);
-            Bmp = btm.ToBitmapImage();
-        }
-
-        /// <summary>
         ///     Deletes the Image.
         /// </summary>
         /// <param name="obj">The object.</param>
@@ -1114,38 +1060,6 @@ namespace SlimViews
         internal void ExportStringAction(object obj)
         {
             ImageProcessor.ExportString(Image.Bitmap);
-        }
-
-        /// <summary>
-        ///     Rotates the backward action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void RotateBackwardAction(object obj)
-        {
-            Image.Bitmap = ImageProcessor.RotateImage(Image.Bitmap, -90);
-            Bmp = Image.BitmapSource;
-        }
-
-        /// <summary>
-        ///     Rotates the forward action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void RotateForwardAction(object obj)
-        {
-            Image.Bitmap = ImageProcessor.RotateImage(Image.Bitmap, 90);
-            Bmp = Image.BitmapSource;
-        }
-
-        /// <summary>
-        ///     Mirrors the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void MirrorAction(object obj)
-        {
-            if (Image.Bitmap == null) return;
-
-            Image.Bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
-            Bmp = Image.BitmapSource;
         }
 
         /// <summary>

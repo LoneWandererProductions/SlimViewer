@@ -360,7 +360,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Brighten the Image</returns>
-        internal static Bitmap DBrighten(Bitmap bitmap)
+        internal static Bitmap Brighten(Bitmap bitmap)
         {
             return Render.AdjustBrightness(bitmap, -0.1f);
         }

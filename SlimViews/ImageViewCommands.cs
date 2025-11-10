@@ -56,6 +56,8 @@ namespace SlimViews
 
         private readonly ImageMassProcessingCommands _imageMassService = new();
 
+        private readonly ImageProcessingCommands _imageService = new();
+
         /// <summary>
         /// The owner
         /// </summary>
@@ -128,6 +130,54 @@ namespace SlimViews
         /// </summary>
         /// <param name="obj">The object.</param>
         public void TextureConfigWindowAction(string? obj) => _imageMassService.TextureConfigWindow(_owner, obj);
+   
+        /// <summary>
+        /// Brightens the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void BrightenAction(string? obj) => _imageService.Brigthen(_owner, obj);
+
+        /// <summary>
+        /// Darkens the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void DarkenAction(string? obj) => _imageService.Darken(_owner, obj);
+
+        /// <summary>
+        /// Applies the filter action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void ApplyFilterAction(string? obj) => _imageService.ApplyFilter(_owner, obj);
+
+        /// <summary>
+        /// Applies the texture action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void ApplyTextureAction(string? obj) => _imageService.ApplyTexture(_owner, obj);
+
+        /// <summary>
+        /// Mirrors the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void MirrorAction(object? obj) => _imageService.Mirror(_owner, obj);
+
+        /// <summary>
+        /// Rotates the forward action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void RotateForwardAction(object? obj) => _imageService.RotateForward(_owner, obj);
+
+        /// <summary>
+        /// Rotates the backward action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void RotateBackwardAction(object? obj) => _imageService.RotateBackward(_owner, obj);
+
+        /// <summary>
+        /// Pixelates the action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public void PixelateAction(object? obj) => _imageService.Pixelate(_owner, obj);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageViewCommands"/> class.
@@ -146,13 +196,9 @@ namespace SlimViews
             Save = new DelegateCommand<object>(owner.SaveAction, CanRun);
             Delete = new DelegateCommand<object>(owner.DeleteAction, CanRun);
             Refresh = new DelegateCommand<object>(owner.RefreshAction, CanRun);
-            Pixelate = new DelegateCommand<object>(owner.PixelateAction, CanRun);
             Rename = new AsyncDelegateCommand<object>(owner.RenameAction, CanRun);
 
             Folder = new DelegateCommand<object>(owner.FolderAction, CanRun);
-            Mirror = new DelegateCommand<object>(owner.MirrorAction, CanRun);
-            RotateForward = new DelegateCommand<object>(owner.RotateForwardAction, CanRun);
-            RotateBackward = new DelegateCommand<object>(owner.RotateBackwardAction, CanRun);
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
 
             Clear = new DelegateCommand<object>(owner.ClearAction, CanRun);
@@ -164,13 +210,6 @@ namespace SlimViews
 
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
 
-
-            ApplyFilter = new DelegateCommand<string>(owner.ApplyFilterAction, CanRun);
-            ApplyTexture = new DelegateCommand<string>(owner.ApplyTextureAction, CanRun);
-
-            Brighten = new DelegateCommand<string>(owner.BrightenAction, CanRun);
-            Darken = new DelegateCommand<string>(owner.DarkenAction, CanRun);
-
             ThumbImageClicked = new DelegateCommand<ImageEventArgs>(owner.ThumbImageClickedAction, CanRun);
             ImageLoaded = new DelegateCommand<object>(owner.ImageLoadedCommandAction, CanRun);
             SelectedPoint = new DelegateCommand<Point>(owner.SelectedPointAction, CanRun);
@@ -181,7 +220,7 @@ namespace SlimViews
             ToolChanged = new DelegateCommand<ImageZoomTools>(owner.ToolChangedAction, CanRun);
 
 
-            // Image mass processing commands with sub Windows
+            // Image mass processing commands or sub Windows
 
             Scale = new DelegateCommand<object>(ScaleWindowAction, CanRun);
             FolderConvert = new DelegateCommand<object>(FolderConvertWindowAction, CanRun);
@@ -194,6 +233,21 @@ namespace SlimViews
             AnalyzerWindow = new DelegateCommand<object>(AnalyzerWindowAction, CanRun);
             GifWindow = new DelegateCommand<object>(GifWindowAction, CanRun);
             Similar = new DelegateCommand<object>(SimilarWindowAction, CanRun);
+
+            // Image processing commands
+
+            Brighten = new DelegateCommand<string>(BrightenAction, CanRun);
+            Darken = new DelegateCommand<string>(DarkenAction, CanRun);
+
+            ApplyFilter = new DelegateCommand<string>(ApplyFilterAction, CanRun);
+            ApplyTexture = new DelegateCommand<string>(ApplyTextureAction, CanRun);
+
+            Mirror = new DelegateCommand<object>(MirrorAction, CanRun);
+            RotateForward = new DelegateCommand<object>(RotateForwardAction, CanRun);
+            RotateBackward = new DelegateCommand<object>(RotateBackwardAction, CanRun);
+
+            Pixelate = new DelegateCommand<object>(PixelateAction, CanRun);
+
         }
     }
 }
