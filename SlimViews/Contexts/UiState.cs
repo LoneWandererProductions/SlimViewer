@@ -1,4 +1,5 @@
 ﻿using CommonControls;
+using ExtendedSystemObjects;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -108,7 +109,21 @@ namespace SlimViews.Contexts
         /// </value>
         internal bool AutoClean { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is thumbs visible.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is thumbs visible; otherwise, <c>false</c>.
+        /// </value>
         internal bool IsThumbsVisible { get; set; } = true;
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is selection empty.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is selection empty; otherwise, <c>false</c>.
+        /// </value>
+        internal bool IsSelectionEmpty => Thumb.Selection.IsNullOrEmpty();
 
         /// <summary>
         /// Gets or sets a value indicating whether [use sub folders].

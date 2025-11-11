@@ -14,14 +14,6 @@ namespace SlimViews
     public static class SlimViewerRegister
     {
         /// <summary>
-        ///     Gets or sets the current folder.
-        /// </summary>
-        /// <value>
-        ///     The current folder.
-        /// </value>
-        internal static string CurrentFolder { get; set; }
-
-        /// <summary>
         ///     Gets or sets the scaling.
         /// </summary>
         /// <value>

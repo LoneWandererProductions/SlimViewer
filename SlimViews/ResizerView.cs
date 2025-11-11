@@ -95,6 +95,20 @@ namespace SlimViews
         private int _width = 100;
 
         /// <summary>
+        /// The current path
+        /// </summary>
+        private string _currentPath;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResizerView"/> class.
+        /// </summary>
+        /// <param name="currentPath">The current path.</param>
+        public ResizerView(string currentPath)
+        {
+            _currentPath = currentPath;
+        }
+
+        /// <summary>
         ///     Gets or sets a value indicating whether this instance is percentages checked.
         /// </summary>
         /// <value>
@@ -278,9 +292,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void OutputAction(object obj)
         {
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
-                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Output = DialogHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
+            if (string.IsNullOrEmpty(_currentPath))
+                _currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Output = DialogHandler.ShowFolder(Path.GetDirectoryName(_currentPath));
         }
 
         /// <summary>
@@ -289,9 +303,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void InputAction(object obj)
         {
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
-                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Input = DialogHandler.ShowFolder(Path.GetDirectoryName(SlimViewerRegister.CurrentFolder));
+            if (string.IsNullOrEmpty(_currentPath))
+                _currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Input = DialogHandler.ShowFolder(Path.GetDirectoryName(_currentPath));
         }
 
         /// <summary>

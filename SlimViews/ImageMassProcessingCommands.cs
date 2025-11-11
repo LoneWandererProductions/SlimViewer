@@ -1,9 +1,7 @@
-﻿using ExtendedSystemObjects;
-using SlimControls;
-using SlimViews.Contexts;
-using System;
+﻿using SlimControls;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace SlimViews
 {
@@ -61,11 +59,16 @@ namespace SlimViews
 
             var dct = new Dictionary<int, string>();
 
-            if (!owner.UiState.Thumb.IsSelectionValid)
+            if (owner.UiState.Thumb.IsSelectionValid)
+            {
                 foreach (var id in owner.UiState.Thumb.Selection.Where(id => owner.FileContext.IsKeyInObserver(id)))
                     dct.Add(id, owner.FileContext.Observer[id]);
+            }
             else
+            {
                 dct = new Dictionary<int, string>(owner.FileContext.Observer);
+            }
+
 
             var rename = new Rename(dct)
             {
@@ -88,7 +91,7 @@ namespace SlimViews
         /// <param name="owner">The owner.</param>
         internal void DuplicateWindow(ImageView owner)
         {
-            var compareWindow = new Compare(owner.UseSubFolders, SlimViewerRegister.CurrentFolder, owner)
+            var compareWindow = new Compare(owner.UseSubFolders, owner.FileContext.CurrentPath, owner)
             {
                 Topmost = true,
                 Owner = owner.UiState.Main
@@ -156,60 +159,17 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Folders the search.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        internal void FolderSearch(ImageView owner)
-        {
-            var searchWindow = new Search(owner.UseSubFolders, SlimViewerRegister.CurrentFolder, owner, owner.Color)
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-            searchWindow.Show();
-        }
-
-        /// <summary>
         /// Resizers the window.
         /// </summary>
         /// <param name="owner">The owner.</param>
         internal void ResizerWindow(ImageView owner)
         {
-            var resizer = new Resizer
+            var resizer = new Resizer(owner.FileContext.CurrentPath)
             {
                 Topmost = true,
                 Owner = owner.UiState.Main
             };
             resizer.Show();
-        }
-
-        /// <summary>
-        /// Analyzers the window.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        internal void AnalyzerWindow(ImageView owner)
-        {
-            var detailWindow = new DetailCompare
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-            detailWindow.Show();
-        }
-
-        /// <summary>
-        /// GIFs the window.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        internal void GifWindow(ImageView owner)
-        {
-            var gifWindow = new Gif
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-            gifWindow.Show();
         }
 
         /// <summary>
@@ -219,7 +179,7 @@ namespace SlimViews
         internal void SimilarWindow(ImageView owner)
         {
             var compareWindow =
-                new Compare(owner.UseSubFolders, SlimViewerRegister.CurrentFolder, owner, owner.Similarity)
+                new Compare(owner.UseSubFolders, owner.FileContext.CurrentPath, owner, owner.Similarity)
                 {
                     Topmost = true,
                     Owner = owner.UiState.Main
@@ -227,6 +187,47 @@ namespace SlimViews
             compareWindow.Show();
 
             SlimViewerRegister.CompareView = true;
+        }
+
+        /// <summary>
+        /// Folders the search.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        internal void FolderSearch(ImageView owner) =>InitDialog<Search>(owner);
+
+        /// <summary>
+        /// Analyzers the window.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        internal void AnalyzerWindow(ImageView owner) =>
+            InitDialog<DetailCompare>(owner);
+
+        /// <summary>
+        /// GIFs the window.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        internal void GifWindow(ImageView owner) => InitDialog<Gif>(owner);
+
+        /// <summary>
+        /// Initializes the dialog.
+        /// </summary>
+        /// <typeparam name="T">Generic Type.</typeparam>
+        /// <param name="owner">The owner.</param>
+        /// <param name="modal">if set to <c>true</c> [modal].</param>
+        /// <returns>Reference to Window</returns>
+        private static T InitDialog<T>(ImageView owner, bool modal = false) where T : Window, new()
+        {
+            var window = new T
+            {
+                Topmost = true,
+                Owner = owner.UiState.Main
+            };
+            if (modal)
+                _ = window.ShowDialog();
+            else
+                window.Show();
+
+            return window;
         }
     }
 }

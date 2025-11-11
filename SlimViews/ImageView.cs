@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
  * FILE:        SlimViews/ImageView.cs
@@ -28,8 +29,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -777,7 +776,11 @@ namespace SlimViews
             config.MainAutoPlayGif = UiState.ImageZoomControl.AutoplayGifImage;
 
             Config.SetConfig(config);
-            if (AutoClean) CleanTempAction(true);
+            if (AutoClean)
+            {
+                var file = new FileProcessingCommands();
+                file.CleanTempFolder(true);
+            }
 
             Application.Current.Shutdown();
         }
@@ -788,11 +791,11 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void OpenAction(object obj)
         {
-            var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
+            var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, FileContext.CurrentPath);
 
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
-            SlimViewerRegister.CurrentFolder = pathObj.Folder;
+            FileContext.CurrentPath = pathObj.Folder;
 
             //handle cbz files
             if (string.Equals(pathObj.Extension, ViewResources.CbzExt, StringComparison.OrdinalIgnoreCase))
@@ -823,7 +826,7 @@ namespace SlimViews
         internal void OpenCbzAction(object obj)
         {
             var pathObj =
-                DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, SlimViewerRegister.CurrentFolder);
+                DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, FileContext.CurrentPath);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -840,7 +843,7 @@ namespace SlimViews
         internal void OpenCifAction(object obj)
         {
             var pathObj =
-                DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, SlimViewerRegister.CurrentFolder);
+                DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, FileContext.CurrentPath);
 
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
@@ -857,49 +860,6 @@ namespace SlimViews
             FileName = Path.GetFileName(FileContext.FilePath);
             //set Infos
             Information = ViewResources.BuildImageInformation(FileContext.FilePath, FileName, Bmp);
-        }
-
-        /// <summary>
-        ///     Convert the cif Format.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void ConvertCifAction(object obj)
-        {
-            var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
-
-            if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
-
-            if (CompressCif) Image.CustomImageFormat.GenerateCifCompressedFromBitmap(Image.Bitmap, pathObj.FilePath);
-            else Image.CustomImageFormat.GenerateBitmapToCifFile(Image.Bitmap, pathObj.FilePath);
-        }
-
-        /// <summary>
-        ///     Saves the picture.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void SaveAction(object obj)
-        {
-            if (Bmp == null) return;
-
-            var btm = Bmp.ToBitmap();
-
-            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpen, SlimViewerRegister.CurrentFolder);
-
-            if (pathObj == null) return;
-
-            if (string.Equals(pathObj.FilePath, FileContext.FilePath, StringComparison.OrdinalIgnoreCase))
-                _ = FileHandleDelete.DeleteFile(FileContext.FilePath);
-
-            try
-            {
-                var check = SaveImage(pathObj.FilePath, pathObj.Extension, btm);
-                if (!check) _ = MessageBox.Show(ViewResources.ErrorCouldNotSaveFile);
-            }
-            catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(SaveAction)));
-            }
         }
 
         /// <summary>
@@ -931,109 +891,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Deletes the Image.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void DeleteAction(object obj)
-        {
-            if (!Observer.ContainsKey(FileContext.CurrentId) && UiState.Thumb.Selection.IsNullOrEmpty()) return;
-
-            if (!UiState.Thumb.Selection.IsNullOrEmpty())
-            {
-                var count = 0;
-                foreach (var id in UiState.Thumb.Selection)
-                    try
-                    {
-                        var check = FileHandleSafeDelete.DeleteFile(Observer[id]);
-
-                        //decrease File Count
-                        if (Count > 0 && check) Count--;
-                        if (check) count++;
-                    }
-                    catch (FileHandlerException ex)
-                    {
-                        Trace.WriteLine(ex);
-                        _ = MessageBox.Show(ex.ToString(),
-                            string.Concat(ViewResources.ErrorMessage, nameof(DeleteAction)));
-                    }
-
-                LoadThumbs(SlimViewerRegister.CurrentFolder);
-
-                _ = MessageBox.Show(string.Concat(ViewResources.MessageCount, count),
-                    ViewResources.MessageSuccess, MessageBoxButton.OK);
-            }
-            else
-            {
-                Bmp = null;
-                Image.Bitmap = null;
-                GifPath = null;
-                FileContext.GifPath = null;
-
-                try
-                {
-                    var check = FileHandleSafeDelete.DeleteFile(Observer[FileContext.CurrentId]);
-
-                    //decrease File Count
-                    if (Count > 0 && check) Count--;
-                }
-                catch (FileHandlerException ex)
-                {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(),
-                        string.Concat(ViewResources.ErrorMessage, nameof(DeleteAction)));
-                }
-
-                UiState.Thumb.RemoveSingleItem(FileContext.CurrentId);
-
-                NextAction(this);
-            }
-        }
-
-        /// <summary>
-        ///     Renames the Image.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal async Task RenameAction(object obj)
-        {
-            if (!IsImageActive) return;
-
-            if (!Observer.TryGetValue(FileContext.CurrentId, out string? file)) return;
-
-            if (!File.Exists(file)) return;
-
-            var folder = Path.GetDirectoryName(file);
-            if (string.IsNullOrEmpty(folder)) return;
-
-            var filePath = Path.Combine(folder, FileName);
-
-            // Check if we have a duplicate; if true, shall we overwrite?
-            if (File.Exists(filePath))
-            {
-                var dialogResult = await Task.Run(() =>
-                    _ = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
-                        ViewResources.CaptionFileAlreadyExists,
-                        MessageBoxButton.YesNo));
-
-                if (dialogResult == MessageBoxResult.No) return;
-            }
-
-            try
-            {
-                var check = await FileHandleRename.RenameFile(file, filePath);
-                if (!check) return;
-            }
-            catch (FileHandlerException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(ViewResources.ErrorMessage, nameof(RenameAction)));
-            }
-
-            Observer[FileContext.CurrentId] = filePath;
-            GenerateView(filePath);
-        }
-
-        /// <summary>
         ///     Refresh the Control
         /// </summary>
         /// <param name="obj">The object.</param>
@@ -1044,13 +901,13 @@ namespace SlimViews
             Bmp = null;
             GifPath = null;
 
-            if (!Directory.Exists(SlimViewerRegister.CurrentFolder))
+            if (!Directory.Exists(FileContext.CurrentPath))
             {
                 Observer = null;
                 return;
             }
 
-            LoadThumbs(SlimViewerRegister.CurrentFolder);
+            LoadThumbs(FileContext.CurrentPath);
         }
 
         /// <summary>
@@ -1069,7 +926,7 @@ namespace SlimViews
         internal void FolderAction(object obj)
         {
             //get target Folder
-            var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder);
+            var path = DialogHandler.ShowFolder(FileContext.CurrentPath);
 
             if (!Directory.Exists(path)) return;
 
@@ -1110,142 +967,12 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void ExplorerAction(object obj)
         {
-            if (!Directory.Exists(SlimViewerRegister.CurrentFolder)) return;
+            if (!Directory.Exists(FileContext.CurrentPath)) return;
 
             var argument = !File.Exists(FileContext.FilePath)
-                ? SlimViewerRegister.CurrentFolder
+                ? FileContext.CurrentPath
                 : string.Concat(ViewResources.Select, FileContext.FilePath, ViewResources.Close);
             _ = Process.Start(ViewResources.Explorer, argument);
-        }
-
-        /// <summary>
-        ///     Cleans the temporary Folder action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void CleanTempAction(object obj)
-        {
-            var check = false;
-
-            if (obj != null) check = (bool)obj;
-
-            var root = Path.Combine(Directory.GetCurrentDirectory(), ViewResources.TempFolder);
-
-            try
-            {
-                _ = FileHandleDelete.DeleteAllContents(root);
-            }
-            catch (FileHandlerException ex)
-            {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(ViewResources.ErrorMessage, nameof(CleanTempAction)));
-                return;
-            }
-
-            if (!check)
-                _ = MessageBox.Show(ViewResources.StatusDone, ViewResources.CaptionDone,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Exclamation);
-        }
-
-        /// <summary>
-        ///     Moves selected Image
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void MoveAction(object obj)
-        {
-            if (!File.Exists(FileName) && UiState.Thumb.Selection.IsNullOrEmpty()) return;
-            //Initiate Folder
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
-                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            //get target Folder
-            var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
-
-            if (!UiState.Thumb.Selection.IsNullOrEmpty())
-            {
-                var count = 0;
-
-                foreach (var id in UiState.Thumb.Selection)
-                {
-                    if (!Directory.Exists(path)) return;
-
-                    var fileName = Observer[id];
-                    if (!File.Exists(fileName)) continue;
-
-                    //Copy Single File
-                    var info = new FileInfo(fileName);
-                    var target = Path.Combine(path, info.Name);
-
-                    if (File.Exists(target))
-                    {
-                        var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
-                            ViewResources.CaptionFileAlreadyExists,
-                            MessageBoxButton.YesNo);
-                        if (dialogResult == MessageBoxResult.No) continue;
-                    }
-
-                    info.MoveTo(target, true);
-                    count++;
-                }
-
-                _ = MessageBox.Show(string.Concat(ViewResources.MessageMoved, count),
-                    ViewResources.MessageSuccess, MessageBoxButton.OK);
-            }
-            else
-            {
-                if (!Directory.Exists(path)) return;
-
-                //Copy Single File
-                var info = new FileInfo(FileName);
-                var target = Path.Combine(path, info.Name);
-
-                if (File.Exists(target))
-                {
-                    var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
-                        ViewResources.CaptionFileAlreadyExists,
-                        MessageBoxButton.YesNo);
-                    if (dialogResult == MessageBoxResult.No) return;
-                }
-
-                info.MoveTo(target, true);
-            }
-        }
-
-        /// <summary>
-        ///     Moves all Images.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void MoveAllAction(object obj)
-        {
-            //Initiate Folder
-            if (string.IsNullOrEmpty(SlimViewerRegister.CurrentFolder))
-                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(UiState.Root);
-
-            //get target Folder
-            var path = DialogHandler.ShowFolder(SlimViewerRegister.CurrentFolder ?? Directory.GetCurrentDirectory());
-
-            if (!Directory.Exists(path)) return;
-
-            if (FileContext.IsFilesEmpty) return;
-
-            var lst = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix,
-                UiState.UseSubFolders);
-
-            if (lst == null) return;
-
-            var i = FileContext.Files.Intersect(lst);
-
-            if (i.Any())
-            {
-                var dialogResult = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
-                    ViewResources.CaptionFileAlreadyExists,
-                    MessageBoxButton.YesNo);
-                if (dialogResult == MessageBoxResult.No) return;
-            }
-
-            //Move all Contents from this folder into another
-            _ = FileHandleCut.CutFiles(FileContext.Files, path, false);
         }
 
         /// <summary>
@@ -1276,7 +1003,7 @@ namespace SlimViews
 
             try
             {
-                SlimViewerRegister.CurrentFolder = Path.GetDirectoryName(files.ToList()[0]);
+                FileContext.CurrentPath = Path.GetDirectoryName(files.ToList()[0]);
             }
             catch (ArgumentException ex)
             {
@@ -1308,17 +1035,14 @@ namespace SlimViews
         public void ChangeImage(string? filePath)
         {
             //check if it exists
-            if (!File.Exists(filePath)) return;
-
-            //check if we even handle this file type
-            if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
+            if (!CanLoadFile(filePath)) return;
 
             //load into the Image Viewer
             GenerateView(filePath);
 
             // load all other Pictures in the Folder
             var folder = Path.GetDirectoryName(filePath);
-            if (folder == SlimViewerRegister.CurrentFolder) return;
+            if (folder == FileContext.CurrentPath) return;
 
             LoadThumbs(folder, filePath);
 
@@ -1335,17 +1059,14 @@ namespace SlimViews
         internal void ChangeImage(IEnumerable<string?> files, string? filePath, string info)
         {
             //check if it exists
-            if (!File.Exists(filePath)) return;
-
-            //check if we even handle this file type
-            if (!ImagingResources.Appendix.Any(filePath.EndsWith)) return;
+            if (!CanLoadFile(filePath)) return;
 
             var lst = files.ToList();
 
             _ = GenerateThumbView(lst);
 
             //load into the Image Viewer
-            GenerateImage(filePath);
+            GenerateImageAsync(filePath);
 
             //set the Id of the loaded Image
             FileContext.CurrentId = FileContext.CurrentIdGetIdByFilePath(filePath);
@@ -1364,7 +1085,7 @@ namespace SlimViews
 
             UiState.UseSubFolders = true;
             var folder = ImageProcessor.UnpackFolder(pathObj.FilePath, pathObj.FileNameWithoutExt);
-            if (!string.IsNullOrEmpty(folder)) SlimViewerRegister.CurrentFolder = folder;
+            if (!string.IsNullOrEmpty(folder)) FileContext.CurrentPath = folder;
             var file = ImageProcessor.UnpackFile(folder);
 
             if (file == null) return;
@@ -1377,7 +1098,7 @@ namespace SlimViews
         ///     Generates the view.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        private void GenerateView(string? filePath)
+        internal void GenerateView(string? filePath)
         {
             var info = FileHandleSearch.GetFileDetails(filePath);
 
@@ -1385,19 +1106,19 @@ namespace SlimViews
             {
                 Bmp = null;
                 GifPath = null;
-                LoadThumbs(SlimViewerRegister.CurrentFolder);
+                LoadThumbs(FileContext.CurrentPath);
                 return;
             }
 
             //load into the Image Viewer
-            GenerateImage(filePath);
+            GenerateImageAsync(filePath);
         }
 
         /// <summary>
         ///     Generates the image.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        private void GenerateImage(string? filePath)
+        private async Task GenerateImageAsync(string? filePath)
         {
             try
             {
@@ -1416,7 +1137,8 @@ namespace SlimViews
                 }
                 else
                 {
-                    Image.Bitmap = ImageProcessor.Render.GetOriginalBitmap(filePath);
+                    Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
+                    Bmp = Image.BitmapSource; // now safe on UI thread
 
                     //reset gif Image
                     GifPath = null;
@@ -1435,7 +1157,7 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),
-                    string.Concat(ViewResources.ErrorMessage, nameof(GenerateImage)));
+                    string.Concat(ViewResources.ErrorMessage, nameof(GenerateImageAsync)));
             }
         }
 
@@ -1444,7 +1166,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="folder">The folder.</param>
         /// <param name="filePath">The file path, optional.</param>
-        private void LoadThumbs(string folder, string? filePath = null)
+        internal void LoadThumbs(string folder, string? filePath = null)
         {
             GenerateThumbView(folder);
 
@@ -1469,7 +1191,7 @@ namespace SlimViews
         private void GenerateThumbView(string folder)
         {
             //initiate Basic values
-            SlimViewerRegister.CurrentFolder = folder;
+            FileContext.CurrentPath = folder;
             StatusImage = string.Empty;
             StatusImage = UiState.RedIconPath;
 
@@ -1494,7 +1216,7 @@ namespace SlimViews
 
             FileContext.Files = FileContext.FilesSorted;
 
-            _ = GenerateThumbView(FileContext.Files);
+            _ = GenerateThumbView(FileContext.Files).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1557,14 +1279,28 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Thumbnails are loaded.
+        /// Thumbnails are loaded.
         /// </summary>
+        /// <param name="obj">The object.</param>
         public void ImageLoadedCommandAction(object obj)
         {
             //if (Status == null) return;
             if (string.IsNullOrEmpty(StatusImage)) return;
 
             StatusImage = UiState.GreenIconPath;
+        }
+
+        /// <summary>
+        /// Determines whether this instance [can load file] the specified path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance [can load file] the specified path; otherwise, <c>false</c>.
+        /// </returns>
+        private bool CanLoadFile(string? path)
+        {
+            return !string.IsNullOrEmpty(path) && File.Exists(path) &&
+                   ImagingResources.Appendix.Any(path.EndsWith);
         }
     }
 }

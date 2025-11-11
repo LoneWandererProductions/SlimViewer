@@ -1,116 +1,129 @@
 ﻿using Imaging;
 using SlimControls;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SlimViews
 {
+    /// <summary>
+    ///     Provides command-based access to various image processing operations.
+    /// </summary>
     internal class ImageProcessingCommands
     {
         /// <summary>
-        ///     Gets the render.
+        ///     Gets the shared image renderer.
         /// </summary>
-        /// <value>
-        ///     The render.
-        /// </value>
         internal static ImageRender Render { get; } = new();
 
         /// <summary>
-        /// Applies the filter.
+        ///     Applies the specified filter to the owner's image.
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="filterName">Name of the filter.</param>
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="filterName">The name of the filter to apply.</param>
         internal void ApplyFilter(ImageView owner, string filterName)
         {
-            var filter = Translator.GetFilterFromString(filterName);
+            if (owner?.Image?.Bitmap == null || string.IsNullOrWhiteSpace(filterName))
+                return;
 
-            var btm = ImageProcessor.Filter(owner.Image.Bitmap, filter);
+            var filter = Translator.GetFilterFromString(filterName);
+            using var btm = ImageProcessor.Filter(owner.Image.Bitmap, filter);
             owner.Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
-        /// Applies the texture.
+        ///     Applies a texture overlay or effect to the owner's image.
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="textureName">The name of the texture to apply.</param>
         internal void ApplyTexture(ImageView owner, string textureName)
         {
+            if (owner?.Image?.Bitmap == null || string.IsNullOrWhiteSpace(textureName))
+                return;
+
             var texture = Translator.GetTextureFromString(textureName);
-
-            var btm = ImageProcessor.Texture(owner.Image.Bitmap, texture);
+            using var btm = ImageProcessor.Texture(owner.Image.Bitmap, texture);
             owner.Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
-        /// Brigthens the specified owner.
+        ///     Brightens the owner's image.
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
-        internal void Brigthen(ImageView owner, string obj)
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="obj">Unused parameter (reserved for future use).</param>
+        internal void Brighten(ImageView owner, string obj)
         {
-            var btm = ImageProcessor.Brighten(owner.Image.Bitmap);
+            if (owner?.Image?.Bitmap == null)
+                return;
+
+            using var btm = ImageProcessor.Brighten(owner.Image.Bitmap);
             owner.Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
-        /// Darkens the specified owner.
+        ///     Darkens the owner's image.
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void Darken(ImageView owner, string obj)
         {
-            var btm = ImageProcessor.Darken(owner.Image.Bitmap);
+            if (owner?.Image?.Bitmap == null)
+                return;
+
+            using var btm = ImageProcessor.Darken(owner.Image.Bitmap);
             owner.Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
-        /// Mirrors the specified owner.
+        ///     Mirrors the owner's image horizontally.
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void Mirror(ImageView owner, object obj)
         {
-            if (owner.Image.Bitmap == null) return;
+            if (owner?.Image?.Bitmap == null)
+                return;
 
             owner.Image.Bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
             owner.Bmp = owner.Image.BitmapSource;
         }
 
         /// <summary>
-        /// Pixelates the specified owner.
+        ///     Pixelates the owner's image based on the view's pixel width.
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void Pixelate(ImageView owner, object obj)
         {
-            var btm = ImageProcessor.Pixelate(owner.Image.Bitmap, owner.PixelWidth);
+            if (owner?.Image?.Bitmap == null)
+                return;
+
+            using var btm = ImageProcessor.Pixelate(owner.Image.Bitmap, owner.PixelWidth);
             owner.Bmp = btm.ToBitmapImage();
         }
 
         /// <summary>
-        /// Rotates the backward.
+        ///     Rotates the owner's image by -90 degrees (counterclockwise).
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void RotateBackward(ImageView owner, object obj)
         {
-            {
-                owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, -90);
-                owner.Bmp = owner.Image.BitmapSource;
-            }
+            if (owner?.Image?.Bitmap == null)
+                return;
+
+            owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, -90);
+            owner.Bmp = owner.Image.BitmapSource;
         }
 
         /// <summary>
-        /// Rotates the forward.
+        ///     Rotates the owner's image by +90 degrees (clockwise).
         /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
+        /// <param name="owner">The image view to modify.</param>
+        /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void RotateForward(ImageView owner, object obj)
         {
+            if (owner?.Image?.Bitmap == null)
+                return;
+
             owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, 90);
             owner.Bmp = owner.Image.BitmapSource;
         }

@@ -21,9 +21,10 @@ namespace SlimViews
         /// <summary>
         ///     Initializes a new instance of the <see cref="Resizer" /> class.
         /// </summary>
-        public Resizer()
+        public Resizer(string currentPath)
         {
             InitializeComponent();
+            DataContext = new ResizerView(currentPath);
         }
     }
 }

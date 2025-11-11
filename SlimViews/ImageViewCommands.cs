@@ -1,14 +1,27 @@
 ﻿#nullable enable
 using CommonControls;
 using Imaging;
-using Point = System.Windows.Point;
-using ViewModel;
+using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using ViewModel;
+using Point = System.Windows.Point;
 
 namespace SlimViews
 {
-    public class ImageViewCommands
+    /// <summary>
+    /// Provides all image view related commands and links them to the owning view and service classes.
+    /// This class is responsible for command creation, binding, and routing actions to the appropriate services.
+    /// </summary>
+    public partial class ImageViewCommands
     {
+        private readonly ImageView _owner;
+        private readonly ImageMassProcessingCommands _imageMassService = new();
+        private readonly ImageProcessingCommands _imageService = new();
+        private readonly FileProcessingCommands _fileService = new();
+
+        #region Commands
+
         public ICommand Close { get; }
         public ICommand OpenCbz { get; }
         public ICommand Open { get; }
@@ -54,162 +67,50 @@ namespace SlimViews
         public ICommand Previous { get; }
         public ICommand ToolChanged { get; }
 
-        private readonly ImageMassProcessingCommands _imageMassService = new();
-
-        private readonly ImageProcessingCommands _imageService = new();
-
-        /// <summary>
-        /// The owner
-        /// </summary>
-        private readonly ImageView _owner;
-
-        /// <summary>
-        /// Scales the window action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void ScaleWindowAction(object? _) => _imageMassService.ScaleWindow(_owner);
-
-        /// <summary>
-        /// Folders the convert window action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void FolderConvertWindowAction(object? _) => _imageMassService.FolderConvertWindow(_owner);
-
-
-        /// <summary>
-        /// Folders the rename window action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void FolderRenameWindowAction(object? _) => _imageMassService.FolderRenameWindow(_owner);
-
-
-        /// <summary>
-        /// Duplicates the window action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void DuplicateWindowAction(object? _) => _imageMassService.DuplicateWindow(_owner);
-
-        /// <summary>
-        /// Similars the window action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void SimilarWindowAction(object? _) => _imageMassService.SimilarWindow(_owner);
-
-        /// <summary>
-        /// Folders the search action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void FolderSearchAction(object? _) => _imageMassService.FolderSearch(_owner);
-
-        /// <summary>
-        /// Resizers the window action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void ResizerWindowAction(object? _) => _imageMassService.ResizerWindow(_owner);
-
-        /// <summary>
-        /// Analyzers the window action.
-        /// </summary>
-        /// <param name="_">The empty parameter</param>
-        public void AnalyzerWindowAction(object? _) => _imageMassService.AnalyzerWindow(_owner);
-
-        /// <summary>
-        /// GIFs the window action.
-        /// </summary>
-        /// <param name="_">The .</param>
-        public void GifWindowAction(object? _) => _imageMassService.GifWindow(_owner);
-
-        /// <summary>
-        /// Filters the configuration window action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void FilterConfigWindowAction(string? obj) => _imageMassService.FilterConfigWindow(_owner, obj);
-
-        /// <summary>
-        /// Textures the configuration window action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void TextureConfigWindowAction(string? obj) => _imageMassService.TextureConfigWindow(_owner, obj);
-   
-        /// <summary>
-        /// Brightens the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void BrightenAction(string? obj) => _imageService.Brigthen(_owner, obj);
-
-        /// <summary>
-        /// Darkens the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void DarkenAction(string? obj) => _imageService.Darken(_owner, obj);
-
-        /// <summary>
-        /// Applies the filter action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void ApplyFilterAction(string? obj) => _imageService.ApplyFilter(_owner, obj);
-
-        /// <summary>
-        /// Applies the texture action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void ApplyTextureAction(string? obj) => _imageService.ApplyTexture(_owner, obj);
-
-        /// <summary>
-        /// Mirrors the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void MirrorAction(object? obj) => _imageService.Mirror(_owner, obj);
-
-        /// <summary>
-        /// Rotates the forward action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void RotateForwardAction(object? obj) => _imageService.RotateForward(_owner, obj);
-
-        /// <summary>
-        /// Rotates the backward action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void RotateBackwardAction(object? obj) => _imageService.RotateBackward(_owner, obj);
-
-        /// <summary>
-        /// Pixelates the action.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        public void PixelateAction(object? obj) => _imageService.Pixelate(_owner, obj);
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageViewCommands"/> class.
         /// </summary>
-        /// <param name="owner">The owner.</param>
+        /// <param name="owner">The owning <see cref="ImageView"/> instance.</param>
         public ImageViewCommands(ImageView owner)
         {
             _owner = owner;
 
-            // Generic helper that adapts automatically to all command types.
+            // Uniform CanExecute
             bool CanRun<T>(T? arg) => owner.CanRun(arg);
 
+            // ---- Helpers (explicit names matching parameter patterns) ----
+
+            // No-parameter on service: Action<ImageView>
+            DelegateCommand<object> Make_NoParamCmd(Action<ImageView> svcAction) =>
+                new(_ => svcAction(owner), _ => CanRun(_));
+
+            // Service that expects (ImageView, object?) -> use object command parameter
+            DelegateCommand<object> Make_ObjParamCmd(Action<ImageView, object?> svcAction) =>
+                new(p => svcAction(owner, p), p => CanRun(p));
+
+            // Service that expects (ImageView, string?) -> use string-typed command
+            DelegateCommand<string> Make_StringParamCmd(Action<ImageView, string?> svcAction) =>
+                new(s => svcAction(owner, s), s => CanRun(s));
+
+            // Service that expects (ImageView, SelectionFrame) etc. -- handled directly where needed
+            // Bool? parameter commands (for CleanTempFolder)
+            DelegateCommand<bool?> Make_BoolParamCmd(Action<bool?> action) =>
+                new(action, b => CanRun(b));
+
+            // Async commands which take object? parameter and return Task (e.g. Rename)
+            AsyncDelegateCommand<object> Make_AsyncObjCmd(Func<object?, Task> asyncAction) =>
+                new(asyncAction, p => CanRun(p));
+
+            // ---- UI / direct owner commands ----
             Close = new DelegateCommand<object>(owner.CloseAction, CanRun);
             OpenCbz = new DelegateCommand<object>(owner.OpenCbzAction, CanRun);
             Open = new DelegateCommand<object>(owner.OpenAction, CanRun);
-            Save = new DelegateCommand<object>(owner.SaveAction, CanRun);
-            Delete = new DelegateCommand<object>(owner.DeleteAction, CanRun);
             Refresh = new DelegateCommand<object>(owner.RefreshAction, CanRun);
-            Rename = new AsyncDelegateCommand<object>(owner.RenameAction, CanRun);
-
             Folder = new DelegateCommand<object>(owner.FolderAction, CanRun);
-            Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
-
             Clear = new DelegateCommand<object>(owner.ClearAction, CanRun);
-            CleanTempFolder = new DelegateCommand<object>(owner.CleanTempAction, CanRun);
-            Move = new DelegateCommand<object>(owner.MoveAction, CanRun);
-            MoveAll = new DelegateCommand<object>(owner.MoveAllAction, CanRun);
             OpenCif = new DelegateCommand<object>(owner.OpenCifAction, CanRun);
-            ConvertCif = new DelegateCommand<object>(owner.ConvertCifAction, CanRun);
-
-            ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
-
             ThumbImageClicked = new DelegateCommand<ImageEventArgs>(owner.ThumbImageClickedAction, CanRun);
             ImageLoaded = new DelegateCommand<object>(owner.ImageLoadedCommandAction, CanRun);
             SelectedPoint = new DelegateCommand<Point>(owner.SelectedPointAction, CanRun);
@@ -218,36 +119,51 @@ namespace SlimViews
             Next = new DelegateCommand<object>(owner.NextAction, CanRun);
             Previous = new DelegateCommand<object>(owner.PreviousAction, CanRun);
             ToolChanged = new DelegateCommand<ImageZoomTools>(owner.ToolChangedAction, CanRun);
+            Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
+            ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
 
+            // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
+            Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);
+            FolderConvert = Make_NoParamCmd(_imageMassService.FolderConvertWindow);
+            FolderRename = Make_NoParamCmd(_imageMassService.FolderRenameWindow);
+            Duplicate = Make_NoParamCmd(_imageMassService.DuplicateWindow);
+            Similar = Make_NoParamCmd(_imageMassService.SimilarWindow);
+            FolderSearch = Make_NoParamCmd(_imageMassService.FolderSearch);
+            ResizerWindow = Make_NoParamCmd(_imageMassService.ResizerWindow);
+            AnalyzerWindow = Make_NoParamCmd(_imageMassService.AnalyzerWindow);
+            GifWindow = Make_NoParamCmd(_imageMassService.GifWindow);
 
-            // Image mass processing commands or sub Windows
+            // FilterConfig and TextureConfig previously accepted a string? parameter in original
+            FilterConfig = Make_StringParamCmd(_imageMassService.FilterConfigWindow);
+            TextureConfig = Make_StringParamCmd(_imageMassService.TextureConfigWindow);
 
-            Scale = new DelegateCommand<object>(ScaleWindowAction, CanRun);
-            FolderConvert = new DelegateCommand<object>(FolderConvertWindowAction, CanRun);
-            FolderRename = new DelegateCommand<object>(FolderRenameWindowAction, CanRun);
-            Duplicate = new DelegateCommand<object>(DuplicateWindowAction, CanRun);
-            FilterConfig = new DelegateCommand<string>(FilterConfigWindowAction, CanRun);
-            TextureConfig = new DelegateCommand<string>(TextureConfigWindowAction, CanRun);
-            FolderSearch = new DelegateCommand<object>(FolderSearchAction, CanRun);
-            ResizerWindow = new DelegateCommand<object>(ResizerWindowAction, CanRun);
-            AnalyzerWindow = new DelegateCommand<object>(AnalyzerWindowAction, CanRun);
-            GifWindow = new DelegateCommand<object>(GifWindowAction, CanRun);
-            Similar = new DelegateCommand<object>(SimilarWindowAction, CanRun);
+            // ---- Image processing (service methods that take owner + param) ----
+            Brighten = Make_StringParamCmd(_imageService.Brighten);
+            Darken = Make_StringParamCmd(_imageService.Darken);
 
-            // Image processing commands
+            ApplyFilter = Make_StringParamCmd(_imageService.ApplyFilter);
+            ApplyTexture = Make_StringParamCmd(_imageService.ApplyTexture);
 
-            Brighten = new DelegateCommand<string>(BrightenAction, CanRun);
-            Darken = new DelegateCommand<string>(DarkenAction, CanRun);
+            // Many image ops accept (ImageView, object?) in your original code
+            Mirror = Make_ObjParamCmd(_imageService.Mirror);
+            RotateForward = Make_ObjParamCmd(_imageService.RotateForward);
+            RotateBackward = Make_ObjParamCmd(_imageService.RotateBackward);
+            Pixelate = Make_ObjParamCmd(_imageService.Pixelate);
 
-            ApplyFilter = new DelegateCommand<string>(ApplyFilterAction, CanRun);
-            ApplyTexture = new DelegateCommand<string>(ApplyTextureAction, CanRun);
+            // ---- File operations (service methods generally accept ImageView + param) ----
+            Delete = Make_ObjParamCmd(_fileService.Delete);
+            Move = Make_ObjParamCmd(_fileService.Move);
+            MoveAll = Make_ObjParamCmd(_fileService.MoveAll);
 
-            Mirror = new DelegateCommand<object>(MirrorAction, CanRun);
-            RotateForward = new DelegateCommand<object>(RotateForwardAction, CanRun);
-            RotateBackward = new DelegateCommand<object>(RotateBackwardAction, CanRun);
+            // Rename is asynchronous in your original; pass the owner in the lambda to call the service method
+            Rename = Make_AsyncObjCmd(obj => _fileService.Rename(owner, obj));
 
-            Pixelate = new DelegateCommand<object>(PixelateAction, CanRun);
+            ConvertCif = Make_ObjParamCmd(_fileService.ConvertCif);
 
+            // CleanTempFolder expects bool? (original: CleanTempAction(bool? obj) => _fileService.CleanTempFolder(obj))
+            CleanTempFolder = Make_BoolParamCmd(_fileService.CleanTempFolder);
+
+            Save = Make_ObjParamCmd(_fileService.Save);
         }
     }
 }

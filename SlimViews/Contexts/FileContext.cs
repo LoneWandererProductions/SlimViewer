@@ -46,8 +46,6 @@ namespace SlimViews.Contexts
         /// </value>
         internal int CurrentId { get; set; }
 
-        internal string CurrentName { get; set; }
-
         internal string CurrentPath { get; set; }
 
         internal string GifPath { get; set; }
