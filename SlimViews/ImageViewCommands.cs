@@ -151,7 +151,7 @@ namespace SlimViews
             Pixelate = Make_ObjParamCmd(_imageService.Pixelate);
 
             // ---- File operations (service methods generally accept ImageView + param) ----
-            Delete = Make_ObjParamCmd(_fileService.Delete);
+            Delete = Make_AsyncObjCmd(obj => _fileService.DeleteAsync(owner, obj));
             Move = Make_ObjParamCmd(_fileService.Move);
             MoveAll = Make_ObjParamCmd(_fileService.MoveAll);
 

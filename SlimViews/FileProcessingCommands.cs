@@ -80,7 +80,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view owner.</param>
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
-        internal void Delete(ImageView owner, object obj)
+        internal async Task DeleteAsync(ImageView owner, object obj)
         {
             if (owner == null || owner.UiState == null)
                 return;
@@ -102,7 +102,7 @@ namespace SlimViews
                     if (!owner.Observer.TryGetValue(id, out var filePath))
                         continue;
 
-                    var deleted = FileHandleSafeDelete.DeleteFile(filePath);
+                    var deleted = await FileHandleSafeDelete.DeleteFile(filePath);
                     if (deleted)
                     {
                         deletedCount++;
@@ -114,7 +114,7 @@ namespace SlimViews
                 {
                     Trace.WriteLine(ex);
                     _ = MessageBox.Show(ex.ToString(),
-                        $"{ViewResources.ErrorMessage}{nameof(Delete)}");
+                        $"{ViewResources.ErrorMessage}{nameof(DeleteAsync)}");
                 }
             }
 
