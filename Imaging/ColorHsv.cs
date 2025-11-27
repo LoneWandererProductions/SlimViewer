@@ -97,9 +97,7 @@ namespace Imaging
         /// <summary>
         /// Prevents a default instance of the <see cref="ColorHsv"/> class from being created.
         /// </summary>
-        private ColorHsv()
-        {
-        } // internal factory use
+        private ColorHsv() { } // internal factory use
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorHsv"/> class.
@@ -128,13 +126,7 @@ namespace Imaging
         {
             ValidateRgb(r, g, b, a);
 
-            var hsv = new ColorHsv
-            {
-                R = r,
-                G = g,
-                B = b,
-                A = a
-            };
+            var hsv = new ColorHsv { R = r, G = g, B = b, A = a };
 
             hsv.ToHsv();
             return hsv;
@@ -152,13 +144,7 @@ namespace Imaging
         {
             ValidateHsv(h, s, v, a);
 
-            var hsv = new ColorHsv
-            {
-                H = h,
-                S = s,
-                V = v,
-                A = a
-            };
+            var hsv = new ColorHsv { H = h, S = s, V = v, A = a };
 
             hsv.ToRgb();
             return hsv;

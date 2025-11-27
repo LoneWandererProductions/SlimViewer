@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 
@@ -74,8 +75,8 @@ namespace RenderEngine
         /// The <see cref="System.Byte"/>.
         /// </value>
         /// <param name="index">The index.</param>
-        /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        /// <returns>Data at index</returns>
+        /// <exception cref="ArgumentOutOfRangeException">index</exception>
         public byte this[int index]
         {
             get
@@ -87,7 +88,20 @@ namespace RenderEngine
             }
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator<byte> GetEnumerator() => ((IEnumerable<byte>)BufferSpan.ToArray()).GetEnumerator();
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
@@ -105,11 +119,29 @@ namespace RenderEngine
             _buffer = Marshal.AllocHGlobal(width * height * BytesPerPixel);
         }
 
+
+        /// <summary>
+        ///     Sets the pixel color at the specified coordinates using a System.Drawing.Color.
+        /// </summary>
+        /// <param name="x">X coordinate (0-based)</param>
+        /// <param name="y">Y coordinate (0-based)</param>
+        /// <param name="color">The color to set</param>
+        public void SetPixel(int x, int y, System.Drawing.Color color)
+        {
+            SetPixel(x, y, color.R, color.G, color.B, color.A);
+        }
+
         /// <summary>
         /// Writes a pixel at (x,y) directly into the buffer.
         /// No bounds checks for performance (caller must validate coordinates).
         /// Stored in BGRA order.
         /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
         public void SetPixel(int x, int y, byte r, byte g, byte b, byte a = 255)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height) return;
@@ -124,14 +156,19 @@ namespace RenderEngine
         }
 
         /// <summary>
-        ///     Sets the pixel color at the specified coordinates using a System.Drawing.Color.
+        /// Sets the pixel unsafe.
         /// </summary>
-        /// <param name="x">X coordinate (0-based)</param>
-        /// <param name="y">Y coordinate (0-based)</param>
-        /// <param name="color">The color to set</param>
-        public void SetPixel(int x, int y, Color color)
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        public void SetPixelUnsafe(int x, int y, byte r, byte g, byte b, byte a = 255)
         {
-            SetPixel(x, y, color.R, color.G, color.B, color.A);
+            var offset = (y * Width + x) * BytesPerPixel;
+            var ptr = (byte*)_buffer + offset;
+            ptr[0] = b; ptr[1] = g; ptr[2] = r; ptr[3] = a;
         }
 
         /// <summary>
@@ -355,16 +392,92 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Creates a new <see cref="UnmanagedImageBuffer"/> from a <see cref="Bitmap"/>.
+        /// Converts the bitmap into 32bpp ARGB format.
+        /// </summary>
+        /// <param name="bmp">Source bitmap.</param>
+        /// <returns>A new unmanaged buffer containing the bitmap data.</returns>
+        public static UnmanagedImageBuffer FromBitmap(Bitmap bmp)
+        {
+            var width = bmp.Width;
+            var height = bmp.Height;
+            var buffer = new UnmanagedImageBuffer(width, height);
+
+            var rect = new Rectangle(0, 0, width, height);
+            var bmpData = bmp.LockBits(rect,
+                System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            try
+            {
+                unsafe
+                {
+                    var srcPtr = (byte*)bmpData.Scan0;
+                    var dstSpan = buffer.BufferSpan;
+
+                    for (var y = 0; y < height; y++)
+                    {
+                        var rowOffset = y * width * UnmanagedImageBuffer.BytesPerPixel;
+                        var rowSrc = srcPtr + y * bmpData.Stride;
+
+                        for (var x = 0; x < width; x++)
+                        {
+                            var colOffset = x * UnmanagedImageBuffer.BytesPerPixel;
+
+                            var b = rowSrc[colOffset + 0];
+                            var g = rowSrc[colOffset + 1];
+                            var r = rowSrc[colOffset + 2];
+                            var a = rowSrc[colOffset + 3];
+
+                            var dstIndex = rowOffset + colOffset;
+                            dstSpan[dstIndex + 0] = b;
+                            dstSpan[dstIndex + 1] = g;
+                            dstSpan[dstIndex + 2] = r;
+                            dstSpan[dstIndex + 3] = a;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                bmp.UnlockBits(bmpData);
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
         /// Finalizer (safety net).
         /// Ensures unmanaged memory is released if Dispose() wasn’t called.
         /// </summary>
         ~UnmanagedImageBuffer() => Dispose();
 
+
+        /// <summary>
+        /// Clears the specified buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="a">a.</param>
+        public void Clear(UnmanagedImageBuffer buffer, int a, int r, int g, int b)
+        {
+            var span = BufferSpan;
+            for (var i = 0; i < span.Length; i += BytesPerPixel)
+            {
+                span[i + 0] = (byte)b;
+                span[i + 1] = (byte)g;
+                span[i + 2] = (byte)r;
+                span[i + 3] = (byte)a;
+            }
+        }
+
         /// <summary>
         /// Clears the entire buffer to the given color.
         /// Fast implementation using Span iteration.
         /// </summary>
-        public void Clear(Color color)
+        public void Clear(System.Drawing.Color color)
         {
             var span = BufferSpan;
             for (var i = 0; i < span.Length; i += BytesPerPixel)
@@ -390,18 +503,24 @@ namespace RenderEngine
         public Bitmap ToBitmap()
         {
             var bmp = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var rect = new Rectangle(0, 0, Width, Height);
+            var data = bmp.LockBits(rect, ImageLockMode.WriteOnly, bmp.PixelFormat);
 
-            // Lock bitmap data for fast access
-            var bmpData = bmp.LockBits(
-                new Rectangle(0, 0, Width, Height),
-                System.Drawing.Imaging.ImageLockMode.WriteOnly,
-                bmp.PixelFormat);
+            unsafe
+            {
+                int srcRowSize = Width * BytesPerPixel;
 
-            var dstPtr = (byte*)bmpData.Scan0;
-            var dstSpan = new Span<byte>(dstPtr, Width * Height * BytesPerPixel);
-            BufferSpan.CopyTo(dstSpan);
+                for (int y = 0; y < Height; y++)
+                {
+                    byte* src = (byte*)_buffer + y * srcRowSize;
+                    byte* dst = (byte*)data.Scan0 + y * data.Stride;
 
-            bmp.UnlockBits(bmpData);
+                    // Destination buffer size must match ROW copy size
+                    System.Buffer.MemoryCopy(src, dst, srcRowSize, srcRowSize);
+                }
+            }
+
+            bmp.UnlockBits(data);
             return bmp;
         }
     }

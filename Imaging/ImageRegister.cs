@@ -613,9 +613,7 @@ public sealed class ImageRegister
     {
         var container = new SettingsContainer
         {
-            FilterProperties = _filterPropertyMap,
-            FilterSettings = FilterSettings,
-            TextureSettings = TextureSetting
+            FilterProperties = _filterPropertyMap, FilterSettings = FilterSettings, TextureSettings = TextureSetting
         };
 
         return JsonSerializer.Serialize(container, new JsonSerializerOptions { WriteIndented = true });
