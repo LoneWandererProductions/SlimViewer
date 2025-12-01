@@ -67,6 +67,8 @@ namespace SlimViews
         public ICommand Previous { get; }
         public ICommand ToolChanged { get; }
 
+        public ICommand ToolChangedCommand { get; }
+
         #endregion
 
         /// <summary>
@@ -121,6 +123,12 @@ namespace SlimViews
             ToolChanged = new DelegateCommand<ImageZoomTools>(owner.ToolChangedAction, CanRun);
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
+
+            ToolChangedCommand = new DelegateCommand<object>(tools =>
+            {
+                owner.ToolChangedActionNew(tools);
+            }, CanRun);
+
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);

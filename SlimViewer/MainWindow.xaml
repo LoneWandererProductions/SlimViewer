@@ -261,7 +261,7 @@
                                              EraseRadius="{Binding EraseRadius}"
                                              SelectedToolCode="{Binding ToolCode, Mode=TwoWay}"
                                              Grid.RowSpan="4" />
-            <exp:DrawingToolBarControl Grid.Row="0" Grid.Column="8" Grid.RowSpan="4" />
+            <exp:DrawingToolBarControl Grid.Row="0" Grid.Column="8" Grid.RowSpan="4" ToolState="{Binding MyDrawingState}" ToolChangedCommand="{Binding Commands.ToolChangedCommand}" />
 
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding Commands.ColorChanged}" />

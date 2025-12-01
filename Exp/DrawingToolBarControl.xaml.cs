@@ -9,6 +9,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Exp
 {
@@ -32,6 +33,19 @@ namespace Exp
                 typeof(DrawingToolBarControl),
                 new PropertyMetadata(null, OnToolStateChanged));
 
+        public static readonly DependencyProperty ToolChangedCommandProperty =
+            DependencyProperty.Register(
+                nameof(ToolChangedCommand),
+                typeof(ICommand),
+                typeof(DrawingToolBarControl),
+                new PropertyMetadata(null));
+
+        public ICommand? ToolChangedCommand
+        {
+            get => (ICommand?)GetValue(ToolChangedCommandProperty);
+            set => SetValue(ToolChangedCommandProperty, value);
+        }
+
         private static void OnToolStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is DrawingToolBarControl ctrl)
@@ -45,6 +59,7 @@ namespace Exp
         private void HandleToolChanged(object sender, EventArgs e)
         {
             ToolChanged?.Invoke(this, EventArgs.Empty);
+            ToolChangedCommand?.Execute(ToolState);
         }
     }
 }

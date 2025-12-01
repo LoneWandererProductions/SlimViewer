@@ -16,6 +16,7 @@
 #nullable enable
 using CommonControls;
 using CommonDialogs;
+using Exp;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
@@ -79,10 +80,25 @@ namespace SlimViews
         /// </summary>
         private int _tolerance;
 
+        /// <summary>
+        /// The erase radius
+        /// </summary>
         private double _eraseRadius;
+
+        /// <summary>
+        /// The image zoom tool
+        /// </summary>
         private ImageZoomTools _imageZoomTool;
 
+        /// <summary>
+        /// Gets the commands.
+        /// </summary>
+        /// <value>
+        /// The commands.
+        /// </value>
         public ImageViewCommands Commands { get; }
+
+        public DrawingState MyDrawingState { get; set; } = new DrawingState();
 
         public bool CanRun(object? arg) => CanExecute(arg);
 
@@ -677,6 +693,11 @@ namespace SlimViews
         {
             if (UiState.ImageZoomControl != null)
                 ImageZoomTool = obj;
+        }
+
+        internal void ToolChangedActionNew(object tools)
+        {
+            Trace.WriteLine($"Tool changed to: {tools}");
         }
 
         /// <summary>
