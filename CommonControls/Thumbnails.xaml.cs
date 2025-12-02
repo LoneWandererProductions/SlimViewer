@@ -309,7 +309,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <value>
     ///     The selection.
     /// </value>
-    public List<int> Selection { get; private set; }
+    public ConcurrentDictionary<int, bool> Selection = new();
 
     /// <summary>
     /// Gets a value indicating whether this instance is selection valid.
@@ -458,7 +458,7 @@ public sealed partial class Thumbnails : IDisposable
         Keys = new ConcurrentDictionary<string, int>();
         ImageDct = new ConcurrentDictionary<string, Image>();
         Border = new ConcurrentDictionary<int, Border>();
-        Selection = new List<int>();
+        Selection = new ConcurrentDictionary<int, bool>();
 
         if (SelectBox)
         {
@@ -620,7 +620,7 @@ public sealed partial class Thumbnails : IDisposable
 
                 if (IsCheckBoxSelected)
                 {
-                    Selection.Add(key);
+                    Selection.TryAdd(key, true);
                 }
 
                 checkbox.Checked += CheckBox_Checked;
@@ -821,10 +821,19 @@ public sealed partial class Thumbnails : IDisposable
             return;
         }
 
-        foreach (var check in new List<int>(Selection).Select(id => ChkBox[id]))
+        // Take a snapshot to avoid modifying while enumerating
+        var selectedIds = Selection.Keys.ToList();
+
+        Application.Current.Dispatcher.Invoke(() =>
         {
-            check.IsChecked = false;
-        }
+            foreach (var id in selectedIds)
+            {
+                if (ChkBox.TryGetValue(id, out var checkBox))
+                {
+                    checkBox.IsChecked = false;
+                }
+            }
+        });
     }
 
     /// <summary>
@@ -845,7 +854,7 @@ public sealed partial class Thumbnails : IDisposable
             return;
         }
 
-        Selection.Add(id);
+        Selection.TryAdd(id, true);
     }
 
     /// <summary>
@@ -866,7 +875,7 @@ public sealed partial class Thumbnails : IDisposable
             return;
         }
 
-        _ = Selection.Remove(id);
+        _ = Selection.TryAdd(id, true);
     }
 
     /// <summary>

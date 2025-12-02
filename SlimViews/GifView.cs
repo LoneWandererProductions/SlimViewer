@@ -9,19 +9,21 @@
 // ReSharper disable MemberCanBeMadeStatic.Local
 // ReSharper disable MemberCanBeInternal
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using CommonControls;
 using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using ViewModel;
 
 namespace SlimViews
@@ -31,310 +33,316 @@ namespace SlimViews
     ///     Gif Viewer
     /// </summary>
     /// <seealso cref="INotifyPropertyChanged" />
-    public sealed class GifView : ViewModelBase
+    public sealed class GifView : ViewModelBase, IDisposable
     {
         /// <summary>
-        ///     The automatic clear
-        ///     Configured from Register
+        /// The automatic clear
         /// </summary>
         private bool _autoClear;
 
         /// <summary>
-        ///     The BMP
+        /// The BMP (currently shown frame)
         /// </summary>
-        private BitmapImage _bmp;
+        private BitmapImage? _bmp;
+
+        // Commands
 
         /// <summary>
-        ///     The clear command
+        /// The clear command
         /// </summary>
-        private ICommand _clearCommand;
+        private ICommand? _clearCommand;
 
         /// <summary>
-        ///     The close command
+        /// The close command
         /// </summary>
-        private ICommand _closeCommand;
+        private ICommand? _closeCommand;
 
         /// <summary>
-        ///     The file path
+        /// The open command
         /// </summary>
-        private string _filePath;
+        private ICommand? _openCommand;
 
         /// <summary>
-        ///     The GIF export
+        /// The open folder command
         /// </summary>
-        private string _gifExport;
+        private ICommand? _openFolderCommand;
 
         /// <summary>
-        ///     The GIF path
+        /// The save GIF command
         /// </summary>
-        private string _gifPath;
+        private ICommand? _saveGifCommand;
 
         /// <summary>
-        ///     The image export
+        /// The save images command
         /// </summary>
-        private string _imageExport;
+        private ICommand? _saveImagesCommand;
+
+        // Paths & Info
 
         /// <summary>
-        ///     The information
+        /// The file path
         /// </summary>
-        private string _information;
+        private string _filePath = string.Empty;
 
         /// <summary>
-        ///     The is active
+        /// The GIF export
+        /// </summary>
+        private string _gifExport = string.Empty;
+
+        /// <summary>
+        /// The GIF path
+        /// </summary>
+        private string _gifPath = string.Empty;
+
+        /// <summary>
+        /// The image export
+        /// </summary>
+        private string _imageExport = string.Empty;
+
+        /// <summary>
+        /// The information
+        /// </summary>
+        private string _information = string.Empty;
+
+        /// <summary>
+        /// The output path
+        /// </summary>
+        private string _outputPath = Directory.GetCurrentDirectory();
+
+        // Status
+
+        /// <summary>
+        /// The is active
         /// </summary>
         private bool _isActive;
 
         /// <summary>
-        ///     The observer
+        /// The observer
         /// </summary>
-        private Dictionary<int, string> _observer;
+        private Dictionary<int, string> _observer = new();
 
         /// <summary>
-        ///     The open command
+        /// Cancellation token source for background operations
         /// </summary>
-        private ICommand _openCommand;
+        private CancellationTokenSource? _cts;
 
         /// <summary>
-        ///     The open folder command
+        ///     Initializes a new instance of the <see cref="GifView"/> class.
+        ///     Commands are created here to avoid lazy-field boilerplate elsewhere.
         /// </summary>
-        private ICommand _openFolderCommand;
+        public GifView()
+        {
+            // initialize commands (keeps using DelegateCommand<object> to match existing pattern)
+            _openCommand = new DelegateCommand<object>(async _ => await OpenActionAsync(), CanExecute);
+            _openFolderCommand = new DelegateCommand<object>(async _ => await OpenFolderActionAsync(), CanExecute);
+            _clearCommand = new DelegateCommand<object>(_ => ClearAction(), CanExecute);
+            _saveGifCommand = new DelegateCommand<object>(_ => SaveGifAction(), CanExecute);
+            _saveImagesCommand = new DelegateCommand<object>(_ => SaveImagesAction(), CanExecute);
+            _closeCommand = new DelegateCommand<object>(_ => CloseAction(), CanExecute);
+        }
 
         /// <summary>
-        ///     The output path
+        /// Releases resources used by this instance.
         /// </summary>
-        private string _outputPath = Directory.GetCurrentDirectory();
-
-        /// <summary>
-        ///     The save GIF command
-        /// </summary>
-        private ICommand _saveGifCommand;
-
-        /// <summary>
-        ///     The save images command
-        /// </summary>
-        private ICommand _saveImagesCommand;
+        public void Dispose()
+        {
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
+        }
 
         /// <summary>
         ///     Gets the open command.
         /// </summary>
-        /// <value>
-        ///     The open command.
-        /// </value>
-        public ICommand OpenCommand =>
-            _openCommand ??= new DelegateCommand<object>(OpenAction, CanExecute);
+        public ICommand OpenCommand => _openCommand!;
 
         /// <summary>
         ///     Gets the open folder command.
         /// </summary>
-        /// <value>
-        ///     The open folder command.
-        /// </value>
-        public ICommand OpenFolderCommand =>
-            _openFolderCommand ??= new DelegateCommand<object>(OpenFolderAction, CanExecute);
+        public ICommand OpenFolderCommand => _openFolderCommand!;
 
         /// <summary>
         ///     Gets the clear command.
         /// </summary>
-        /// <value>
-        ///     The clear command.
-        /// </value>
-        public ICommand ClearCommand =>
-            _clearCommand ??= new DelegateCommand<object>(ClearAction, CanExecute);
+        public ICommand ClearCommand => _clearCommand!;
 
         /// <summary>
         ///     Gets the save GIF command.
         /// </summary>
-        /// <value>
-        ///     The save GIF command.
-        /// </value>
-        public ICommand SaveGifCommand =>
-            _saveGifCommand ??= new DelegateCommand<object>(SaveGifAction, CanExecute);
+        public ICommand SaveGifCommand => _saveGifCommand!;
 
         /// <summary>
         ///     Gets the save images command.
         /// </summary>
-        /// <value>
-        ///     The save images command.
-        /// </value>
-        public ICommand SaveImagesCommand =>
-            _saveImagesCommand ??= new DelegateCommand<object>(SaveImagesAction, CanExecute);
+        public ICommand SaveImagesCommand => _saveImagesCommand!;
 
         /// <summary>
         ///     Gets the close command.
         /// </summary>
-        /// <value>
-        ///     The close command.
-        /// </value>
-        public ICommand CloseCommand =>
-            _closeCommand ??= new DelegateCommand<object>(CloseAction, CanExecute);
+        public ICommand CloseCommand => _closeCommand!;
 
         /// <summary>
         ///     Gets or sets the basic File information.
         /// </summary>
-        /// <value>
-        ///     The information.
-        /// </value>
         public string Information
         {
             get => _information;
-            set => SetProperty(ref _information, value, nameof(Information));
+            set => SetProperty(ref _information, value);
         }
 
         /// <summary>
         ///     Gets or sets the file path.
         /// </summary>
-        /// <value>
-        ///     The file path.
-        /// </value>
         public string FilePath
         {
             get => _filePath;
-            set => SetProperty(ref _filePath, value, nameof(FilePath));
+            set => SetProperty(ref _filePath, value);
         }
 
         /// <summary>
         ///     Gets or sets the output path.
         /// </summary>
-        /// <value>
-        ///     The output path.
-        /// </value>
         public string OutputPath
         {
             get => _outputPath;
-            set => SetProperty(ref _outputPath, value, nameof(OutputPath));
+            set => SetProperty(ref _outputPath, value);
         }
 
         /// <summary>
-        ///     Gets or sets the BitmapImage.
+        ///     Gets or sets the BitmapImage (currently displayed frame).
         /// </summary>
-        /// <value>
-        ///     The BitmapImage.
-        /// </value>
-        public BitmapImage Bmp
+        public BitmapImage? Bmp
         {
             get => _bmp;
-            set => SetProperty(ref _bmp, value, nameof(Bmp));
+            set => SetProperty(ref _bmp, value);
         }
 
         /// <summary>
         ///     Gets or sets the GIF path.
         /// </summary>
-        /// <value>
-        ///     The GIF path.
-        /// </value>
         public string GifPath
         {
             get => _gifPath;
-            set => SetProperty(ref _gifPath, value, nameof(GifPath));
+            set => SetProperty(ref _gifPath, value);
         }
 
         /// <summary>
-        ///     Gets or sets the observer.
+        ///     Gets or sets the observer dictionary (index -> file path).
         /// </summary>
-        /// <value>
-        ///     The observer.
-        /// </value>
-        public Dictionary<int, string> Observer
+        public IReadOnlyDictionary<int, string> Observer
         {
             get => _observer;
-            set => SetProperty(ref _observer, value, nameof(Observer));
+            private set => SetProperty(ref _observer, value.ToDictionary(kv => kv.Key, kv => kv.Value));
         }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is active.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is active; otherwise, <c>false</c>.
-        /// </value>
         public bool IsActive
         {
             get => _isActive;
-            set => SetProperty(ref _isActive, value, nameof(IsActive));
+            set => SetProperty(ref _isActive, value);
         }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [automatic clear].
+        ///     When true the registered <see cref="SlimViewerRegister.GifCleanUp"/> flag is kept in sync.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if [automatic clear]; otherwise, <c>false</c>.
-        /// </value>
         public bool AutoClear
         {
             get => _autoClear;
-            set
-            {
-                // Use SetProperty to handle change notification
-                if (_autoClear != value) // Check if the value is actually changing
-                {
-                    _autoClear = value;
-                    SlimViewerRegister.GifCleanUp = value; // Set this whenever the property changes
-                    OnPropertyChanged(nameof(AutoClear)); // Notify about the change
-                }
-            }
+            set => SetPropertyAndCallback(ref _autoClear, value, v => SlimViewerRegister.GifCleanUp = v);
         }
 
         /// <summary>
-        ///     Gets or sets the thumbnail.
+        ///     Gets or sets the thumbnail container (internal).
         /// </summary>
-        /// <value>
-        ///     The thumbnail.
-        /// </value>
-        internal Thumbnails Thumbnail { private get; set; }
+        internal Thumbnails Thumbnail { private get; set; } = null!;
 
         /// <summary>
-        ///     Changes the image.
+        ///     Computed image export path under OutputPath.
+        /// </summary>
+        private string ImageExportPath => Path.Combine(OutputPath, ViewResources.ImagesPath);
+
+        /// <summary>
+        ///     Computed gif export path under OutputPath.
+        /// </summary>
+        private string GifExportPath => Path.Combine(OutputPath, ViewResources.NewGifPath);
+
+        /// <summary>
+        /// Changes the displayed image to the file at the given observer id.
         /// </summary>
         /// <param name="id">The identifier.</param>
         public void ChangeImage(int id)
         {
-            if (!Observer.ContainsKey(id)) return;
+            if (!_observer.ContainsKey(id)) return;
 
-            var filePath = Observer[id];
-            GifPath = null;
-            var bmp = ImageProcessor.LoadImage(filePath);
-            Bmp = bmp.ToBitmapImage();
+            var filePath = _observer[id];
+
+            // Clear any previous GIF indicator
+            GifPath = string.Empty;
+
+            // Load image synchronously because helper likely caches — move to async if heavy
+            var bmpWrapper = ImageProcessor.LoadImage(filePath);
+            Bmp = bmpWrapper.ToBitmapImage();
 
             var fileName = Path.GetFileName(filePath);
 
             var info = ImageGifHandler.GetImageInfo(filePath);
-
             if (info == null)
             {
                 Information = string.Concat(ViewResources.ErrorFileNotFoundMessage, filePath);
                 return;
             }
 
-            //set Infos
+            // set information text (keeps existing formatting helper)
             Information = ViewResources.BuildImageInformation(filePath, fileName, Bmp);
         }
 
         /// <summary>
-        ///     Generates the thumb view.
+        ///     Generates the thumb view from a list of image file paths.
         /// </summary>
-        /// <param name="lst">The File List.</param>
-        private async Task GenerateThumbView(IReadOnlyCollection<string> lst)
+        /// <param name="files">The file list.</param>
+        private async Task GenerateThumbViewAsync(IReadOnlyCollection<string> files)
         {
-            //load Thumbnails
-            _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
+            if (files == null) return;
+
+            var token = GetCancellationToken();
+
+            // Convert collection to dictionary on background thread (IO/cpu work)
+            var dict = await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+                return files.ToDictionary();
+            }, token).ConfigureAwait(false);
+
+            // Update Observer on UI thread (SetProperty will raise notifications)
+            Observer = dict;
         }
 
         /// <summary>
-        ///     Opens the action.
+        ///     Opens a GIF file (command handler). Async wrapper for UI command.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void OpenAction(object obj)
+        private async Task OpenActionAsync()
         {
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpenGif, null);
+            if (pathObj == null || string.IsNullOrEmpty(pathObj.FilePath)) return;
 
-            if (string.IsNullOrEmpty(pathObj?.FilePath) || !string.Equals(pathObj.Extension, ViewResources.CbzExt,
-                    StringComparison.OrdinalIgnoreCase)) return;
+            // validate extension before heavy work
+            if (!string.Equals(pathObj.Extension, ViewResources.CbzExt, StringComparison.OrdinalIgnoreCase))
+                return;
 
-            _ = InitiateAsync(OutputPath);
+            // re-create output folders, cancel prior ops
+            CancelBackgroundWork();
+            _cts = new CancellationTokenSource();
+
+            // ensure directories and export paths exist
+            await InitiateAsync(OutputPath).ConfigureAwait(false);
 
             GifPath = pathObj.FilePath;
-
             FilePath = GifPath;
 
+            // Get gif info
             var info = ImageGifHandler.GetImageInfo(GifPath);
             if (info == null)
             {
@@ -342,44 +350,79 @@ namespace SlimViews
                 return;
             }
 
-            //set Infos
             Information = ViewResources.BuildGifInformation(GifPath, info);
 
-            //add name of the split files
-            var name = Path.Combine(_imageExport, ViewResources.ImagesPath);
-            _ = ImageProcessor.ConvertGifActionAsync(GifPath, name);
-            var currentFolder = _imageExport;
+            // Convert GIF into frames (async). Use ImageExportPath
+            var convertTask = ImageProcessor.ConvertGifActionAsync(GifPath, ImageExportPath);
 
-            var fileList =
-                FileHandleSearch.GetFilesByExtensionFullPath(currentFolder, ImagingResources.JpgExt, false);
-            _ = GenerateThumbView(fileList);
+            try
+            {
+                await convertTask.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // conversion cancelled - swallow or set Information
+                return;
+            }
+            catch (Exception ex)
+            {
+                Information = string.Concat(ViewResources.ErrorFileNotFoundMessage, FilePath, " - ", ex.Message);
+                return;
+            }
+
+            // Get generated frames
+            var currentFolder = ImageExportPath;
+            var fileList = FileHandleSearch.GetFilesByExtensionFullPath(currentFolder, ImagingResources.JpgExt, false);
+
+            // spawn thumbnail generation on UI flow
+            await GenerateThumbViewAsync(fileList).ConfigureAwait(false);
         }
 
         /// <summary>
-        ///     Opens the folder action.
+        /// Opens a folder and converts its images into a GIF (command handler).
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void OpenFolderAction(object obj)
+        private async Task OpenFolderActionAsync()
         {
-            //get target Folder
             var path = DialogHandler.ShowFolder(null);
+            if (string.IsNullOrEmpty(path)) return;
 
-            _ = InitiateAsync(OutputPath);
+            CancelBackgroundWork();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
 
-            var fileList =
-                FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
+            await InitiateAsync(OutputPath).ConfigureAwait(false);
 
-            if (fileList is not { Count: < 200 })
+            // scan folder for supported image appendix (background thread is used by GetFiles... if heavy)
+            var fileList = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, false);
+
+            if (fileList == null)
             {
+                Information = ViewResources.MessageFiles;
+                return;
+            }
+
+            // Guard: if too many files, show message and abort
+            if (fileList.Count >= 200)
+            {
+                // Keep UI message as before (breaking MVVM but preserving behavior)
                 _ = MessageBox.Show(ViewResources.MessageFiles, ViewResources.MessageInformation);
                 return;
             }
 
-            _ = GenerateThumbView(fileList);
+            // generate thumbnails for folder
+            await GenerateThumbViewAsync(fileList).ConfigureAwait(false);
 
-            _gifPath = ImageProcessor.ConvertToGifAction(path, _gifPath);
-
-            FilePath = _gifPath;
+            // Convert folder to GIF (synchronous call per original, keep result)
+            try
+            {
+                _gifPath = ImageProcessor.ConvertToGifAction(path, _gifPath);
+                FilePath = _gifPath;
+            }
+            catch (Exception ex)
+            {
+                Information = string.Concat(ViewResources.ErrorFileNotFoundMessage, path, " - ", ex.Message);
+                return;
+            }
 
             var info = ImageGifHandler.GetImageInfo(_gifPath);
             if (info == null)
@@ -388,81 +431,129 @@ namespace SlimViews
                 return;
             }
 
-            //set Infos
             Information = ViewResources.BuildGifInformation(_gifPath, info);
         }
 
         /// <summary>
-        ///     Clears the action.
+        /// Clears temporary exports (images + gifs).
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void ClearAction(object obj)
+        private void ClearAction()
         {
-            if (Directory.Exists(_imageExport)) Directory.Delete(_imageExport, true);
-            if (Directory.Exists(_gifExport)) Directory.Delete(_gifExport, true);
+            try
+            {
+                if (Directory.Exists(ImageExportPath)) Directory.Delete(ImageExportPath, true);
+                if (Directory.Exists(GifExportPath)) Directory.Delete(GifExportPath, true);
+            }
+            catch (Exception ex)
+            {
+                // Preserve behavior: do not throw to UI; instead show info text
+                Information = $"Clear failed: {ex.Message}";
+            }
         }
 
         /// <summary>
-        ///     Closes the action.
+        ///     Closes the application (preserves original behavior).
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void CloseAction(object obj)
+        private void CloseAction()
         {
-            if (SlimViewerRegister.GifCleanUp) ClearAction(null);
+            if (SlimViewerRegister.GifCleanUp) ClearAction();
             Application.Current.Shutdown();
         }
 
         /// <summary>
-        ///     Saves the GIF action.
+        ///     Saves a new GIF from the currently selected thumbnails.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void SaveGifAction(object obj)
+        private void SaveGifAction()
         {
             var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenGif, OutputPath);
-
             if (pathObj == null) return;
 
-            var lst = Thumbnail.Selection.ConvertAll(id => Observer[id]);
+            // Build list from thumbnail selection (preserve ordering by PathSort helper)
+            var lst = Thumbnail.Selection.Keys
+                              .Select(id => Observer[id])
+                              .ToList();
+
             lst = lst.PathSort();
 
-            ImageProcessor.ConvertGifAction(lst, pathObj.FilePath);
+            try
+            {
+                ImageProcessor.ConvertGifAction(lst, pathObj.FilePath);
+            }
+            catch (Exception ex)
+            {
+                Information = $"Save GIF failed: {ex.Message}";
+            }
         }
 
         /// <summary>
-        ///     Saves the images action.
+        ///     Saves the currently selected images to target folder.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void SaveImagesAction(object obj)
+        private void SaveImagesAction()
         {
-            //get target Folder
             var path = DialogHandler.ShowFolder(OutputPath);
-
             if (string.IsNullOrEmpty(path)) return;
 
-            var lst = Thumbnail.Selection.ConvertAll(id => Observer[id]);
+            var lst = Thumbnail.Selection.Keys
+                              .Select(id => _observer[id])
+                              .ToList();
 
             _ = FileHandleCopy.CopyFiles(lst, path, false);
         }
 
         /// <summary>
-        ///     Initiates this instance.
+        /// Initiates this instance and prepares the output folders.
         /// </summary>
         /// <param name="path">Target Path</param>
         private async Task InitiateAsync(string path)
         {
+            var token = GetCancellationToken();
+
             await Task.Run(() =>
             {
-                if (Directory.Exists(path))
-                    Directory.Delete(path, true);
+                token.ThrowIfCancellationRequested();
 
+                // Recreate output path
+                if (Directory.Exists(path)) Directory.Delete(path, true);
                 Directory.CreateDirectory(path);
 
                 OutputPath = path;
+
+                // compute exports
                 _imageExport = Path.Combine(path, ViewResources.ImagesPath);
                 _gifExport = Path.Combine(path, ViewResources.NewGifPath);
-            });
+
+                // ensure directories exist
+                if (!Directory.Exists(_imageExport)) Directory.CreateDirectory(_imageExport);
+                if (!Directory.Exists(_gifExport)) Directory.CreateDirectory(_gifExport);
+            }, token).ConfigureAwait(false);
 
             IsActive = true;
         }
+
+        /// <summary>
+        /// Cancel any background work in progress.
+        /// </summary>
+        private void CancelBackgroundWork()
+        {
+            try
+            {
+                _cts?.Cancel();
+                _cts?.Dispose();
+            }
+            catch
+            {
+                // ignore
+            }
+            finally
+            {
+                _cts = null;
+            }
+        }
+
+        /// <summary>
+        /// Returns the cancellation token or a default none-cancelled token.
+        /// </summary>
+        /// <returns></returns>
+        private CancellationToken GetCancellationToken() => _cts?.Token ?? CancellationToken.None;
     }
 }

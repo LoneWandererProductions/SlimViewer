@@ -91,7 +91,7 @@ namespace SlimViews
 
             var idsToDelete = owner.UiState.IsSelectionEmpty
                 ? new[] { owner.FileContext.CurrentId }
-                : owner.UiState.Thumb.Selection.ToArray();
+                : owner.UiState.Thumb.Selection.Keys.ToArray();
 
             var deletedCount = 0;
 
@@ -157,7 +157,7 @@ namespace SlimViews
 
             var fileIds = owner.UiState.IsSelectionEmpty
                 ? new[] { owner.FileContext.CurrentId }
-                : owner.UiState.Thumb.Selection.ToArray();
+                : owner.UiState.Thumb.Selection.Keys.ToArray();
 
             var movedCount = 0;
 

@@ -61,7 +61,7 @@ namespace SlimViews
 
             if (owner.UiState.Thumb.IsSelectionValid)
             {
-                foreach (var id in owner.UiState.Thumb.Selection.Where(id => owner.FileContext.IsKeyInObserver(id)))
+                foreach (var id in owner.UiState.Thumb.Selection.Keys.Where(id => owner.FileContext.IsKeyInObserver(id)))
                     dct.Add(id, owner.FileContext.Observer[id]);
             }
             else

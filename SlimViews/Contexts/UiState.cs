@@ -1,5 +1,4 @@
 ﻿using CommonControls;
-using ExtendedSystemObjects;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -123,7 +122,7 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if this instance is selection empty; otherwise, <c>false</c>.
         /// </value>
-        internal bool IsSelectionEmpty => Thumb.Selection.IsNullOrEmpty();
+        internal bool IsSelectionEmpty => Thumb.Selection == null || Thumb.Selection.Count == 0;
 
         /// <summary>
         /// Gets or sets a value indicating whether [use sub folders].
