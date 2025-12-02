@@ -407,7 +407,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     Called when [items source changed].
     /// </summary>
-    private void OnItemsSourceChanged()
+    private async Task OnItemsSourceChanged()
     {
         ThumbWidth = _originalWidth;
         ThumbHeight = _originalHeight;
@@ -415,7 +415,7 @@ public sealed partial class Thumbnails : IDisposable
         // Clear existing images from the grid
         Thb.Children.Clear();
 
-        _ = LoadImages();
+        await LoadImages();
 
         //All Images Loaded
         ImageLoadedCommand?.Execute(this);
@@ -427,12 +427,20 @@ public sealed partial class Thumbnails : IDisposable
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    private async void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        _originalWidth = ThumbWidth;
-        _originalHeight = ThumbHeight;
+        try
+        {
+            _originalWidth = ThumbWidth;
+            _originalHeight = ThumbHeight;
 
-        _ = LoadImages();
+            await LoadImages(); // safe to await here
+        }
+        catch (Exception ex)
+        {
+            // Log or handle exceptions gracefully
+            Trace.WriteLine($"Error loading images: {ex}");
+        }
     }
 
     /// <summary>
