@@ -373,17 +373,36 @@ public sealed partial class Thumbnails : IDisposable
             return;
         }
 
-        var image = ImageDct[string.Concat(ComCtlResources.ImageAdd, id)];
+        var keyName = string.Concat(ComCtlResources.ImageAdd, id);
 
-        if (image != null)
+        // Remove Image and unsubscribe events
+        if (ImageDct.TryRemove(keyName, out var image))
         {
+            image.MouseDown -= ImageClick_MouseDown;
+            image.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
             image.Source = null;
+            Thb.Children.Remove(image);
+        }
+
+        // Remove Border
+        if (Border.TryRemove(id, out var border))
+        {
+            Thb.Children.Remove(border);
+        }
+
+        // Remove CheckBox
+        if (SelectBox && ChkBox.TryRemove(id, out var checkbox))
+        {
+            checkbox.Checked -= CheckBox_Checked;
+            checkbox.Unchecked -= CheckBox_Unchecked;
+            Thb.Children.Remove(checkbox);
         }
 
         _ = ItemsSource.Remove(id);
 
         _refresh = true;
     }
+
 
     /// <summary>
     ///     Called when [items source changed].
@@ -918,27 +937,36 @@ public sealed partial class Thumbnails : IDisposable
     /// <param name="disposing">if set to <c>true</c> [disposing].</param>
     private void Dispose(bool disposing)
     {
-        if (_disposed)
-        {
-            return;
-        }
+        if (_disposed) return;
 
         if (disposing)
         {
-            // Dispose managed resources
-            // e.g., unsubscribe from events, dispose of Image objects, etc.
-            foreach (var image in Thb.Children.OfType<Image>())
+            // Unsubscribe Image events
+            foreach (var image in ImageDct?.Values ?? Enumerable.Empty<Image>())
             {
-                image.Source = null; // Release image source
+                image.MouseDown -= ImageClick_MouseDown;
+                image.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
+                image.Source = null;
             }
 
-            Thb.Children.Clear(); // Clear children from the UI element
-        }
+            // Unsubscribe CheckBox events
+            foreach (var checkBox in ChkBox?.Values ?? Enumerable.Empty<CheckBox>())
+            {
+                checkBox.Checked -= CheckBox_Checked;
+                checkBox.Unchecked -= CheckBox_Unchecked;
+            }
 
-        // Dispose unmanaged resources if any...
+            // Clear children from the UI
+            Thb.Children.Clear();
+
+            // Cancel any ongoing image loading
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+        }
 
         _disposed = true;
     }
+
 
     /// <summary>
     ///     Finalizes this instance.
