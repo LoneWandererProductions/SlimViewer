@@ -57,7 +57,7 @@ public sealed partial class Thumbnails : IDisposable
     public static readonly DependencyProperty DependencyThumbHeight = DependencyProperty.Register(
         nameof(DependencyThumbHeight),
         typeof(int),
-        typeof(Thumbnails), new PropertyMetadata(100));
+        typeof(Thumbnails), new PropertyMetadata(1));
 
     /// <summary>
     ///     The Thumb Length (in lines)
@@ -65,7 +65,7 @@ public sealed partial class Thumbnails : IDisposable
     public static readonly DependencyProperty DependencyThumbWidth = DependencyProperty.Register(
         nameof(DependencyThumbWidth),
         typeof(int),
-        typeof(Thumbnails), new PropertyMetadata(100));
+        typeof(Thumbnails), new PropertyMetadata(1));
 
     /// <summary>
     ///     The Thumb Cell Size
@@ -142,7 +142,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The original height
     /// </summary>
-    private int _originalHeight = 100;
+    private int _originalHeight = 1;
 
     /// <summary>
     /// The loaded
@@ -152,7 +152,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The original width
     /// </summary>
-    private int _originalWidth = 100;
+    private int _originalWidth = 1;
 
     /// <summary>
     ///     The selection
@@ -479,50 +479,39 @@ public sealed partial class Thumbnails : IDisposable
     {
         if (ItemsSource?.Any() != true) return;
 
+        _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
         var token = _cancellationTokenSource.Token;
 
+        var timer = Stopwatch.StartNew();
 
-
-        var timer = new Stopwatch();
-        timer.Start();
-
-        // Initiate all values
-        ExtendedGrid.CellSize = ThumbCellSize;
+        // Make a local copy of images
         var pics = new Dictionary<int, string>(ItemsSource);
+
+        // Initialize dictionaries
         Keys = new ConcurrentDictionary<string, int>();
         ImageDct = new ConcurrentDictionary<string, Image>();
         Border = new ConcurrentDictionary<int, Border>();
         Selection = new ConcurrentDictionary<int, bool>();
         if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
+        // Capture initial values from dependency properties
         int cellSize = await Application.Current.Dispatcher.InvokeAsync(() => ThumbCellSize);
         int thumbWidth = await Application.Current.Dispatcher.InvokeAsync(() => ThumbWidth);
         int thumbHeight = await Application.Current.Dispatcher.InvokeAsync(() => ThumbHeight);
+        bool thumbGrid = await Application.Current.Dispatcher.InvokeAsync(() => ThumbGrid);
 
-        // Handle special cases
-        if (cellSize == 0)
+        // --- Handle special cases ---
+        if (cellSize <= 0) cellSize = 100;
+        if (thumbHeight <= 0 && thumbWidth <= 0) thumbHeight = 1;
+
+        if (thumbHeight * thumbWidth < pics.Count)
         {
-            cellSize = 100;
-        }
+            // Only one row or one column
+            if (thumbWidth == 1) thumbHeight = pics.Count;
+            if (thumbHeight == 1) thumbWidth = pics.Count;
 
-        if (thumbHeight == 0 && thumbWidth == 0)
-        {
-            thumbHeight = 1;
-        }
-
-        if (ThumbHeight * thumbWidth < pics.Count)
-        {
-            if (thumbWidth == 1)
-            {
-                thumbHeight = pics.Count;
-            }
-
-            if (thumbHeight == 1)
-            {
-                thumbWidth = pics.Count;
-            }
-
+            // Neither is 1 → calculate width based on height
             if (thumbHeight != 1 && thumbWidth != 1 && pics.Count > 1)
             {
                 var fraction = new Fraction(pics.Count, thumbHeight);
@@ -530,12 +519,18 @@ public sealed partial class Thumbnails : IDisposable
             }
         }
 
-        // Setup the grid layout
-        var exGrid = ExtendedGrid.ExtendGrid(ThumbWidth, ThumbHeight, ThumbGrid);
+        // Update dependency properties so other code/XAML sees correct sizes
+        ThumbWidth = thumbWidth;
+        ThumbHeight = thumbHeight;
+        ThumbCellSize = cellSize;
 
+        // --- Setup grid layout ---
+        var exGrid = ExtendedGrid.ExtendGrid(thumbWidth, thumbHeight, thumbGrid);
+        Thb.Children.Clear();
         _ = Thb.Children.Add(exGrid);
 
-        var semaphore = new SemaphoreSlim(4); // limit concurrent image loads
+        // --- Load images concurrently with semaphore ---
+        var semaphore = new SemaphoreSlim(4);
         var tasks = pics.Select(async kv =>
         {
             await semaphore.WaitAsync(token);
@@ -551,11 +546,8 @@ public sealed partial class Thumbnails : IDisposable
 
         await Task.WhenAll(tasks);
 
-        // Wait for all remaining tasks
-        await Task.WhenAll(tasks);
-
         timer.Stop();
-        Trace.WriteLine(string.Concat(ComCtlResources.DebugTimer, timer.Elapsed));
+        Trace.WriteLine($"{ComCtlResources.DebugTimer}{timer.Elapsed}");
 
         // Notify that loading is finished
         ImageLoaded?.Invoke();
