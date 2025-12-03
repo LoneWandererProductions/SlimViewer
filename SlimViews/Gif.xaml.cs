@@ -8,9 +8,10 @@
 
 // ReSharper disable MemberCanBeInternal
 
+using CommonControls;
 using System.ComponentModel;
 using System.Windows;
-using CommonControls;
+using System.Windows.Forms;
 
 namespace SlimViews
 {
@@ -20,10 +21,32 @@ namespace SlimViews
     /// </summary>
     public sealed partial class Gif
     {
+        private bool _allowClose = false;   // Allow the window to really close
+
+        /// <summary>
+        ///     The view
+        /// </summary>
+        private GifView _view;
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Gif"/> class.
+        /// </summary>
         public Gif()
         {
             InitializeComponent();
-            View.Thumbnail = Thumb;
+        }
+
+        /// <summary>
+        /// Handles the Loaded event of the Window control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _view = new GifView(this, Thumb);
+
+            DataContext = _view;
         }
 
         /// <summary>
@@ -33,7 +56,7 @@ namespace SlimViews
         /// <param name="itemId">The <see cref="ImageEventArgs" /> instance containing the event data.</param>
         private void Thumb_ImageClicked(object sender, ImageEventArgs itemId)
         {
-            View.ChangeImage(itemId.Id);
+            _view.ChangeImage(itemId.Id);
         }
 
         /// <inheritdoc />
@@ -43,8 +66,11 @@ namespace SlimViews
         /// <param name="e">A <see cref="CancelEventArgs" /> that contains the event data.</param>
         protected override void OnClosing(CancelEventArgs e)
         {
-            e.Cancel = true;
-            View.CloseCommand.Execute(null);
+            if (!_allowClose)
+            {
+                e.Cancel = true;
+                _view.CloseCommand.Execute(null);  // VM will decide if it's allowed
+            }
         }
     }
 }

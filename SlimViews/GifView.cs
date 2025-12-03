@@ -53,6 +53,11 @@ namespace SlimViews
         private ICommand? _clearCommand;
 
         /// <summary>
+        /// The close command
+        /// </summary>
+        private ICommand? _closeCommand;
+
+        /// <summary>
         /// The open command
         /// </summary>
         private ICommand? _openCommand;
@@ -125,14 +130,17 @@ namespace SlimViews
         ///     Initializes a new instance of the <see cref="GifView"/> class.
         ///     Commands are created here to avoid lazy-field boilerplate elsewhere.
         /// </summary>
-        public GifView()
+        public GifView(Window window, Thumbnails thumb)
         {
+            _window = window;
+            Thumbnail = thumb;
             // initialize commands (keeps using DelegateCommand<object> to match existing pattern)
             _openCommand = new DelegateCommand<object>(async _ => await OpenActionAsync(), CanExecute);
             _openFolderCommand = new DelegateCommand<object>(async _ => await OpenFolderActionAsync(), CanExecute);
             _clearCommand = new DelegateCommand<object>(_ => ClearAction(), CanExecute);
             _saveGifCommand = new DelegateCommand<object>(_ => SaveGifAction(), CanExecute);
             _saveImagesCommand = new DelegateCommand<object>(_ => SaveImagesAction(), CanExecute);
+            _closeCommand = new DelegateCommand<object>(_ => CloseAction(), CanExecute);
         }
 
         /// <summary>
@@ -169,6 +177,11 @@ namespace SlimViews
         ///     Gets the save images command.
         /// </summary>
         public ICommand SaveImagesCommand => _saveImagesCommand!;
+
+        /// <summary>
+        ///     Gets the close command.
+        /// </summary>
+        public ICommand CloseCommand => _closeCommand!;
 
         /// <summary>
         ///     Gets or sets the basic File information.
@@ -245,6 +258,11 @@ namespace SlimViews
             get => _autoClear;
             set => SetPropertyAndCallback(ref _autoClear, value, v => SlimViewerRegister.GifCleanUp = v);
         }
+
+        /// <summary>
+        /// The window
+        /// </summary>
+        private Window _window;
 
         /// <summary>
         ///     Gets or sets the thumbnail container (internal).
@@ -447,6 +465,26 @@ namespace SlimViews
                 Information = $"Clear failed: {ex.Message}";
             }
         }
+
+        private bool _isClosing;
+
+        /// <summary>
+        ///     Closes the application (preserves original behavior).
+        /// </summary>
+        private void CloseAction()
+        {
+            if (_window == null || !_window.IsLoaded)
+                return;
+
+            if (SlimViewerRegister.GifCleanUp)
+                ClearAction();
+
+
+            //TODO ERROR HERE!
+
+            _window.Close();
+        }
+
 
         /// <summary>
         ///     Saves a new GIF from the currently selected thumbnails.
