@@ -110,6 +110,11 @@ namespace SlimViews
         internal const string CbzExt = ".cbz";
 
         /// <summary>
+        ///     The Gif Extension (const). Value: ".gif"
+        /// </summary>
+        internal const string GifExt = ".gif";
+
+        /// <summary>
         ///     The MessageBox caption Success (const). Value: "Success"
         /// </summary>
         internal const string MessageSuccess = "Success";

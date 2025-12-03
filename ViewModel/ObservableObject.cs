@@ -21,14 +21,12 @@ public class ObservableObject : INotifyPropertyChanged
     /// <summary>
     ///     Occurs when a property value changes.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     ///     Raises the <see cref="PropertyChanged" /> event.
     /// </summary>
     /// <param name="propertyName">The name of the property that changed.</param>
-    protected void RaisePropertyChangedEvent([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    protected void RaisePropertyChangedEvent([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

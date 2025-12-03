@@ -329,7 +329,7 @@ namespace SlimViews
             if (pathObj == null || string.IsNullOrEmpty(pathObj.FilePath)) return;
 
             // validate extension before heavy work
-            if (!string.Equals(pathObj.Extension, ViewResources.CbzExt, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(pathObj.Extension, ViewResources.GifExt, StringComparison.OrdinalIgnoreCase))
                 return;
 
             // re-create output folders, cancel prior ops
@@ -508,19 +508,21 @@ namespace SlimViews
         {
             var token = GetCancellationToken();
 
+            // compute exports
+            _imageExport = Path.Combine(path, ViewResources.ImagesPath);
+            _gifExport = Path.Combine(path, ViewResources.NewGifPath);
+
             await Task.Run(() =>
             {
                 token.ThrowIfCancellationRequested();
 
                 // Recreate output path
-                if (Directory.Exists(path)) Directory.Delete(path, true);
-                Directory.CreateDirectory(path);
+                if (Directory.Exists(_gifExport)) Directory.Delete(_gifExport, true);
+                Directory.CreateDirectory(_gifExport);
 
                 OutputPath = path;
 
-                // compute exports
-                _imageExport = Path.Combine(path, ViewResources.ImagesPath);
-                _gifExport = Path.Combine(path, ViewResources.NewGifPath);
+
 
                 // ensure directories exist
                 if (!Directory.Exists(_imageExport)) Directory.CreateDirectory(_imageExport);

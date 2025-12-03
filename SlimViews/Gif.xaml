@@ -77,19 +77,19 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="5" />
-                    <RowDefinition Height="35" />
+                    <RowDefinition Height="50" />
                     <RowDefinition Height="5" />
-                    <RowDefinition Height="35" />
+                    <RowDefinition Height="50" />
                     <RowDefinition Height="5" />
-                    <RowDefinition Height="35" />
+                    <RowDefinition Height="50" />
                     <RowDefinition Height="5" />
                     <RowDefinition Height="25" />
                     <RowDefinition />
                     <RowDefinition Height="5" />
                 </Grid.RowDefinitions>
-                <Label Grid.Row="1" Grid.Column="0" Content="File Path" />
-                <Label Grid.Row="3" Grid.Column="0" Content="Information" />
-                <Label Grid.Row="5" Grid.Column="0" Content="Output Path" />
+                <Label Grid.Row="1" Grid.Column="0" Content="File Path" VerticalAlignment="Center" />
+                <Label Grid.Row="3" Grid.Column="0" Content="Information" VerticalAlignment="Center" />
+                <Label Grid.Row="5" Grid.Column="0" Content="Output Path"  VerticalAlignment="Center" />
                 <CheckBox Content="Auto Clear" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Stretch"
                           IsEnabled="{Binding Path = AutoClear}" />
                 <TextBox Grid.Row="1" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
