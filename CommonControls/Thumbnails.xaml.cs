@@ -142,7 +142,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The original height
     /// </summary>
-    private int _originalHeight;
+    private int _originalHeight = 100;
 
     /// <summary>
     /// The loaded
@@ -152,7 +152,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The original width
     /// </summary>
-    private int _originalWidth;
+    private int _originalWidth = 100;
 
     /// <summary>
     ///     The selection
