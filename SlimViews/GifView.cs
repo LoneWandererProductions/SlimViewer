@@ -14,7 +14,6 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
-using SlimViews.Contexts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -52,11 +51,6 @@ namespace SlimViews
         /// The clear command
         /// </summary>
         private ICommand? _clearCommand;
-
-        /// <summary>
-        /// The close command
-        /// </summary>
-        private ICommand? _closeCommand;
 
         /// <summary>
         /// The open command
@@ -139,7 +133,6 @@ namespace SlimViews
             _clearCommand = new DelegateCommand<object>(_ => ClearAction(), CanExecute);
             _saveGifCommand = new DelegateCommand<object>(_ => SaveGifAction(), CanExecute);
             _saveImagesCommand = new DelegateCommand<object>(_ => SaveImagesAction(), CanExecute);
-            _closeCommand = new DelegateCommand<object>(_ => CloseAction(), CanExecute);
         }
 
         /// <summary>
@@ -176,11 +169,6 @@ namespace SlimViews
         ///     Gets the save images command.
         /// </summary>
         public ICommand SaveImagesCommand => _saveImagesCommand!;
-
-        /// <summary>
-        ///     Gets the close command.
-        /// </summary>
-        public ICommand CloseCommand => _closeCommand!;
 
         /// <summary>
         ///     Gets or sets the basic File information.
@@ -458,15 +446,6 @@ namespace SlimViews
                 // Preserve behavior: do not throw to UI; instead show info text
                 Information = $"Clear failed: {ex.Message}";
             }
-        }
-
-        /// <summary>
-        ///     Closes the application (preserves original behavior).
-        /// </summary>
-        private void CloseAction()
-        {
-            if (SlimViewerRegister.GifCleanUp) ClearAction();
-            Application.Current.Shutdown();
         }
 
         /// <summary>

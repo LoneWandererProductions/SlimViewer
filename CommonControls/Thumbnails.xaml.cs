@@ -57,7 +57,7 @@ public sealed partial class Thumbnails : IDisposable
     public static readonly DependencyProperty DependencyThumbHeight = DependencyProperty.Register(
         nameof(DependencyThumbHeight),
         typeof(int),
-        typeof(Thumbnails), new PropertyMetadata(1));
+        typeof(Thumbnails));
 
     /// <summary>
     ///     The Thumb Length (in lines)
@@ -65,7 +65,7 @@ public sealed partial class Thumbnails : IDisposable
     public static readonly DependencyProperty DependencyThumbWidth = DependencyProperty.Register(
         nameof(DependencyThumbWidth),
         typeof(int),
-        typeof(Thumbnails), new PropertyMetadata(1));
+        typeof(Thumbnails));
 
     /// <summary>
     ///     The Thumb Cell Size
@@ -73,7 +73,7 @@ public sealed partial class Thumbnails : IDisposable
     public static readonly DependencyProperty DependencyThumbCellSize = DependencyProperty.Register(
         nameof(DependencyThumbCellSize),
         typeof(int),
-        typeof(Thumbnails), new PropertyMetadata(100));
+        typeof(Thumbnails));
 
     /// <summary>
     ///     The dependency thumb grid
@@ -142,7 +142,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The original height
     /// </summary>
-    private int _originalHeight = 1;
+    private int _originalHeight;
 
     /// <summary>
     /// The loaded
@@ -152,7 +152,7 @@ public sealed partial class Thumbnails : IDisposable
     /// <summary>
     ///     The original width
     /// </summary>
-    private int _originalWidth = 1;
+    private int _originalWidth;
 
     /// <summary>
     ///     The selection
@@ -453,23 +453,35 @@ public sealed partial class Thumbnails : IDisposable
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-    private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
         try
         {
             _loaded = true;
+
+            // Capture original width/height immediately
             _originalWidth = ThumbWidth;
             _originalHeight = ThumbHeight;
 
+            // Start loading images asynchronously
             if (ItemsSource != null)
             {
-                await OnItemsSourceChanged(); // await the first load
+                _ = LoadItemsAsync();
             }
         }
         catch (Exception ex)
         {
-            Trace.WriteLine($"Error loading images: {ex}");
+            Trace.WriteLine($"Error in Loaded: {ex}");
         }
+    }
+
+    /// <summary>
+    /// Fire-and-forget wrapper to call your async method
+    /// Loads the items asynchronous.
+    /// </summary>
+    private async Task LoadItemsAsync()
+    {
+        await OnItemsSourceChanged();
     }
 
     /// <summary>
