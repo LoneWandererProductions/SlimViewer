@@ -25,7 +25,6 @@ namespace Imaging;
 /// </summary>
 public sealed class ImageGif : Image, IDisposable
 {
-    #region Dependency Properties
 
     public static readonly DependencyProperty FrameIndexProperty =
         DependencyProperty.Register(nameof(FrameIndex), typeof(int), typeof(ImageGif),
@@ -39,21 +38,17 @@ public sealed class ImageGif : Image, IDisposable
         DependencyProperty.Register(nameof(GifSource), typeof(string), typeof(ImageGif),
             new UIPropertyMetadata(string.Empty, GifSourcePropertyChanged));
 
-    #endregion
 
-    #region Private Fields
 
     private List<ImageSource> _imageList;
     private List<int> _frameDelays; // in milliseconds
     private bool _isDisposed;
     private bool _isInitialized;
 
-    private CancellationTokenSource _animationCts;
+    private CancellationTokenSource? _animationCts;
     private Task _animationTask;
 
-    #endregion
 
-    #region Constructor
 
     static ImageGif()
     {
@@ -61,9 +56,8 @@ public sealed class ImageGif : Image, IDisposable
             new FrameworkPropertyMetadata(VisibilityPropertyChanged));
     }
 
-    #endregion
+    private int _animationGeneration;
 
-    #region Public Properties
 
     public int FrameIndex
     {
@@ -83,15 +77,11 @@ public sealed class ImageGif : Image, IDisposable
         set => SetValue(GifSourceProperty, value);
     }
 
-    #endregion
 
-    #region Events
 
     public event EventHandler ImageLoaded;
 
-    #endregion
 
-    #region Private Methods
 
     private static void VisibilityPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
@@ -180,53 +170,75 @@ public sealed class ImageGif : Image, IDisposable
         }
     }
 
-    #endregion
-
-    #region Public Methods
-
     public void StartAnimation()
     {
         if (!_isInitialized || _imageList == null || _imageList.Count == 0)
             return;
 
-        StopAnimation(); // stop existing animation
+        StopAnimation();
 
         _animationCts = new CancellationTokenSource();
         var token = _animationCts.Token;
 
+        int generation = ++_animationGeneration;
+
         _animationTask = Task.Run(async () =>
         {
             int frameIndex = 0;
+
             while (!token.IsCancellationRequested)
             {
-                int delay = _frameDelays[frameIndex];
+                int localFrame = frameIndex;
 
-                // Update UI on the dispatcher thread
                 await Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    Source = _imageList[frameIndex];
-                    FrameIndex = frameIndex;
+                    // Reject old/stale animation updates
+                    if (generation != _animationGeneration)
+                        return;
+
+                    Source = _imageList[localFrame];
+                    FrameIndex = localFrame;
                 }));
 
-                frameIndex = (frameIndex + 1) % _imageList.Count;
+                await Task.Delay(_frameDelays[frameIndex], token);
 
-                await Task.Delay(delay, token);
+                frameIndex = (frameIndex + 1) % _imageList.Count;
             }
         }, token);
     }
 
     public void StopAnimation()
     {
-        if (_animationCts != null)
-        {
-            _animationCts.Cancel();
-            _animationCts = null;
-        }
+        _animationGeneration++;        // invalidate all pending dispatcher callbacks
+
+        _animationCts?.Cancel();
+        _animationCts = null;
+
+        Source = null;
     }
 
-    #endregion
+    public void Reset()
+    {
+        // Invalidate any pending dispatcher callbacks
+        _animationGeneration++;
 
-    #region IDisposable
+        // Cancel and clear animation
+        _animationCts?.Cancel();
+        _animationCts = null;
+
+        // Clear frame lists
+        if (_imageList != null)
+        {
+            _imageList.Clear();
+            _imageList = null!;
+        }
+        _frameDelays = null;
+
+        // Clear image immediately
+        Dispatcher.Invoke(() => Source = null, System.Windows.Threading.DispatcherPriority.Render);
+
+        _isInitialized = false;
+    }
 
     public void Dispose()
     {
@@ -253,5 +265,4 @@ public sealed class ImageGif : Image, IDisposable
         Dispose(false);
     }
 
-    #endregion
 }

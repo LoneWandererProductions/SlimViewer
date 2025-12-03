@@ -11,6 +11,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable MissingSpace
 
+using Imaging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -326,30 +327,37 @@ public sealed partial class ImageZoom : IDisposable
     /// </summary>
     private void OnImageSourceGifChanged()
     {
-        if (!File.Exists(ImageGifPath))
+        if (string.IsNullOrEmpty(ImageGifPath) || !File.Exists(ImageGifPath))
         {
+            // ensure gif is stopped and cleared
+            BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
             BtmImage.GifSource = null;
+            BtmImage.StopAnimation();
             BtmImage.Source = null;
             return;
         }
 
-        //reset position
+        // reset position + scroll
         var matrix = BtmImage.RenderTransform.Value;
         matrix.OffsetX = 0;
         matrix.OffsetY = 0;
         BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-        //reset Scrollbar
         ScrollView.ScrollToTop();
         ScrollView.UpdateLayout();
 
-        // Set GifSource and subscribe to the ImageLoaded event
-        BtmImage.ImageLoaded += BtmImage_ImageLoaded;
+        // Unsubscribe before subscribe (prevents duplicates) and reset gif control
+        BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
+        if (BtmImage is ImageGif gif)
+        {
+            gif.Reset(); // if available
+        }
         BtmImage.GifSource = ImageGifPath;
+        BtmImage.ImageLoaded += BtmImage_ImageLoaded;
 
-        // Ensure the adorner updates with the new zoom scale
         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
     }
+
 
     /// <summary>
     ///     Handles the ImageLoaded event of the BtmImage control.
@@ -382,13 +390,45 @@ public sealed partial class ImageZoom : IDisposable
     /// </summary>
     private void OnImageSourceChanged()
     {
-        BtmImage.StopAnimation();
-        BtmImage.Source = ItemsSource;
+        // Prevent any GIF from reasserting itself
+        BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
+        BtmImage.GifSource = null;
+        BtmImage.StopAnimation(); // still call stop in case Reset() not available
+
+        // Force WPF to process the null assignment immediately
+        Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+
+        // Load ItemsSource via stream to avoid WPF URI cache if possible
+        if (ItemsSource != null && !string.IsNullOrEmpty(ItemsSource.UriSource?.OriginalString))
+        {
+            // Best: create a new BitmapImage from a stream on demand
+            try
+            {
+                var uri = ItemsSource.UriSource;
+                var path = uri.IsAbsoluteUri ? uri.LocalPath : uri.OriginalString;
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                bmp.StreamSource = fs;
+                bmp.EndInit();
+                bmp.Freeze();
+                BtmImage.Source = bmp;
+            }
+            catch
+            {
+                // fallback to existing ItemsSource
+                BtmImage.Source = ItemsSource;
+            }
+        }
+        else
+        {
+            // ItemsSource is already a BitmapImage created in-memory
+            BtmImage.Source = ItemsSource;
+        }
 
         if (BtmImage.Source == null)
-        {
             return;
-        }
 
         //reset Scaling
         Scale.ScaleX = 1;
@@ -407,12 +447,10 @@ public sealed partial class ImageZoom : IDisposable
         MainCanvas.Height = BtmImage.Source.Height;
         MainCanvas.Width = BtmImage.Source.Width;
 
-        // Update the adorner with the new image transform
         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-
-        // Reattach adorner for new image (this ensures correct behavior for the new image)
         AttachAdorner(SelectionTool);
     }
+
 
     /// <summary>
     ///     Attaches the adorner.
