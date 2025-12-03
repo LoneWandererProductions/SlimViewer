@@ -1158,6 +1158,7 @@ namespace SlimViews
                 {
                     if (GifPath?.Equals(filePath, StringComparison.OrdinalIgnoreCase) == true) return;
 
+                    GifPath = null;
                     GifPath = filePath;
 
                     var info = ImageGifHandler.GetImageInfo(filePath);
