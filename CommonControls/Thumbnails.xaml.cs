@@ -145,6 +145,11 @@ public sealed partial class Thumbnails : IDisposable
     private int _originalHeight;
 
     /// <summary>
+    /// The loaded
+    /// </summary>
+    private bool _loaded;
+
+    /// <summary>
     ///     The original width
     /// </summary>
     private int _originalWidth;
@@ -452,14 +457,17 @@ public sealed partial class Thumbnails : IDisposable
     {
         try
         {
+            _loaded = true;
             _originalWidth = ThumbWidth;
             _originalHeight = ThumbHeight;
 
-            await LoadImages(); // safe to await here
+            if (ItemsSource != null)
+            {
+                await OnItemsSourceChanged(); // await the first load
+            }
         }
         catch (Exception ex)
         {
-            // Log or handle exceptions gracefully
             Trace.WriteLine($"Error loading images: {ex}");
         }
     }
@@ -533,7 +541,7 @@ public sealed partial class Thumbnails : IDisposable
             await semaphore.WaitAsync(token);
             try
             {
-                await LoadSingleImage(kv.Key, kv.Value, exGrid, token);
+                await LoadSingleImage(kv.Key, kv.Value, exGrid, token, cellSize, thumbWidth);
             }
             finally
             {
@@ -554,18 +562,22 @@ public sealed partial class Thumbnails : IDisposable
     }
 
     /// <summary>
-    ///     Loads the image asynchronous.
+    /// Loads the image asynchronous.
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="filePath">The file path.</param>
     /// <param name="exGrid">The ex grid.</param>
-    /// <returns>Load all images async</returns>
-    private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token)
+    /// <param name="token">The token.</param>
+    /// <param name="cellSize">Size of the cell.</param>
+    /// <param name="thumbWidth">Width of the thumb.</param>
+    /// <returns>
+    /// Load all images async
+    /// </returns>
+    private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token, int cellSize, int thumbWidth)
     {
         if (token.IsCancellationRequested) return;
 
         // Capture UI-thread values safely
-        int cellSize = await Application.Current.Dispatcher.InvokeAsync(() => ThumbCellSize);
         bool isCheckBoxSelected = await Application.Current.Dispatcher.InvokeAsync(() => IsCheckBoxSelected);
 
         // Load the bitmap off the UI thread
@@ -620,14 +632,14 @@ public sealed partial class Thumbnails : IDisposable
             Border.TryAdd(key, border);
 
             // Grid placement
-            Grid.SetRow(border, key / ThumbWidth);
-            Grid.SetColumn(border, key % ThumbWidth);
+            Grid.SetRow(border, key / thumbWidth);
+            Grid.SetColumn(border, key % thumbWidth);
             _ = exGrid.Children.Add(border);
 
             if (SelectBox && checkbox != null)
             {
-                Grid.SetRow(checkbox, key / ThumbWidth);
-                Grid.SetColumn(checkbox, key % ThumbWidth);
+                Grid.SetRow(checkbox, key / thumbWidth);
+                Grid.SetColumn(checkbox, key % thumbWidth);
                 _ = exGrid.Children.Add(checkbox);
 
                 // Attach right-click event for context menu

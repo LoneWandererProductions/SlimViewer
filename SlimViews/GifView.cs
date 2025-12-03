@@ -14,6 +14,7 @@ using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
+using SlimViews.Contexts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -227,12 +228,15 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets or sets the observer dictionary (index -> file path).
+        /// Gets or sets the observer dictionary (index -&gt; file path).
         /// </summary>
-        public IReadOnlyDictionary<int, string> Observer
+        /// <value>
+        /// The observer.
+        /// </value>
+        public Dictionary<int, string> Observer
         {
             get => _observer;
-            private set => SetProperty(ref _observer, value.ToDictionary(kv => kv.Key, kv => kv.Value));
+            set => SetProperty(ref _observer, value);
         }
 
         /// <summary>
@@ -316,8 +320,11 @@ namespace SlimViews
                 return files.ToDictionary();
             }, token).ConfigureAwait(false);
 
-            // Update Observer on UI thread (SetProperty will raise notifications)
-            Observer = dict;
+            // UI-thread update
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Observer = dict;
+            });
         }
 
         /// <summary>
