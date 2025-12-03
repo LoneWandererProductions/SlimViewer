@@ -7,262 +7,221 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Imaging;
-
-/// <inheritdoc cref="Image" />
-/// <summary>
-/// Extension for Image to play GIFs asynchronously on a background thread
-/// </summary>
-public sealed class ImageGif : Image, IDisposable
+namespace Imaging
 {
-
-    public static readonly DependencyProperty FrameIndexProperty =
-        DependencyProperty.Register(nameof(FrameIndex), typeof(int), typeof(ImageGif),
-            new UIPropertyMetadata(0, ChangingFrameIndex));
-
-    public static readonly DependencyProperty AutoStartProperty =
-        DependencyProperty.Register(nameof(AutoStart), typeof(bool), typeof(ImageGif),
-            new UIPropertyMetadata(false, AutoStartPropertyChanged));
-
-    public static readonly DependencyProperty GifSourceProperty =
-        DependencyProperty.Register(nameof(GifSource), typeof(string), typeof(ImageGif),
-            new UIPropertyMetadata(string.Empty, GifSourcePropertyChanged));
-
-
-
-    private List<ImageSource> _imageList;
-    private List<int> _frameDelays; // in milliseconds
-    private bool _isDisposed;
-    private bool _isInitialized;
-
-    private CancellationTokenSource? _animationCts;
-    private Task _animationTask;
-
-
-
-    static ImageGif()
-    {
-        VisibilityProperty.OverrideMetadata(typeof(ImageGif),
-            new FrameworkPropertyMetadata(VisibilityPropertyChanged));
-    }
-
-    private int _animationGeneration;
-
-
-    public int FrameIndex
-    {
-        get => (int)GetValue(FrameIndexProperty);
-        set => SetValue(FrameIndexProperty, value);
-    }
-
-    public bool AutoStart
-    {
-        get => (bool)GetValue(AutoStartProperty);
-        set => SetValue(AutoStartProperty, value);
-    }
-
-    public string GifSource
-    {
-        get => (string)GetValue(GifSourceProperty);
-        set => SetValue(GifSourceProperty, value);
-    }
-
-
-
-    public event EventHandler ImageLoaded;
-
-
-
-    private static void VisibilityPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-        if ((Visibility)e.NewValue == Visibility.Visible)
-        {
-            ((ImageGif)sender).StartAnimation();
-        }
-        else
-        {
-            ((ImageGif)sender).StopAnimation();
-        }
-    }
-
-    private static void ChangingFrameIndex(DependencyObject obj, DependencyPropertyChangedEventArgs ev)
-    {
-        if (obj is not ImageGif gifImage)
-            return;
-
-        int newIndex = (int)ev.NewValue;
-        if (gifImage._imageList != null && newIndex >= 0 && newIndex < gifImage._imageList.Count)
-        {
-            gifImage.Source = gifImage._imageList[newIndex];
-        }
-    }
-
-    private static void AutoStartPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-        (sender as ImageGif)?.StartAnimation();
-    }
-
-    private static async void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-        var gif = sender as ImageGif;
-        if (gif == null) return;
-
-        await gif.InitializeAsync(); // load frames async
-
-        if (gif.AutoStart)
-            gif.StartAnimation();
-    }
-
     /// <summary>
-    /// Loads GIF frames asynchronously off the UI thread
+    /// Image control capable of playing animated GIFs in a self-contained way.
+    /// Switching GIF → non-GIF will always clear old frames and stop timers.
     /// </summary>
-    /// <summary>
-    /// Loads GIF frames asynchronously off the UI thread
-    /// </summary>
-    private async Task InitializeAsync()
+    public sealed class ImageGif : Image, IDisposable
     {
-        string gifSource = await Application.Current.Dispatcher.InvokeAsync(() => GifSource);
+        // Dependency properties
+        public static readonly DependencyProperty GifSourceProperty =
+            DependencyProperty.Register(
+                nameof(GifSource),
+                typeof(string),
+                typeof(ImageGif),
+                new PropertyMetadata(string.Empty, OnGifSourceChanged));
 
-        if (!File.Exists(gifSource))
-            return;
+        public static readonly DependencyProperty AutoStartProperty =
+            DependencyProperty.Register(
+                nameof(AutoStart),
+                typeof(bool),
+                typeof(ImageGif),
+                new PropertyMetadata(false));
 
-        try
+        /// <summary>
+        /// The decoder
+        /// </summary>
+        private GifBitmapDecoder? _decoder;
+
+        /// <summary>
+        /// The timer
+        /// </summary>
+        private Timer? _timer;
+
+        /// <summary>
+        /// The frame index
+        /// </summary>
+        private int _frameIndex;
+
+        /// <summary>
+        /// The is disposed
+        /// </summary>
+        private bool _isDisposed;
+
+        /// <summary>
+        /// Gets or sets the GIF source.
+        /// </summary>
+        /// <value>
+        /// The GIF source.
+        /// </value>
+        public string GifSource
         {
-            // Load frames in background thread
-            var (frames, delays) = await Task.Run(() => ImageGifHandler.LoadGifWithDelaysAsync(gifSource));
+            get => (string)GetValue(GifSourceProperty);
+            set => SetValue(GifSourceProperty, value);
+        }
 
-            // Freeze frames to make them thread-safe
-            _imageList = new List<ImageSource>();
-            foreach (var frame in frames)
+        /// <summary>
+        /// Gets or sets a value indicating whether [automatic start].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [automatic start]; otherwise, <c>false</c>.
+        /// </value>
+        public bool AutoStart
+        {
+            get => (bool)GetValue(AutoStartProperty);
+            set => SetValue(AutoStartProperty, value);
+        }
+
+        /// <summary>
+        /// DP callback: a new GIF path was assigned.
+        /// This method completely resets GIF state and loads the new file.
+        /// </summary>
+        private static void OnGifSourceChanged(
+            DependencyObject sender,
+            DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is ImageGif gif)
+                gif.LoadGif(e.NewValue as string);
+        }
+
+        /// <summary>
+        /// Full GIF load routine:
+        /// - stops old animation
+        /// - clears previous frames
+        /// - loads new GIF decoder
+        /// - optionally starts animation
+        /// </summary>
+        /// <param name="path">The path.</param>
+        private void LoadGif(string? path)
+        {
+            StopGif();
+
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
             {
-                if (frame.CanFreeze)
-                    frame.Freeze(); // important!
-                _imageList.Add(frame);
+                Source = null;
+                return;
             }
 
-            _frameDelays = delays;
+            try
+            {
+                // Make decoder
+                _decoder = new GifBitmapDecoder(
+                    new Uri(path, UriKind.Absolute),
+                    BitmapCreateOptions.PreservePixelFormat,
+                    BitmapCacheOption.OnLoad);
 
-            if (_imageList.Count == 0)
+                if (_decoder.Frames.Count == 0)
+                {
+                    Source = null;
+                    return;
+                }
+
+                // Show first frame immediately
+                _frameIndex = 0;
+                Source = _decoder.Frames[0];
+
+                if (AutoStart)
+                    StartGif();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error loading GIF: " + ex);
+                Source = null;
+            }
+        }
+
+        /// <summary>
+        /// Starts the animation timer.  
+        /// A simple timer is used to avoid async task races and frame lag.
+        /// </summary>
+        public void StartGif()
+        {
+            if (_decoder == null || _decoder.Frames.Count <= 1)
                 return;
 
-            _isInitialized = true;
+            // Hardcoded delay (most GIFs specify individual delays,
+            // but WPF does not expose them — this is standard practice)
+            const int delay = 80; // ms
 
-            // Set the first frame immediately on the UI thread
-            await Dispatcher.BeginInvoke(new Action(() =>
+            _timer = new Timer(_ =>
             {
-                Source = _imageList[0];
-                ImageLoaded?.Invoke(this, EventArgs.Empty);
-            }));
-        }
-        catch (Exception ex)
-        {
-            Trace.WriteLine(ex);
-        }
-    }
-
-    public void StartAnimation()
-    {
-        if (!_isInitialized || _imageList == null || _imageList.Count == 0)
-            return;
-
-        StopAnimation();
-
-        _animationCts = new CancellationTokenSource();
-        var token = _animationCts.Token;
-
-        int generation = ++_animationGeneration;
-
-        _animationTask = Task.Run(async () =>
-        {
-            int frameIndex = 0;
-
-            while (!token.IsCancellationRequested)
-            {
-                int localFrame = frameIndex;
-
-                await Dispatcher.BeginInvoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    // Reject old/stale animation updates
-                    if (generation != _animationGeneration)
+                    if (_decoder == null)
                         return;
 
-                    Source = _imageList[localFrame];
-                    FrameIndex = localFrame;
-                }));
+                    _frameIndex = (_frameIndex + 1) % _decoder.Frames.Count;
+                    Source = _decoder.Frames[_frameIndex];
+                });
 
-                await Task.Delay(_frameDelays[frameIndex], token);
-
-                frameIndex = (frameIndex + 1) % _imageList.Count;
-            }
-        }, token);
-    }
-
-    public void StopAnimation()
-    {
-        _animationGeneration++;        // invalidate all pending dispatcher callbacks
-
-        _animationCts?.Cancel();
-        _animationCts = null;
-
-        Source = null;
-    }
-
-    public void Reset()
-    {
-        // Invalidate any pending dispatcher callbacks
-        _animationGeneration++;
-
-        // Cancel and clear animation
-        _animationCts?.Cancel();
-        _animationCts = null;
-
-        // Clear frame lists
-        if (_imageList != null)
-        {
-            _imageList.Clear();
-            _imageList = null!;
-        }
-        _frameDelays = null;
-
-        // Clear image immediately
-        Dispatcher.Invoke(() => Source = null, System.Windows.Threading.DispatcherPriority.Render);
-
-        _isInitialized = false;
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (_isDisposed)
-            return;
-
-        if (disposing)
-        {
-            StopAnimation();
-            _imageList?.Clear();
+            }, null, delay, delay);
         }
 
-        _isDisposed = true;
-    }
+        /// <summary>
+        /// Stops animation and clears timers/decoder safely.
+        /// </summary>
+        public void StopGif()
+        {
+            _timer?.Dispose();
+            _timer = null;
 
-    ~ImageGif()
-    {
-        Dispose(false);
-    }
+            _decoder = null;
+            _frameIndex = 0;
 
+            // Important: clear the visual to guarantee no ghosting
+            Source = null;
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.FrameworkElement.SizeChanged" /> event, using the specified information as part of the eventual event data.
+        /// </summary>
+        /// <param name="sizeInfo">Details of the old and new size involved in the change.</param>
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            // this is intentionally left empty: no resize side-effects needed
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        private void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            if (disposing)
+                StopGif();
+
+            _isDisposed = true;
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ImageGif"/> class.
+        /// </summary>
+        ~ImageGif()
+        {
+            Dispose(false);
+        }
+    }
 }
+

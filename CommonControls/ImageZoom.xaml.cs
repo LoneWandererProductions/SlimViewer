@@ -330,9 +330,7 @@ public sealed partial class ImageZoom : IDisposable
         if (string.IsNullOrEmpty(ImageGifPath) || !File.Exists(ImageGifPath))
         {
             // ensure gif is stopped and cleared
-            BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
             BtmImage.GifSource = null;
-            BtmImage.StopAnimation();
             BtmImage.Source = null;
             return;
         }
@@ -346,14 +344,7 @@ public sealed partial class ImageZoom : IDisposable
         ScrollView.ScrollToTop();
         ScrollView.UpdateLayout();
 
-        // Unsubscribe before subscribe (prevents duplicates) and reset gif control
-        BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
-        if (BtmImage is ImageGif gif)
-        {
-            gif.Reset(); // if available
-        }
         BtmImage.GifSource = ImageGifPath;
-        BtmImage.ImageLoaded += BtmImage_ImageLoaded;
 
         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
     }
@@ -367,9 +358,6 @@ public sealed partial class ImageZoom : IDisposable
     /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
     private void BtmImage_ImageLoaded(object sender, EventArgs e)
     {
-        // Unsubscribe to prevent memory leaks
-        BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
-
         // Now the source is fully loaded, you can safely access it
         MainCanvas.Height = BtmImage.Source.Height;
         MainCanvas.Width = BtmImage.Source.Width;
@@ -391,9 +379,7 @@ public sealed partial class ImageZoom : IDisposable
     private void OnImageSourceChanged()
     {
         // Prevent any GIF from reasserting itself
-        BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
         BtmImage.GifSource = null;
-        BtmImage.StopAnimation(); // still call stop in case Reset() not available
 
         // Force WPF to process the null assignment immediately
         Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
@@ -765,7 +751,6 @@ public sealed partial class ImageZoom : IDisposable
                 }
 
                 // Dispose image resources
-                BtmImage?.StopAnimation();
                 if (BtmImage != null)
                 {
                     BtmImage.Source = null;
@@ -777,11 +762,6 @@ public sealed partial class ImageZoom : IDisposable
                 }
 
                 SelectionAdorner = null;
-
-                if (BtmImage != null)
-                {
-                    BtmImage.ImageLoaded -= BtmImage_ImageLoaded;
-                }
 
                 // Release UI interaction resources
                 MainCanvas.ReleaseMouseCapture();
