@@ -137,6 +137,58 @@ public static class ImageGifHandler
         return bitmapList.Select(image => image.ToBitmapImage()).Cast<ImageSource>().ToList();
     }
 
+    internal static async Task<(List<ImageSource> Frames, List<int> Delays)> LoadGifWithDelaysAsync(string path)
+    {
+        if (!File.Exists(path))
+            throw new FileNotFoundException("GIF file not found", path);
+
+        var frames = new List<ImageSource>();
+        var delays = new List<int>();
+
+        await Task.Run(() =>
+        {
+            using var image = System.Drawing.Image.FromFile(path);
+            var dimension = new FrameDimension(image.FrameDimensionsList[0]);
+            int frameCount = image.GetFrameCount(dimension);
+
+            // Get delay property (PropertyTagFrameDelay = 0x5100)
+            var delayProperty = image.GetPropertyItem(0x5100);
+            byte[] delayBytes = delayProperty?.Value ?? Array.Empty<byte>();
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                image.SelectActiveFrame(dimension, i);
+
+                using var bitmap = new System.Drawing.Bitmap(image);
+
+                // Convert to BitmapImage safely off UI thread
+                var ms = new MemoryStream();
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                ms.Position = 0;
+
+                var bmpImg = new BitmapImage();
+                bmpImg.BeginInit();
+                bmpImg.CacheOption = BitmapCacheOption.OnLoad;
+                bmpImg.StreamSource = ms;
+                bmpImg.EndInit();
+                bmpImg.Freeze(); // freeze here, off UI thread
+
+                frames.Add(bmpImg);
+
+                // Calculate delay in milliseconds
+                int delay = 100; // fallback default 100ms
+                if (delayBytes.Length >= (i + 1) * 4)
+                {
+                    int hundredths = BitConverter.ToInt32(delayBytes, i * 4);
+                    delay = Math.Max(hundredths * 10, 20);
+                }
+                delays.Add(delay);
+            }
+        });
+
+        return (frames, delays);
+    }
+
     /// <summary>
     ///     Creates the gif.
     ///     The gif is slightly bigger for now
