@@ -18,7 +18,7 @@ namespace SlimControls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Annahme: value ist der Name des aktiven Tools als string
-            if (value is string activeTool && activeTool == "Shape")
+            if (value is string and "Shape")
                 return Visibility.Visible;
             return Visibility.Collapsed;
         }

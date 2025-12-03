@@ -22,7 +22,7 @@ namespace Exp
         {
             if (value is bool b)
             {
-                bool result = Invert ? !b : b;
+                var result = Invert ? !b : b;
                 return result ? Visibility.Visible : Visibility.Collapsed;
             }
 
@@ -33,7 +33,7 @@ namespace Exp
         {
             if (value is Visibility v)
             {
-                bool result = v == Visibility.Visible;
+                var result = v == Visibility.Visible;
                 return Invert ? !result : result;
             }
 

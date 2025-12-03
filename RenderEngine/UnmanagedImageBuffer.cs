@@ -511,12 +511,12 @@ namespace RenderEngine
 
             unsafe
             {
-                int srcRowSize = Width * BytesPerPixel;
+                var srcRowSize = Width * BytesPerPixel;
 
-                for (int y = 0; y < Height; y++)
+                for (var y = 0; y < Height; y++)
                 {
-                    byte* src = (byte*)_buffer + y * srcRowSize;
-                    byte* dst = (byte*)data.Scan0 + y * data.Stride;
+                    var src = (byte*)_buffer + y * srcRowSize;
+                    var dst = (byte*)data.Scan0 + y * data.Stride;
 
                     // Destination buffer size must match ROW copy size
                     System.Buffer.MemoryCopy(src, dst, srcRowSize, srcRowSize);

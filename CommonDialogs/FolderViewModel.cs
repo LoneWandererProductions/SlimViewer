@@ -141,7 +141,7 @@ namespace CommonDialogs
 
                 var newDirPath = Path.Combine(Paths, "New Folder");
                 var dirName = newDirPath;
-                int i = 1;
+                var i = 1;
 
                 while (Directory.Exists(dirName))
                     dirName = $"{newDirPath} ({i++})";
@@ -180,9 +180,9 @@ namespace CommonDialogs
         {
             Paths = path;
 
-            string[] directories =
+            var directories =
                 Directory.Exists(path) ? Directory.GetDirectories(path) : Directory.GetLogicalDrives();
-            string[] files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
+            var files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {

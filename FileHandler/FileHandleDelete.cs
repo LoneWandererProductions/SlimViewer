@@ -34,7 +34,7 @@ public static class FileHandleDelete
         if (!File.Exists(path))
             return false;
 
-        int attempt = 0;
+        var attempt = 0;
         while (IsFileLocked(path) && attempt < FileHandlerRegister.Tries)
         {
             attempt++;

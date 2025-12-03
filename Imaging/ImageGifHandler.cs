@@ -80,9 +80,9 @@ public static class ImageGifHandler
             using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var image = Image.FromStream(fs);
 
-            int frameCount = image.GetFrameCount(FrameDimension.Time);
+            var frameCount = image.GetFrameCount(FrameDimension.Time);
 
-            for (int i = 0; i < frameCount; i++)
+            for (var i = 0; i < frameCount; i++)
             {
                 image.SelectActiveFrame(FrameDimension.Time, i);
 

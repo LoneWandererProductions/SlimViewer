@@ -23,6 +23,10 @@ namespace Imaging
     public sealed class ImageGif : Image, IDisposable
     {
         // Dependency properties
+
+        /// <summary>
+        /// The GIF source property
+        /// </summary>
         public static readonly DependencyProperty GifSourceProperty =
             DependencyProperty.Register(
                 nameof(GifSource),
@@ -30,6 +34,9 @@ namespace Imaging
                 typeof(ImageGif),
                 new PropertyMetadata(string.Empty, OnGifSourceChanged));
 
+        /// <summary>
+        /// The automatic start property
+        /// </summary>
         public static readonly DependencyProperty AutoStartProperty =
             DependencyProperty.Register(
                 nameof(AutoStart),
@@ -140,7 +147,7 @@ namespace Imaging
         }
 
         /// <summary>
-        /// Starts the animation timer.  
+        /// Starts the animation timer.
         /// A simple timer is used to avoid async task races and frame lag.
         /// </summary>
         public void StartGif()
