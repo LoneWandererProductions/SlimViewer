@@ -94,7 +94,10 @@ namespace SlimViews
             foreach (var image in images)
                 try
                 {
-                    var success = SaveImage(imageExport, ImagingResources.JpgExt, image);
+                    string fileName = $"frame{ImagingResources.JpgExt}";
+                    string fullPath = Path.Combine(imageExport, fileName);
+
+                    var success = SaveImage(fullPath, ImagingResources.JpgExt, image);
                     if (!success) ShowError(ViewResources.ErrorCouldNotSaveFile);
                 }
                 catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)

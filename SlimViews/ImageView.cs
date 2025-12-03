@@ -606,10 +606,19 @@ namespace SlimViews
             set => SetProperty(ref _imageZoomTool, value, nameof(ImageZoomTool));
         }
 
+        /// <summary>
+        /// The image
+        /// </summary>
         internal readonly ImageContext Image = new();
 
+        /// <summary>
+        /// The UI state
+        /// </summary>
         internal readonly UiState UiState = new();
 
+        /// <summary>
+        /// The file context
+        /// </summary>
         internal readonly FileContext FileContext = new();
 
         /// <summary>

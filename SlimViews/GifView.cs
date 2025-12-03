@@ -374,6 +374,8 @@ namespace SlimViews
             var currentFolder = ImageExportPath;
             var fileList = FileHandleSearch.GetFilesByExtensionFullPath(currentFolder, ImagingResources.JpgExt, false);
 
+            if (fileList.IsNullOrEmpty()) return;
+
             // spawn thumbnail generation on UI flow
             await GenerateThumbViewAsync(fileList).ConfigureAwait(false);
         }
