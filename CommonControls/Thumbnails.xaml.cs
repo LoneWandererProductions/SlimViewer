@@ -577,7 +577,8 @@ public sealed partial class Thumbnails : IDisposable
     /// <returns>
     /// Load all images async
     /// </returns>
-    private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token, int cellSize, int thumbWidth)
+    private async Task LoadSingleImage(int key, string filePath, Panel exGrid, CancellationToken token, int cellSize,
+        int thumbWidth)
     {
         if (token.IsCancellationRequested) return;
 

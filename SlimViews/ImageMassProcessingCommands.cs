@@ -1,4 +1,12 @@
-﻿using SlimControls;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViews
+ * FILE:        ImageMassProcessingCommands.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using SlimControls;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -61,7 +69,8 @@ namespace SlimViews
 
             if (owner.UiState.Thumb.IsSelectionValid)
             {
-                foreach (var id in owner.UiState.Thumb.Selection.Keys.Where(id => owner.FileContext.IsKeyInObserver(id)))
+                foreach (var id in owner.UiState.Thumb.Selection.Keys.Where(id =>
+                             owner.FileContext.IsKeyInObserver(id)))
                     dct.Add(id, owner.FileContext.Observer[id]);
             }
             else
@@ -193,7 +202,7 @@ namespace SlimViews
         /// Folders the search.
         /// </summary>
         /// <param name="owner">The owner.</param>
-        internal void FolderSearch(ImageView owner) =>InitDialog<Search>(owner);
+        internal void FolderSearch(ImageView owner) => InitDialog<Search>(owner);
 
         /// <summary>
         /// Analyzers the window.

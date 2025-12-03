@@ -327,10 +327,7 @@ namespace SlimViews
             }, token).ConfigureAwait(false);
 
             // UI-thread update
-            await Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                Observer = dict;
-            });
+            await Application.Current.Dispatcher.InvokeAsync(() => { Observer = dict; });
         }
 
         /// <summary>
@@ -496,8 +493,8 @@ namespace SlimViews
 
             // Build list from thumbnail selection (preserve ordering by PathSort helper)
             var lst = Thumbnail.Selection.Keys
-                              .Select(id => Observer[id])
-                              .ToList();
+                .Select(id => Observer[id])
+                .ToList();
 
             lst = lst.PathSort();
 
@@ -520,8 +517,8 @@ namespace SlimViews
             if (string.IsNullOrEmpty(path)) return;
 
             var lst = Thumbnail.Selection.Keys
-                              .Select(id => _observer[id])
-                              .ToList();
+                .Select(id => _observer[id])
+                .ToList();
 
             _ = FileHandleCopy.CopyFiles(lst, path, false);
         }
@@ -547,7 +544,6 @@ namespace SlimViews
                 Directory.CreateDirectory(_gifExport);
 
                 OutputPath = path;
-
 
 
                 // ensure directories exist

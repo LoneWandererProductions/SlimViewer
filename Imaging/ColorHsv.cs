@@ -97,7 +97,9 @@ namespace Imaging
         /// <summary>
         /// Prevents a default instance of the <see cref="ColorHsv"/> class from being created.
         /// </summary>
-        private ColorHsv() { } // internal factory use
+        private ColorHsv()
+        {
+        } // internal factory use
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorHsv"/> class.

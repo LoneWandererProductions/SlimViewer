@@ -1,4 +1,12 @@
-﻿using CommonDialogs;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViews
+ * FILE:        FileProcessingCommands.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using CommonDialogs;
 using FileHandler;
 using Imaging;
 using System;

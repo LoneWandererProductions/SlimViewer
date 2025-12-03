@@ -1,4 +1,12 @@
-﻿using System;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     CommonDialogs
+ * FILE:        FolderViewModel.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;

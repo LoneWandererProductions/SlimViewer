@@ -1,4 +1,12 @@
-﻿using Imaging;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViews
+ * FILE:        ImageProcessingCommands.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using Imaging;
 using SlimControls;
 using System.Drawing;
 

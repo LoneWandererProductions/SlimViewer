@@ -162,7 +162,6 @@ namespace Imaging
                     _frameIndex = (_frameIndex + 1) % _decoder.Frames.Count;
                     Source = _decoder.Frames[_frameIndex];
                 });
-
             }, null, delay, delay);
         }
 
@@ -224,4 +223,3 @@ namespace Imaging
         }
     }
 }
-

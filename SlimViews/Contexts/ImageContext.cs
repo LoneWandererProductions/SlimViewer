@@ -1,4 +1,12 @@
-﻿#nullable enable
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViews.Contexts
+ * FILE:        ImageContext.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+#nullable enable
 using Imaging;
 using System.Drawing;
 using System.Windows.Media.Imaging;

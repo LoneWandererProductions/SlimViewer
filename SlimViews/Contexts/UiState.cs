@@ -1,4 +1,12 @@
-﻿using CommonControls;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViews.Contexts
+ * FILE:        UiState.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using CommonControls;
 using System.IO;
 using System.Reflection;
 using System.Windows;

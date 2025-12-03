@@ -1,5 +1,4 @@
-﻿
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
  * FILE:        SlimViews/ImageView.cs

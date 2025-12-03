@@ -1,4 +1,12 @@
-﻿#nullable enable
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViews
+ * FILE:        ImageViewCommands.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+#nullable enable
 using CommonControls;
 using Imaging;
 using System;
@@ -124,10 +132,7 @@ namespace SlimViews
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
 
-            ToolChangedCommand = new DelegateCommand<object>(tools =>
-            {
-                owner.ToolChangedActionNew(tools);
-            }, CanRun);
+            ToolChangedCommand = new DelegateCommand<object>(tools => { owner.ToolChangedActionNew(tools); }, CanRun);
 
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----

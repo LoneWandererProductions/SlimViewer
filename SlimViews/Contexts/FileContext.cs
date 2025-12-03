@@ -1,4 +1,12 @@
-﻿using FileHandler;
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     SlimViews.Contexts
+ * FILE:        FileContext.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+using FileHandler;
 using System.Collections.Generic;
 using System.Linq;
 

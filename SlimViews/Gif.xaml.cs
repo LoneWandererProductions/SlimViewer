@@ -21,7 +21,7 @@ namespace SlimViews
     /// </summary>
     public sealed partial class Gif
     {
-        private bool _allowClose = false;   // Allow the window to really close
+        private bool _allowClose = false; // Allow the window to really close
 
         /// <summary>
         ///     The view
@@ -69,7 +69,7 @@ namespace SlimViews
             if (!_allowClose)
             {
                 e.Cancel = true;
-                _view.CloseCommand.Execute(null);  // VM will decide if it's allowed
+                _view.CloseCommand.Execute(null); // VM will decide if it's allowed
             }
         }
     }

@@ -86,7 +86,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="1" Grid.Column="0" Content="File Path" VerticalAlignment="Center" />
                 <Label Grid.Row="3" Grid.Column="0" Content="Information" VerticalAlignment="Center" />
-                <Label Grid.Row="5" Grid.Column="0" Content="Output Path"  VerticalAlignment="Center" />
+                <Label Grid.Row="5" Grid.Column="0" Content="Output Path" VerticalAlignment="Center" />
                 <CheckBox Content="Auto Clear" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Stretch"
                           IsEnabled="{Binding Path = AutoClear}" />
                 <TextBox Grid.Row="1" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"

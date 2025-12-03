@@ -139,7 +139,6 @@ public sealed class DirectBitmapImage : IDisposable
                 Bits[pixel.Y * Width + pixel.X] =
                     (uint)(pixel.A << 24 | pixel.R << 16 | pixel.G << 8 | pixel.B);
             }
-
         }
 
         _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
@@ -276,10 +275,10 @@ public sealed class DirectBitmapImage : IDisposable
 
             // Load BGRA from packed uint into float components
             var sf = new Vector4(
-                (s >> 16) & 255,  // R
-                (s >> 8) & 255,  // G
-                (s) & 255,  // B
-                (s >> 24) & 255   // A
+                (s >> 16) & 255, // R
+                (s >> 8) & 255, // G
+                (s) & 255, // B
+                (s >> 24) & 255 // A
             );
 
             var df = new Vector4(
@@ -372,6 +371,7 @@ public sealed class DirectBitmapImage : IDisposable
             void* dst = (void*)_bitmap.BackBuffer;
             Buffer.MemoryCopy(src, dst, Bits.Length * sizeof(uint), Bits.Length * sizeof(uint));
         }
+
         _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
         _bitmap.Unlock();
     }
