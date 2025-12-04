@@ -366,11 +366,14 @@ public sealed partial class ImageZoom : IDisposable
     /// </summary>
     private void OnImageSourceChanged()
     {
-        // Prevent any GIF from reasserting itself
-        BtmImage.GifSource = null;
+        //// Prevent any GIF from reasserting itself
+        //BtmImage.GifSource = null;
+        //// Force WPF to process the null assignment immediately
+        //Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
 
-        // Force WPF to process the null assignment immediately
-        Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+        BtmImage.StopGif();
+
+        // this block aboe is absolutey necessary to avoid that WPF keeps the old GIF playing
 
         // Load ItemsSource via stream to avoid WPF URI cache if possible
         if (ItemsSource != null && !string.IsNullOrEmpty(ItemsSource.UriSource?.OriginalString))

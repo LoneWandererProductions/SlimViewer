@@ -110,41 +110,36 @@ namespace Imaging
         /// <param name="path">The path.</param>
         private void LoadGif(string? path)
         {
-            StopGif();
+            StopGifInternal();
+
+            Source = null;
 
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-            {
-                Source = null;
                 return;
-            }
 
             try
             {
-                // Make decoder
                 _decoder = new GifBitmapDecoder(
                     new Uri(path, UriKind.Absolute),
                     BitmapCreateOptions.PreservePixelFormat,
                     BitmapCacheOption.OnLoad);
 
                 if (_decoder.Frames.Count == 0)
-                {
-                    Source = null;
                     return;
-                }
 
-                // Show first frame immediately
                 _frameIndex = 0;
+
                 Source = _decoder.Frames[0];
 
                 if (AutoStart)
                     StartGif();
             }
-            catch (Exception ex)
+            catch
             {
-                Debug.WriteLine("Error loading GIF: " + ex);
                 Source = null;
             }
         }
+
 
         /// <summary>
         /// Starts the animation timer.
@@ -165,6 +160,7 @@ namespace Imaging
                     return;
 
                 _frameIndex = (_frameIndex + 1) % _decoder.Frames.Count;
+
                 Source = _decoder.Frames[_frameIndex];
             };
             _dispatcherTimer.Start();
@@ -175,14 +171,26 @@ namespace Imaging
         /// </summary>
         public void StopGif()
         {
+            StopGifInternal();
+            // Important: clear the visual to guarantee no ghosting
+            Source = null;
+        }
+
+        /// <summary>
+        /// Stops the GIF internal.
+        /// </summary>
+        private void StopGifInternal()
+        {
             _dispatcherTimer?.Stop();
             _dispatcherTimer = null;
 
+            //// Prevent any GIF from reasserting itself
+            GifSource = null;
+            //// Force WPF to process the null assignment immediately
+            Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+
             _decoder = null;
             _frameIndex = 0;
-
-            // Important: clear the visual to guarantee no ghosting
-            Source = null;
         }
 
         /// <summary>
