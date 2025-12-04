@@ -409,7 +409,7 @@ public sealed partial class Thumbnails : IDisposable
     private async Task OnItemsSourceChanged()
     {
         // Cancel any ongoing loads
-        await _cancellationTokenSource!.CancelAsync();
+        _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
 
         // Unsubscribe events and clear dictionaries
@@ -484,7 +484,7 @@ public sealed partial class Thumbnails : IDisposable
     {
         if (ItemsSource?.Any() != true) return;
 
-        await _cancellationTokenSource!.CancelAsync();
+        _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
         var token = _cancellationTokenSource.Token;
 
