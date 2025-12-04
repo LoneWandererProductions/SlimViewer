@@ -11,7 +11,6 @@
 using CommonControls;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Forms;
 
 namespace SlimViews
 {

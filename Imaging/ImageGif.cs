@@ -9,10 +9,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Imaging
 {
@@ -52,7 +52,7 @@ namespace Imaging
         /// <summary>
         /// The timer
         /// </summary>
-        private Timer? _timer;
+        private DispatcherTimer? _dispatcherTimer;
 
         /// <summary>
         /// The frame index
@@ -155,21 +155,19 @@ namespace Imaging
             if (_decoder == null || _decoder.Frames.Count <= 1)
                 return;
 
-            // Hardcoded delay (most GIFs specify individual delays,
-            // but WPF does not expose them — this is standard practice)
-            const int delay = 80; // ms
+            const int delay = 80;
 
-            _timer = new Timer(_ =>
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(delay);
+            _dispatcherTimer.Tick += (s, e) =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    if (_decoder == null)
-                        return;
+                if (_decoder == null)
+                    return;
 
-                    _frameIndex = (_frameIndex + 1) % _decoder.Frames.Count;
-                    Source = _decoder.Frames[_frameIndex];
-                });
-            }, null, delay, delay);
+                _frameIndex = (_frameIndex + 1) % _decoder.Frames.Count;
+                Source = _decoder.Frames[_frameIndex];
+            };
+            _dispatcherTimer.Start();
         }
 
         /// <summary>
@@ -177,8 +175,8 @@ namespace Imaging
         /// </summary>
         public void StopGif()
         {
-            _timer?.Dispose();
-            _timer = null;
+            _dispatcherTimer?.Stop();
+            _dispatcherTimer = null;
 
             _decoder = null;
             _frameIndex = 0;

@@ -11,7 +11,6 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable MissingSpace
 
-using Imaging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -329,9 +328,6 @@ public sealed partial class ImageZoom : IDisposable
     {
         if (string.IsNullOrEmpty(ImageGifPath) || !File.Exists(ImageGifPath))
         {
-            // ensure gif is stopped and cleared
-            BtmImage.GifSource = null;
-            BtmImage.Source = null;
             return;
         }
 
