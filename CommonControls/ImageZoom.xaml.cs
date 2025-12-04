@@ -332,19 +332,12 @@ public sealed partial class ImageZoom : IDisposable
         }
 
         // reset position + scroll
-        var matrix = BtmImage.RenderTransform.Value;
-        matrix.OffsetX = 0;
-        matrix.OffsetY = 0;
-        BtmImage.RenderTransform = new MatrixTransform(matrix);
-
-        ScrollView.ScrollToTop();
-        ScrollView.UpdateLayout();
+        ResetTransforms();
 
         BtmImage.GifSource = ImageGifPath;
 
         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
     }
-
 
     /// <summary>
     ///     Handles the ImageLoaded event of the BtmImage control.
@@ -370,7 +363,6 @@ public sealed partial class ImageZoom : IDisposable
 
     /// <summary>
     ///     Called when [image source changed].
-    ///     TODO add an option to not reset anything
     /// </summary>
     private void OnImageSourceChanged()
     {
@@ -412,19 +404,8 @@ public sealed partial class ImageZoom : IDisposable
         if (BtmImage.Source == null)
             return;
 
-        //reset Scaling
-        Scale.ScaleX = 1;
-        Scale.ScaleY = 1;
-
-        //reset position
-        var matrix = BtmImage.RenderTransform.Value;
-        matrix.OffsetX = 0;
-        matrix.OffsetY = 0;
-        BtmImage.RenderTransform = new MatrixTransform(matrix);
-
-        //reset Scrollbar
-        ScrollView.ScrollToTop();
-        ScrollView.UpdateLayout();
+        // reset position + scroll
+        ResetTransforms();
 
         MainCanvas.Height = BtmImage.Source.Height;
         MainCanvas.Width = BtmImage.Source.Width;
@@ -432,7 +413,6 @@ public sealed partial class ImageZoom : IDisposable
         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         AttachAdorner(SelectionTool);
     }
-
 
     /// <summary>
     ///     Attaches the adorner.
@@ -705,6 +685,27 @@ public sealed partial class ImageZoom : IDisposable
         var endpoint = e.GetPosition(BtmImage);
         SelectedPoint?.Invoke(endpoint);
         SelectedPointCommand.Execute(endpoint);
+    }
+
+    /// <summary>
+    /// Resets the Transformations.
+    /// reset position + scroll
+    /// </summary>
+    private void ResetTransforms()
+    {
+        //reset Scaling
+        Scale.ScaleX = 1;
+        Scale.ScaleY = 1;
+
+        //reset position
+        var matrix = BtmImage.RenderTransform.Value;
+        matrix.OffsetX = 0;
+        matrix.OffsetY = 0;
+        BtmImage.RenderTransform = new MatrixTransform(matrix);
+
+        //reset Scrollbar
+        ScrollView.ScrollToTop();
+        ScrollView.UpdateLayout();
     }
 
     /// <summary>
