@@ -110,23 +110,29 @@ namespace Imaging
         /// <param name="path">The path.</param>
         private void LoadGif(string? path)
         {
-            StopGifInternal();
-
             Source = null;
+            _decoder = null;
 
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
                 return;
 
             try
             {
-                _decoder = new GifBitmapDecoder(
+                var decoder = new GifBitmapDecoder(
                     new Uri(path, UriKind.Absolute),
                     BitmapCreateOptions.PreservePixelFormat,
                     BitmapCacheOption.OnLoad);
 
-                if (_decoder.Frames.Count == 0)
+                if (decoder.Frames.Count == 0)
                     return;
 
+                // Freeze frames for safety & performance
+                foreach (var f in decoder.Frames)
+                {
+                    if (f.CanFreeze) f.Freeze();
+                }
+
+                _decoder = decoder;
                 _frameIndex = 0;
 
                 Source = _decoder.Frames[0];
@@ -137,9 +143,9 @@ namespace Imaging
             catch
             {
                 Source = null;
+                _decoder = null;
             }
         }
-
 
         /// <summary>
         /// Starts the animation timer.
@@ -184,10 +190,11 @@ namespace Imaging
             _dispatcherTimer?.Stop();
             _dispatcherTimer = null;
 
-            //// Prevent any GIF from reasserting itself
-            GifSource = null;
-            //// Force WPF to process the null assignment immediately
-            Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+            if (!string.IsNullOrEmpty(GifSource))
+            {
+                GifSource = string.Empty;
+                Dispatcher.Invoke(() => { }, DispatcherPriority.Render);
+            }
 
             _decoder = null;
             _frameIndex = 0;
