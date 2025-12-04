@@ -130,9 +130,8 @@ namespace SlimViews
         ///     Initializes a new instance of the <see cref="GifView"/> class.
         ///     Commands are created here to avoid lazy-field boilerplate elsewhere.
         /// </summary>
-        public GifView(Window window, Thumbnails thumb)
+        public GifView(Thumbnails thumb)
         {
-            _window = window;
             Thumbnail = thumb;
             // initialize commands (keeps using DelegateCommand<object> to match existing pattern)
             _openCommand = new DelegateCommand<object>(async _ => await OpenActionAsync(), CanExecute);
@@ -258,11 +257,6 @@ namespace SlimViews
             get => _autoClear;
             set => SetPropertyAndCallback(ref _autoClear, value, v => SlimViewerRegister.GifCleanUp = v);
         }
-
-        /// <summary>
-        /// The window
-        /// </summary>
-        private Window _window;
 
         /// <summary>
         ///     Gets or sets the thumbnail container (internal).
@@ -470,16 +464,8 @@ namespace SlimViews
         /// </summary>
         private void CloseAction()
         {
-            if (_window == null || !_window.IsLoaded)
-                return;
-
             if (SlimViewerRegister.GifCleanUp)
                 ClearAction();
-
-
-            //TODO ERROR HERE!
-
-            _window.Close();
         }
 
 

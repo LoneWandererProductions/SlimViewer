@@ -7,14 +7,32 @@
  */
 
 using SlimControls;
+using SlimViews.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
 namespace SlimViews
 {
+    /// <summary>
+    /// Hnadler for alle sub Windows related to Mass Image Processing
+    /// </summary>
     internal class ImageMassProcessingCommands
     {
+        /// <summary>
+        /// Keep track of all currently open subwindows
+        /// </summary>
+        private readonly List<Window> _subWindows = new();
+
+        /// <summary>
+        /// Gets or sets the request close action.
+        /// </summary>
+        /// <value>
+        /// The request close action.
+        /// </value>
+        public Action? RequestCloseAction { get; set; }
+
         /// <summary>
         /// Folders the convert window.
         /// </summary>
@@ -23,17 +41,15 @@ namespace SlimViews
         {
             SlimViewerRegister.ResetConvert();
 
-            var converterWindow = new Converter
+            var converterWindow = InitDialog<Converter>(owner, modal: true);
+
+            if (!SlimViewerRegister.IsPathsSet)
             {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-            _ = converterWindow.ShowDialog();
-
-            if (SlimViewerRegister.IsPathsSet) return;
-
-            ImageProcessor.FolderConvert(SlimViewerRegister.Target, SlimViewerRegister.Source,
-                owner.FileContext.Observer);
+                ImageProcessor.FolderConvert(
+                    SlimViewerRegister.Target,
+                    SlimViewerRegister.Source,
+                    owner.FileContext.Observer);
+            }
         }
 
         /// <summary>
@@ -43,13 +59,7 @@ namespace SlimViews
         internal void ScaleWindow(ImageView owner)
         {
             SlimViewerRegister.ResetScaling();
-
-            var scaleWindow = new Scale
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-            scaleWindow.ShowDialog();
+            var scaleWindow = InitDialog<Scale>(owner, modal: true);
 
             owner.Image.Bitmap = ImageProcessor.BitmapScaling(owner.Image.Bitmap, SlimViewerRegister.Scaling);
             owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, SlimViewerRegister.Degree);
@@ -224,19 +234,47 @@ namespace SlimViews
         /// <param name="owner">The owner.</param>
         /// <param name="modal">if set to <c>true</c> [modal].</param>
         /// <returns>Reference to Window</returns>
-        private static T InitDialog<T>(ImageView owner, bool modal = false) where T : Window, new()
+        private T InitDialog<T>(ImageView owner, bool modal = false) where T : Window, new()
         {
             var window = new T
             {
-                Topmost = true,
-                Owner = owner.UiState.Main
+                Owner = owner.UiState.Main,
+                Topmost = true
             };
+
+            // Register in subwindow list
+            _subWindows.Add(window);
+            window.Closed += (_, __) => _subWindows.Remove(window);
+
+            // Attach callback so the subwindow asks THIS class to close it
+            if (window is IClosableByCommand closable)
+            {
+                closable.RequestCloseAction = () =>
+                {
+                    // central close
+                    if (window.IsLoaded)
+                        window.Close();
+                };
+            }
+
             if (modal)
-                _ = window.ShowDialog();
+                window.ShowDialog();
             else
                 window.Show();
 
             return window;
+        }
+
+        /// <summary>
+        /// Close all registered subwindows safely.
+        /// </summary>
+        internal void CloseAllSubWindows()
+        {
+            foreach (var w in _subWindows.ToList())
+            {
+                if (w.IsLoaded) w.Close();
+            }
+            _subWindows.Clear();
         }
     }
 }

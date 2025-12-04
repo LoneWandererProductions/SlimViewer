@@ -9,6 +9,8 @@
 // ReSharper disable MemberCanBeInternal
 
 using CommonControls;
+using SlimViews.Interfaces;
+using System;
 using System.ComponentModel;
 using System.Windows;
 
@@ -18,9 +20,15 @@ namespace SlimViews
     /// <summary>
     ///     Gif Window
     /// </summary>
-    public sealed partial class Gif
+    public sealed partial class Gif : IClosableByCommand
     {
-        private bool _allowClose = false; // Allow the window to really close
+        /// <summary>
+        /// Gets or sets the request close action.
+        /// </summary>
+        /// <value>
+        /// The request close action.
+        /// </value>
+        public Action? RequestCloseAction { get; set; }
 
         /// <summary>
         ///     The view
@@ -43,7 +51,7 @@ namespace SlimViews
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _view = new GifView(this, Thumb);
+            _view = new GifView(Thumb);
 
             DataContext = _view;
         }
@@ -65,11 +73,17 @@ namespace SlimViews
         /// <param name="e">A <see cref="CancelEventArgs" /> that contains the event data.</param>
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (!_allowClose)
-            {
-                e.Cancel = true;
-                _view.CloseCommand.Execute(null); // VM will decide if it's allowed
-            }
+            _view.CloseCommand.Execute(null); // VM will decide if it's allowed
+        }
+
+        /// <summary>
+        /// Called when [close click].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void OnCloseClick(object sender, RoutedEventArgs e)
+        {
+            RequestCloseAction?.Invoke(); // ask command class to close
         }
     }
 }
