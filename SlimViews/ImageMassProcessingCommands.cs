@@ -26,14 +26,6 @@ namespace SlimViews
         private readonly List<Window> _subWindows = new();
 
         /// <summary>
-        /// Gets or sets the request close action.
-        /// </summary>
-        /// <value>
-        /// The request close action.
-        /// </value>
-        public Action? RequestCloseAction { get; set; }
-
-        /// <summary>
         /// Folders the convert window.
         /// </summary>
         /// <param name="owner">The owner.</param>
