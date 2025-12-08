@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews
  * FILE:        ImageProcessingCommands.cs
@@ -17,11 +17,6 @@ namespace SlimViews
     /// </summary>
     internal class ImageProcessingCommands
     {
-        /// <summary>
-        ///     Gets the shared image renderer.
-        /// </summary>
-        internal static ImageRender Render { get; } = new();
-
         /// <summary>
         ///     Applies the specified filter to the owner's image.
         /// </summary>
@@ -57,7 +52,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void Brighten(ImageView owner, string obj)
+        internal void Brighten(ImageView owner, object obj)
         {
             if (owner?.Image?.Bitmap == null)
                 return;
@@ -85,14 +80,21 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void Mirror(ImageView owner, object obj)
+        internal void Mirror(ImageView owner, object? obj)
         {
             if (owner?.Image?.Bitmap == null)
                 return;
 
-            owner.Image.Bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
-            owner.Bmp = owner.Image.BitmapSource;
+            // Create a new bitmap based on the original
+            var original = owner.Image.Bitmap;
+
+            using var clone = (Bitmap)original.Clone();
+            clone.RotateFlip(RotateFlipType.RotateNoneFlipX);
+
+            owner.Image.Bitmap = clone;
+            owner.Bmp = clone.ToBitmapImage();
         }
+
 
         /// <summary>
         ///     Pixelates the owner's image based on the view's pixel width.
