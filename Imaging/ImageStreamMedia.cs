@@ -46,6 +46,7 @@ public static class ImageStreamMedia
         {
             var bmp = new BitmapImage { CreateOptions = BitmapCreateOptions.DelayCreation };
             bmp.BeginInit();
+            bmp.Freeze();
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.UriSource = new Uri(path);
             if (width > 0 && height > 0)
@@ -244,20 +245,18 @@ public static class ImageStreamMedia
     /// <returns>BitmapImage from Bitmap.</returns>
     private static BitmapImage WriteableBitmapToBitmapImage(WriteableBitmap wb)
     {
-        var encoder = new JpegBitmapEncoder(); // MUCH faster than PNG
-        encoder.QualityLevel = 100;            // visually lossless
-
         using var ms = new MemoryStream();
-        encoder.Frames.Add(BitmapFrame.Create(wb));
-        encoder.Save(ms);
+        var enc = new BmpBitmapEncoder();
+        enc.Frames.Add(BitmapFrame.Create(wb));
+        enc.Save(ms);
         ms.Position = 0;
 
-        var bmp = new BitmapImage();
-        bmp.BeginInit();
-        bmp.CacheOption = BitmapCacheOption.OnLoad;
-        bmp.StreamSource = ms;
-        bmp.EndInit();
-        bmp.Freeze();
-        return bmp;
+        var img = new BitmapImage();
+        img.BeginInit();
+        img.CacheOption = BitmapCacheOption.OnLoad;
+        img.StreamSource = ms;
+        img.EndInit();
+        img.Freeze();
+        return img;
     }
 }
