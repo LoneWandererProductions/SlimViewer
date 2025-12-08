@@ -688,34 +688,34 @@ public sealed partial class ImageZoom : IDisposable
         switch (SelectionTool)
         {
             case ImageZoomTools.Move:
-                {
-                    // Use the image coordinate space so panning respects the current image transform/zoom
-                    var position = e.GetPosition(BtmImage);
-                    var matrix = BtmImage.RenderTransform.Value;
-                    matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
-                    matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
-                    BtmImage.RenderTransform = new MatrixTransform(matrix);
+            {
+                // Use the image coordinate space so panning respects the current image transform/zoom
+                var position = e.GetPosition(BtmImage);
+                var matrix = BtmImage.RenderTransform.Value;
+                matrix.OffsetX = _originPoint.X + (position.X - _startPoint.X);
+                matrix.OffsetY = _originPoint.Y + (position.Y - _startPoint.Y);
+                BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                    break;
-                }
+                SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                break;
+            }
 
             case ImageZoomTools.Rectangle:
             case ImageZoomTools.Ellipse:
-                {
-                    // Update the adorner for rectangle or ellipse selection
-                    SelectionAdorner?.UpdateSelection(_startPoint, mousePos);
+            {
+                // Update the adorner for rectangle or ellipse selection
+                SelectionAdorner?.UpdateSelection(_startPoint, mousePos);
 
-                    break;
-                }
+                break;
+            }
 
             case ImageZoomTools.FreeForm:
-                {
-                    // Update the adorner for free form selection by adding points
-                    SelectionAdorner?.AddFreeFormPoint(mousePos);
+            {
+                // Update the adorner for free form selection by adding points
+                SelectionAdorner?.AddFreeFormPoint(mousePos);
 
-                    break;
-                }
+                break;
+            }
 
             case ImageZoomTools.Trace:
                 // Handle pixel selection if needed

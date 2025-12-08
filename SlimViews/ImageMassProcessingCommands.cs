@@ -265,6 +265,7 @@ namespace SlimViews
             {
                 if (w.IsLoaded) w.Close();
             }
+
             _subWindows.Clear();
         }
     }
