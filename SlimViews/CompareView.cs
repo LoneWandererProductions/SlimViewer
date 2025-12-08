@@ -8,133 +8,94 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
+using ImageCompare;
+using Imaging;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ExtendedSystemObjects;
-using ImageCompare;
-using Imaging;
 using ViewModel;
 
 namespace SlimViews
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Compare the Images, the View Model
+    ///     ViewModel for comparing images. Handles paging through duplicates or similar images
+    ///     and provides observer groups for data binding in the Compare Window.
     /// </summary>
-    /// <seealso cref="ViewModel.ViewModelBase" />
     internal sealed class CompareView : ViewModelBase
     {
         /// <summary>
-        ///     The analysis
+        ///     Image analysis helper for retrieving image details.
         /// </summary>
         private readonly ImageAnalysis _analysis = new();
 
         /// <summary>
-        ///     The compare
+        ///     Image comparer utility for finding duplicates or similar images.
         /// </summary>
         private readonly ImageComparer _compare = new();
 
         /// <summary>
-        ///     The image view, for callbacks
+        ///     Reference to the parent ImageView for callbacks.
         /// </summary>
         private ImageView _imageView;
 
         /// <summary>
-        ///     The index
+        ///     Current page index (0-based).
         /// </summary>
         private int _index;
 
         /// <summary>
-        ///     The modulo
-        /// </summary>
-        private int _modulo;
-
-        /// <summary>
-        ///     The next command
-        /// </summary>
-        private ICommand _nextCommand;
-
-        /// <summary>
-        ///     The observer eight
-        /// </summary>
-        private Dictionary<int, string> _observerEight;
-
-        /// <summary>
-        ///     The observer fifth
-        /// </summary>
-        private Dictionary<int, string> _observerFifth;
-
-        /// <summary>
-        ///     The observer first
-        /// </summary>
-        private Dictionary<int, string> _observerFirst;
-
-        /// <summary>
-        ///     The observer fourth
-        /// </summary>
-        private Dictionary<int, string> _observerFourth;
-
-        /// <summary>
-        ///     The observer ninth
-        /// </summary>
-        private Dictionary<int, string> _observerNinth;
-
-        /// <summary>
-        ///     The observer second
-        /// </summary>
-        private Dictionary<int, string> _observerSecond;
-
-        /// <summary>
-        ///     The observer seventh
-        /// </summary>
-        private Dictionary<int, string> _observerSeventh;
-
-        /// <summary>
-        ///     The observer sixth
-        /// </summary>
-        private Dictionary<int, string> _observerSixth;
-
-        /// <summary>
-        ///     The observer tenth
-        /// </summary>
-        private Dictionary<int, string> _observerTenth;
-
-        /// <summary>
-        ///     The observer third
-        /// </summary>
-        private Dictionary<int, string> _observerThird;
-
-        /// <summary>
-        ///     The previous command
-        /// </summary>
-        private ICommand _previousCommand;
-
-        /// <summary>
-        ///     The rows
+        ///     Total number of pages.
         /// </summary>
         private int _rows;
 
         /// <summary>
-        ///     The status
+        ///     Status text displayed in the UI.
         /// </summary>
         private string _status;
 
         /// <summary>
-        ///     Gets or sets the duplicates.
+        ///     Holds the raw duplicate or similar image paths.
+        ///     Each inner list represents a single observer group.
         /// </summary>
-        /// <value>
-        ///     The duplicates.
-        /// </value>
-        private List<List<string>> Duplicates { get; set; }
+        private List<List<string>> _duplicates;
 
         /// <summary>
-        ///     Gets or sets the status.
+        ///     Observable collection of observer dictionaries for UI binding.
+        ///     Each dictionary maps an item index to its file path.
         /// </summary>
-        /// <value>
-        ///     The status.
-        /// </value>
+        public ObservableCollection<Dictionary<int, string>> Observers { get; } =
+            new ObservableCollection<Dictionary<int, string>>(
+                Enumerable.Repeat<Dictionary<int, string>>(null, 10).ToList()
+            );
+
+        /// <summary>
+        ///     Command to navigate to the previous page of images.
+        /// </summary>
+        public ICommand PreviousCommand =>
+            _previousCommand ??= new DelegateCommand<object>(PreviousAction, _ => _index > 0);
+
+        /// <summary>
+        ///     Command to navigate to the next page of images.
+        /// </summary>
+        public ICommand NextCommand =>
+            _nextCommand ??= new DelegateCommand<object>(NextAction, _ => _index < _rows - 1);
+
+        /// <summary>
+        /// The previous command
+        /// </summary>
+        private ICommand _previousCommand;
+
+        /// <summary>
+        /// The next command
+        /// </summary>
+        private ICommand _nextCommand;
+
+        /// <summary>
+        ///     Gets or sets the status text.
+        /// </summary>
         public string Status
         {
             get => _status;
@@ -142,469 +103,143 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Gets the previous Image.
+        ///     Initiates the comparison asynchronously.
+        ///     Retrieves duplicates or similar images and populates observer groups.
         /// </summary>
-        /// <value>
-        ///     The previous Image.
-        /// </value>
-        public ICommand PreviousCommand => _previousCommand ??= new DelegateCommand<object>(PreviousAction, CanExecute);
-
-        /// <summary>
-        ///     Gets the next Image.
-        /// </summary>
-        /// <value>
-        ///     The next Image.
-        /// </value>
-        public ICommand NextCommand =>
-            _nextCommand ??= new DelegateCommand<object>(NextAction, CanExecute);
-
-        /// <summary>
-        ///     Gets or sets the observer first.
-        /// </summary>
-        /// <value>
-        ///     The observer first.
-        /// </value>
-        public Dictionary<int, string> ObserverFirst
-        {
-            get => _observerFirst;
-            set => SetProperty(ref _observerFirst, value, nameof(ObserverFirst));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer second.
-        /// </summary>
-        /// <value>
-        ///     The observer second.
-        /// </value>
-        public Dictionary<int, string> ObserverSecond
-        {
-            get => _observerSecond;
-            set => SetProperty(ref _observerSecond, value, nameof(ObserverSecond));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer third.
-        /// </summary>
-        /// <value>
-        ///     The observer third.
-        /// </value>
-        public Dictionary<int, string> ObserverThird
-        {
-            get => _observerThird;
-            set => SetProperty(ref _observerThird, value, nameof(ObserverThird));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer fourth.
-        /// </summary>
-        /// <value>
-        ///     The observer fourth.
-        /// </value>
-        public Dictionary<int, string> ObserverFourth
-        {
-            get => _observerFourth;
-            set => SetProperty(ref _observerFourth, value, nameof(ObserverFourth));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer fifth.
-        /// </summary>
-        /// <value>
-        ///     The observer fifth.
-        /// </value>
-        public Dictionary<int, string> ObserverFifth
-        {
-            get => _observerFifth;
-            set => SetProperty(ref _observerFifth, value, nameof(ObserverFifth));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer sixth.
-        /// </summary>
-        /// <value>
-        ///     The observer sixth.
-        /// </value>
-        public Dictionary<int, string> ObserverSixth
-        {
-            get => _observerSixth;
-            set => SetProperty(ref _observerSixth, value, nameof(ObserverSixth));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer seventh.
-        /// </summary>
-        /// <value>
-        ///     The observer seventh.
-        /// </value>
-        public Dictionary<int, string> ObserverSeventh
-        {
-            get => _observerSeventh;
-            set => SetProperty(ref _observerSeventh, value, nameof(ObserverSeventh));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer eight.
-        /// </summary>
-        /// <value>
-        ///     The observer eight.
-        /// </value>
-        public Dictionary<int, string> ObserverEight
-        {
-            get => _observerEight;
-            set => SetProperty(ref _observerEight, value, nameof(ObserverEight));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer ninth.
-        /// </summary>
-        /// <value>
-        ///     The observer ninth.
-        /// </value>
-        public Dictionary<int, string> ObserverNinth
-        {
-            get => _observerNinth;
-            set => SetProperty(ref _observerNinth, value, nameof(ObserverNinth));
-        }
-
-        /// <summary>
-        ///     Gets or sets the observer tenth.
-        /// </summary>
-        /// <value>
-        ///     The observer tenth.
-        /// </value>
-        public Dictionary<int, string> ObserverTenth
-        {
-            get => _observerTenth;
-            set => SetProperty(ref _observerTenth, value, nameof(ObserverTenth));
-        }
-
-        /// <summary>
-        ///     Initiates the specified sub folders.
-        /// </summary>
-        /// <param name="subFolders">if set to <c>true</c> [sub folders].</param>
-        /// <param name="currentFolder">The current folder.</param>
-        /// <param name="imageView">The image view.</param>
-        /// <param name="similarity">The similarity, in Percentages</param>
-        internal async Task AsyncInitiate(bool subFolders, string currentFolder, ImageView imageView,
-            int similarity = 0)
+        /// <param name="subFolders">Include subfolders if true.</param>
+        /// <param name="currentFolder">The folder to scan.</param>
+        /// <param name="imageView">Parent ImageView for callbacks.</param>
+        /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
+        internal async Task AsyncInitiate(bool subFolders, string currentFolder,
+            ImageView imageView, int similarity = 0)
         {
             _imageView = imageView;
-
             Status = ViewResources.StatusCompareStart;
 
-            //no specified difference lvl, so Duplicates
-            if (similarity == 0)
-                _ = await Task.Run(() =>
-                    Duplicates = _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
-                ).ConfigureAwait(false);
-            //with difference lvl
-            else
-                _ = await Task.Run(() =>
-                    Duplicates = _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix,
-                        similarity)
-                ).ConfigureAwait(false);
+            _duplicates = await Task.Run(() =>
+            {
+                return similarity == 0
+                    ? _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
+                    : _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix, similarity);
+            }).ConfigureAwait(false);
 
-            if (Duplicates == null)
+            if (_duplicates == null)
             {
                 Status = ViewResources.StatusCompareFinished;
                 return;
             }
 
-            _rows = Duplicates.Count / 10;
-            _modulo = Duplicates.Count % 10;
-            if (_modulo > 0) _rows++;
+            _rows = (_duplicates.Count + 9) / 10; // Ceiling division
             _index = 0;
 
             GenerateView();
-
             Status = ViewResources.StatusCompareFinished;
         }
 
         /// <summary>
-        ///     Next Image.
+        ///     Navigate to the next page of images.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        private void NextAction(object obj)
+        /// <param name="_">Unused command parameter.</param>
+        private void NextAction(object _)
         {
             if (_index < _rows - 1)
+            {
                 _index++;
-            else
-                return;
-
-            GenerateView();
+                GenerateView();
+            }
         }
 
         /// <summary>
-        ///     Previous Image.
+        ///     Navigate to the previous page of images.
         /// </summary>
-        private void PreviousAction(object obj)
+        /// <param name="_">Unused command parameter.</param>
+        private void PreviousAction(object _)
         {
             if (_index > 0)
+            {
                 _index--;
-            else
-                return;
-
-            GenerateView();
+                GenerateView();
+            }
         }
 
         /// <summary>
-        ///     Generates the view.
+        ///     Generates the observer groups for the current page.
+        ///     Updates each dictionary in-place to preserve WPF bindings.
         /// </summary>
         private void GenerateView()
         {
-            if (Duplicates.IsNullOrEmpty()) return;
+            if (_duplicates == null || _duplicates.Count == 0)
+                return;
 
-            var index = _index * 10;
-            int i;
+            int baseIndex = _index * 10;
 
-            if (Duplicates.ElementAtOrDefault(index) != null)
+            // WPF binding note: ObservableCollection tracks Add/Remove but not indexer replacement.
+            // Dictionaries inside collection do not implement INotifyPropertyChanged.
+            // Therefore we update each dictionary in-place to preserve bindings rather than replace them.
+            for (int i = 0; i < 10; i++)
             {
-                var lst = Duplicates[index];
-                i = 0;
-                ObserverFirst = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverFirst = null;
-            }
+                var group = _duplicates.ElementAtOrDefault(baseIndex + i);
 
-            if (Duplicates.ElementAtOrDefault(index + 1) != null)
-            {
-                var lst = Duplicates[index + 1];
-                i = 0;
-                ObserverSecond = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverSecond = null;
-            }
+                if (group != null)
+                {
+                    if (Observers[i] == null)
+                        Observers[i] = new Dictionary<int, string>();
+                    else
+                        Observers[i].Clear();
 
-            if (Duplicates.ElementAtOrDefault(index + 2) != null)
-            {
-                var lst = Duplicates[index + 2];
-                i = 0;
-                ObserverThird = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverThird = null;
+                    int idx = 0;
+                    foreach (var path in group)
+                        Observers[i][idx++] = path;
+
+                    // Optional: could raise OnPropertyChanged(nameof(Observers)) here if replacing dictionary entirely
+                }
+                else
+                {
+                    if (Observers[i] != null)
+                        Observers[i].Clear(); // clearing preserves binding while showing no items
+                }
             }
 
-            if (Duplicates.ElementAtOrDefault(index + 3) != null)
-            {
-                var lst = Duplicates[index + 3];
-                i = 0;
-                ObserverFourth = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverFourth = null;
-            }
-
-            if (Duplicates.ElementAtOrDefault(index + 4) != null)
-            {
-                var lst = Duplicates[index + 4];
-                i = 0;
-                ObserverFifth = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverFifth = null;
-            }
-
-            if (Duplicates.ElementAtOrDefault(index + 5) != null)
-            {
-                var lst = Duplicates[index + 5];
-                i = 0;
-                ObserverSixth = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverSixth = null;
-            }
-
-            if (Duplicates.ElementAtOrDefault(index + 6) != null)
-            {
-                var lst = Duplicates[index + 6];
-                i = 0;
-                ObserverSeventh = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverSeventh = null;
-            }
-
-            if (Duplicates.ElementAtOrDefault(index + 7) != null)
-            {
-                var lst = Duplicates[index + 7];
-                i = 0;
-                ObserverEight = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverEight = null;
-            }
-
-            if (Duplicates.ElementAtOrDefault(index + 8) != null)
-            {
-                var lst = Duplicates[index + 8];
-                i = 0;
-                ObserverNinth = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverNinth = null;
-            }
-
-            if (Duplicates.ElementAtOrDefault(index + 9) != null)
-            {
-                var lst = Duplicates[index + 9];
-                i = 0;
-                ObserverTenth = lst.ToDictionary(_ => i++);
-            }
-            else
-            {
-                ObserverTenth = null;
-            }
+            // Paging logic summary:
+            // _index * 10 calculates the starting observer group for the current page.
+            // Each page can have up to 10 observer groups (0..9).
+            // _rows is calculated as ceiling(_duplicates.Count / 10) to cover partial pages.
+            // Observers[0..9] corresponds to UI slots for the current page.
         }
 
         /// <summary>
-        ///     Changes the image.
-        ///     Check if File exists will be done in the <seealso cref="ImageView" />
+        ///     Changes the currently displayed image for a given observer and item.
         /// </summary>
-        /// <param name="itemId">The item identifier.</param>
-        /// <param name="id">The image identifier.</param>
-        public void ChangeImage(int itemId, int id)
+        /// <param name="itemId">Index of the item in the observer group.</param>
+        /// <param name="observerIndex">Observer group index (0-9).</param>
+        public void ChangeImage(int itemId, int observerIndex)
         {
-            switch (id)
-            {
-                case 0:
-                {
-                    var files = _observerFirst.Values.ToList();
-                    if (!_observerFirst.ContainsKey(itemId)) return;
+            if (observerIndex < 0 || observerIndex >= Observers.Count)
+                return;
 
-                    var path = _observerFirst[itemId];
+            var dict = Observers[observerIndex];
+            if (dict == null || !dict.ContainsKey(itemId))
+                return;
 
-                    LoadImages(path, itemId, files);
+            var files = dict.Values.ToList();
+            var path = dict[itemId];
 
-                    break;
-                }
-                case 1:
-                {
-                    var files = _observerSecond.Values.ToList();
-                    if (!_observerSecond.ContainsKey(itemId)) return;
-
-                    var path = _observerSecond[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 2:
-                {
-                    var files = _observerThird.Values.ToList();
-                    if (!_observerThird.ContainsKey(itemId)) return;
-
-                    var path = _observerThird[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 3:
-                {
-                    var files = _observerFourth.Values.ToList();
-                    if (!_observerFourth.ContainsKey(itemId)) return;
-
-                    var path = _observerFourth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 4:
-                {
-                    var files = _observerFifth.Values.ToList();
-                    if (!_observerFifth.ContainsKey(itemId)) return;
-
-                    var path = _observerFifth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 5:
-                {
-                    var files = _observerSixth.Values.ToList();
-                    if (!_observerSixth.ContainsKey(itemId)) return;
-
-                    var path = _observerSixth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 6:
-                {
-                    var files = _observerSeventh.Values.ToList();
-                    if (!_observerSeventh.ContainsKey(itemId)) return;
-
-                    var path = ObserverSeventh[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 7:
-                {
-                    var files = _observerEight.Values.ToList();
-                    if (!_observerEight.ContainsKey(itemId)) return;
-
-                    var path = _observerEight[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 8:
-                {
-                    var files = _observerNinth.Values.ToList();
-                    if (!_observerNinth.ContainsKey(itemId)) return;
-
-                    var path = _observerNinth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-                case 9:
-                {
-                    var files = _observerTenth.Values.ToList();
-                    if (!_observerTenth.ContainsKey(itemId)) return;
-
-                    var path = _observerTenth[itemId];
-
-                    LoadImages(path, itemId, files);
-
-                    break;
-                }
-            }
+            LoadImages(path, itemId, files);
         }
 
         /// <summary>
-        ///     Loads the images.
+        ///     Loads image details and updates the ImageView.
         /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="itemId">The item identifier.</param>
-        /// <param name="files">The files.</param>
+        /// <param name="path">Path of the selected image.</param>
+        /// <param name="itemId">Index of the item in the group.</param>
+        /// <param name="files">List of file paths in the current observer group.</param>
         private void LoadImages(string path, int itemId, List<string> files)
         {
             var cache = _analysis.GetImageDetails(files);
-
-            if (cache == null) return;
+            if (cache == null)
+                return;
 
             var details = cache[itemId];
-
             _imageView.ChangeImage(files, path, details.GetDetails());
         }
     }
