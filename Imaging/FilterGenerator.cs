@@ -21,7 +21,7 @@ namespace Imaging
     public class FilterGenerator : IFilterGenerator
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TextureGenerator" /> class.
+        ///     Initializes a new instance of the <see cref="FilterGenerator" /> class.
         /// </summary>
         public FilterGenerator()
         {
