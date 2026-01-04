@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.ComponentModel;
 
 namespace Exp
@@ -14,13 +15,20 @@ namespace Exp
     {
         private DrawTool _activeTool;
 
+        public event EventHandler? ToolOrModeChanged;
+
+        private void OnToolOrModeChanged()
+            => ToolOrModeChanged?.Invoke(this, EventArgs.Empty);
+
         public DrawTool ActiveTool
         {
             get => _activeTool;
             set
             {
+                if (_activeTool == value) return;
                 _activeTool = value;
                 OnPropertyChanged(nameof(ActiveTool));
+                OnToolOrModeChanged(); // fire event
             }
         }
 
@@ -31,9 +39,10 @@ namespace Exp
             get => _activeAreaMode;
             set
             {
+                if (_activeAreaMode == value) return;
                 _activeAreaMode = value;
                 OnPropertyChanged(nameof(ActiveAreaMode));
-                UpdateSubStates();
+                OnToolOrModeChanged(); // fire event
             }
         }
 

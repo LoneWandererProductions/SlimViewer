@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Exp
  * FILE:        DrawingToolBarControl.xaml.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Toolbar for drawing tools
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -15,12 +15,14 @@ namespace Exp
 {
     public partial class DrawingToolBarControl : UserControl
     {
+        public event EventHandler ToolChanged; // external event for host
+
         public DrawingToolBarControl()
         {
             InitializeComponent();
         }
 
-        // Dependency property for binding
+        // Dependency property for binding to the drawing state
         public DrawingState ToolState
         {
             get => (DrawingState)GetValue(ToolStateProperty);
@@ -28,7 +30,8 @@ namespace Exp
         }
 
         public static readonly DependencyProperty ToolStateProperty =
-            DependencyProperty.Register(nameof(ToolState),
+            DependencyProperty.Register(
+                nameof(ToolState),
                 typeof(DrawingState),
                 typeof(DrawingToolBarControl),
                 new PropertyMetadata(null, OnToolStateChanged));
@@ -48,18 +51,32 @@ namespace Exp
 
         private static void OnToolStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is DrawingToolBarControl ctrl)
-            {
-                ctrl.DataContext = e.NewValue;
-            }
+            if (d is not DrawingToolBarControl ctrl) return;
+
+            // Unsubscribe from previous state event
+            if (e.OldValue is DrawingState oldState)
+                oldState.ToolOrModeChanged -= ctrl.ToolState_ToolOrModeChanged;
+
+            // Update DataContext
+            ctrl.DataContext = e.NewValue;
+
+            // Subscribe to new state event
+            if (e.NewValue is DrawingState newState)
+                newState.ToolOrModeChanged += ctrl.ToolState_ToolOrModeChanged;
         }
 
-        public event EventHandler ToolChanged; // external event for host
+        private void ToolState_ToolOrModeChanged(object sender, EventArgs e)
+        {
+            // Fire the control's event and command
+            HandleToolChanged();
+        }
 
-        private void HandleToolChanged(object sender, EventArgs e)
+        private void HandleToolChanged()
         {
             ToolChanged?.Invoke(this, EventArgs.Empty);
-            ToolChangedCommand?.Execute(ToolState);
+
+            if (ToolChangedCommand?.CanExecute(ToolState) ?? false)
+                ToolChangedCommand.Execute(ToolState);
         }
     }
 }

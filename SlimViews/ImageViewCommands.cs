@@ -132,7 +132,7 @@ namespace SlimViews
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
 
-            ToolChangedCommand = new DelegateCommand<object>(tools => { owner.ToolChangedActionNew(tools); }, CanRun);
+            ToolChangedCommand = new DelegateCommand<object>(tools => owner.ToolChangedActionNew(tools), CanRun);
 
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----

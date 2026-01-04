@@ -97,8 +97,21 @@ namespace SlimViews
         /// </value>
         public ImageViewCommands Commands { get; }
 
+        /// <summary>
+        /// Gets or sets the state of my drawing.
+        /// </summary>
+        /// <value>
+        /// The state of my drawing.
+        /// </value>
         public DrawingState MyDrawingState { get; set; } = new DrawingState();
 
+        /// <summary>
+        /// Determines whether this instance can run the specified argument.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance can run the specified argument; otherwise, <c>false</c>.
+        /// </returns>
         public bool CanRun(object? arg) => CanExecute(arg);
 
         /// <summary>
@@ -653,7 +666,7 @@ namespace SlimViews
                 { Key.Right, Commands.Next }
             };
 
-            PropertyChanged += OnPropertyChanged;
+            //PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
@@ -661,37 +674,37 @@ namespace SlimViews
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="PropertyChangedEventArgs" /> instance containing the event data.</param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //here we handle the Selection of Image Zoom tools, as well as filters as textures
-            switch (e.PropertyName)
-            {
-                case nameof(SelectedTool):
-                    switch (SelectedTool)
-                    {
-                        case ImageTools.Move:
-                            ImageZoomTool = ImageZoomTools.Move;
+        //private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    //here we handle the Selection of Image Zoom tools, as well as filters as textures
+        //    switch (e.PropertyName)
+        //    {
+        //        case nameof(SelectedTool):
+        //            switch (SelectedTool)
+        //            {
+        //                case ImageTools.Move:
+        //                    ImageZoomTool = ImageZoomTools.Move;
 
-                            break;
-                        case ImageTools.Paint:
-                        case ImageTools.Erase:
-                        case ImageTools.ColorSelect:
-                            ImageZoomTool = ImageZoomTools.Trace;
-                            break;
-                        case ImageTools.Area:
-                            // no need to handle anything here
-                            break;
-                    }
+        //                    break;
+        //                case ImageTools.Paint:
+        //                case ImageTools.Erase:
+        //                case ImageTools.ColorSelect:
+        //                    ImageZoomTool = ImageZoomTools.Trace;
+        //                    break;
+        //                case ImageTools.Area:
+        //                    // no need to handle anything here
+        //                    break;
+        //            }
 
-                    break;
-                case nameof(SelectedTexture):
-                    CurrentTexture = Translator.GetTextureFromString(SelectedTexture);
-                    break;
-                case nameof(SelectedFilter):
-                    CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
-                    break;
-            }
-        }
+        //            break;
+        //        case nameof(SelectedTexture):
+        //            CurrentTexture = Translator.GetTextureFromString(SelectedTexture);
+        //            break;
+        //        case nameof(SelectedFilter):
+        //            CurrentFilter = Translator.GetFilterFromString(SelectedFilter);
+        //            break;
+        //    }
+        //}
 
         /// <summary>
         ///     Tools the changed action.

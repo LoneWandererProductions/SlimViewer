@@ -250,20 +250,13 @@
                     Command="{Binding Commands.Clear}" IsEnabled="{Binding Path =IsImageActive}" />
             <Label Content="File Count" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" />
             <Label Content="{Binding Path=Count}" Grid.Row="0" Grid.Column="4" />
-            <ComboBox Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Tooling}"
-                      SelectedItem="{Binding SelectedTool}" />
-            <slimControls:UnifiedToolOptions Grid.Row="0" Grid.Column="6"
-                                             SelectedTool="{Binding SelectedTool}"
-                                             ToolChangedCommand="{Binding Commands.ToolChanged}"
-                                             FilterCommand="{Binding Commands.FilterConfig}"
-                                             ColorTolerance="{Binding Tolerance}"
-                                             BrushSize="{Binding BrushSize}"
-                                             EraseRadius="{Binding EraseRadius}"
-                                             SelectedToolCode="{Binding ToolCode, Mode=TwoWay}"
-                                             Grid.RowSpan="4" />
-            <exp:DrawingToolBarControl Grid.Row="0" Grid.Column="8" Grid.RowSpan="4"
-                                       ToolState="{Binding MyDrawingState}"
-                                       ToolChangedCommand="{Binding Commands.ToolChangedCommand}" />
+            <exp:DrawingToolBarControl Grid.Row="0" Grid.Column="6" Grid.RowSpan="4"
+                           ToolState="{Binding DataContext.MyDrawingState, 
+                                               RelativeSource={RelativeSource AncestorType=Window}}"
+                           ToolChangedCommand="{Binding DataContext.Commands.ToolChangedCommand, 
+                                                       RelativeSource={RelativeSource AncestorType=Window}}" 
+                           Grid.ColumnSpan="3" />
+
 
             <commonControls:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
                                             ColorChangedCommand="{Binding Commands.ColorChanged}" />
