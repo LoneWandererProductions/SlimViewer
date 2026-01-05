@@ -6,7 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using CommonControls;
+using CommonControls.Images;
 using System.IO;
 using System.Reflection;
 using System.Windows;

@@ -164,10 +164,7 @@ namespace ExtendedSystemObjects
         /// <param name="newSize">The new size of the array.</param>
         public void Resize(int newSize)
         {
-            if (newSize < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(newSize));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(newSize);
 
             if (newSize == Capacity)
             {
@@ -230,10 +227,7 @@ namespace ExtendedSystemObjects
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
 
             if (count == 0)
             {

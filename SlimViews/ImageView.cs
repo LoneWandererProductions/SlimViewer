@@ -13,7 +13,7 @@
 // ReSharper disable WrongIndentSize
 
 #nullable enable
-using CommonControls;
+using CommonControls.Images;
 using CommonDialogs;
 using Exp;
 using ExtendedSystemObjects;
@@ -24,7 +24,6 @@ using SlimControls;
 using SlimViews.Contexts;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;

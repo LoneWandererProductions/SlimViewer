@@ -18,7 +18,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using CommonControls;
+using CommonControls.Images;
 using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;

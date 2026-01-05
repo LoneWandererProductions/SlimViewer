@@ -49,10 +49,7 @@ namespace ExtendedSystemObjects
         /// <param name="size">The number of elements to allocate.</param>
         public UnmanagedIntArray(int size)
         {
-            if (size < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(size));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(size);
 
             Capacity = size;
             Length = size;
@@ -150,10 +147,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Resize(int newSize)
         {
-            if (newSize < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(newSize));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(newSize);
 
             if (newSize == Capacity)
             {
@@ -288,10 +282,7 @@ namespace ExtendedSystemObjects
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
 
             EnsureCapacity(Length + count);
 

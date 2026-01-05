@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/SqlConnect.cs
+ * FILE:        SqlConnect.cs
  * PURPOSE:     Generic Sql Dialog for a connection String
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -10,21 +10,22 @@
 
 using System.Windows;
 
-namespace CommonDialogs;
-
-/// <inheritdoc cref="Window" />
-/// <summary>
-///     Login Window for Sql Server
-/// </summary>
-/// <seealso cref="Window" />
-public sealed partial class SqlLogin
+namespace CommonDialogs
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="Window" />
     /// <summary>
-    ///     Initializes a new instance of the <see cref="SqlLogin" /> class.
+    ///     Login Window for Sql Server
     /// </summary>
-    public SqlLogin()
+    /// <seealso cref="Window" />
+    public sealed partial class SqlLogin
     {
-        InitializeComponent();
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SqlLogin" /> class.
+        /// </summary>
+        public SqlLogin()
+        {
+            InitializeComponent();
+        }
     }
 }

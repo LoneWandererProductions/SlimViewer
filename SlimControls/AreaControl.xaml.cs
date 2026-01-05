@@ -6,11 +6,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using CommonControls.Images;
 using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using CommonControls;
 using ViewModel;
 
 namespace SlimControls

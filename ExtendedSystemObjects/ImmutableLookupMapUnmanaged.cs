@@ -56,10 +56,7 @@ namespace ExtendedSystemObjects
         /// <exception cref="InvalidOperationException">Thrown when a duplicate key is found.</exception>
         public ImmutableLookupMapUnmanaged(IDictionary<TKey, TValue> data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+            ArgumentNullException.ThrowIfNull(data);
 
             Count = data.Count;
             _capacity = FindNextPrime(Count * 2);

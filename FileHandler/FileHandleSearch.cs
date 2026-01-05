@@ -1,259 +1,193 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     FileHandler
- * FILE:        FileHandler/FileHandleSearch.cs
- * PURPOSE:     Does all types of File Operations, search Files
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * FILE:        FileHandleSearch.cs
+ * PURPOSE:     Handles all types of file searches (refactored for clarity and safety)
+ * PROGRAMER:   Peter Geinitz (Wayfarer) 
  */
-
-// ReSharper disable MemberCanBeInternal, we use it external
-// ReSharper disable UnusedMember.Global, it is a library
 
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace FileHandler;
-
-/// <summary>
-///     Handles most File Searches
-/// </summary>
-public static class FileHandleSearch
+namespace FileHandler
 {
     /// <summary>
-    ///     Collects all files with a specific Extension
+    ///     Handles most file searches.
     /// </summary>
-    /// <param name="path">Target Folder</param>
-    /// <param name="appendix">List of File Extension</param>
-    /// <param name="subdirectories">Include Sub-folders</param>
-    /// <returns>List of Files with Path and extensions<see cref="T:List{string}" />.</returns>
-    public static List<string>? GetFilesByExtensionFullPath(string path, IEnumerable<string> appendix,
-        bool subdirectories)
+    public static class FileHandleSearch
     {
-        var lst = new List<string>();
-
-        if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+        /// <summary>
+        /// Collects all files with specific extensions (full path).
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="appendix">The appendix.</param>
+        /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
+        /// <returns>File by criteria</returns>
+        public static List<string> GetFilesByExtensionFullPath(string path, IEnumerable<string> appendix,
+            bool subdirectories)
         {
-            return null;
-        }
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                return new List<string>();
 
-        foreach (var file in appendix.Select(app =>
-                     FileHandlerProcessing.GetFilesByExtension(path, app, subdirectories)))
-        {
-            if (file == null)
+            var lst = new List<string>();
+
+            foreach (var app in appendix)
             {
-                return null;
+                var files = FileHandlerProcessing.GetFilesByExtension(path, app, subdirectories) ?? new List<string>();
+                lst.AddRange(files);
             }
 
-            lst.AddRange(file);
+            return lst;
         }
 
-        return lst;
-    }
-
-    /// <summary>
-    ///     Collects all files with a specific Extension
-    /// </summary>
-    /// <param name="path">Target Folder</param>
-    /// <param name="appendix">File Extension</param>
-    /// <param name="subdirectories">Include Sub-folders</param>
-    /// <returns>List of Files with Path and extension<see cref="T:List{string}" />.</returns>
-    public static List<string>? GetFilesByExtensionFullPath(string path, string appendix, bool subdirectories)
-    {
-        return FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
-    }
-
-    /// <summary>
-    ///     Collects all files with a specific Extension
-    /// </summary>
-    /// <param name="path">Target Folder</param>
-    /// <param name="appendix">File Extension</param>
-    /// <param name="subdirectories">Include Sub-folders</param>
-    /// <returns>List of Name of Files, with extension<see cref="T:List{string}" />.</returns>
-    public static List<string>? GetFileByExtensionWithExtension(string path, string appendix, bool subdirectories)
-    {
-        var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
-
-        if (files == null)
+        /// <summary>
+        /// Collects all files with a specific extension (full path).
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="appendix">The appendix.</param>
+        /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
+        /// <returns>File by criteria</returns>
+        public static List<string> GetFilesByExtensionFullPath(string path, string appendix, bool subdirectories)
         {
-            return null;
+            return FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
         }
 
-        var lst = new List<string>();
-        lst.AddRange(files.Select(Path.GetFileName));
-
-        return lst;
-    }
-
-    /// <summary>
-    ///     Get the all files.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <param name="subdirectories">The subdirectories.</param>
-    /// <returns>List of Name of Files, with extension and Path<see cref="T:List{string}" />.</returns>
-    public static List<string>? GetAllFiles(string path, bool subdirectories)
-    {
-        return FileHandlerProcessing.GetFilesByExtension(path, null, subdirectories);
-    }
-
-    /// <summary>
-    ///     Gets the file detail.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <returns>The Details of a File, to be extended<see cref="T:List{FileDetails}" /> can return null.</returns>
-    public static FileDetails? GetFileDetails(string path)
-    {
-        if (!File.Exists(path))
+        /// <summary>
+        /// Collects file names with extension only.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="appendix">The appendix.</param>
+        /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
+        /// <returns>File by criteria</returns>
+        public static List<string> GetFileByExtensionWithExtension(string path, string appendix, bool subdirectories)
         {
-            return null;
+            var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
+            return files.Select(Path.GetFileName).ToList();
         }
 
-        var fileInfo = FileVersionInfo.GetVersionInfo(path);
-        var fi = new FileInfo(path);
-
-        return new FileDetails
+        /// <summary>
+        /// Collects file names without path, with extension.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="appendix">The appendix.</param>
+        /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
+        /// <returns>File by criteria</returns>
+        public static List<string> GetFileByExtensionWithoutExtension(string path, string appendix, bool subdirectories)
         {
-            Path = path,
-            FileName = fi.Name,
-            OriginalFilename = fileInfo.OriginalFilename,
-            Extension = fi.Extension,
-            Size = fi.Length,
-            Description = fileInfo.FileDescription,
-            CompanyName = fileInfo.CompanyName,
-            ProductName = fileInfo.ProductName,
-            FileVersion = fileInfo.FileVersion,
-            ProductVersion = fileInfo.ProductVersion
-        };
-    }
-
-    /// <summary>
-    ///     Get the file details.
-    /// </summary>
-    /// <param name="files">The files.</param>
-    /// <returns>The Details of the File, to be extended<see cref="T:List{FileDetails}" />.</returns>
-    public static List<FileDetails>? GetFilesDetails(List<string> files)
-    {
-        if (files == null || files.Count == 0)
-        {
-            return null;
+            var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
+            return files.Select(Path.GetFileNameWithoutExtension).ToList();
         }
 
-        var data = new List<FileDetails>(files.Count);
-
-        data.AddRange(from file in files where File.Exists(file) select GetFileDetails(file));
-
-        return data;
-    }
-
-    /// <summary>
-    ///     Collects all files with a specific Extension
-    /// </summary>
-    /// <param name="path">Target Folder</param>
-    /// <param name="appendix">File Extension</param>
-    /// <param name="subdirectories">Include Sub-folders</param>
-    /// <returns>List of Name of Files, without extension and Path</returns>
-    public static List<string>? GetFileByExtensionWithoutExtension(string path, string appendix, bool subdirectories)
-    {
-        var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
-
-        if (files == null)
+        /// <summary>
+        /// Get all files in a folder (optionally including subfolders).
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
+        /// <returns>File by criteria</returns>
+        public static List<string> GetAllFiles(string path, bool subdirectories)
         {
-            return null;
+            return FileHandlerProcessing.GetFilesByExtension(path, null, subdirectories) ?? new List<string>();
         }
 
-        var lst = new List<string>();
-        lst.AddRange(files.Select(Path.GetFileNameWithoutExtension));
-
-        return lst;
-    }
-
-    /// <summary>
-    ///     Mostly used for Save Game Operations
-    /// </summary>
-    /// <param name="path">Target Folder</param>
-    /// <returns>Returns all Subfolders</returns>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static List<string>? GetAllSubfolders(string path)
-    {
-        if (string.IsNullOrEmpty(path))
+        /// <summary>
+        /// Get details of a single file.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>File Details</returns>
+        public static FileDetails? GetFileDetails(string path)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (!File.Exists(path))
+                return null;
+
+            var fileInfo = FileVersionInfo.GetVersionInfo(path);
+            var fi = new FileInfo(path);
+
+            return new FileDetails
+            {
+                Path = path,
+                FileName = fi.Name,
+                OriginalFilename = fileInfo.OriginalFilename,
+                Extension = fi.Extension,
+                Size = fi.Length,
+                Description = fileInfo.FileDescription,
+                CompanyName = fileInfo.CompanyName,
+                ProductName = fileInfo.ProductName,
+                FileVersion = fileInfo.FileVersion,
+                ProductVersion = fileInfo.ProductVersion
+            };
         }
 
-        if (!Directory.Exists(path))
+        /// <summary>
+        /// Get details of multiple files.
+        /// </summary>
+        /// <param name="files">The files.</param>
+        /// <returns>File Details</returns>
+        public static List<FileDetails> GetFilesDetails(List<string>? files)
         {
-            return null;
+            if (files == null || files.Count == 0)
+                return new List<FileDetails>();
+
+            return files.Select(GetFileDetails).Where(f => f != null).ToList()!;
         }
 
-        var list = Directory.GetDirectories(path).ToList();
-
-        return list.ConvertAll(Path.GetFileName);
-    }
-
-    /// <summary>
-    ///     Simple Check if Folder Contains something
-    /// </summary>
-    /// <param name="path">Target Path</param>
-    /// <returns>True if we find Something</returns>
-    /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-    public static async Task<bool> CheckIfFolderContainsElement(string path)
-    {
-        if (string.IsNullOrEmpty(path))
+        /// <summary>
+        /// Get immediate subfolders.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Subfolders</returns>
+        /// <exception cref="FileHandler.FileHandlerException"></exception>
+        public static List<string> GetAllSubfolders(string path)
         {
-            throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+            if (string.IsNullOrEmpty(path))
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+
+            if (!Directory.Exists(path))
+                return new List<string>();
+
+            return Directory.GetDirectories(path).Select(Path.GetFileName).ToList();
         }
 
-        if (!Directory.Exists(path))
+        /// <summary>
+        /// Check if a folder contains any file or folder.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Check if folder is empty.</returns>
+        /// <exception cref="FileHandler.FileHandlerException"></exception>
+        public static bool CheckIfFolderContainsElement(string path)
         {
-            return false;
+            if (string.IsNullOrEmpty(path))
+                throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
+
+            if (!Directory.Exists(path))
+                return false;
+
+            return Directory.EnumerateFileSystemEntries(path).Any();
         }
 
-        return await Task.Run(() =>
+        /// <summary>
+        /// Get files containing a specific substring (or inverse).
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="appendix">The appendix.</param>
+        /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
+        /// <param name="subString">The sub string.</param>
+        /// <param name="invert">if set to <c>true</c> [invert].</param>
+        /// <returns>All files with a specific substring.</returns>
+        public static List<string> GetFilesWithSubString(string path, IEnumerable<string> appendix, bool subdirectories,
+            string subString, bool invert)
         {
-            var fileCheck = Directory.GetFiles(path).FirstOrDefault();
-            return fileCheck != null;
-        });
-    }
+            var lst = GetFilesByExtensionFullPath(path, appendix, subdirectories);
 
+            if (lst.Count == 0)
+                return new List<string>();
 
-    /// <summary>
-    ///     Get the files that contain this sub string. If Invert is true, files that don't contain it.
-    /// </summary>
-    /// <param name="path">The path.</param>
-    /// <param name="appendix">The appendix.</param>
-    /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
-    /// <param name="subString">The sub string.</param>
-    /// <param name="invert">if set to <c>true</c> [invert], does not contain [subString].</param>
-    /// <returns>List of files with Extension and Path that contain this string</returns>
-    public static List<string>? GetFilesWithSubString(string path, IEnumerable<string> appendix, bool subdirectories,
-        string subString, bool invert)
-    {
-        var lst = GetFilesByExtensionFullPath(path, appendix, subdirectories);
-
-        if (lst == null || lst.Count == 0)
-        {
-            return null;
+            return lst.Where(element =>
+            {
+                var file = Path.GetFileName(element);
+                return invert ? !file.Contains(subString) : file.Contains(subString);
+            }).ToList();
         }
-
-        var list = new List<string>();
-
-        if (invert)
-        {
-            list.AddRange(from element in lst
-                let file = Path.GetFileName(element)
-                where !file.Contains(subString)
-                select element);
-
-            return list;
-        }
-
-        list.AddRange(from element in lst
-            let file = Path.GetFileName(element)
-            where file.Contains(subString)
-            select element);
-
-        return list;
     }
 }

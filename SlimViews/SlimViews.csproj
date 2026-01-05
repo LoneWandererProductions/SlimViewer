@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonControls.Images\CommonControls.Images.csproj" />
     <ProjectReference Include="..\CommonDialogs\CommonDialogs.csproj" />
     <ProjectReference Include="..\Exp\Exp.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />

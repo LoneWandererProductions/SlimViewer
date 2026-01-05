@@ -46,10 +46,7 @@ namespace ExtendedSystemObjects
         /// <exception cref="ArgumentNullException">data</exception>
         public ImmutableLookupMap(IDictionary<TKey, TValue> data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+            ArgumentNullException.ThrowIfNull(data);
 
             // Double the capacity and find the next prime number
             var capacity = FindNextPrime(data.Count * 2);
@@ -76,7 +73,8 @@ namespace ExtendedSystemObjects
 
                     if (_keys[hash].Equals(key))
                     {
-                        throw new InvalidOperationException(string.Format(SharedResources.ErrorDuplicateKey, key));
+                        throw new InvalidOperationException(message: string.Format(SharedResources.ErrorDuplicateKey,
+                            key));
                     }
                 }
             }

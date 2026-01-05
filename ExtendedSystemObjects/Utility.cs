@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ExtendedSystemObjects.Helper;
@@ -34,10 +33,7 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetFirstAvailableIndex(List<int> lst)
         {
-            if (lst == null)
-            {
-                throw new ArgumentNullException(nameof(lst));
-            }
+            ArgumentNullException.ThrowIfNull(lst);
 
             lock (lst) // Ensure exclusive access to the list
             {
@@ -66,10 +62,7 @@ namespace ExtendedSystemObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long GetFirstAvailableIndex(List<long> lst)
         {
-            if (lst == null)
-            {
-                throw new ArgumentNullException(nameof(lst));
-            }
+            ArgumentNullException.ThrowIfNull(lst);
 
             lock (lst) // Ensure exclusive access to the list
             {
@@ -208,8 +201,7 @@ namespace ExtendedSystemObjects
         /// <param name="set">The set.</param>
         /// <param name="sequence">The sequence.</param>
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
-        [return: MaybeNull]
-        public static List<KeyValuePair<int, int>> Sequencer(SortedSet<int> set, int sequence)
+        public static List<KeyValuePair<int, int>>? Sequencer(SortedSet<int> set, int sequence)
         {
             var sequenceGroups = new List<List<int>>();
             var currentSequence = new List<int>();
@@ -257,8 +249,7 @@ namespace ExtendedSystemObjects
         /// <param name="numbers">The input list.</param>
         /// <param name="sequenceLength">The min count of the sequence.</param>
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
-        [return: MaybeNull]
-        public static List<KeyValuePair<int, int>> Sequencer(List<int> numbers, int sequenceLength)
+        public static List<KeyValuePair<int, int>>? Sequencer(List<int> numbers, int sequenceLength)
         {
             var sequenceGroups = new List<List<int>>();
             var currentSequence = new List<int>();

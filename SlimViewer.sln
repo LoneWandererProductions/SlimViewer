@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderEngine", "RenderEngin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exp", "Exp\Exp.csproj", "{84E14807-6A76-89D8-05E0-E9E6550ED84D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonControls.Images", "CommonControls.Images\CommonControls.Images.csproj", "{D3603D9A-C5D1-5A84-B911-892019669013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{84E14807-6A76-89D8-05E0-E9E6550ED84D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84E14807-6A76-89D8-05E0-E9E6550ED84D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E14807-6A76-89D8-05E0-E9E6550ED84D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3603D9A-C5D1-5A84-B911-892019669013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3603D9A-C5D1-5A84-B911-892019669013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3603D9A-C5D1-5A84-B911-892019669013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3603D9A-C5D1-5A84-B911-892019669013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

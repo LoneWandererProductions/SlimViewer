@@ -50,10 +50,7 @@ namespace ExtendedSystemObjects
         /// <param name="item">item we will replace or add</param>
         public static void AddFirst<TValue>(this List<TValue> lst, TValue item)
         {
-            if (lst == null)
-            {
-                throw new ArgumentNullException(nameof(lst));
-            }
+            ArgumentNullException.ThrowIfNull(lst);
 
             lst.Insert(0, item);
         }
@@ -87,7 +84,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="lst">The List.</param>
         /// <returns>A Dictionary from a list with int as the key</returns>
-        public static Dictionary<int, TValue>? ToDictionary<TValue>(this IEnumerable<TValue> lst)
+        public static Dictionary<int, TValue> ToDictionary<TValue>(this IEnumerable<TValue> lst)
         {
             var index = 0;
             return lst?.ToDictionary(_ => index++);

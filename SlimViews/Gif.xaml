@@ -5,7 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-        xmlns:local="clr-namespace:SlimViews"
+        xmlns:local="clr-namespace:SlimViews" 
+        xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
         mc:Ignorable="d"
         Title="Gif" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
@@ -45,14 +46,14 @@
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="5" />
                 </Grid.ColumnDefinitions>
-                <commonControls:ImageZoom Grid.Column="1" Grid.Row="1"
+                <Images:ImageZoom Grid.Column="1" Grid.Row="1"
                                           AutoplayGifImage="True"
                                           ImageGifPath="{Binding GifPath}"
                                           ItemsSource="{Binding Bmp}" />
                 <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto"
                               Grid.Column="3" Grid.Row="1"
                               Focusable="False">
-                    <commonControls:Thumbnails
+                    <Images:Thumbnails
                         Name="Thumb"
                         ItemsSource="{Binding Observer}"
                         ThumbCellSize="100"

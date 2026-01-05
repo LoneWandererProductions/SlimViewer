@@ -82,14 +82,13 @@ namespace ExtendedSystemObjects
         /// <param name="value">Value to add</param>
         public static bool AddDistinct<TKey, TValue>(this IDictionary<TKey, List<TValue>> dic, TKey key, TValue value)
         {
-            if (!dic.ContainsKey(key))
+            if (!dic.TryGetValue(key, out var cache))
             {
                 var lst = new List<TValue> { value };
-                dic.Add(key, lst);
+                cache = lst;
+                dic.Add(key, cache);
                 return true;
             }
-
-            var cache = dic[key];
 
             if (cache.Contains(value))
             {
@@ -307,14 +306,18 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">Internal Value</typeparam>
         public static void Swap<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey i, TKey j)
         {
-            if (!dic.ContainsKey(j))
+            if (!dic.ContainsKey(i)) throw new KeyNotFoundException(nameof(i));
+
+            if (dic.TryGetValue(j, out var jValue))
             {
-                dic[j] = dic[i];
-                _ = dic.Remove(i);
+                var iValue = dic[i];
+                dic[i] = jValue;
+                dic[j] = iValue;
             }
             else
             {
-                (dic[j], dic[i]) = (dic[i], dic[j]);
+                dic[j] = dic[i];
+                dic.Remove(i);
             }
         }
 

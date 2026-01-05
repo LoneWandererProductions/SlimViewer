@@ -9,7 +9,7 @@
 // ReSharper disable MemberCanBeMadeStatic.Local
 // ReSharper disable MemberCanBeInternal
 
-using CommonControls;
+using CommonControls.Images;
 using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;

@@ -11,24 +11,24 @@ using System.Runtime.InteropServices;
 namespace ExtendedSystemObjects.Helper
 {
     /// <summary>
-    /// Generic entry structure for a key-value pair.
+    ///     Generic entry structure for a key-value pair.
     /// </summary>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     [StructLayout(LayoutKind.Sequential)]
     public struct EntryGeneric<TValue> where TValue : unmanaged
     {
         /// <summary>
-        /// The key
+        ///     The key
         /// </summary>
         public int Key;
 
         /// <summary>
-        /// The value
+        ///     The value
         /// </summary>
         public TValue Value;
 
         /// <summary>
-        /// The used
+        ///     The used
         /// </summary>
         public byte Used;
     }

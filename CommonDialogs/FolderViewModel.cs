@@ -1,10 +1,11 @@
-/*
+﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
  * FILE:        FolderViewModel.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     ViewModel for FolderControl UserControl, handles folder navigation and loading
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
 
 using System;
 using System.Collections.ObjectModel;
@@ -30,6 +31,9 @@ namespace CommonDialogs
         /// </summary>
         public ObservableCollection<FolderItemViewModel> FolderItems { get; } = new();
 
+        /// <summary>
+        /// The selected folder
+        /// </summary>
         private FolderItemViewModel? _selectedFolder;
 
         /// <summary>
@@ -41,9 +45,29 @@ namespace CommonDialogs
         public FolderItemViewModel? SelectedFolder
         {
             get => _selectedFolder;
-            set => SetProperty(ref _selectedFolder, value); // SetProperty from your ViewModelBase
+            set
+            {
+                if (SetProperty(ref _selectedFolder, value))
+                {
+                    if (value != null && Directory.Exists(value.Path))
+                    {
+                        Paths = value.Path;
+                    }
+                }
+            }
         }
 
+        /// <summary>
+        /// Gets the selected path.
+        /// </summary>
+        /// <value>
+        /// The selected path.
+        /// </value>
+        public string? SelectedPath => SelectedFolder?.Path;
+
+        /// <summary>
+        /// The paths
+        /// </summary>
         private string? _paths;
 
         /// <summary>
@@ -56,6 +80,9 @@ namespace CommonDialogs
             set => SetProperty(ref _paths, value); // ViewModelBase provides INotifyPropertyChanged
         }
 
+        /// <summary>
+        /// The look up
+        /// </summary>
         private string _lookUp = string.Empty;
 
         /// <summary>
@@ -68,6 +95,9 @@ namespace CommonDialogs
             set => SetProperty(ref _lookUp, value);
         }
 
+        /// <summary>
+        /// The show files
+        /// </summary>
         private bool _showFiles;
 
         /// <summary>
@@ -82,14 +112,76 @@ namespace CommonDialogs
 
         #region Commands
 
+        /// <summary>
+        /// Gets up command.
+        /// </summary>
+        /// <value>
+        /// Up command.
+        /// </value>
         public RelayCommand UpCommand { get; }
+
+        /// <summary>
+        /// Gets the go command.
+        /// </summary>
+        /// <value>
+        /// The go command.
+        /// </value>
         public RelayCommand GoCommand { get; }
+
+        /// <summary>
+        /// Gets the explorer command.
+        /// </summary>
+        /// <value>
+        /// The explorer command.
+        /// </value>
         public RelayCommand ExplorerCommand { get; }
+
+        /// <summary>
+        /// Gets the desktop command.
+        /// </summary>
+        /// <value>
+        /// The desktop command.
+        /// </value>
         public RelayCommand DesktopCommand { get; }
+
+        /// <summary>
+        /// Gets the root command.
+        /// </summary>
+        /// <value>
+        /// The root command.
+        /// </value>
         public RelayCommand RootCommand { get; }
+
+        /// <summary>
+        /// Gets the docs command.
+        /// </summary>
+        /// <value>
+        /// The docs command.
+        /// </value>
         public RelayCommand DocsCommand { get; }
+
+        /// <summary>
+        /// Gets the personal command.
+        /// </summary>
+        /// <value>
+        /// The personal command.
+        /// </value>
         public RelayCommand PersonalCommand { get; }
+
+        /// <summary>
+        /// Gets the pictures command.
+        /// </summary>
+        /// <value>
+        /// The pictures command.
+        /// </value>
         public RelayCommand PicturesCommand { get; }
+
+        /// <summary>
+        /// Gets the create folder command.
+        /// </summary>
+        /// <value>
+        /// The create folder command.
+        /// </value>
         public RelayCommand CreateFolderCommand { get; }
 
         #endregion
@@ -102,7 +194,8 @@ namespace CommonDialogs
         {
             UpCommand = new RelayCommand(async () =>
             {
-                var parent = Directory.GetParent(Paths ?? string.Empty)?.FullName;
+                var parent = SafeGetParent(Paths);
+
                 if (!string.IsNullOrEmpty(parent))
                     await LoadRootAsync(parent);
             });
@@ -124,7 +217,7 @@ namespace CommonDialogs
             DesktopCommand = new RelayCommand(() =>
                 _ = LoadRootAsync(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)));
 
-            RootCommand = new RelayCommand(() => _ = LoadRootAsync(@"C:\"));
+            RootCommand = new RelayCommand(() => _ = LoadRootAsync(ComDlgResources.Root));
 
             DocsCommand = new RelayCommand(() =>
                 _ = LoadRootAsync(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
@@ -139,9 +232,9 @@ namespace CommonDialogs
             {
                 if (string.IsNullOrEmpty(Paths)) return;
 
-                var newDirPath = Path.Combine(Paths, "New Folder");
+                var newDirPath = Path.Combine(Paths, ComDlgResources.NewFolder);
                 var dirName = newDirPath;
-                var i = 1;
+                int i = 1;
 
                 while (Directory.Exists(dirName))
                     dirName = $"{newDirPath} ({i++})";
@@ -180,9 +273,9 @@ namespace CommonDialogs
         {
             Paths = path;
 
-            var directories =
+            string[] directories =
                 Directory.Exists(path) ? Directory.GetDirectories(path) : Directory.GetLogicalDrives();
-            var files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
+            string[] files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -190,15 +283,48 @@ namespace CommonDialogs
 
                 // Add directories first
                 foreach (var dir in directories)
-                    FolderItems.Add(new FolderItemViewModel(dir));
+                    FolderItems.Add(new FolderItemViewModel(dir, this));
 
                 // Add files if enabled
                 if (ShowFiles)
                 {
                     foreach (var file in files)
-                        FolderItems.Add(new FolderItemViewModel(file) { Header = Path.GetFileName(file) ?? file });
+                        FolderItems.Add(
+                            new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) ?? file });
                 }
             });
+        }
+
+        /// <summary>
+        /// Safes the get parent.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Safe parent Path.</returns>
+        private string? SafeGetParent(string? path)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(path))
+                    return null;
+
+                // Normalize path (removes trailing slashes)
+                string full = Path.GetFullPath(path);
+
+                // Detect root (C:\, D:\, etc.)
+                string? root = Path.GetPathRoot(full);
+                if (root != null &&
+                    root.Equals(full, StringComparison.OrdinalIgnoreCase))
+                {
+                    return null; // No parent above root
+                }
+
+                // Normal parent lookup
+                return Directory.GetParent(full)?.FullName;
+            }
+            catch
+            {
+                return null; // On ANY error, return null
+            }
         }
     }
 }

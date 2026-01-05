@@ -8,7 +8,7 @@
 
 // ReSharper disable MemberCanBeInternal
 
-using CommonControls;
+using CommonControls.Images;
 using SlimViews.Interfaces;
 using System;
 using System.ComponentModel;

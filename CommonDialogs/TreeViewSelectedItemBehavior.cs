@@ -1,7 +1,7 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     CommonDialogs
- * FILE:        CommonDialogs/TreeViewSelectedItemBehavior.cs
+ * FILE:        TreeViewSelectedItemBehavior.cs
  * PURPOSE:     Provides an attached property to bind TreeView.SelectedItem to a ViewModel
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -59,12 +59,14 @@ namespace CommonDialogs
         /// <param name="e">The event arguments containing old and new values.</param>
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is TreeView treeView)
+            if (d is not TreeView treeView)
             {
-                // Ensure we do not double-subscribe
-                treeView.SelectedItemChanged -= TreeView_SelectedItemChanged;
-                treeView.SelectedItemChanged += TreeView_SelectedItemChanged;
+                return;
             }
+
+            // Ensure we do not double-subscribe
+            treeView.SelectedItemChanged -= TreeView_SelectedItemChanged;
+            treeView.SelectedItemChanged += TreeView_SelectedItemChanged;
         }
 
         /// <summary>

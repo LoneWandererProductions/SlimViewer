@@ -7,7 +7,7 @@
  */
 
 using System;
-using CommonControls;
+using CommonControls.Images;
 using Imaging.Enums;
 
 namespace SlimControls

@@ -6,10 +6,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using CommonControls.Images;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using CommonControls;
 
 // ReSharper disable MissingSpace
 

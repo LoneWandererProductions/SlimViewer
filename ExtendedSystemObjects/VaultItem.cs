@@ -23,9 +23,7 @@ namespace ExtendedSystemObjects
         ///     Initializes a new instance of the <see cref="VaultItem{TU}" /> class.
         ///     Needed for Json serialization.
         /// </summary>
-        public VaultItem()
-        {
-        }
+        public VaultItem() { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VaultItem{U}" /> class.
@@ -122,7 +120,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///     The additional metadata.
         /// </value>
-        public Dictionary<string, object> AdditionalMetadata { get; init; } = new();
+        public Dictionary<string, object> AdditionalMetadata { get; set; } = new();
 
         /// <summary>
         ///     Calculates the size of an object using memory allocation.
