@@ -14,6 +14,9 @@ using System.Linq;
 
 namespace Imaging
 {
+    /// <summary>
+    /// Image Data Parser Object.
+    /// </summary>
     internal sealed class CifImageData
     {
         /// <summary>

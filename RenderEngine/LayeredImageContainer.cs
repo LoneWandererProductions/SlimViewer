@@ -132,7 +132,7 @@ public sealed class LayeredImageContainer : IDisposable
     /// </summary>
     /// <param name="layerIndices">The layer indices.</param>
     /// <returns></returns>
-    /// <exception cref="System.ArgumentOutOfRangeException">layerIndices</exception>
+    /// <exception cref="ArgumentOutOfRangeException">layerIndices</exception>
     public UnmanagedImageBuffer CompositeLayers(IEnumerable<int> layerIndices)
     {
         var result = new UnmanagedImageBuffer(_width, _height);
@@ -159,7 +159,7 @@ public sealed class LayeredImageContainer : IDisposable
     /// </summary>
     /// <param name="index">The index.</param>
     /// <param name="layer">The layer.</param>
-    /// <exception cref="System.ArgumentException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public void InsertLayer(int index, UnmanagedImageBuffer layer)
     {
         if (layer.Width != _width || layer.Height != _height)
@@ -174,7 +174,7 @@ public sealed class LayeredImageContainer : IDisposable
     ///     Removes the layer.
     /// </summary>
     /// <param name="index">The index.</param>
-    /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+    /// <exception cref="ArgumentOutOfRangeException">index</exception>
     public void RemoveLayer(int index)
     {
         if (index < 0 || index >= _layers.Count)

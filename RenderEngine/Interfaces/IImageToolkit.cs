@@ -10,7 +10,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-namespace RenderEngine;
+namespace RenderEngine.Interfaces;
 
 /// <summary>
 ///     Interface for our ImageToolkit
