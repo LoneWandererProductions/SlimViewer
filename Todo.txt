@@ -2,3 +2,6 @@ Before new release
 -add the option to center the Thumbnail.
 - prepare menus for all the tools
 
+
+
+Last known good was befor: bca44428 
