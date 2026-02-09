@@ -9,7 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace ImageCompare
         /// <summary>
         ///     The render
         /// </summary>
-        private static IImageRender _render;
+        private static IImageRender? _render;
 
         /// <summary>
         ///     Compares a list of Images and returns the Difference in Percentage
@@ -37,8 +36,7 @@ namespace ImageCompare
         /// <param name="imagePaths">Paths to the Images</param>
         /// <returns>Similarity to the first Image in the List</returns>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        [return: MaybeNull]
-        internal static List<float> GetSimilarity(List<string> imagePaths)
+        internal static List<float>? GetSimilarity(List<string> imagePaths)
         {
             if (imagePaths.IsNullOrEmpty())
             {
@@ -179,8 +177,7 @@ namespace ImageCompare
         /// </summary>
         /// <param name="imagePath">The image path.</param>
         /// <returns>Image Data</returns>
-        [return: MaybeNull]
-        internal static ImageData GetImageDetails(string imagePath)
+        internal static ImageData? GetImageDetails(string imagePath)
         {
             if (!File.Exists(imagePath))
             {
@@ -210,8 +207,7 @@ namespace ImageCompare
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Image Data</returns>
-        [return: MaybeNull]
-        internal static ImageData GetImageDetails(Bitmap image)
+        internal static ImageData? GetImageDetails(Bitmap image)
         {
             var color = GenerateData(image, string.Empty);
 
@@ -231,35 +227,33 @@ namespace ImageCompare
         /// </summary>
         /// <param name="first">The first bitmap.</param>
         /// <param name="second">The second bitmap.</param>
-        /// <param name="color">The color.</param>
+        /// <param name="highlight">The color.</param>
         /// <returns>The difference Bitmap</returns>
-        internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
+        internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color highlight)
         {
             _render = new ImageRender();
 
-            var width = Math.Min(first.Width, second.Width);
-            var height = Math.Min(first.Height, second.Height);
+            int width = Math.Min(first.Width, second.Width);
+            int height = Math.Min(first.Height, second.Height);
 
             var canvas = _render.CutBitmap(first, 0, 0, height, width);
 
             using var dbmCanvas = new DirectBitmap(canvas);
             using var dbmCompare = new DirectBitmap(second);
 
-            // Access the pixel arrays directly for comparison
-            var canvasPixels = dbmCanvas.Bits;
-            var comparePixels = dbmCompare.Bits;
-            var colorArgb = color.ToArgb();
+            var canvasPixels = dbmCanvas.Bits;       // Pixel32[]
+            var comparePixels = dbmCompare.Bits;     // Pixel32[]
+            var highlightPixel = new Pixel32(highlight.R, highlight.G, highlight.B, highlight.A);
 
-            // Process the pixels in parallel
-            _ = Parallel.For(0, height, y =>
+            Parallel.For(0, height, y =>
             {
-                var offset = y * width;
-                for (var x = 0; x < width; x++)
+                int offset = y * width;
+                for (int x = 0; x < width; x++)
                 {
-                    var index = offset + x;
-                    if (canvasPixels[index] != comparePixels[index])
+                    int index = offset + x;
+                    if (!Pixel32.AreEqual(canvasPixels[index], comparePixels[index]))
                     {
-                        canvasPixels[index] = colorArgb;
+                        canvasPixels[index] = highlightPixel;
                     }
                 }
             });

@@ -28,7 +28,10 @@ namespace Mathematics
         /// <exception cref="DivideByZeroException">Math Exception division by zero</exception>
         public Fraction(int numerator, int denominator)
         {
-            if (denominator == 0) throw new DivideByZeroException();
+            if (denominator == 0)
+            {
+                throw new DivideByZeroException();
+            }
 
             Numerator = numerator;
             Denominator = denominator;
@@ -45,7 +48,10 @@ namespace Mathematics
         /// <exception cref="DivideByZeroException">Math Exception division by zero</exception>
         public Fraction(int numerator, int denominator, int exponent)
         {
-            if (denominator == 0) throw new DivideByZeroException();
+            if (denominator == 0)
+            {
+                throw new DivideByZeroException();
+            }
 
             Denominator = denominator;
             Numerator = numerator;
@@ -88,13 +94,22 @@ namespace Mathematics
         {
             get
             {
-                if (Exponent == 0) return Numerator;
+                if (Exponent == 0)
+                {
+                    return Numerator;
+                }
 
-                if (Math.Abs(Denominator) == 1) return Exponent * Numerator;
+                if (Math.Abs(Denominator) == 1)
+                {
+                    return Exponent * Numerator;
+                }
 
                 //catch negative exponent
                 var exponentNumerator = Math.Abs(Exponent * Denominator) + Numerator;
-                if (Exponent < 0) return exponentNumerator * -1;
+                if (Exponent < 0)
+                {
+                    return exponentNumerator * -1;
+                }
 
                 return exponentNumerator;
             }
@@ -114,7 +129,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="other">other Coordinate</param>
         /// <returns>True if equal, false if not</returns>
-        public bool Equals(Fraction other)
+        public bool Equals(Fraction? other)
         {
             return Numerator == other?.Numerator && Denominator == other.Denominator && Exponent == other.Exponent;
         }
@@ -126,7 +141,7 @@ namespace Mathematics
         /// <returns>
         ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Fraction other && Equals(other);
         }
@@ -169,8 +184,8 @@ namespace Mathematics
         /// </returns>
         public static Fraction operator +(Fraction first, Fraction second)
         {
-            return new Fraction(first.ExponentNumerator * second.Denominator +
-                                first.Denominator * second.ExponentNumerator,
+            return new Fraction((first.ExponentNumerator * second.Denominator) +
+                                (first.Denominator * second.ExponentNumerator),
                 first.Denominator * second.Denominator);
         }
 
@@ -184,8 +199,8 @@ namespace Mathematics
         /// </returns>
         public static Fraction operator -(Fraction first, Fraction second)
         {
-            return new Fraction(first.ExponentNumerator * second.Denominator -
-                                first.Denominator * second.ExponentNumerator,
+            return new Fraction((first.ExponentNumerator * second.Denominator) -
+                                (first.Denominator * second.ExponentNumerator),
                 first.Denominator * second.Denominator);
         }
 
@@ -295,7 +310,10 @@ namespace Mathematics
             }
 
             // If the numerator is less than or equal to the denominator, there's no need to reduce further
-            if (Numerator <= Denominator) return;
+            if (Numerator <= Denominator)
+            {
+                return;
+            }
 
             // If the numerator is greater than the denominator, we perform the division to extract the whole part (Exponent)
             var modulo = Numerator % Denominator;
@@ -303,7 +321,10 @@ namespace Mathematics
             Numerator = modulo; // The remainder becomes the new numerator
 
             // If the remainder is zero, we have an exact division and the fraction reduces to a whole number
-            if (Numerator == 0) Denominator = 1; // Set denominator to 1 for whole number
+            if (Numerator == 0)
+            {
+                Denominator = 1; // Set denominator to 1 for whole number
+            }
         }
 
 

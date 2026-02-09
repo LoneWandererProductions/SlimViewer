@@ -23,7 +23,7 @@ namespace Mathematics
     /// <summary>
     ///     Basic Vector Implementation
     /// </summary>
-    public class Vector3D : ICloneable, IEquatable<Vector3D>
+    public sealed class Vector3D : ICloneable, IEquatable<Vector3D>
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="Vector3D" /> class.
@@ -275,7 +275,7 @@ namespace Mathematics
         /// </returns>
         public static double operator *(Vector3D first, Vector3D second)
         {
-            return first.X * second.X + first.Y * second.Y + first.Z * second.Z;
+            return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
         }
 
         /// <summary>
@@ -330,9 +330,9 @@ namespace Mathematics
         {
             return new Vector3D
             {
-                X = Y * second.Z - Z * second.Y,
-                Y = Z * second.X - X * second.Z,
-                Z = X * second.Y - Y * second.X
+                X = (Y * second.Z) - (Z * second.Y),
+                Y = (Z * second.X) - (X * second.Z),
+                Z = (X * second.Y) - (Y * second.X)
             };
         }
 

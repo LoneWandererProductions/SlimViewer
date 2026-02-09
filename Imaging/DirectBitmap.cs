@@ -19,14 +19,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Interfaces;
 using Color = System.Drawing.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -37,7 +35,7 @@ namespace Imaging
     ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>
+    public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>, IPixelSurface
     {
         /// <summary>
         ///     The synchronize lock
@@ -68,16 +66,31 @@ namespace Imaging
         ///     AddrOfPinnedObject, reference to address of pinned object
         ///     GCHandleType, Retrieves the address of object data in a Pinned handle.
         /// </summary>
-        /// <param name="btm">The in question.</param>
-        public DirectBitmap(Image btm)
+        /// <param name="image">The image in question.</param>
+        public DirectBitmap(Image image)
         {
-            Width = btm.Width;
-            Height = btm.Height;
-            Initiate();
+            Width = image.Width;
+            Height = image.Height;
+            Bits = new Pixel32[Width * Height];
+            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
 
-            using var graph = Graphics.FromImage(Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
-                GraphicsUnit.Pixel);
+            using var bmp = new Bitmap(image);
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    var c = bmp.GetPixel(x, y);
+                    Bits[y * Width + x] = new Pixel32(c.R, c.G, c.B, c.A);
+                }
+            }
+
+            Bitmap = new Bitmap(
+                Width,
+                Height,
+                Width * Marshal.SizeOf<Pixel32>(),
+                PixelFormat.Format32bppArgb, // REMOVE THE 'P' HERE
+                BitsHandle.AddrOfPinnedObject()
+            );
         }
 
         /// <summary>
@@ -116,13 +129,8 @@ namespace Imaging
             }
         }
 
-        /// <summary>
-        ///     Gets the bits.
-        /// </summary>
-        /// <value>
-        ///     The bits.
-        /// </value>
-        public int[] Bits { get; private set; }
+        /// <inheritdoc />
+        public Pixel32[] Bits { get; private set; }
 
         /// <summary>
         ///     Gets the bitmap.
@@ -140,36 +148,16 @@ namespace Imaging
         /// </value>
         private bool Disposed { get; set; }
 
-        /// <summary>
-        ///     Gets the height.
-        /// </summary>
-        /// <value>
-        ///     The height.
-        /// </value>
+        /// <inheritdoc />
         public int Height { get; }
 
-        /// <summary>
-        ///     Gets the width.
-        /// </summary>
-        /// <value>
-        ///     The width.
-        /// </value>
+        /// <inheritdoc />
         public int Width { get; }
 
-        /// <summary>
-        ///     Gets the bits handle.
-        /// </summary>
-        /// <value>
-        ///     The bits handle.
-        /// </value>
+        /// <inheritdoc />
         private GCHandle BitsHandle { get; set; }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Free up all the Memory.
-        ///     See:
-        ///     https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1063?view=vs-2019
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -180,7 +168,7 @@ namespace Imaging
         ///     Byte data for this instance.
         /// </summary>
         /// <returns>Image data as Bytes</returns>
-        public byte[] Bytes()
+        public byte[]? Bytes()
         {
             lock (_syncLock)
             {
@@ -189,18 +177,17 @@ namespace Imaging
                     return null;
                 }
 
-                // The resulting byte array will have 4 bytes per int (32-bit)
                 var byteArray = new byte[Bits.Length * 4];
 
                 for (var i = 0; i < Bits.Length; i++)
                 {
                     var color = Bits[i];
 
-                    // Extract the ARGB components from the int and pack them as RGBA
-                    byteArray[(i * 4) + 0] = (byte)((color >> 16) & 0xFF); // Red
-                    byteArray[(i * 4) + 1] = (byte)((color >> 8) & 0xFF); // Green
-                    byteArray[(i * 4) + 2] = (byte)(color & 0xFF); // Blue
-                    byteArray[(i * 4) + 3] = (byte)((color >> 24) & 0xFF); // Alpha
+                    // Pack as RGBA
+                    byteArray[(i * 4) + 0] = color.R;
+                    byteArray[(i * 4) + 1] = color.G;
+                    byteArray[(i * 4) + 2] = color.B;
+                    byteArray[(i * 4) + 3] = color.A;
                 }
 
                 return byteArray;
@@ -212,14 +199,25 @@ namespace Imaging
         /// </summary>
         private void Initiate(Color color = default)
         {
-            Bits = new int[Width * Height];
-            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
-            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppPArgb,
-                BitsHandle.AddrOfPinnedObject());
+            // Allocate Pixel32 array
+            Bits = new Pixel32[Width * Height];
 
-            // Make the background transparent
-            using var g = Graphics.FromImage(Bitmap);
-            g.Clear(color);
+            // Pin the array
+            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
+
+            // Create Bitmap from pinned Pixel32 array
+            Bitmap = new Bitmap(
+                Width,
+                Height,
+                Width * Marshal.SizeOf<Pixel32>(), // stride in bytes
+                PixelFormat.Format32bppArgb,
+                BitsHandle.AddrOfPinnedObject()
+            );
+
+            // Fill background
+            var bg = new Pixel32(color.R, color.G, color.B, color.A);
+            for (var i = 0; i < Bits.Length; i++)
+                Bits[i] = bg;
         }
 
         /// <summary>
@@ -230,10 +228,25 @@ namespace Imaging
         {
             var dbm = new DirectBitmap(btm.Width, btm.Height);
 
-            using var graph = Graphics.FromImage(dbm.Bitmap);
-            graph.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height), 0, 0, btm.Width, btm.Height,
-                GraphicsUnit.Pixel);
+            // Lock source bits
+            var rect = new Rectangle(0, 0, btm.Width, btm.Height);
+            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
+            // We can copy directly into our Bits array since it's pinned
+            unsafe
+            {
+                fixed (Pixel32* pDest = dbm.Bits)
+                {
+                    Buffer.MemoryCopy(
+                        (void*)srcData.Scan0,
+                        (void*)pDest,
+                        dbm.Bits.Length * 4,
+                        dbm.Bits.Length * 4
+                    );
+                }
+            }
+
+            btm.UnlockBits(srcData);
             return dbm;
         }
 
@@ -249,10 +262,11 @@ namespace Imaging
         {
             lock (_syncLock)
             {
-                var colorArgb = color.ToArgb();
+                var colorPixel = new Pixel32(color.R, color.G, color.B, color.A); // Convert once
+
                 for (var i = y; i < y + height && i < Height; i++)
                 {
-                    Bits[x + (i * Width)] = colorArgb;
+                    Bits[x + (i * Width)] = colorPixel;
                 }
             }
         }
@@ -270,35 +284,15 @@ namespace Imaging
             lock (_syncLock)
             {
                 if (y < 0 || y >= Height || length <= 0)
-                {
                     return;
-                }
 
-                var colorArgb = color.ToArgb();
-                var vectorCount = Vector<int>.Count;
-                var colorVector = new Vector<int>(colorArgb);
-
+                var colorPixel = new Pixel32(color.R, color.G, color.B, color.A); // Convert once
                 var endX = Math.Min(x + length, Width);
 
-                // Align start position to the next multiple of vectorCount if possible
-                var startX = (x + vectorCount - 1) & ~(vectorCount - 1);
-
-                // Fill initial non-aligned part
-                for (var i = x; i < startX && i < endX; i++)
+                var rowStart = y * Width;
+                for (var i = x; i < endX; i++)
                 {
-                    Bits[i + (y * Width)] = colorArgb;
-                }
-
-                // Fill aligned part with SIMD
-                for (var xPos = startX; xPos + vectorCount <= endX; xPos += vectorCount)
-                {
-                    colorVector.CopyTo(Bits, xPos + (y * Width));
-                }
-
-                // Fill final non-aligned part
-                for (var i = endX - vectorCount; i < endX; i++)
-                {
-                    Bits[i + (y * Width)] = colorArgb;
+                    Bits[rowStart + i] = colorPixel;
                 }
             }
         }
@@ -316,28 +310,15 @@ namespace Imaging
         {
             lock (_syncLock)
             {
-                var colorArgb = color.ToArgb();
-                var vectorCount = Vector<int>.Count;
-                var colorVector = new Vector<int>(colorArgb);
+                var colorPixel = new Pixel32(color.R, color.G, color.B, color.A);
 
-                // Loop over the rectangle's rows.
                 for (var y = y2; y < y2 + height && y < Height; y++)
-                    // Loop over the rectangle's columns with SIMD optimizations.
-                for (var x = x1; x < x1 + width && x < Width; x += vectorCount)
                 {
-                    var startIndex = x + (y * Width);
-                    // Ensure we don't go out of bounds.
-                    if (startIndex + vectorCount <= Bits.Length)
+                    var rowStart = y * Width;
+
+                    for (var x = x1; x < x1 + width && x < Width; x++)
                     {
-                        colorVector.CopyTo(Bits, startIndex);
-                    }
-                    else
-                        // Handle remainder if not divisible by vectorCount
-                    {
-                        for (var j = 0; j < vectorCount && startIndex + j < Bits.Length; j++)
-                        {
-                            Bits[startIndex + j] = colorArgb;
-                        }
+                        Bits[rowStart + x] = colorPixel; 
                     }
                 }
             }
@@ -352,7 +333,7 @@ namespace Imaging
         {
             lock (_syncLock)
             {
-                var colorArgb = color.ToArgb();
+                var colorPixel = new Pixel32(color.R, color.G, color.B, color.A);
                 var indices = idList as int[] ?? idList.ToArray();
 
                 // Process indices in chunks to improve CPU caching, scalar only
@@ -368,98 +349,50 @@ namespace Imaging
                         var idx = indices[i];
                         if (idx >= 0 && idx < Bits.Length)
                         {
-                            Bits[idx] = colorArgb;
+                            Bits[idx] = colorPixel;
                         }
                     }
                 }
             }
         }
 
-        /// <summary>
-        ///     Sets the pixel.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// <param name="color">The color.</param>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetPixel(int x, int y, Color color)
         {
+            var px = new Pixel32(color.R, color.G, color.B, color.A);
             lock (_syncLock)
             {
-                var index = x + (y * Width);
-                Bits[index] = color.ToArgb();
+                DirectBitmapCore.SetPixel(Bits, Width, Height, x, y, px);
             }
         }
 
+        /// <inheritdoc />
+        public void SetPixels(IEnumerable<(int x, int y, Color color)> pixels)
+        {
+            if (pixels == null) return;
+
+            SetPixels(Convert(pixels));
+        }
+
         /// <summary>
-        ///     Sets the pixels using SIMD for performance improvement.
-        ///     Be careful when to return values. The Bitmap might be premature disposed.
+        /// Sets the pixels.
         /// </summary>
-        /// <param name="pixels">
-        ///     An IEnumerable of pixels, each defined by x, y coordinates and a Color.
-        /// </param>
-        /// <summary>
-        ///     Sets the pixels using SIMD for performance improvement.
-        ///     Be careful when to return values. The Bitmap might be premature disposed.
-        /// </summary>
-        public void SetPixelsSimd(IEnumerable<(int x, int y, Color color)> pixels)
+        /// <param name="pixels">The pixels.</param>
+        /// <param name="threshold">The threshold.</param>
+        public void SetPixels(IEnumerable<PixelData> pixels, int threshold = 64)
         {
             lock (_syncLock)
             {
-                if (Bits == null || Bits.Length < Width * Height)
-                {
-                    throw new InvalidOperationException(ImagingResources.ErrorInvalidOperation);
-                }
-
-                var vectorCount = Vector<int>.Count;
-
-                // Group pixels by row and color for SIMD-friendly horizontal runs
-                var grouped = pixels
-                    .GroupBy(p => (p.y, p.color))
-                    .ToList();
-
-                foreach (var group in grouped)
-                {
-                    var y = group.Key.y;
-                    var color = group.Key.color;
-                    var colorArgb = color.ToArgb();
-                    var colorVector = new Vector<int>(colorArgb);
-
-                    var xs = group.Select(p => p.x).Order().ToArray();
-
-                    var i = 0;
-                    while (i < xs.Length)
-                    {
-                        var runStart = xs[i];
-                        var runLength = 1;
-
-                        // Detect contiguous run of Xs
-                        while (i + runLength < xs.Length && xs[i + runLength] == runStart + runLength)
-                        {
-                            runLength++;
-                        }
-
-                        var startIndex = runStart + (y * Width);
-                        var simdLength = runLength - (runLength % vectorCount);
-
-                        // SIMD write for full vector chunks
-                        for (var offset = 0; offset < simdLength; offset += vectorCount)
-                        {
-                            colorVector.CopyTo(Bits, startIndex + offset);
-                        }
-
-                        // Scalar write for remaining tail pixels
-                        for (var offset = simdLength; offset < runLength; offset++)
-                        {
-                            Bits[startIndex + offset] = colorArgb;
-                        }
-
-                        i += runLength;
-                    }
-                }
+                DirectBitmapCore.SetPixelsAdaptive(Bits, Width, Height, pixels, threshold);
             }
         }
 
+        /// <inheritdoc />
+        public void BlendInt(uint[] src)
+        {
+            DirectBitmapCore.BlendInt(Bits, src);
+        }
 
         /// <summary>
         ///     Draws the vertical lines.
@@ -470,21 +403,17 @@ namespace Imaging
             _ = Parallel.ForEach(verticalLines, line =>
             {
                 var (x, y, finalY, color) = line;
-                var colorArgb = color.ToArgb();
-
-                // Starting position in the Bits array
-                var position = x + (y * Width);
+                var pixel = new Pixel32(color.R, color.G, color.B, color.A);
 
                 // Calculate the number of rows in the vertical line
                 var rowCount = finalY - y + 1;
 
-                // Create a span over the Bits array
-                var bitsSpan = new Span<int>(Bits);
-
-                // Set the color for each pixel in the vertical line
                 for (var i = 0; i < rowCount; i++)
                 {
-                    bitsSpan[position + (i * Width)] = colorArgb;
+                    var index = x + (y + i) * Width;
+
+                    // Write the Pixel32 directly
+                    Bits[index] = pixel;
                 }
             });
         }
@@ -498,9 +427,15 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color GetPixel(int x, int y)
         {
-            var index = x + (y * Width);
-            var col = Bits[index];
-            return Color.FromArgb(col);
+            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
+            return Color.FromArgb(p.A, p.R, p.G, p.B);
+        }
+
+        /// <inheritdoc />
+        public Pixel32 GetPixel32(int x, int y)
+        {
+            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
+            return new Pixel32(p.R, p.G, p.B, p.A);
         }
 
         /// <summary>
@@ -511,12 +446,12 @@ namespace Imaging
         public Color[] GetColumn(int x)
         {
             var column = new Color[Height];
-            Span<int> bitsSpan = Bits;
 
             for (var y = 0; y < Height; y++)
             {
                 var index = x + (y * Width);
-                column[y] = Color.FromArgb(bitsSpan[index]);
+                var p = Bits[index];
+                column[y] = Color.FromArgb(p.A, p.R, p.G, p.B);
             }
 
             return column;
@@ -529,11 +464,12 @@ namespace Imaging
         /// <returns>Array of Colors in the row.</returns>
         public Color[] GetRow(int y)
         {
-            var bitsSpan = Bits.AsSpan(y * Width, Width);
             var row = new Color[Width];
+
             for (var i = 0; i < Width; i++)
             {
-                row[i] = Color.FromArgb(bitsSpan[i]);
+                var p = Bits[y * Width + i];
+                row[i] = Color.FromArgb(p.A, p.R, p.G, p.B);
             }
 
             return row;
@@ -556,8 +492,8 @@ namespace Imaging
 
             for (var i = 0; i < length; i++)
             {
-                var col = Bits[i];
-                span[i] = Color.FromArgb(col);
+                var px = Bits[i];
+                span[i] = Color.FromArgb(px.A, px.R, px.G, px.B);
             }
 
             return span;
@@ -569,39 +505,8 @@ namespace Imaging
         /// <returns>BitmapImage image data</returns>
         public BitmapImage ToBitmapImage()
         {
-            // Ensure this method runs on the UI thread.
-            BitmapImage? bitmapImage = null;
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // Create a WriteableBitmap with the same dimensions as the DirectBitmap
-                var writeableBitmap = new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgra32, null);
-
-                // Write the pixel data (from DirectBitmap's Bits) into the WriteableBitmap
-                writeableBitmap.WritePixels(
-                    new Int32Rect(0, 0, Width, Height),
-                    Bits,
-                    Width * 4, // Each pixel has 4 bytes (BGRA)
-                    0);
-
-                // Create a BitmapImage and set the WriteableBitmap's pixel data
-                bitmapImage = new BitmapImage();
-                using var stream = new MemoryStream();
-                // Encode the WriteableBitmap to a MemoryStream
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
-                encoder.Save(stream);
-
-                // Set the stream as the source for the BitmapImage
-                stream.Seek(0, SeekOrigin.Begin);
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = stream;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-            });
-
-            return bitmapImage;
+            return Bitmap.ToBitmapImage();
         }
-
 
         /// <summary>
         ///     Converts to string.
@@ -657,6 +562,17 @@ namespace Imaging
         ///   <see langword="true" /> if the specified object  is equal to the current object; otherwise, <see langword="false" />.
         /// </returns>
         public override bool Equals(object? obj) => Equals(obj as DirectBitmap);
+
+        /// <summary>
+        /// Converts the specified pixels.
+        /// </summary>
+        /// <param name="pixels">The pixels.</param>
+        /// <returns>Conveteed Coordinates into Pixel32</returns>
+        private static IEnumerable<PixelData> Convert(IEnumerable<(int x, int y, Color color)> pixels)
+        {
+            foreach (var p in pixels)
+                yield return new PixelData(p.x, p.y, p.color.R, p.color.G, p.color.B, p.color.A);
+        }
 
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.

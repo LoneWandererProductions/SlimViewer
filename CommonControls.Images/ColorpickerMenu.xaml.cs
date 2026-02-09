@@ -10,12 +10,10 @@
 // ReSharper disable EventNeverSubscribedTo.Global
 // ReSharper disable UnusedType.Global
 
-using Imaging;
-using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Imaging;
 
 namespace CommonControls.Images
 {
@@ -86,9 +84,6 @@ namespace CommonControls.Images
         public void SetColors(int r, int g, int b, int alpha)
         {
             GridPicker.Children.Clear();
-            // Ensure initial V is not zero
-            if (r == 0 && g == 0 && b == 0)
-                r = 255; // default to red
 
             var colorPick = new ColorPicker(r, g, b, alpha);
             AddColor(ColorPickerRegister.Colors);
@@ -123,9 +118,6 @@ namespace CommonControls.Images
         private void AddColor(ColorHsv colorHsv)
         {
             CanvasPreview.Children.Clear();
-
-            Trace.WriteLine($"H:{colorHsv.H} S:{colorHsv.S} V:{colorHsv.V} A:{colorHsv.A} R:{colorHsv.R} G:{colorHsv.G} B:{colorHsv.B}");
-
 
             var rectangle = ColorPickerHelper.GetColorPreview(colorHsv);
 

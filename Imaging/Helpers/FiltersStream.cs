@@ -330,7 +330,6 @@ namespace Imaging.Helpers
                     {
                         for (var i = -1; i <= 1; i++)
                         {
-                            var pixel = sourceBuffer.GetPixel(x + i, y + j);
                             var (r, g, b, a) = sourceBuffer.GetPixel(x + i, y + j);
 
                             int grayValue = r; // grayscale
@@ -426,7 +425,7 @@ namespace Imaging.Helpers
             // Use SIMD to set all the pixels in bulk
             try
             {
-                result.SetPixelsSimd(pixelsToSet);
+                result.SetPixels(pixelsToSet);
                 dbmBase.Dispose();
 
                 return result.Bitmap;
@@ -883,7 +882,7 @@ namespace Imaging.Helpers
 
             try
             {
-                dbmBase.SetPixelsSimd(pixelsToSet);
+                dbmBase.SetPixels(pixelsToSet);
             }
             catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {
@@ -924,7 +923,7 @@ namespace Imaging.Helpers
             // Use SIMD to set all the pixels in bulk
             try
             {
-                result.SetPixelsSimd(pixelsToSet);
+                result.SetPixels(pixelsToSet);
 
                 return result.Bitmap;
             }

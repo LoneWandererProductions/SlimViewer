@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Threading.Tasks;
 using ExtendedSystemObjects;
@@ -35,8 +34,7 @@ namespace ImageCompare
         /// <returns>
         ///     A list of paths to all the duplicates found.
         /// </returns>
-        [return: MaybeNull]
-        internal static List<ImageSimilar> FindSimilarImages(ImageSimilar imageToCompareTo,
+        internal static List<ImageSimilar>? FindSimilarImages(ImageSimilar imageToCompareTo,
             IEnumerable<ImageSimilar> images,
             float maximumDifferenceInPercentage)
         {
@@ -84,7 +82,7 @@ namespace ImageCompare
             var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
             // Get total pixels
-            var totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
+            const int totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
 
             for (var y = 0; y < ImageResources.DuplicateSize; y++)
             for (var x = 0; x < ImageResources.DuplicateSize; x++)

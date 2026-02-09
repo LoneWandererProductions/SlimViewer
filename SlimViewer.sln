@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exp", "Exp\Exp.csproj", "{8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonControls.Images", "CommonControls.Images\CommonControls.Images.csproj", "{D3603D9A-C5D1-5A84-B911-892019669013}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonControls.Converter", "CommonControls.Converter\CommonControls.Converter.csproj", "{B78CBC75-AADF-50B5-561C-0483FAD81611}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,10 @@ Global
 		{D3603D9A-C5D1-5A84-B911-892019669013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3603D9A-C5D1-5A84-B911-892019669013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3603D9A-C5D1-5A84-B911-892019669013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B78CBC75-AADF-50B5-561C-0483FAD81611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B78CBC75-AADF-50B5-561C-0483FAD81611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B78CBC75-AADF-50B5-561C-0483FAD81611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B78CBC75-AADF-50B5-561C-0483FAD81611}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

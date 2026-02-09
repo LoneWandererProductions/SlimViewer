@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -49,8 +48,7 @@ namespace ImageCompare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        [return: MaybeNull]
-        internal static List<List<string>> GetDuplicateImages(string folderPath, bool checkSubfolders,
+        internal static List<List<string>>? GetDuplicateImages(string folderPath, bool checkSubfolders,
             IEnumerable<string> extensions)
         {
             var localDate = DateTime.Now;

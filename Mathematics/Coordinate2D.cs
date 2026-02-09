@@ -13,6 +13,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Mathematics
@@ -21,6 +22,7 @@ namespace Mathematics
     /// <summary>
     ///     Coordinate 2d Helper Class
     /// </summary>
+    [DebuggerDisplay("{ToString()}")]
     public sealed class Coordinate2D : ICloneable
     {
         /// <summary>
@@ -216,7 +218,7 @@ namespace Mathematics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int CalculateId(int x, int y, int width)
         {
-            return y * width + x;
+            return (y * width) + x;
         }
 
         /// <summary>
