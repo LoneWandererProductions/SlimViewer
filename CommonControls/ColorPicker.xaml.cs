@@ -1,9 +1,4 @@
-﻿/*
- * FILE:        ColorPicker.xaml.cs
- * PURPOSE:     Resolution-independent Color Picker (Hue Ring + SV Triangle)
- */
-
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -11,24 +6,25 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Imaging; // Uses your existing ColorHsv class
+using Imaging; // Uses your ColorHsv class
 
 namespace CommonControls
 {
     public sealed partial class ColorPicker : UserControl, INotifyPropertyChanged
     {
-        // --- Internal Fields ---
-        private WriteableBitmap _bitmap; // Fast pixel buffer
+        private WriteableBitmap _bitmap;
         private bool _isDragging;
 
-        // Internal Color State (0.0 to 1.0 or 0 to 360)
+        // Internal state
         private double _h = 0;
         private double _s = 1;
         private double _v = 1;
+        private int _alpha = 255;
 
-        // --- Events ---
+        // To prevent infinite loops when updating properties
+        private bool _ignoreUpdates;
+
         public event PropertyChangedEventHandler PropertyChanged;
-
         public delegate void DelegateColor(ColorHsv colorHsv);
         public event DelegateColor ColorChanged;
 
@@ -37,27 +33,128 @@ namespace CommonControls
             InitializeComponent();
         }
 
-        // --- Public Properties (Data Binding) ---
+        // --- DEPENDENCY PROPERTIES (For Bindings) ---
+
+        // Show/Hide inputs
+        public static readonly DependencyProperty ShowTextBoxesProperty =
+            DependencyProperty.Register(nameof(ShowTextBoxes), typeof(bool), typeof(ColorPicker), new PropertyMetadata(true));
+        public bool ShowTextBoxes
+        {
+            get => (bool)GetValue(ShowTextBoxesProperty);
+            set => SetValue(ShowTextBoxesProperty, value);
+        }
+
+        // --- PROPERTIES with Change Logic ---
 
         public double Hue
         {
             get => _h;
-            set { if (SetField(ref _h, value)) { RedrawAsync(); UpdateCursorPosition(); } }
+            set { if (SetField(ref _h, value)) { OnHsvChanged(true); } }
         }
 
         public double Sat
         {
             get => _s;
-            set { if (SetField(ref _s, value)) { UpdateCursorPosition(); } }
+            set { if (SetField(ref _s, Math.Max(0, Math.Min(1, value)))) { OnHsvChanged(false); } }
         }
 
         public double Val
         {
             get => _v;
-            set { if (SetField(ref _v, value)) { UpdateCursorPosition(); } }
+            set { if (SetField(ref _v, Math.Max(0, Math.Min(1, value)))) { OnHsvChanged(false); } }
         }
 
-        // --- Mouse Interaction ---
+        public int Alpha
+        {
+            get => _alpha;
+            set { if (SetField(ref _alpha, Math.Max(0, Math.Min(255, value)))) { UpdateColorOutput(); } }
+        }
+
+        // --- RGB Wrappers ---
+        // When these set, we calculate new HSV
+        public int R
+        {
+            get => ColorHsv.FromHsv(_h, _s, _v).R;
+            set => UpdateFromRgb(value, G, B);
+        }
+        public int G
+        {
+            get => ColorHsv.FromHsv(_h, _s, _v).G;
+            set => UpdateFromRgb(R, value, B);
+        }
+        public int B
+        {
+            get => ColorHsv.FromHsv(_h, _s, _v).B;
+            set => UpdateFromRgb(R, G, value);
+        }
+
+        public string Hex
+        {
+            get => ColorHsv.FromHsv(_h, _s, _v, _alpha).Hex;
+            set
+            {
+                try
+                {
+                    // Simple Hex parser
+                    var color = (Color)ColorConverter.ConvertFromString(value);
+                    UpdateFromRgb(color.R, color.G, color.B);
+                    Alpha = color.A;
+                }
+                catch { /* Invalid hex, ignore */ }
+            }
+        }
+
+        // --- CORE UPDATE LOGIC ---
+
+        private void OnHsvChanged(bool hueChanged)
+        {
+            if (_ignoreUpdates) return;
+
+            if (hueChanged) RedrawAsync(); // Only redraw image if Hue moves
+
+            UpdateCursors();     // Move the circles
+            UpdateColorOutput(); // Notify external world
+            NotifyRgbProperties(); // Update TextBoxes
+        }
+
+        private void UpdateFromRgb(int r, int g, int b)
+        {
+            if (_ignoreUpdates) return;
+
+            _ignoreUpdates = true; // Prevent loop
+
+            var hsv = ColorHsv.FromRgb(r, g, b);
+            _h = hsv.H;
+            _s = hsv.S;
+            _v = hsv.V;
+
+            _ignoreUpdates = false;
+
+            // Trigger updates
+            OnPropertyChanged(nameof(Hue));
+            OnPropertyChanged(nameof(Sat));
+            OnPropertyChanged(nameof(Val));
+            NotifyRgbProperties();
+
+            RedrawAsync();
+            UpdateCursors();
+            UpdateColorOutput();
+        }
+
+        private void NotifyRgbProperties()
+        {
+            OnPropertyChanged(nameof(R));
+            OnPropertyChanged(nameof(G));
+            OnPropertyChanged(nameof(B));
+            OnPropertyChanged(nameof(Hex));
+        }
+
+        private void UpdateColorOutput()
+        {
+            ColorChanged?.Invoke(ColorHsv.FromHsv(_h, _s, _v, _alpha));
+        }
+
+        // --- VISUAL INTERACTION ---
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -77,15 +174,13 @@ namespace CommonControls
             Mouse.Capture(null);
         }
 
-        // The core logic that maps "Click Position" -> "H/S/V Value"
         private void ProcessMouse(Point p)
         {
-            double size = Math.Min(ActualWidth, ActualHeight);
+            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
             if (size <= 0) return;
 
-            // Define Geometry relative to current size
             double radius = size / 2.0;
-            double innerRadius = radius * 0.85; // Triangle is 85% of the radius
+            double innerRadius = radius * 0.85;
             double centerX = size / 2.0;
             double centerY = size / 2.0;
 
@@ -93,56 +188,88 @@ namespace CommonControls
             double dy = p.Y - centerY;
             double dist = Math.Sqrt(dx * dx + dy * dy);
 
-            // CASE 1: Clicked on the Hue Ring
+            _ignoreUpdates = true; // Optimization: Don't update RGB textboxes while dragging rapidly
+
+            // 1. Hue Ring Click
             if (dist > innerRadius && dist <= radius)
             {
                 double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
                 if (angle < 0) angle += 360;
 
-                Hue = angle; // Triggers Redraw
-                TriggerColorChange();
+                _h = angle;
+                RedrawAsync(); // Hue changed, must redraw background
+                OnPropertyChanged(nameof(Hue));
             }
-            // CASE 2: Clicked Inside (Triangle Area)
+            // 2. Triangle Click
             else if (dist <= innerRadius)
             {
-                // Convert Mouse X/Y to Sat/Val
                 if (GetSvFromPoint(dx, dy, innerRadius, _h, out double s, out double v))
                 {
-                    // Update internal values directly to prevent unnecessary redraws
                     _s = s;
                     _v = v;
-
-                    // Notify UI
                     OnPropertyChanged(nameof(Sat));
                     OnPropertyChanged(nameof(Val));
-
-                    UpdateCursorPosition();
-                    TriggerColorChange();
                 }
             }
+
+            _ignoreUpdates = false;
+
+            UpdateCursors();
+            UpdateColorOutput();
+            NotifyRgbProperties(); // Update Textboxes at the end of the frame
         }
 
-        // Sends the ColorHsv object out to the world
-        private void TriggerColorChange()
-        {
-            var color = ColorHsv.FromHsv(_h, _s, _v);
-            ColorChanged?.Invoke(color);
-        }
-
-        // --- Rendering Logic (The Fast Part) ---
+        // --- RENDERING & CURSORS ---
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (e.NewSize.Width > 0 && e.NewSize.Height > 0) RedrawAsync();
+            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                RedrawAsync();
+                UpdateCursors();
+            }
         }
 
-        // Draws the Triangle and Ring pixels
+        private void UpdateCursors()
+        {
+            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
+            if (size <= 0) return;
+
+            double radius = size / 2.0;
+            double innerRadius = radius * 0.85;
+            double centerX = PickerImage.ActualWidth / 2.0; // Use full width to center correctly
+            double centerY = PickerImage.ActualHeight / 2.0;
+
+            // 1. Move Hue Cursor (Orbit)
+            double hueRad = _h * Math.PI / 180.0;
+            // Position it in the middle of the ring
+            double ringRadius = (radius + innerRadius) / 2.0;
+
+            double hx = centerX + Math.Cos(hueRad) * ringRadius - HueCursor.Width / 2;
+            double hy = centerY + Math.Sin(hueRad) * ringRadius - HueCursor.Height / 2;
+
+            Canvas.SetLeft(HueCursor, hx);
+            Canvas.SetTop(HueCursor, hy);
+            HueCursor.Visibility = Visibility.Visible;
+
+            // 2. Move SV Cursor (Triangle)
+            Point svPoint = GetPointFromSv(_h, _s, _v, innerRadius);
+
+            // Adjust to Canvas center (svPoint is relative to 0,0 center)
+            double svx = svPoint.X + centerX - SvCursor.Width / 2;
+            double svy = svPoint.Y + centerY - SvCursor.Height / 2;
+
+            Canvas.SetLeft(SvCursor, svx);
+            Canvas.SetTop(SvCursor, svy);
+            SvCursor.Visibility = Visibility.Visible;
+        }
+
+        // This is the "Magic" pixel drawer (Same as before)
         private void RedrawAsync()
         {
             int size = (int)Math.Min(ActualWidth, ActualHeight);
             if (size <= 0) return;
 
-            // Resize Bitmap if needed
             if (_bitmap == null || _bitmap.PixelWidth != size || _bitmap.PixelHeight != size)
             {
                 _bitmap = new WriteableBitmap(size, size, 96, 96, PixelFormats.Bgra32, null);
@@ -155,47 +282,36 @@ namespace CommonControls
             {
                 int* pBackBuffer = (int*)_bitmap.BackBuffer;
                 int stride = _bitmap.BackBufferStride;
-
                 double radius = size / 2.0;
                 double innerRadius = radius * 0.85;
-                double centerX = size / 2.0;
-                double centerY = size / 2.0;
+                double c = size / 2.0; // Center relative to bitmap
 
-                // Loop through every pixel
                 for (int y = 0; y < size; y++)
                 {
                     for (int x = 0; x < size; x++)
                     {
-                        double dx = x - centerX;
-                        double dy = y - centerY;
+                        double dx = x - c;
+                        double dy = y - c;
                         double dist = Math.Sqrt(dx * dx + dy * dy);
+                        int colorData = 0;
 
-                        int colorData = 0; // Default transparent
-
-                        // 1. Draw Hue Ring
                         if (dist <= radius && dist >= innerRadius - 1)
                         {
+                            // Hue Ring
                             double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
                             if (angle < 0) angle += 360;
-
-                            // Anti-alias edge
                             int alpha = 255;
                             if (dist > radius - 1) alpha = (int)((radius - dist) * 255);
                             else if (dist < innerRadius) alpha = (int)((dist - (innerRadius - 1)) * 255);
-
                             colorData = HsvToInt(angle, 1, 1, alpha);
                         }
-                        // 2. Draw Triangle
                         else if (dist < innerRadius)
                         {
-                            // Math: Is this pixel inside the triangle?
+                            // Triangle
                             if (GetSvFromPoint(dx, dy, innerRadius, _h, out double s, out double v))
-                            {
                                 colorData = HsvToInt(_h, s, v, 255);
-                            }
                         }
 
-                        // Write pixel
                         *(pBackBuffer + y * (stride / 4) + x) = colorData;
                     }
                 }
@@ -203,64 +319,30 @@ namespace CommonControls
 
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, size, size));
             _bitmap.Unlock();
-
-            UpdateCursorPosition();
         }
 
-        // Moves the selection circle without redrawing the background
-        private void UpdateCursorPosition()
-        {
-            double size = Math.Min(ActualWidth, ActualHeight);
-            if (size <= 0) return;
+        // --- MATH HELPERS ---
 
-            double innerRadius = size / 2.0 * 0.85;
-
-            // Math: Where is the Sat/Val located on screen?
-            Point p = GetPointFromSv(_h, _s, _v, innerRadius);
-
-            // Center the cursor ellipse on that point
-            double canvasX = p.X + ActualWidth / 2.0 - SelectionCursor.Width / 2.0;
-            double canvasY = p.Y + ActualHeight / 2.0 - SelectionCursor.Height / 2.0;
-
-            Canvas.SetLeft(SelectionCursor, canvasX);
-            Canvas.SetTop(SelectionCursor, canvasY);
-        }
-
-        // --- MATH HELPERS (Resolution Independent) ---
-        // These replace your "ColorProcessing.cs" and work at any scale.
-
-        // Converts X,Y -> Saturation, Value
         private bool GetSvFromPoint(double x, double y, double r, double hue, out double s, out double v)
         {
             s = 0; v = 0;
             double hueRad = hue * Math.PI / 180.0;
-
-            // Triangle Vertices (Rotated by Hue)
             Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
             Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
             Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
 
-            // Barycentric Coordinates (Standard algorithm to check point inside triangle)
             double det = (pWhite.Y - pBlack.Y) * (pColor.X - pBlack.X) + (pBlack.X - pWhite.X) * (pColor.Y - pBlack.Y);
             double w1 = ((pWhite.Y - pBlack.Y) * (x - pBlack.X) + (pBlack.X - pWhite.X) * (y - pBlack.Y)) / det;
             double w2 = ((pBlack.Y - pColor.Y) * (x - pBlack.X) + (pColor.X - pBlack.X) * (y - pBlack.Y)) / det;
             double w3 = 1.0 - w1 - w2;
 
-            // Outside triangle?
             if (w1 < -0.01 || w2 < -0.01 || w3 < -0.01) return false;
-
-            // Map Weights to HSV Model
-            // w1 = Weight of Color (S=1, V=1)
-            // w2 = Weight of White (S=0, V=1)
-            // w3 = Weight of Black (V=0)
 
             v = w1 + w2;
             s = v <= 0.001 ? 0 : w1 / v;
-
             return true;
         }
 
-        // Converts Saturation, Value -> X,Y
         private Point GetPointFromSv(double h, double s, double v, double r)
         {
             double hueRad = h * Math.PI / 180.0;
@@ -268,18 +350,13 @@ namespace CommonControls
             Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
             Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
 
-            // Weights derived from S and V
-            double w1 = s * v;       // Color
-            double w2 = v * (1 - s); // White
-            double w3 = 1 - v;       // Black
+            double w1 = s * v;
+            double w2 = v * (1 - s);
+            double w3 = 1 - v;
 
-            return new Point(
-                w1 * pColor.X + w2 * pWhite.X + w3 * pBlack.X,
-                w1 * pColor.Y + w2 * pWhite.Y + w3 * pBlack.Y
-            );
+            return new Point(w1 * pColor.X + w2 * pWhite.X + w3 * pBlack.X, w1 * pColor.Y + w2 * pWhite.Y + w3 * pBlack.Y);
         }
 
-        // Fast Integer Color Conversion (Avoids creating Color objects in loop)
         private static int HsvToInt(double h, double s, double v, int alpha)
         {
             double c = v * s;
@@ -294,14 +371,9 @@ namespace CommonControls
             else if (h < 300) { r = x; g = 0; b = c; }
             else { r = c; g = 0; b = x; }
 
-            byte R = (byte)((r + m) * 255);
-            byte G = (byte)((g + m) * 255);
-            byte B = (byte)((b + m) * 255);
-
-            return alpha << 24 | R << 16 | G << 8 | B;
+            return alpha << 24 | (byte)((r + m) * 255) << 16 | (byte)((g + m) * 255) << 8 | (byte)((b + m) * 255);
         }
 
-        // Helper for Property Changed
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
             if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(field, value)) return false;
