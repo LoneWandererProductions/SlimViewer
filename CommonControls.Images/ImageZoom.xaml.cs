@@ -87,6 +87,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -114,6 +115,10 @@ namespace CommonControls.Images
         /// </summary>
         /// <param name="point">The point.</param>
         public delegate void DelegatePoint(Point point);
+
+        public delegate void DelegateMultiFrame(List<SelectionFrame> frames);
+
+        public event DelegateMultiFrame SelectedMultiFrames;
 
         /// <summary>
         ///     The image source property
@@ -155,6 +160,22 @@ namespace CommonControls.Images
             typeof(double),
             typeof(ImageZoom),
             new PropertyMetadata(1.0, OnZoomScaleChanged));
+
+        /// <summary>
+        ///      The selected multi-frames command property
+        /// </summary>
+        public static readonly DependencyProperty SelectedMultiFramesCommandProperty =
+            DependencyProperty.Register(nameof(SelectedMultiFramesCommand), typeof(ICommand), typeof(ImageZoom),
+                new PropertyMetadata(null));
+
+        /// <summary>
+        ///      Gets or sets the selected multi-frames command.
+        /// </summary>
+        public ICommand SelectedMultiFramesCommand
+        {
+            get => (ICommand)GetValue(SelectedMultiFramesCommandProperty);
+            set => SetValue(SelectedMultiFramesCommandProperty, value);
+        }
 
         /// <summary>
         ///     The image clicked command property
@@ -584,88 +605,37 @@ namespace CommonControls.Images
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            // Release the mouse capture and stop tracking it.
             _mouseDown = false;
             MainCanvas.ReleaseMouseCapture();
 
-            if (SelectionAdorner == null)
-            {
-                Trace.Write(ComCtlResources.InformationArdonerNull);
-                return;
-            }
+            if (SelectionAdorner == null) return;
 
             switch (SelectionTool)
             {
                 case ImageZoomTools.Move:
-                    // No specific action required for Move
                     break;
 
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
-
-                    var frame = SelectionAdorner.CurrentSelectionFrame;
-                    SelectedFrame?.Invoke(frame);
-                    SafeExecuteCommand(SelectedFrameCommand, frame);
+                case ImageZoomTools.Dot:
+                    // CHANGED: Instead of Finishing, we Commit and keep going
+                    SelectionAdorner.CommitCurrentShape();
                     break;
+
                 case ImageZoomTools.FreeForm:
-                    // Get the mouse position relative to the image
-                    var rawPoint = e.GetPosition(BtmImage);
-
-                    //TODO problem with our DPI and multiple Monitor Setup
-
-                    SelectionAdorner.FreeFormPoints.Add(rawPoint);
+                    // FreeForm logic in your original code added points on move. 
+                    // Now, MouseUp ends the "stroke", so we commit that stroke.
+                    SelectionAdorner.CommitCurrentShape();
                     break;
 
                 case ImageZoomTools.Trace:
                     SelectionAdorner.IsTracing = false;
-
-                    // Implement logic for FreeFormPoints
-                    var points = SelectionAdorner.FreeFormPoints;
-
-                    if (points is { Count: > 0 })
-                    {
-                        // Process the collected freeform points
-                        SafeExecuteCommand(SelectedFreeFormPointsCommand, points);
-
-                        // Optionally, log or display the points
-                        Trace.WriteLine($"Trace tool completed with {points.Count} points.");
-                    }
-
+                    // Trace logic might differ, but usually acts like FreeForm
                     break;
-
-                case ImageZoomTools.Dot:
-                    SetClickedPoint(e);
-
-                    var endpoint = e.GetPosition(BtmImage);
-                    SelectedPoint?.Invoke(endpoint);
-                    break;
-                default:
-                    // Do nothing for unsupported tools
-                    return;
             }
 
-            if (SelectionAdorner == null)
-            {
-                return;
-            }
-
-            // Get the AdornerLayer for the image
-            var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-
-            if (adornerLayer != null && SelectionAdorner != null)
-            {
-                // Only remove the adorner for tools that represent a finished, one-shot selection
-                if (SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.Dot)
-                {
-                    adornerLayer.Remove(SelectionAdorner);
-                    SelectionAdorner = null;
-                }
-                else
-                {
-                    // Keep the adorner alive for Move, FreeForm, Trace so user can continue interacting
-                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                }
-            }
+            // REMOVED: Do not remove the Adorner here.
+            // The Adorner stays alive to show previous shapes and allow drawing new ones.
         }
 
         /// <summary>
@@ -752,9 +722,37 @@ namespace CommonControls.Images
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (SelectionTool == ImageZoomTools.FreeForm)
+            // 1. If we are currently dragging (Mouse Left is Down), cancel the current shape
+            if (_mouseDown)
             {
-                CompleteFreeFormSelection();
+                _mouseDown = false;
+                MainCanvas.ReleaseMouseCapture();
+                // Optional: reset current points in Adorner without committing
+                // SelectionAdorner.ResetCurrent(); 
+                return;
+            }
+
+            // 2. If we are idle, Right Click means "I am finished selecting"
+            if (SelectionAdorner != null)
+            {
+                // Get all collected frames
+                var frames = SelectionAdorner.GetCommittedFrames();
+
+                if (frames.Count > 0)
+                {
+                    // Fire event with list of frames
+                    SelectedMultiFrames?.Invoke(frames);
+                    // Execute command if you have a List version of the command
+                    // SafeExecuteCommand(SelectedMultiFramesCommand, frames);
+                }
+
+                // Cleanup
+                var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
+                adornerLayer?.Remove(SelectionAdorner);
+                SelectionAdorner = null;
+
+                // Optional: Reset tool to Move automatically?
+                // SelectionTool = ImageZoomTools.Move;
             }
         }
 
