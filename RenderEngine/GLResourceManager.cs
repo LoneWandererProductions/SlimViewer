@@ -123,7 +123,6 @@ namespace RenderEngine
                 case ShaderTypeApp.VertexColor:
                     vertexSrc = ShaderResource.VertexColorVertexShader;
                     fragmentSrc = ShaderResource.VertexColorFragmentShader;
-                    break;
 
                     bool useMatrices = true;
                     vertexSrc = useMatrices

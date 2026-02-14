@@ -25,6 +25,7 @@ namespace RenderEngine
     public sealed class Simple2DRenderer : IDisposable
     {
         private readonly int _width;
+
         /// <summary>
         /// The height of the viewport.
         /// </summary>
@@ -75,7 +76,8 @@ namespace RenderEngine
 
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0); // Position
             GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 6 * sizeof(float), 2 * sizeof(float)); // Color
+            GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 6 * sizeof(float),
+                2 * sizeof(float)); // Color
             GL.EnableVertexAttribArray(1);
             GL.BindVertexArray(0);
 
@@ -88,7 +90,8 @@ namespace RenderEngine
 
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0); // Position
             GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float), 2 * sizeof(float)); // Texcoord
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float),
+                2 * sizeof(float)); // Texcoord
             GL.EnableVertexAttribArray(1);
             GL.BindVertexArray(0);
 
@@ -308,10 +311,10 @@ namespace RenderEngine
 
             var data = new float[]
             {
-        // x, y, u, v
-        p0.x, p0.y, 0f, 0f,
-        p1.x, p1.y, 1f, 0f,
-        p2.x, p2.y, 0.5f, 1f   // UV mapping for triangle
+                // x, y, u, v
+                p0.x, p0.y, 0f, 0f,
+                p1.x, p1.y, 1f, 0f,
+                p2.x, p2.y, 0.5f, 1f // UV mapping for triangle
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);

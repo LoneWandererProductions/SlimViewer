@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+#nullable enable
 using System;
 using System.Windows;
 using System.Windows.Controls;

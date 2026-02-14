@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:SlimViews"
-    xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls" 
+    xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
     xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images" x:Class="SlimViews.DetailCompare"
     mc:Ignorable="d"
     Title="Detailed Image Comparer" Height="450" Width="1000">
@@ -92,8 +92,8 @@
                 </TabItem>
             </TabControl>
             <Images:ColorSelection Grid.Column="3" Grid.Row="1"
-                                           StartColor="{Binding Colors,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                           VerticalAlignment="Top" />
+                                   StartColor="{Binding Colors,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   VerticalAlignment="Top" />
         </Grid>
     </Grid>
     <Window.Resources>

@@ -155,6 +155,7 @@ namespace CommonControls.Images
                     // Add to frames list for data export (bounding box of the freeform)
                     // Logic to calculate bounding box of freeform can go here if needed
                 }
+
                 FreeFormPoints.Clear();
             }
             else if (_startPoint.HasValue && _endPoint.HasValue)
@@ -268,7 +269,8 @@ namespace CommonControls.Images
                 var rect = new Rect(p1, p2);
 
                 if (frame.Tool == ImageZoomTools.Ellipse)
-                    drawingContext.DrawEllipse(committedBrush, committedPen, new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2), rect.Width / 2, rect.Height / 2);
+                    drawingContext.DrawEllipse(committedBrush, committedPen,
+                        new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2), rect.Width / 2, rect.Height / 2);
                 else
                     drawingContext.DrawRectangle(committedBrush, committedPen, rect);
             }
@@ -286,6 +288,7 @@ namespace CommonControls.Images
                     var transformedPoints = points.Select(p => _imageTransform.Transform(p)).ToList();
                     ctx.PolyLineTo(transformedPoints.Skip(1).ToArray(), true, false);
                 }
+
                 drawingContext.DrawGeometry(null, committedPen, geometry);
             }
 
@@ -299,14 +302,18 @@ namespace CommonControls.Images
                 switch (Tool)
                 {
                     case ImageZoomTools.Rectangle:
-                        drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)), activePen, selectionRect);
+                        drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)), activePen,
+                            selectionRect);
                         break;
                     case ImageZoomTools.Ellipse:
-                        var center = new Point(selectionRect.Left + selectionRect.Width / 2, selectionRect.Top + selectionRect.Height / 2);
-                        drawingContext.DrawEllipse(null, activePen, center, selectionRect.Width / 2, selectionRect.Height / 2);
+                        var center = new Point(selectionRect.Left + selectionRect.Width / 2,
+                            selectionRect.Top + selectionRect.Height / 2);
+                        drawingContext.DrawEllipse(null, activePen, center, selectionRect.Width / 2,
+                            selectionRect.Height / 2);
                         break;
                     case ImageZoomTools.Dot:
-                        drawingContext.DrawRectangle(Brushes.Red, activePen, new Rect(_startPoint.Value, new Size(1, 1)));
+                        drawingContext.DrawRectangle(Brushes.Red, activePen,
+                            new Rect(_startPoint.Value, new Size(1, 1)));
                         break;
                 }
             }
@@ -327,8 +334,9 @@ namespace CommonControls.Images
                     var transformedPoints = FreeFormPoints.Select(p => _imageTransform.Transform(p)).ToList();
                     ctx.PolyLineTo(transformedPoints.Skip(1).ToArray(), true, false);
                 }
+
                 drawingContext.DrawGeometry(null, activePen, geometry);
             }
         }
-}
+    }
 }

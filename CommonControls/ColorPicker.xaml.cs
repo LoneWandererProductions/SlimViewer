@@ -25,7 +25,9 @@ namespace CommonControls
         private bool _ignoreUpdates;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         public delegate void DelegateColor(ColorHsv colorHsv);
+
         public event DelegateColor ColorChanged;
 
         public ColorPicker()
@@ -37,7 +39,9 @@ namespace CommonControls
 
         // Show/Hide inputs
         public static readonly DependencyProperty ShowTextBoxesProperty =
-            DependencyProperty.Register(nameof(ShowTextBoxes), typeof(bool), typeof(ColorPicker), new PropertyMetadata(true));
+            DependencyProperty.Register(nameof(ShowTextBoxes), typeof(bool), typeof(ColorPicker),
+                new PropertyMetadata(true));
+
         public bool ShowTextBoxes
         {
             get => (bool)GetValue(ShowTextBoxesProperty);
@@ -49,25 +53,49 @@ namespace CommonControls
         public double Hue
         {
             get => _h;
-            set { if (SetField(ref _h, value)) { OnHsvChanged(true); } }
+            set
+            {
+                if (SetField(ref _h, value))
+                {
+                    OnHsvChanged(true);
+                }
+            }
         }
 
         public double Sat
         {
             get => _s;
-            set { if (SetField(ref _s, Math.Max(0, Math.Min(1, value)))) { OnHsvChanged(false); } }
+            set
+            {
+                if (SetField(ref _s, Math.Max(0, Math.Min(1, value))))
+                {
+                    OnHsvChanged(false);
+                }
+            }
         }
 
         public double Val
         {
             get => _v;
-            set { if (SetField(ref _v, Math.Max(0, Math.Min(1, value)))) { OnHsvChanged(false); } }
+            set
+            {
+                if (SetField(ref _v, Math.Max(0, Math.Min(1, value))))
+                {
+                    OnHsvChanged(false);
+                }
+            }
         }
 
         public int Alpha
         {
             get => _alpha;
-            set { if (SetField(ref _alpha, Math.Max(0, Math.Min(255, value)))) { UpdateColorOutput(); } }
+            set
+            {
+                if (SetField(ref _alpha, Math.Max(0, Math.Min(255, value))))
+                {
+                    UpdateColorOutput();
+                }
+            }
         }
 
         // --- RGB Wrappers ---
@@ -77,11 +105,13 @@ namespace CommonControls
             get => ColorHsv.FromHsv(_h, _s, _v).R;
             set => UpdateFromRgb(value, G, B);
         }
+
         public int G
         {
             get => ColorHsv.FromHsv(_h, _s, _v).G;
             set => UpdateFromRgb(R, value, B);
         }
+
         public int B
         {
             get => ColorHsv.FromHsv(_h, _s, _v).B;
@@ -100,7 +130,10 @@ namespace CommonControls
                     UpdateFromRgb(color.R, color.G, color.B);
                     Alpha = color.A;
                 }
-                catch { /* Invalid hex, ignore */ }
+                catch
+                {
+                    /* Invalid hex, ignore */
+                }
             }
         }
 
@@ -112,7 +145,7 @@ namespace CommonControls
 
             if (hueChanged) RedrawAsync(); // Only redraw image if Hue moves
 
-            UpdateCursors();     // Move the circles
+            UpdateCursors(); // Move the circles
             UpdateColorOutput(); // Notify external world
             NotifyRgbProperties(); // Update TextBoxes
         }
@@ -325,7 +358,8 @@ namespace CommonControls
 
         private bool GetSvFromPoint(double x, double y, double r, double hue, out double s, out double v)
         {
-            s = 0; v = 0;
+            s = 0;
+            v = 0;
             double hueRad = hue * Math.PI / 180.0;
             Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
             Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
@@ -354,7 +388,8 @@ namespace CommonControls
             double w2 = v * (1 - s);
             double w3 = 1 - v;
 
-            return new Point(w1 * pColor.X + w2 * pWhite.X + w3 * pBlack.X, w1 * pColor.Y + w2 * pWhite.Y + w3 * pBlack.Y);
+            return new Point(w1 * pColor.X + w2 * pWhite.X + w3 * pBlack.X,
+                w1 * pColor.Y + w2 * pWhite.Y + w3 * pBlack.Y);
         }
 
         private static int HsvToInt(double h, double s, double v, int alpha)
@@ -364,12 +399,42 @@ namespace CommonControls
             double m = v - c;
             double r = 0, g = 0, b = 0;
 
-            if (h < 60) { r = c; g = x; b = 0; }
-            else if (h < 120) { r = x; g = c; b = 0; }
-            else if (h < 180) { r = 0; g = c; b = x; }
-            else if (h < 240) { r = 0; g = x; b = c; }
-            else if (h < 300) { r = x; g = 0; b = c; }
-            else { r = c; g = 0; b = x; }
+            if (h < 60)
+            {
+                r = c;
+                g = x;
+                b = 0;
+            }
+            else if (h < 120)
+            {
+                r = x;
+                g = c;
+                b = 0;
+            }
+            else if (h < 180)
+            {
+                r = 0;
+                g = c;
+                b = x;
+            }
+            else if (h < 240)
+            {
+                r = 0;
+                g = x;
+                b = c;
+            }
+            else if (h < 300)
+            {
+                r = x;
+                g = 0;
+                b = c;
+            }
+            else
+            {
+                r = c;
+                g = 0;
+                b = x;
+            }
 
             return alpha << 24 | (byte)((r + m) * 255) << 16 | (byte)((g + m) * 255) << 8 | (byte)((b + m) * 255);
         }

@@ -94,24 +94,24 @@ namespace SlimViews
 
             // No-parameter on service: Action<ImageView>
             DelegateCommand<object> Make_NoParamCmd(Action<ImageView> svcAction) =>
-                new(_ => svcAction(owner), _ => CanRun(_));
+                new(_ => svcAction(owner), CanRun);
 
             // Service that expects (ImageView, object?) -> use object command parameter
             DelegateCommand<object> Make_ObjParamCmd(Action<ImageView, object?> svcAction) =>
-                new(p => svcAction(owner, p), p => CanRun(p));
+                new(p => svcAction(owner, p), CanRun);
 
             // Service that expects (ImageView, string?) -> use string-typed command
             DelegateCommand<string> Make_StringParamCmd(Action<ImageView, string?> svcAction) =>
-                new(s => svcAction(owner, s), s => CanRun(s));
+                new(s => svcAction(owner, s), CanRun);
 
             // Service that expects (ImageView, SelectionFrame) etc. -- handled directly where needed
             // Bool? parameter commands (for CleanTempFolder)
             DelegateCommand<bool?> Make_BoolParamCmd(Action<bool?> action) =>
-                new(action, b => CanRun(b));
+                new(action, CanRun);
 
             // Async commands which take object? parameter and return Task (e.g. Rename)
             AsyncDelegateCommand<object> Make_AsyncObjCmd(Func<object?, Task> asyncAction) =>
-                new(asyncAction, p => CanRun(p));
+                new(asyncAction, CanRun);
 
             // ---- UI / direct owner commands ----
             Close = new DelegateCommand<object>(owner.CloseAction, CanRun);
@@ -132,7 +132,7 @@ namespace SlimViews
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
 
-            ToolChangedCommand = new DelegateCommand<object>(tools => owner.ToolChangedActionNew(tools), CanRun);
+            ToolChangedCommand = new DelegateCommand<object>(owner.ToolChangedActionNew, CanRun);
 
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----

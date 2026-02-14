@@ -15,12 +15,12 @@ using System.Windows;
 namespace SlimViews
 {
     /// <summary>
-    /// Hnadler for alle sub Windows related to Mass Image Processing
+    /// Handler for all sub Windows related to Mass Image Processing
     /// </summary>
     internal class ImageMassProcessingCommands
     {
         /// <summary>
-        /// Keep track of all currently open subwindows
+        /// Keep track of all currently open sub windows
         /// </summary>
         private readonly List<Window> _subWindows = new();
 

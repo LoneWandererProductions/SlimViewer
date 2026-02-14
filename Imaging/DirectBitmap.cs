@@ -230,7 +230,8 @@ namespace Imaging
 
             // Lock source bits
             var rect = new Rectangle(0, 0, btm.Width, btm.Height);
-            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
 
             // We can copy directly into our Bits array since it's pinned
             unsafe
@@ -318,7 +319,7 @@ namespace Imaging
 
                     for (var x = x1; x < x1 + width && x < Width; x++)
                     {
-                        Bits[rowStart + x] = colorPixel; 
+                        Bits[rowStart + x] = colorPixel;
                     }
                 }
             }

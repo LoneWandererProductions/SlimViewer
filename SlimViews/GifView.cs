@@ -28,7 +28,7 @@ using ViewModel;
 
 namespace SlimViews
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ViewModelBase" />
     /// <summary>
     ///     Gif Viewer
     /// </summary>
@@ -50,32 +50,32 @@ namespace SlimViews
         /// <summary>
         /// The clear command
         /// </summary>
-        private ICommand? _clearCommand;
+        private readonly ICommand? _clearCommand;
 
         /// <summary>
         /// The close command
         /// </summary>
-        private ICommand? _closeCommand;
+        private readonly ICommand? _closeCommand;
 
         /// <summary>
         /// The open command
         /// </summary>
-        private ICommand? _openCommand;
+        private readonly ICommand? _openCommand;
 
         /// <summary>
         /// The open folder command
         /// </summary>
-        private ICommand? _openFolderCommand;
+        private readonly ICommand? _openFolderCommand;
 
         /// <summary>
         /// The save GIF command
         /// </summary>
-        private ICommand? _saveGifCommand;
+        private readonly ICommand? _saveGifCommand;
 
         /// <summary>
         /// The save images command
         /// </summary>
-        private ICommand? _saveImagesCommand;
+        private readonly ICommand? _saveImagesCommand;
 
         // Paths & Info
 
