@@ -259,7 +259,7 @@
                                        Grid.ColumnSpan="3" />
 
 
-            <Images:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Left"
+            <Images:ColorPickerMenu x:Name="ColorPick" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left"
                                     ColorChangedCommand="{Binding Commands.ColorChanged}" />
             <Slider Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"
                     Grid.Row="2" Grid.Column="2" IsEnabled="{Binding Path =IsImageActive}" />

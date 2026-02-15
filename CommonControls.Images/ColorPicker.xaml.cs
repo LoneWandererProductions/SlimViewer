@@ -1,514 +1,501 @@
-﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonControls.Images
- * FILE:        ColorPicker.xaml.cs
- * PURPOSE:     Base UserControl for the ColorPicker
- * PROGRAMER:   Peter Geinitz (Wayfarer)
- */
-
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable UnusedMember.Global
-// ReSharper disable MemberCanBePrivate.Global
-
-using System;
+﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using ExtendedSystemObjects;
-using Imaging;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Imaging; // Uses your ColorHsv class
 
 namespace CommonControls.Images
 {
-    /// <inheritdoc cref="Window" />
-    /// <summary>
-    ///     ColorPicker Control
-    /// </summary>
-    public sealed partial class ColorPicker : INotifyPropertyChanged
+    public sealed partial class ColorPicker : UserControl, INotifyPropertyChanged
     {
-        /// <summary>
-        ///     The Color change delegate.
-        /// </summary>
-        /// <param name="colorHsv">The color HSV.</param>
-        public delegate void DelegateColor(ColorHsv colorHsv);
+        private WriteableBitmap _bitmap;
+        private bool _isDragging;
 
-        /// <summary>
-        ///     The h
-        /// </summary>
-        public static readonly DependencyProperty HProperty = DependencyProperty.Register(nameof(H),
-            typeof(string),
-            typeof(ColorPicker), null);
-
-        /// <summary>
-        ///     The s
-        /// </summary>
-        public static readonly DependencyProperty SProperty = DependencyProperty.Register(nameof(S),
-            typeof(string),
-            typeof(ColorPicker), null);
-
-        /// <summary>
-        ///     The v
-        /// </summary>
-        public static readonly DependencyProperty VProperty = DependencyProperty.Register(nameof(V),
-            typeof(string),
-            typeof(ColorPicker), null);
-
-        /// <summary>
-        ///     The show text boxes property
-        /// </summary>
-        public static readonly DependencyProperty ShowTextBoxesProperty =
-            DependencyProperty.Register(
-                nameof(ShowTextBoxes),
-                typeof(bool),
-                typeof(ColorPicker),
-                new PropertyMetadata(true, OnShowTextBoxesChanged));
-
-        /// <summary>
-        ///     The alpha
-        /// </summary>
+        // Internal state
+        private double _h = 0;
+        private double _s = 1;
+        private double _v = 1;
         private int _alpha = 255;
 
-        /// <summary>
-        ///     The b
-        /// </summary>
-        private int _b;
+        // To prevent infinite loops when updating properties
+        private bool _ignoreUpdates;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public delegate void DelegateColor(ColorHsv colorHsv);
+
+        public event DelegateColor ColorChanged;
 
         /// <summary>
-        ///     The g
-        /// </summary>
-        private int _g;
-
-        /// <summary>
-        ///     The hexadecimal
-        /// </summary>
-        private string _hex;
-
-        /// <summary>
-        ///     The hue
-        /// </summary>
-        private double _hue;
-
-        /// <summary>
-        ///     The r
-        /// </summary>
-        private int _r;
-
-        /// <summary>
-        ///     The sat
-        /// </summary>
-        private double _sat;
-
-        /// <summary>
-        ///     The value
-        /// </summary>
-        private double _val;
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ColorPicker" /> class.
+        /// Initializes a new instance of the <see cref="ColorPicker"/> class.
         /// </summary>
         public ColorPicker()
         {
             InitializeComponent();
-            DataContext = this;
-            LoadColors();
         }
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ColorPicker" /> class.
+        /// Initializes a new instance of the <see cref="ColorPicker"/> class.
         /// </summary>
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>
         /// <param name="b">The b.</param>
         /// <param name="alpha">The alpha.</param>
-        public ColorPicker(int r, int g, int b, int alpha)
+        public ColorPicker(int r, int g, int b, int alpha) : this() // Call default ctor for InitializeComponent
         {
             R = r;
             G = g;
             B = b;
             Alpha = alpha;
-            InitializeComponent();
-            DataContext = this;
 
-            var hsv = ColorHsv.FromRgb(R, G, B, Alpha);
-
-            Hue = hsv.H;
-            Val = hsv.V;
-            Sat = hsv.S;
-            Hex = hsv.Hex;
-
-            ColorPickerRegister.Colors = hsv;
-
-            ColorPick.Initiate(_hue, _sat, _val);
-            LoadColors();
-            SetPreview();
+            // This is the trigger that will finally make it draw
+            this.SizeChanged += (s, e) => {
+                if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+                {
+                    RedrawAsync();
+                }
+            };
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether [show text boxes].
+        /// When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if [show text boxes]; otherwise, <c>false</c>.
-        /// </value>
+        /// <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>
+        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+            // If the bitmap hasn't been created yet, try to draw now
+            if (_bitmap == null && ActualWidth > 0)
+            {
+                RedrawAsync();
+            }
+        }
+
+        // --- DEPENDENCY PROPERTIES (For Bindings) ---
+
+        // Show/Hide inputs
+        public static readonly DependencyProperty ShowTextBoxesProperty =
+            DependencyProperty.Register(nameof(ShowTextBoxes), typeof(bool), typeof(ColorPicker),
+                new PropertyMetadata(true));
+
         public bool ShowTextBoxes
         {
             get => (bool)GetValue(ShowTextBoxesProperty);
             set => SetValue(ShowTextBoxesProperty, value);
         }
 
-        /// <summary>
-        ///     Gets the colors.
-        /// </summary>
-        /// <value>
-        ///     The colors.
-        /// </value>
-        public static ColorHsv Colors => ColorPickerRegister.Colors;
+        // --- PROPERTIES with Change Logic ---
 
-        /// <summary>
-        ///     Gets or sets the hue.
-        /// </summary>
-        /// <value>
-        ///     The hue.
-        ///     Max Value 360, min 0, Hue is in rad!
-        /// </value>
         public double Hue
         {
-            get => _hue;
+            get => _h;
             set
             {
-                if (_hue.IsEqualTo(value, 10) || value * 180 / Math.PI is > 360 or < 0)
+                if (SetField(ref _h, value))
                 {
-                    return;
+                    OnHsvChanged(true);
                 }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _hue = value;
-                OnPropertyChanged(nameof(Hue));
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the sat.
-        /// </summary>
-        /// <value>
-        ///     The sat.
-        ///     Max 1, Min 0
-        /// </value>
         public double Sat
         {
-            get => _sat;
+            get => _s;
             set
             {
-                if (_sat.IsEqualTo(value, 10) || value is > 1 or < 0)
+                if (SetField(ref _s, Math.Max(0, Math.Min(1, value))))
                 {
-                    return;
+                    OnHsvChanged(false);
                 }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _sat = value;
-                OnPropertyChanged(nameof(Sat));
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the replacement string.
-        /// </summary>
-        /// <value>
-        ///     The replacement string.
-        ///     Max 1, Min 0
-        /// </value>
         public double Val
         {
-            get => _val;
+            get => _v;
             set
             {
-                if (_val.IsEqualTo(value, 10) || value is > 1 or < 0)
+                if (SetField(ref _v, Math.Max(0, Math.Min(1, value))))
                 {
-                    return;
+                    OnHsvChanged(false);
                 }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _val = value;
-                OnPropertyChanged(nameof(Val));
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the r.
-        /// </summary>
-        /// <value>
-        ///     The r.
-        ///     Max 255, Min 0
-        /// </value>
-        public int R
-        {
-            get => _r;
-            set
-            {
-                if (_r == value || value is > 255 or < 0)
-                {
-                    return;
-                }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _r = value;
-                OnPropertyChanged(nameof(R));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the g.
-        /// </summary>
-        /// <value>
-        ///     The g.
-        ///     Max 255, Min 0
-        /// </value>
-        public int G
-        {
-            get => _g;
-            set
-            {
-                if (_g == value || value is > 255 or < 0)
-                {
-                    return;
-                }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _g = value;
-                OnPropertyChanged(nameof(G));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the b.
-        /// </summary>
-        /// <value>
-        ///     The b.
-        ///     Max 255, Min 0
-        /// </value>
-        public int B
-        {
-            get => _b;
-            set
-            {
-                if (_b == value || value is > 255 or < 0)
-                {
-                    return;
-                }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _b = value;
-                OnPropertyChanged(nameof(B));
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the alpha.
-        /// </summary>
-        /// <value>
-        ///     The alpha.
-        /// </value>
         public int Alpha
         {
             get => _alpha;
             set
             {
-                if (_alpha == value || value is > 255 or < 0)
+                if (SetField(ref _alpha, Math.Max(0, Math.Min(255, value))))
                 {
-                    return;
+                    UpdateColorOutput();
                 }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _alpha = value;
-                OnPropertyChanged(nameof(Alpha));
             }
         }
 
-        /// <summary>
-        ///     Gets the alpha percentage.
-        /// </summary>
-        /// <value>
-        ///     The alpha percentage.
-        /// </value>
-        public int AlphaPercentage => (int)((double)_alpha / 255 * 100);
+        // --- RGB Wrappers ---
+        // When these set, we calculate new HSV
+        public int R
+        {
+            get => ColorHsv.FromHsv(_h, _s, _v).R;
+            set => UpdateFromRgb(value, G, B);
+        }
 
-        /// <summary>
-        ///     Gets or sets the hexadecimal
-        /// </summary>
-        /// <value>
-        ///     The hexadecimal.
-        /// </value>
+        public int G
+        {
+            get => ColorHsv.FromHsv(_h, _s, _v).G;
+            set => UpdateFromRgb(R, value, B);
+        }
+
+        public int B
+        {
+            get => ColorHsv.FromHsv(_h, _s, _v).B;
+            set => UpdateFromRgb(R, G, value);
+        }
+
         public string Hex
         {
-            get => _hex;
+            get => ColorHsv.FromHsv(_h, _s, _v, _alpha).Hex;
             set
             {
-                if (_hex == value)
+                try
                 {
-                    return;
+                    // Simple Hex parser
+                    var color = (Color)ColorConverter.ConvertFromString(value);
+                    UpdateFromRgb(color.R, color.G, color.B);
+                    Alpha = color.A;
                 }
-
-                ColorPickerRegister.ColorChanged = true;
-
-                _hex = value;
-                OnPropertyChanged(nameof(Hex));
+                catch
+                {
+                    /* Invalid hex, ignore */
+                }
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the Dependency hue.
-        /// </summary>
-        /// <value>
-        ///     The Dependency hue.
-        /// </value>
-        public double H
+        // --- CORE UPDATE LOGIC ---
+
+        private void OnHsvChanged(bool hueChanged)
         {
-            get => (double)GetValue(HProperty);
-            set => SetValue(HProperty, value);
+            if (_ignoreUpdates) return;
+
+            if (hueChanged) RedrawAsync(); // Only redraw image if Hue moves
+
+            UpdateCursors(); // Move the circles
+            UpdateColorOutput(); // Notify external world
+            NotifyRgbProperties(); // Update TextBoxes
         }
 
-        /// <summary>
-        ///     Gets or sets the Dependency sat.
-        /// </summary>
-        /// <value>
-        ///     The Dependency saturation.
-        /// </value>
-        public double S
+        private void UpdateFromRgb(int r, int g, int b)
         {
-            get => (double)GetValue(SProperty);
-            set => SetValue(SProperty, value);
+            if (_ignoreUpdates) return;
+
+            _ignoreUpdates = true; // Prevent loop
+
+            var hsv = ColorHsv.FromRgb(r, g, b);
+            _h = hsv.H;
+            _s = hsv.S;
+            _v = hsv.V;
+
+            _ignoreUpdates = false;
+
+            // Trigger updates
+            OnPropertyChanged(nameof(Hue));
+            OnPropertyChanged(nameof(Sat));
+            OnPropertyChanged(nameof(Val));
+            NotifyRgbProperties();
+
+            RedrawAsync();
+            UpdateCursors();
+            UpdateColorOutput();
         }
 
-        /// <summary>
-        ///     Gets or sets the Dependency value.
-        /// </summary>
-        /// <value>
-        ///     The Dependency value.
-        /// </value>
-        public double V
+        private void NotifyRgbProperties()
         {
-            get => (double)GetValue(VProperty);
-            set => SetValue(VProperty, value);
+            OnPropertyChanged(nameof(R));
+            OnPropertyChanged(nameof(G));
+            OnPropertyChanged(nameof(B));
+            OnPropertyChanged(nameof(Hex));
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     Called when [show text boxes changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        private static void OnShowTextBoxesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private void UpdateColorOutput()
         {
-            if (d is ColorPicker colorPicker)
-                // Force layout update on visibility change
+            ColorChanged?.Invoke(ColorHsv.FromHsv(_h, _s, _v, _alpha));
+        }
+
+        // --- VISUAL INTERACTION ---
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _isDragging = true;
+            Mouse.Capture(PickerImage);
+            ProcessMouse(e.GetPosition(PickerImage));
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isDragging) ProcessMouse(e.GetPosition(PickerImage));
+        }
+
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _isDragging = false;
+            Mouse.Capture(null);
+        }
+
+        private void ProcessMouse(Point p)
+        {
+            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
+            if (size <= 0) return;
+
+            double radius = size / 2.0;
+            double innerRadius = radius * 0.85;
+            double centerX = size / 2.0;
+            double centerY = size / 2.0;
+
+            double dx = p.X - centerX;
+            double dy = p.Y - centerY;
+            double dist = Math.Sqrt(dx * dx + dy * dy);
+
+            _ignoreUpdates = true; // Optimization: Don't update RGB textboxes while dragging rapidly
+
+            // 1. Hue Ring Click
+            if (dist > innerRadius && dist <= radius)
             {
-                colorPicker.UpdateLayout();
+                double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
+                if (angle < 0) angle += 360;
+
+                _h = angle;
+                RedrawAsync(); // Hue changed, must redraw background
+                OnPropertyChanged(nameof(Hue));
+            }
+            // 2. Triangle Click
+            else if (dist <= innerRadius)
+            {
+                if (GetSvFromPoint(dx, dy, innerRadius, _h, out double s, out double v))
+                {
+                    _s = s;
+                    _v = v;
+                    OnPropertyChanged(nameof(Sat));
+                    OnPropertyChanged(nameof(Val));
+                }
+            }
+
+            _ignoreUpdates = false;
+
+            UpdateCursors();
+            UpdateColorOutput();
+            NotifyRgbProperties(); // Update Textboxes at the end of the frame
+        }
+
+        // --- RENDERING & CURSORS ---
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                RedrawAsync();
+                UpdateCursors();
             }
         }
 
-        /// <summary>
-        ///     An Image was clicked <see cref="DelegateColor" />.
-        /// </summary>
-        public event DelegateColor ColorChanged;
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        private void OnPropertyChanged(string propertyName)
+        private void UpdateCursors()
         {
+            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
+            if (size <= 0) return;
+
+            double radius = size / 2.0;
+            double innerRadius = radius * 0.85;
+            double centerX = PickerImage.ActualWidth / 2.0; // Use full width to center correctly
+            double centerY = PickerImage.ActualHeight / 2.0;
+
+            // 1. Move Hue Cursor (Orbit)
+            double hueRad = _h * Math.PI / 180.0;
+            // Position it in the middle of the ring
+            double ringRadius = (radius + innerRadius) / 2.0;
+
+            double hx = centerX + Math.Cos(hueRad) * ringRadius - HueCursor.Width / 2;
+            double hy = centerY + Math.Sin(hueRad) * ringRadius - HueCursor.Height / 2;
+
+            Canvas.SetLeft(HueCursor, hx);
+            Canvas.SetTop(HueCursor, hy);
+            HueCursor.Visibility = Visibility.Visible;
+
+            // 2. Move SV Cursor (Triangle)
+            Point svPoint = GetPointFromSv(_h, _s, _v, innerRadius);
+
+            // Adjust to Canvas center (svPoint is relative to 0,0 center)
+            double svx = svPoint.X + centerX - SvCursor.Width / 2;
+            double svy = svPoint.Y + centerY - SvCursor.Height / 2;
+
+            Canvas.SetLeft(SvCursor, svx);
+            Canvas.SetTop(SvCursor, svy);
+            SvCursor.Visibility = Visibility.Visible;
+        }
+
+        // This is the "Magic" pixel drawer (Same as before)
+        private void RedrawAsync()
+        {
+            // If called from a property change before the UI is ready, 
+            // we must wait for the Dispatcher
+            if (!CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(RedrawAsync));
+                return;
+            }
+
+            int size = (int)Math.Min(ActualWidth, ActualHeight);
+            if (size <= 0) return;
+
+            if (_bitmap == null || _bitmap.PixelWidth != size || _bitmap.PixelHeight != size)
+            {
+                _bitmap = new WriteableBitmap(size, size, 96, 96, PixelFormats.Bgra32, null);
+                PickerImage.Source = _bitmap;
+            }
+
+            _bitmap.Lock();
+
+            unsafe
+            {
+                int* pBackBuffer = (int*)_bitmap.BackBuffer;
+                int stride = _bitmap.BackBufferStride;
+                double radius = size / 2.0;
+                double innerRadius = radius * 0.85;
+                double c = size / 2.0; // Center relative to bitmap
+
+                for (int y = 0; y < size; y++)
+                {
+                    for (int x = 0; x < size; x++)
+                    {
+                        double dx = x - c;
+                        double dy = y - c;
+                        double dist = Math.Sqrt(dx * dx + dy * dy);
+                        int colorData = 0;
+
+                        if (dist <= radius && dist >= innerRadius - 1)
+                        {
+                            // Hue Ring
+                            double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
+                            if (angle < 0) angle += 360;
+                            int alpha = 255;
+                            if (dist > radius - 1) alpha = (int)((radius - dist) * 255);
+                            else if (dist < innerRadius) alpha = (int)((dist - (innerRadius - 1)) * 255);
+                            colorData = HsvToInt(angle, 1, 1, alpha);
+                        }
+                        else if (dist < innerRadius)
+                        {
+                            // Triangle
+                            if (GetSvFromPoint(dx, dy, innerRadius, _h, out double s, out double v))
+                                colorData = HsvToInt(_h, s, v, 255);
+                        }
+
+                        *(pBackBuffer + y * (stride / 4) + x) = colorData;
+                    }
+                }
+            }
+
+            _bitmap.AddDirtyRect(new Int32Rect(0, 0, size, size));
+            _bitmap.Unlock();
+        }
+
+        // --- MATH HELPERS ---
+
+        private bool GetSvFromPoint(double x, double y, double r, double hue, out double s, out double v)
+        {
+            s = 0;
+            v = 0;
+            double hueRad = hue * Math.PI / 180.0;
+            Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
+            Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
+            Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
+
+            double det = (pWhite.Y - pBlack.Y) * (pColor.X - pBlack.X) + (pBlack.X - pWhite.X) * (pColor.Y - pBlack.Y);
+            double w1 = ((pWhite.Y - pBlack.Y) * (x - pBlack.X) + (pBlack.X - pWhite.X) * (y - pBlack.Y)) / det;
+            double w2 = ((pBlack.Y - pColor.Y) * (x - pBlack.X) + (pColor.X - pBlack.X) * (y - pBlack.Y)) / det;
+            double w3 = 1.0 - w1 - w2;
+
+            if (w1 < -0.01 || w2 < -0.01 || w3 < -0.01) return false;
+
+            v = w1 + w2;
+            s = v <= 0.001 ? 0 : w1 / v;
+            return true;
+        }
+
+        private Point GetPointFromSv(double h, double s, double v, double r)
+        {
+            double hueRad = h * Math.PI / 180.0;
+            Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
+            Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
+            Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
+
+            double w1 = s * v;
+            double w2 = v * (1 - s);
+            double w3 = 1 - v;
+
+            return new Point(w1 * pColor.X + w2 * pWhite.X + w3 * pBlack.X,
+                w1 * pColor.Y + w2 * pWhite.Y + w3 * pBlack.Y);
+        }
+
+        private static int HsvToInt(double h, double s, double v, int alpha)
+        {
+            double c = v * s;
+            double x = c * (1 - Math.Abs(h / 60.0 % 2 - 1));
+            double m = v - c;
+            double r = 0, g = 0, b = 0;
+
+            if (h < 60)
+            {
+                r = c;
+                g = x;
+                b = 0;
+            }
+            else if (h < 120)
+            {
+                r = x;
+                g = c;
+                b = 0;
+            }
+            else if (h < 180)
+            {
+                r = 0;
+                g = c;
+                b = x;
+            }
+            else if (h < 240)
+            {
+                r = 0;
+                g = x;
+                b = c;
+            }
+            else if (h < 300)
+            {
+                r = x;
+                g = 0;
+                b = c;
+            }
+            else
+            {
+                r = c;
+                g = 0;
+                b = x;
+            }
+
+            return alpha << 24 | (byte)((r + m) * 255) << 16 | (byte)((g + m) * 255) << 8 | (byte)((b + m) * 255);
+        }
+
+        private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        private void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        ///     Loads the colors.
-        /// </summary>
-        private void LoadColors()
-        {
-            using var img = ColorPick.InitiateBackGround();
-            ImageOne.Source = img.ToBitmapImage();
-            //set Cursor
-            using var imgTwo = ColorPick.InitiateCursor();
-            ImageTwo.Source = imgTwo.ToBitmapImage();
-        }
-
-        /// <summary>
-        ///     Handles the MouseDown event of the ImageTwo control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
-        private void ImageTwo_MouseDown(object sender, MouseEventArgs e)
-        {
-            var x = e.GetPosition(ImageOne).X;
-            var y = e.GetPosition(ImageOne).Y;
-
-            ColorPick.Selection(x, y, Alpha);
-
-            if (!Hue.IsEqualTo(ColorPickerRegister.Colors.H, 10))
-            {
-                using var img = ColorPick.InitiateBackGround();
-                ImageOne.Source = img.ToBitmapImage();
-                //set Cursor
-                using var imgTwo = ColorPick.InitiateCursor();
-                ImageTwo.Source = imgTwo.ToBitmapImage();
-            }
-
-            if (!Val.IsEqualTo(ColorPickerRegister.Colors.V, 10) || !Sat.IsEqualTo(ColorPickerRegister.Colors.S, 10))
-            {
-                //set Cursor
-                using var imgTwo = ColorPick.InitiateCursor();
-                ImageTwo.Source = imgTwo.ToBitmapImage();
-            }
-
-            Hue = ColorPickerRegister.Colors.H;
-            Val = ColorPickerRegister.Colors.V;
-            Sat = ColorPickerRegister.Colors.S;
-
-            R = ColorPickerRegister.Colors.R;
-            G = ColorPickerRegister.Colors.G;
-            B = ColorPickerRegister.Colors.B;
-            Alpha = ColorPickerRegister.Colors.A;
-
-            Hex = ColorPickerRegister.Colors.Hex;
-
-            SetPreview();
-        }
-
-        /// <summary>
-        ///     Sets the preview Color.
-        /// </summary>
-        private void SetPreview()
-        {
-            CanvasPreview.Children.Clear();
-
-            var rectangle = ColorPickerHelper.GetColorPreview(Colors);
-
-            _ = CanvasPreview.Children.Add(rectangle);
-
-            if (ColorPickerRegister.ColorChanged)
-            {
-                OnColorChanged();
-            }
-        }
-
-        /// <summary>
-        ///     Called when [color changed].
-        /// </summary>
-        private void OnColorChanged()
-        {
-            ColorChanged?.Invoke(ColorPickerRegister.Colors);
-        }
     }
 }
