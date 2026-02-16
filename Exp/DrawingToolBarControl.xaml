@@ -4,132 +4,93 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Exp"
-             x:Name="RootToolbar"
-             Height="150" Width="450">
+             x:Name="RootToolbar">
 
     <UserControl.Resources>
         <local:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         <local:BoolToVisConverter x:Key="BoolToVis" />
+
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#444"/>
+        </Style>
     </UserControl.Resources>
 
-    <Grid>
-        <TabControl>
-            <!-- Tools Tab -->
-            <TabItem Header="Tools">
-                <StackPanel Orientation="Horizontal">
-                    <!-- RadioButtons bound to ToolState -->
-                    <RadioButton Content="Pencil"
-                                 GroupName="ToolGroup"
-                                 IsChecked="{Binding Path=ToolState.ActiveTool,
-                                                     RelativeSource={RelativeSource AncestorType=UserControl},
-                                                     Mode=TwoWay,
-                                                     Converter={StaticResource EnumToBoolConverter},
-                                                     ConverterParameter=Pencil}" />
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PanningMode="HorizontalOnly">
 
-                    <RadioButton Content="Eraser"
-                                 GroupName="ToolGroup"
-                                 IsChecked="{Binding Path=ToolState.ActiveTool,
-                                                     RelativeSource={RelativeSource AncestorType=UserControl},
-                                                     Mode=TwoWay,
-                                                     Converter={StaticResource EnumToBoolConverter},
-                                                     ConverterParameter=Eraser}" />
-                    <!-- ColorSelection -->
-                    <Images:ColorSelection
-                        StartColor="{Binding Path=ToolState.BrushColor,
-                                                                       RelativeSource={RelativeSource AncestorType=UserControl},
-                                                                       Mode=TwoWay}"
-                        Width="150" Margin="5" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
 
-                    <!-- Brush Size -->
-                    <StackPanel Margin="10,0">
-                        <TextBlock Text="Brush Size" />
-                        <Slider Minimum="1"
-                                Maximum="50"
-                                Value="{Binding Path=ToolState.BrushSize,
-                                                RelativeSource={RelativeSource AncestorType=UserControl},
-                                                Mode=TwoWay}"
-                                Width="120" />
-                        <TextBlock
-                            Text="{Binding Path=ToolState.BrushSize,
-                                                  RelativeSource={RelativeSource AncestorType=UserControl},
-                                                  StringFormat=Size: {0:F0}}" />
+            <GroupBox Header="Draw" Margin="0,0,5,0" Padding="5">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
+                        <RadioButton Content="Pencil" GroupName="ToolGroup" Margin="0,0,0,5"
+                                     IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Pencil}" />
+                        <RadioButton Content="Eraser" GroupName="ToolGroup"
+                                     IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Eraser}" />
+                    </StackPanel>
+
+                    <Images:ColorSelection StartColor="{Binding Path=ToolState.BrushColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                           Width="35" Height="35" Margin="0,0,10,0" VerticalAlignment="Center"/>
+
+                    <StackPanel VerticalAlignment="Center" MinWidth="100">
+                        <TextBlock Text="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat=Size: {0:F0}}" HorizontalAlignment="Center" FontSize="10" />
+                        <Slider Minimum="1" Maximum="50" Value="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
                     </StackPanel>
                 </StackPanel>
-            </TabItem>
+            </GroupBox>
 
-            <!-- Area Tools Tab -->
-            <TabItem Header="Area Tools">
-                <StackPanel>
-                    <TextBlock Text="Mode:" FontWeight="Bold" Margin="0,0,0,5" />
+            <GroupBox Header="Mode" Margin="0,0,5,0" Padding="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                    <!-- AreaMode RadioButtons -->
-                    <RadioButton Content="Fill"
-                                 IsChecked="{Binding Path=ToolState.ActiveAreaMode,
-                                                     RelativeSource={RelativeSource AncestorType=UserControl},
-                                                     Mode=TwoWay,
-                                                     Converter={StaticResource EnumToBoolConverter},
-                                                     ConverterParameter=Fill}" />
-                    <RadioButton Content="Texture"
-                                 IsChecked="{Binding Path=ToolState.ActiveAreaMode,
-                                                     RelativeSource={RelativeSource AncestorType=UserControl},
-                                                     Mode=TwoWay,
-                                                     Converter={StaticResource EnumToBoolConverter},
-                                                     ConverterParameter=Texture}" />
-                    <RadioButton Content="Filter"
-                                 IsChecked="{Binding Path=ToolState.ActiveAreaMode,
-                                                     RelativeSource={RelativeSource AncestorType=UserControl},
-                                                     Mode=TwoWay,
-                                                     Converter={StaticResource EnumToBoolConverter},
-                                                     ConverterParameter=Filter}" />
-                    <RadioButton Content="Erase"
-                                 IsChecked="{Binding Path=ToolState.ActiveAreaMode,
-                                                     RelativeSource={RelativeSource AncestorType=UserControl},
-                                                     Mode=TwoWay,
-                                                     Converter={StaticResource EnumToBoolConverter},
-                                                     ConverterParameter=Erase}" />
-
-                    <!-- Fill Selector -->
-                    <StackPanel
-                        Visibility="{Binding Path=ToolState.Fill.Enabled,
-                                                   RelativeSource={RelativeSource AncestorType=UserControl},
-                                                   Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Fill Color:" />
-                        <Images:ColorSelection
-                            StartColor="{Binding Path=ToolState.Fill.Color,
-                                                                           RelativeSource={RelativeSource AncestorType=UserControl},
-                                                                           Mode=TwoWay}"
-                            Width="150" />
+                    <StackPanel Grid.Column="0">
+                        <RadioButton Content="Fill" GroupName="AreaModeGroup" Margin="0,0,0,2"
+                                     IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Fill}" />
+                        <RadioButton Content="Texture" GroupName="AreaModeGroup"
+                                     IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Texture}" />
                     </StackPanel>
 
-                    <!-- Texture Selector -->
-                    <StackPanel
-                        Visibility="{Binding Path=ToolState.Texture.Enabled,
-                                                   RelativeSource={RelativeSource AncestorType=UserControl},
-                                                   Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Texture:" />
-                        <ComboBox
-                            ItemsSource="{Binding Path=ToolState.Textures,
-                                                       RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            SelectedItem="{Binding Path=ToolState.Texture.TextureName,
-                                                         RelativeSource={RelativeSource AncestorType=UserControl},
-                                                         Mode=TwoWay}" />
+                    <StackPanel Grid.Column="2">
+                        <RadioButton Content="Filter" GroupName="AreaModeGroup" Margin="0,0,0,2"
+                                     IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Filter}" />
+                        <RadioButton Content="Erase" GroupName="AreaModeGroup"
+                                     IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Erase}" />
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Options" Padding="5" VerticalAlignment="Stretch" MinWidth="150">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding Path=ToolState.Fill.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="Color: " Style="{StaticResource LabelStyle}"/>
+                        <Images:ColorSelection StartColor="{Binding Path=ToolState.Fill.Color, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Width="35" Height="25"/>
                     </StackPanel>
 
-                    <!-- Filter Selector -->
-                    <StackPanel
-                        Visibility="{Binding Path=ToolState.Filter.Enabled,
-                                                   RelativeSource={RelativeSource AncestorType=UserControl},
-                                                   Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Filter:" />
-                        <ComboBox
-                            ItemsSource="{Binding Path=ToolState.Filters,
-                                                       RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            SelectedItem="{Binding Path=ToolState.Filter.FilterName,
-                                                         RelativeSource={RelativeSource AncestorType=UserControl},
-                                                         Mode=TwoWay}" />
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding Path=ToolState.Texture.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="Texture: " Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Path=ToolState.Textures, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                  SelectedItem="{Binding Path=ToolState.Texture.TextureName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" 
+                                  Width="120"/>
                     </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding Path=ToolState.Filter.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="Filter: " Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Path=ToolState.Filters, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                  SelectedItem="{Binding Path=ToolState.Filter.FilterName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" 
+                                  Width="120"/>
+                    </StackPanel>
+
                 </StackPanel>
-            </TabItem>
-        </TabControl>
-    </Grid>
+            </GroupBox>
+
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -18,7 +18,7 @@ namespace SlimViewer
     /// <summary>
     ///     Main Window
     /// </summary>
-    public sealed partial class MainWindow
+    internal sealed partial class MainWindow
     {
         /// <summary>
         ///     The view
