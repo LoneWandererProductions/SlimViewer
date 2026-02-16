@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
+             x:Name="ColorPickerControl"
              d:DesignHeight="450" d:DesignWidth="450">
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
@@ -19,22 +21,26 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Grid.Column="0">
-            <Grid Background="Transparent"
+        <Grid Grid.Row="0" Grid.Column="0" SizeChanged="OnSizeChanged">
+
+            <Grid x:Name="PickerContainer"
+                  Background="Transparent"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
                   MouseDown="OnMouseDown" 
                   MouseMove="OnMouseMove" 
                   MouseUp="OnMouseUp">
 
-                <Image x:Name="PickerImage" Stretch="Uniform"
+                <Image x:Name="PickerImage" 
                        RenderOptions.BitmapScalingMode="HighQuality"
                        IsHitTestVisible="False"/>
 
                 <Canvas x:Name="CursorCanvas" IsHitTestVisible="False">
-                    <Ellipse x:Name="HueCursor" Width="14" Height="14"
+                    <Ellipse x:Name="HueCursor" Width="10" Height="10"
                              Stroke="Black" StrokeThickness="2" Fill="Transparent"
                              Visibility="Collapsed">
                         <Ellipse.Effect>
-                            <DropShadowEffect Color="White" BlurRadius="4" ShadowDepth="0" Opacity="1" />
+                            <DropShadowEffect Color="White" BlurRadius="2" ShadowDepth="0" Opacity="1" />
                         </Ellipse.Effect>
                     </Ellipse>
 
@@ -42,7 +48,7 @@
                              Stroke="White" StrokeThickness="2" Fill="Transparent"
                              Visibility="Collapsed">
                         <Ellipse.Effect>
-                            <DropShadowEffect Color="Black" BlurRadius="2" ShadowDepth="0" Opacity="0.8" />
+                            <DropShadowEffect Color="Black" BlurRadius="2" ShadowDepth="0" Opacity="1" />
                         </Ellipse.Effect>
                     </Ellipse>
                 </Canvas>
@@ -54,14 +60,22 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
             <Slider Grid.Row="0" Orientation="Vertical" Maximum="255" Minimum="0"
-                    Value="{Binding Alpha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Value="{Binding Alpha, ElementName=ColorPickerControl, Mode=TwoWay}"
                     HorizontalAlignment="Center" />
-            <TextBlock Grid.Row="1" Text="{Binding Alpha}" HorizontalAlignment="Center" Margin="0,5,0,0" />
+
+            <TextBlock Grid.Row="1" 
+                       Text="{Binding Alpha, ElementName=ColorPickerControl}" 
+                       HorizontalAlignment="Center" 
+                       Width="30" 
+                       TextAlignment="Center"
+                       Margin="0,5,0,0" />
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0"
-              Visibility="{Binding ShowTextBoxes, Converter={StaticResource BoolToVisibilityConverter}}">
+              Visibility="{Binding ShowTextBoxes, ElementName=ColorPickerControl, Converter={StaticResource BoolToVisibilityConverter}}">
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="10" />
@@ -80,25 +94,31 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="Hue" Padding="0" />
-            <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding Hue, StringFormat=N1, UpdateSourceTrigger=LostFocus}" />
+            <TextBox Grid.Row="1" Grid.Column="0" 
+                     Text="{Binding Hue, ElementName=ColorPickerControl, StringFormat=N1, UpdateSourceTrigger=LostFocus}" />
 
             <Label Grid.Row="0" Grid.Column="2" Content="Sat" Padding="0" />
-            <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding Sat, StringFormat=N2, UpdateSourceTrigger=LostFocus}" />
+            <TextBox Grid.Row="1" Grid.Column="2" 
+                     Text="{Binding Sat, ElementName=ColorPickerControl, StringFormat=N2, UpdateSourceTrigger=LostFocus}" />
 
             <Label Grid.Row="0" Grid.Column="4" Content="Val" Padding="0" />
-            <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding Val, StringFormat=N2, UpdateSourceTrigger=LostFocus}" />
+            <TextBox Grid.Row="1" Grid.Column="4" 
+                     Text="{Binding Val, ElementName=ColorPickerControl, StringFormat=N2, UpdateSourceTrigger=LostFocus}" />
 
             <Label Grid.Row="3" Grid.Column="0" Content="R" Padding="0" />
-            <TextBox Grid.Row="4" Grid.Column="0" Text="{Binding R, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Grid.Row="4" Grid.Column="0" 
+                     Text="{Binding R, ElementName=ColorPickerControl, UpdateSourceTrigger=LostFocus}" />
 
             <Label Grid.Row="3" Grid.Column="2" Content="G" Padding="0" />
-            <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding G, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Grid.Row="4" Grid.Column="2" 
+                     Text="{Binding G, ElementName=ColorPickerControl, UpdateSourceTrigger=LostFocus}" />
 
             <Label Grid.Row="3" Grid.Column="4" Content="B" Padding="0" />
-            <TextBox Grid.Row="4" Grid.Column="4" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Grid.Row="4" Grid.Column="4" 
+                     Text="{Binding B, ElementName=ColorPickerControl, UpdateSourceTrigger=LostFocus}" />
 
             <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5"
-                     Text="{Binding Hex, UpdateSourceTrigger=LostFocus}" />
+                     Text="{Binding Hex, ElementName=ColorPickerControl, UpdateSourceTrigger=LostFocus}" />
         </Grid>
     </Grid>
 </UserControl>

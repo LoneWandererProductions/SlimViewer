@@ -57,6 +57,7 @@ namespace CommonControls.Images
                 if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
                 {
                     RedrawAsync();
+                    UpdateCursors();
                 }
             };
         }
@@ -252,53 +253,47 @@ namespace CommonControls.Images
             var layout = GetLayoutInfo();
             if (layout.Size <= 0) return;
 
-            // Calculate distance from the TRUE center of the control
             double dx = p.X - layout.CenterX;
             double dy = p.Y - layout.CenterY;
             double dist = Math.Sqrt(dx * dx + dy * dy);
 
-            _ignoreUpdates = true; // Optimization
+            _ignoreUpdates = true;
 
-            // 1. Hue Ring Click
-            // We add a small buffer (+2) so clicking the very edge works
-            if (dist > layout.InnerRadius && dist <= layout.Radius + 2)
+            // 1. Hue Ring (Outer Circle)
+            // We add +5px tolerance so you don't have to be pixel-perfect
+            if (dist > layout.InnerRadius && dist <= layout.Radius + 5)
             {
                 double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
                 if (angle < 0) angle += 360;
-
                 _h = angle;
-                RedrawAsync(); // Hue changed -> Triangle rotates -> Must redraw
+                RedrawAsync();
                 OnPropertyChanged(nameof(Hue));
             }
-            // 2. Triangle Click
-            else if (dist <= layout.InnerRadius)
+            // 2. Triangle (Inner Area)
+            // We treat EVERYTHING inside the ring as a potential triangle click
+            else if (dist <= layout.InnerRadius + 2)
             {
-                // Pass _h (Hue) so the math knows the triangle is rotated
+                // Try exact math first
                 if (GetSvFromPoint(dx, dy, layout.InnerRadius, _h, out double s, out double v))
                 {
-                    _s = s;
-                    _v = v;
-                    OnPropertyChanged(nameof(Sat));
-                    OnPropertyChanged(nameof(Val));
+                    _s = s; _v = v;
                 }
+                else
+                {
+                    // MAGNET FIX: We are inside the circle, but outside the triangle.
+                    // Snap to the closest edge (Clamp).
+                    GetSvFromPointClamped(dx, dy, layout.InnerRadius, _h, out s, out v);
+                    _s = s; _v = v;
+                }
+
+                OnPropertyChanged(nameof(Sat));
+                OnPropertyChanged(nameof(Val));
             }
 
             _ignoreUpdates = false;
-
             UpdateCursors();
             UpdateColorOutput();
             NotifyRgbProperties();
-        }
-
-        // --- RENDERING & CURSORS ---
-
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
-            {
-                RedrawAsync();
-                UpdateCursors();
-            }
         }
 
         private void UpdateCursors()
@@ -306,46 +301,63 @@ namespace CommonControls.Images
             var layout = GetLayoutInfo();
             if (layout.Size <= 0) return;
 
-            // 1. Move Hue Cursor (Ring)
+            // --- 1. HUE RING ---
             double hueRad = _h * Math.PI / 180.0;
 
-            // Position exactly in the middle of the ring thickness
-            double ringRadius = (layout.Radius + layout.InnerRadius) / 2.0;
+            // VISUAL FIX: Align to the exact center of the drawn ring
+            // The ring is drawn from (InnerRadius) to (Radius). Center is the average.
+            double ringCenterRadius = (layout.Radius + layout.InnerRadius) / 2.0;
 
-            double hx = layout.CenterX + Math.Cos(hueRad) * ringRadius - HueCursor.Width / 2;
-            double hy = layout.CenterY + Math.Sin(hueRad) * ringRadius - HueCursor.Height / 2;
+            double hx = layout.CenterX + (Math.Cos(hueRad) * ringCenterRadius);
+            double hy = layout.CenterY + (Math.Sin(hueRad) * ringCenterRadius);
 
-            Canvas.SetLeft(HueCursor, hx);
-            Canvas.SetTop(HueCursor, hy);
+            // WPF positions from Top-Left, so subtract HALF the cursor size
+            Canvas.SetLeft(HueCursor, hx - (HueCursor.ActualWidth / 2));
+            Canvas.SetTop(HueCursor, hy - (HueCursor.ActualHeight / 2));
             HueCursor.Visibility = Visibility.Visible;
 
-            // 2. Move SV Cursor (Triangle)
-            // We pass _h because the triangle is rotated by Hue
+            // --- 2. TRIANGLE ---
             Point svPoint = GetPointFromSv(_h, _s, _v, layout.InnerRadius);
 
-            // svPoint is relative to (0,0), so we add the Control's Center
-            double svx = svPoint.X + layout.CenterX - SvCursor.Width / 2;
-            double svy = svPoint.Y + layout.CenterY - SvCursor.Height / 2;
+            // svPoint is relative to (0,0) center. Add layout center.
+            double svx = svPoint.X + layout.CenterX;
+            double svy = svPoint.Y + layout.CenterY;
 
-            Canvas.SetLeft(SvCursor, svx);
-            Canvas.SetTop(SvCursor, svy);
+            // WPF positions from Top-Left, so subtract HALF the cursor size
+            Canvas.SetLeft(SvCursor, svx - (SvCursor.ActualWidth / 2));
+            Canvas.SetTop(SvCursor, svy - (SvCursor.ActualHeight / 2));
             SvCursor.Visibility = Visibility.Visible;
+        }
+
+        // --- RENDERING & CURSORS ---
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RedrawAsync();
+            UpdateCursors();
         }
 
         // This is the "Magic" pixel drawer (Same as before)
         private void RedrawAsync()
         {
-            // If called from a property change before the UI is ready, 
-            // we must wait for the Dispatcher
-            if (!CheckAccess())
-            {
-                Dispatcher.BeginInvoke(new Action(RedrawAsync));
-                return;
-            }
+            if (!CheckAccess()) { Dispatcher.BeginInvoke(new Action(RedrawAsync)); return; }
 
-            int size = (int)Math.Min(ActualWidth, ActualHeight);
-            if (size <= 0) return;
+            // 1. Get the AVAILABLE space from the parent container (The Grid in Column 0)
+            // We cast Parent to FrameworkElement to get its ActualWidth/Height
+            var parent = PickerContainer.Parent as FrameworkElement;
+            if (parent == null || parent.ActualWidth <= 0 || parent.ActualHeight <= 0) return;
 
+            // 2. Calculate the Square Size
+            // We assume the available space is the parent's size
+            int size = (int)Math.Min(parent.ActualWidth, parent.ActualHeight);
+
+            // 3. FORCE the Container to be this square size.
+            // Because we set Horizontal/VerticalAlignment="Center" in XAML, 
+            // it will float perfectly in the middle.
+            PickerContainer.Width = size;
+            PickerContainer.Height = size;
+
+            // 4. Create/Draw Bitmap (Standard)
             if (_bitmap == null || _bitmap.PixelWidth != size || _bitmap.PixelHeight != size)
             {
                 _bitmap = new WriteableBitmap(size, size, 96, 96, PixelFormats.Bgra32, null);
@@ -353,14 +365,13 @@ namespace CommonControls.Images
             }
 
             _bitmap.Lock();
-
             unsafe
             {
                 int* pBackBuffer = (int*)_bitmap.BackBuffer;
                 int stride = _bitmap.BackBufferStride;
                 double radius = size / 2.0;
                 double innerRadius = radius * 0.85;
-                double c = size / 2.0; // Center relative to bitmap
+                double c = size / 2.0;
 
                 for (int y = 0; y < size; y++)
                 {
@@ -373,7 +384,6 @@ namespace CommonControls.Images
 
                         if (dist <= radius && dist >= innerRadius - 1)
                         {
-                            // Hue Ring
                             double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
                             if (angle < 0) angle += 360;
                             int alpha = 255;
@@ -383,16 +393,17 @@ namespace CommonControls.Images
                         }
                         else if (dist < innerRadius)
                         {
-                            // Triangle
                             if (GetSvFromPoint(dx, dy, innerRadius, _h, out double s, out double v))
+                            {
                                 colorData = HsvToInt(_h, s, v, 255);
+                            }
                         }
 
-                        *(pBackBuffer + y * (stride / 4) + x) = colorData;
+                        if (colorData != 0) *(pBackBuffer + y * (stride / 4) + x) = colorData;
+                        else if (dist < radius) *(pBackBuffer + y * (stride / 4) + x) = 0;
                     }
                 }
             }
-
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, size, size));
             _bitmap.Unlock();
         }
@@ -486,24 +497,64 @@ namespace CommonControls.Images
         /// Gets the layout information.
         /// Helper for Alignment and Sizing of Cursors and Hit Testing
         /// </summary>
-        /// <returns>Layout Information.</returns>
+        /// <returns>
+        /// Layout Information.
+        /// </returns>
         private (double CenterX, double CenterY, double Size, double Radius, double InnerRadius) GetLayoutInfo()
         {
-            // Protect against zero-size errors
-            if (PickerImage.ActualWidth <= 0 || PickerImage.ActualHeight <= 0)
-                return (0, 0, 0, 0, 0);
+            double size = PickerContainer.Width;
 
-            // The image scales uniformly, so the "active" area is the smaller dimension
-            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
+            if (double.IsNaN(size) || size <= 0) return (0, 0, 0, 0, 0);
+
+            double c = size / 2.0;
 
             return (
-                CenterX: PickerImage.ActualWidth / 2.0,  // True center of the Grid cell
-                CenterY: PickerImage.ActualHeight / 2.0, // True center of the Grid cell
+                CenterX: c,      // Defined X
+                CenterY: c,      // Defined Y (Same as X for a square)
                 Size: size,
-                Radius: size / 2.0,
-                InnerRadius: (size / 2.0) * 0.85 // Matches your original 0.85 factor
+                Radius: c,
+                InnerRadius: c * 0.85
             );
         }
+
+        private void GetSvFromPointClamped(double x, double y, double r, double hue, out double s, out double v)
+        {
+            double hueRad = hue * Math.PI / 180.0;
+
+            // Calculate Vertices (Same as before)
+            Point pColor = new Point(Math.Cos(hueRad) * r, Math.Sin(hueRad) * r);
+            Point pWhite = new Point(Math.Cos(hueRad + 2 * Math.PI / 3) * r, Math.Sin(hueRad + 2 * Math.PI / 3) * r);
+            Point pBlack = new Point(Math.Cos(hueRad + 4 * Math.PI / 3) * r, Math.Sin(hueRad + 4 * Math.PI / 3) * r);
+
+            // Barycentric Weights
+            double det = (pWhite.Y - pBlack.Y) * (pColor.X - pBlack.X) + (pBlack.X - pWhite.X) * (pColor.Y - pBlack.Y);
+            double w1 = ((pWhite.Y - pBlack.Y) * (x - pBlack.X) + (pBlack.X - pWhite.X) * (y - pBlack.Y)) / det;
+            double w2 = ((pBlack.Y - pColor.Y) * (x - pBlack.X) + (pColor.X - pBlack.X) * (y - pBlack.Y)) / det;
+            double w3 = 1.0 - w1 - w2;
+
+            // THE FIX: Clamp weights to 0. This "pulls" the point to the edge.
+            // Negative weight means "outside the edge opposite to this vertex".
+            if (w1 < 0) w1 = 0;
+            if (w2 < 0) w2 = 0;
+            if (w3 < 0) w3 = 0;
+
+            // Re-normalize so they sum to 1.0
+            double total = w1 + w2 + w3;
+            if (total == 0) total = 1; // Safety
+            w1 /= total;
+            w2 /= total;
+            // w3 is derived
+
+            // Convert back to SV
+            v = w1 + w2;
+            s = v <= 0.0001 ? 0 : w1 / v;
+
+            // Final safety clamp
+            s = Math.Max(0, Math.Min(1, s));
+            v = Math.Max(0, Math.Min(1, v));
+        }
+
+
 
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {

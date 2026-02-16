@@ -17,7 +17,7 @@
         <Button Content="C" HorizontalAlignment="Center" Width="25" Click="Button_Click" Name="Button" />
         <Popup Name="Pop" StaysOpen="False" PlacementTarget="{Binding ElementName=Button}" Grid.ColumnSpan="3" Grid.Column="0">
             <Grid Name="GridPicker" Background="AliceBlue">
-                <commonImages:ColorPicker Width="250" Height="400" ColorChanged="ColorPickerMenu_ColorChanged" />
+                <commonImages:ColorPicker Width="300" Height="450" ColorChanged="ColorPickerMenu_ColorChanged" />
             </Grid>
         </Popup>
         <Canvas Grid.Column="1" Name="CanvasPreview" />
