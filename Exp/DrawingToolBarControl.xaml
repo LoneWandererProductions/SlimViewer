@@ -24,7 +24,6 @@
 
             <GroupBox Header="Draw" Margin="0,0,5,0" Padding="5">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-
                     <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
                         <RadioButton Content="Pencil" GroupName="ToolGroup" Margin="0,0,0,5"
                                      IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Pencil}" />
@@ -42,7 +41,20 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Mode" Margin="0,0,5,0" Padding="5">
+            <GroupBox Header="Shape" Margin="0,0,5,0" Padding="5">
+                <StackPanel VerticalAlignment="Center">
+                    <RadioButton Content="Rectangle" GroupName="ShapeGroup" Margin="0,0,0,3"
+                                 IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Rectangle}" />
+                    <RadioButton Content="Ellipse" GroupName="ShapeGroup" Margin="0,0,0,3"
+                                 IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ellipse}" />
+                    <RadioButton Content="Freeform" GroupName="ShapeGroup"
+                                 IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Freeform}" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Mode" Margin="0,0,5,0" Padding="5" 
+                      IsEnabled="{Binding Path=ToolState.AreAreaModesEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Visibility="{Binding Path=ToolState.AreAreaModesEnabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -66,7 +78,9 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Options" Padding="5" VerticalAlignment="Stretch" MinWidth="150">
+            <GroupBox Header="Options" Padding="5" VerticalAlignment="Stretch" MinWidth="150"
+                      IsEnabled="{Binding Path=ToolState.AreAreaModesEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Visibility="{Binding Path=ToolState.AreAreaModesEnabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
                     <StackPanel Orientation="Horizontal" Visibility="{Binding Path=ToolState.Fill.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
