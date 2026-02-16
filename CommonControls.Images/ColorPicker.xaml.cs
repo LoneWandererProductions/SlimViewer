@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Imaging; // Uses your ColorHsv class
+using Imaging;
 
 namespace CommonControls.Images
 {
@@ -249,34 +249,32 @@ namespace CommonControls.Images
 
         private void ProcessMouse(Point p)
         {
-            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
-            if (size <= 0) return;
+            var layout = GetLayoutInfo();
+            if (layout.Size <= 0) return;
 
-            double radius = size / 2.0;
-            double innerRadius = radius * 0.85;
-            double centerX = size / 2.0;
-            double centerY = size / 2.0;
-
-            double dx = p.X - centerX;
-            double dy = p.Y - centerY;
+            // Calculate distance from the TRUE center of the control
+            double dx = p.X - layout.CenterX;
+            double dy = p.Y - layout.CenterY;
             double dist = Math.Sqrt(dx * dx + dy * dy);
 
-            _ignoreUpdates = true; // Optimization: Don't update RGB textboxes while dragging rapidly
+            _ignoreUpdates = true; // Optimization
 
             // 1. Hue Ring Click
-            if (dist > innerRadius && dist <= radius)
+            // We add a small buffer (+2) so clicking the very edge works
+            if (dist > layout.InnerRadius && dist <= layout.Radius + 2)
             {
                 double angle = Math.Atan2(dy, dx) * 180.0 / Math.PI;
                 if (angle < 0) angle += 360;
 
                 _h = angle;
-                RedrawAsync(); // Hue changed, must redraw background
+                RedrawAsync(); // Hue changed -> Triangle rotates -> Must redraw
                 OnPropertyChanged(nameof(Hue));
             }
             // 2. Triangle Click
-            else if (dist <= innerRadius)
+            else if (dist <= layout.InnerRadius)
             {
-                if (GetSvFromPoint(dx, dy, innerRadius, _h, out double s, out double v))
+                // Pass _h (Hue) so the math knows the triangle is rotated
+                if (GetSvFromPoint(dx, dy, layout.InnerRadius, _h, out double s, out double v))
                 {
                     _s = s;
                     _v = v;
@@ -289,7 +287,7 @@ namespace CommonControls.Images
 
             UpdateCursors();
             UpdateColorOutput();
-            NotifyRgbProperties(); // Update Textboxes at the end of the frame
+            NotifyRgbProperties();
         }
 
         // --- RENDERING & CURSORS ---
@@ -305,32 +303,29 @@ namespace CommonControls.Images
 
         private void UpdateCursors()
         {
-            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
-            if (size <= 0) return;
+            var layout = GetLayoutInfo();
+            if (layout.Size <= 0) return;
 
-            double radius = size / 2.0;
-            double innerRadius = radius * 0.85;
-            double centerX = PickerImage.ActualWidth / 2.0; // Use full width to center correctly
-            double centerY = PickerImage.ActualHeight / 2.0;
-
-            // 1. Move Hue Cursor (Orbit)
+            // 1. Move Hue Cursor (Ring)
             double hueRad = _h * Math.PI / 180.0;
-            // Position it in the middle of the ring
-            double ringRadius = (radius + innerRadius) / 2.0;
 
-            double hx = centerX + Math.Cos(hueRad) * ringRadius - HueCursor.Width / 2;
-            double hy = centerY + Math.Sin(hueRad) * ringRadius - HueCursor.Height / 2;
+            // Position exactly in the middle of the ring thickness
+            double ringRadius = (layout.Radius + layout.InnerRadius) / 2.0;
+
+            double hx = layout.CenterX + Math.Cos(hueRad) * ringRadius - HueCursor.Width / 2;
+            double hy = layout.CenterY + Math.Sin(hueRad) * ringRadius - HueCursor.Height / 2;
 
             Canvas.SetLeft(HueCursor, hx);
             Canvas.SetTop(HueCursor, hy);
             HueCursor.Visibility = Visibility.Visible;
 
             // 2. Move SV Cursor (Triangle)
-            Point svPoint = GetPointFromSv(_h, _s, _v, innerRadius);
+            // We pass _h because the triangle is rotated by Hue
+            Point svPoint = GetPointFromSv(_h, _s, _v, layout.InnerRadius);
 
-            // Adjust to Canvas center (svPoint is relative to 0,0 center)
-            double svx = svPoint.X + centerX - SvCursor.Width / 2;
-            double svy = svPoint.Y + centerY - SvCursor.Height / 2;
+            // svPoint is relative to (0,0), so we add the Control's Center
+            double svx = svPoint.X + layout.CenterX - SvCursor.Width / 2;
+            double svy = svPoint.Y + layout.CenterY - SvCursor.Height / 2;
 
             Canvas.SetLeft(SvCursor, svx);
             Canvas.SetTop(SvCursor, svy);
@@ -485,6 +480,29 @@ namespace CommonControls.Images
             }
 
             return alpha << 24 | (byte)((r + m) * 255) << 16 | (byte)((g + m) * 255) << 8 | (byte)((b + m) * 255);
+        }
+
+        /// <summary>
+        /// Gets the layout information.
+        /// Helper for Alignment and Sizing of Cursors and Hit Testing
+        /// </summary>
+        /// <returns>Layout Information.</returns>
+        private (double CenterX, double CenterY, double Size, double Radius, double InnerRadius) GetLayoutInfo()
+        {
+            // Protect against zero-size errors
+            if (PickerImage.ActualWidth <= 0 || PickerImage.ActualHeight <= 0)
+                return (0, 0, 0, 0, 0);
+
+            // The image scales uniformly, so the "active" area is the smaller dimension
+            double size = Math.Min(PickerImage.ActualWidth, PickerImage.ActualHeight);
+
+            return (
+                CenterX: PickerImage.ActualWidth / 2.0,  // True center of the Grid cell
+                CenterY: PickerImage.ActualHeight / 2.0, // True center of the Grid cell
+                Size: size,
+                Radius: size / 2.0,
+                InnerRadius: (size / 2.0) * 0.85 // Matches your original 0.85 factor
+            );
         }
 
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)

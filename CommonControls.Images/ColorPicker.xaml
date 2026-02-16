@@ -20,28 +20,33 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="0">
-            <Image x:Name="PickerImage" Stretch="Uniform"
-                   RenderOptions.BitmapScalingMode="HighQuality"
-                   MouseDown="OnMouseDown" MouseMove="OnMouseMove" MouseUp="OnMouseUp" />
+            <Grid Background="Transparent"
+                  MouseDown="OnMouseDown" 
+                  MouseMove="OnMouseMove" 
+                  MouseUp="OnMouseUp">
 
-            <Canvas x:Name="CursorCanvas" IsHitTestVisible="False">
+                <Image x:Name="PickerImage" Stretch="Uniform"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       IsHitTestVisible="False"/>
 
-                <Ellipse x:Name="HueCursor" Width="10" Height="10"
-                         Stroke="Black" StrokeThickness="2" Fill="Transparent"
-                         Visibility="Collapsed">
-                    <Ellipse.Effect>
-                        <DropShadowEffect Color="White" BlurRadius="2" ShadowDepth="0" Opacity="1" />
-                    </Ellipse.Effect>
-                </Ellipse>
+                <Canvas x:Name="CursorCanvas" IsHitTestVisible="False">
+                    <Ellipse x:Name="HueCursor" Width="14" Height="14"
+                             Stroke="Black" StrokeThickness="2" Fill="Transparent"
+                             Visibility="Collapsed">
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="White" BlurRadius="4" ShadowDepth="0" Opacity="1" />
+                        </Ellipse.Effect>
+                    </Ellipse>
 
-                <Ellipse x:Name="SvCursor" Width="10" Height="10"
-                         Stroke="White" StrokeThickness="2" Fill="Transparent"
-                         Visibility="Collapsed">
-                    <Ellipse.Effect>
-                        <DropShadowEffect Color="Black" BlurRadius="2" ShadowDepth="0" Opacity="1" />
-                    </Ellipse.Effect>
-                </Ellipse>
-            </Canvas>
+                    <Ellipse x:Name="SvCursor" Width="10" Height="10"
+                             Stroke="White" StrokeThickness="2" Fill="Transparent"
+                             Visibility="Collapsed">
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="2" ShadowDepth="0" Opacity="0.8" />
+                        </Ellipse.Effect>
+                    </Ellipse>
+                </Canvas>
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="0" Grid.Column="1" Margin="10,0,0,0">
