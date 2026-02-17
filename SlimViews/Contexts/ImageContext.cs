@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews.Contexts
  * FILE:        ImageContext.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Image-related state and operations for ImageView, including core image data, filters, display settings, and cached flags.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -70,8 +70,12 @@ namespace SlimViews.Contexts
 
         // Cached flags
 
-        public int PixelWidth { get; internal set; }
-
+        /// <summary>
+        /// Gets a value indicating whether this instance has image.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance has image; otherwise, <c>false</c>.
+        /// </value>
         internal bool HasImage => Bitmap != null || BitmapSource != null;
 
         // Internal helpers
@@ -84,9 +88,13 @@ namespace SlimViews.Contexts
         /// </value>
         internal BitmapImage? BitmapSource => Bitmap?.ToBitmapImage();
 
-        public int BrushSize { get; internal set; }
-
-        public string Information { get; internal set; }
+        /// <summary>
+        /// Gets the information.
+        /// </summary>
+        /// <value>
+        /// The information.
+        /// </value>
+        public string? Information { get; internal set; }
 
         /// <summary>
         /// Optional helper: reset without reallocating the object
@@ -96,6 +104,7 @@ namespace SlimViews.Contexts
             Bitmap?.Dispose();
             Bitmap = null;
             IsImageActive = false;
+            Information = null;
         }
     }
 }

@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews.Contexts
  * FILE:        FileContext.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     File-related state and operations for <see cref="ImageView"/>; tracks file lists, current file, and related metadata.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -12,6 +12,9 @@ using System.Linq;
 
 namespace SlimViews.Contexts
 {
+    /// <summary>
+    /// File context holds all file-related state and operations for the ImageView, including file lists, current file tracking, and related metadata.
+    /// </summary>
     internal sealed class FileContext
     {
         /// <summary>
@@ -54,12 +57,36 @@ namespace SlimViews.Contexts
         /// </value>
         internal int CurrentId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the current path.
+        /// </summary>
+        /// <value>
+        /// The current path.
+        /// </value>
         internal string CurrentPath { get; set; }
 
+        /// <summary>
+        /// Gets or sets the GIF path.
+        /// </summary>
+        /// <value>
+        /// The GIF path.
+        /// </value>
         internal string GifPath { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is files empty.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is files empty; otherwise, <c>false</c>.
+        /// </value>
         internal bool IsFilesEmpty => Files.Count == 0;
 
+        /// <summary>
+        /// Gets the files sorted.
+        /// </summary>
+        /// <value>
+        /// The files sorted.
+        /// </value>
         internal List<string> FilesSorted => Files.PathSort();
 
         /// <summary>

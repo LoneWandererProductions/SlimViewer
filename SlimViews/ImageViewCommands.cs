@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews
  * FILE:        ImageViewCommands.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Main command definitions and bindings for ImageView, linking UI actions to service methods.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -21,16 +21,44 @@ namespace SlimViews
     /// Provides all image view related commands and links them to the owning view and service classes.
     /// This class is responsible for command creation, binding, and routing actions to the appropriate services.
     /// </summary>
-    public partial class ImageViewCommands
+    public class ImageViewCommands
     {
+        /// <summary>
+        /// The owner, unused for command execution but may be needed for CanExecute checks or future command implementations.
+        /// </summary>
         private readonly ImageView _owner;
+
+        /// <summary>
+        /// The image mass service
+        /// </summary>
         private readonly ImageMassProcessingCommands _imageMassService = new();
+
+        /// <summary>
+        /// The image service
+        /// </summary>
         private readonly ImageProcessingCommands _imageService = new();
+
+        /// <summary>
+        /// The file service
+        /// </summary>
         private readonly FileProcessingCommands _fileService = new();
 
         #region Commands
 
+        /// <summary>
+        /// Gets the close Command.
+        /// </summary>
+        /// <value>
+        /// The close Command.
+        /// </value>
         public ICommand Close { get; }
+
+        /// <summary>
+        /// Gets the open CBZ Command.
+        /// </summary>
+        /// <value>
+        /// The open CBZ Command.
+        /// </value>
         public ICommand OpenCbz { get; }
         public ICommand Open { get; }
         public ICommand Save { get; }
@@ -73,9 +101,6 @@ namespace SlimViews
         public ICommand ColorChanged { get; }
         public ICommand Next { get; }
         public ICommand Previous { get; }
-        public ICommand ToolChanged { get; }
-
-        public ICommand ToolChangedCommand { get; }
 
         #endregion
 
@@ -128,12 +153,8 @@ namespace SlimViews
             ColorChanged = new DelegateCommand<ColorHsv>(owner.ColorChangedAction, CanRun);
             Next = new DelegateCommand<object>(owner.NextAction, CanRun);
             Previous = new DelegateCommand<object>(owner.PreviousAction, CanRun);
-            ToolChanged = new DelegateCommand<ImageZoomTools>(owner.ToolChangedAction, CanRun);
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
-
-            ToolChangedCommand = new DelegateCommand<object>(owner.ToolChangedActionNew, CanRun);
-
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);

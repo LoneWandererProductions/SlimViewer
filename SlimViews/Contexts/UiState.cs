@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews.Contexts
  * FILE:        UiState.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Ui state management for ImageView, including visibility, paths, and references to controls. Pure UI state with no image data.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -13,6 +13,10 @@ using System.Windows;
 
 namespace SlimViews.Contexts
 {
+    /// <summary>
+    /// ImageView UI State, holds all UI-related state and references to controls used by <see cref="ImageView"/>.
+    /// </summary>
+    /// <seealso cref="System.IEquatable&lt;SlimViews.Contexts.UiState&gt;" />
     public record UiState
     {
         /// <summary>
@@ -139,7 +143,6 @@ namespace SlimViews.Contexts
         ///   <c>true</c> if [use sub folders]; otherwise, <c>false</c>.
         /// </value>
         internal bool UseSubFolders { get; set; }
-
 
         //Internal methods
 
