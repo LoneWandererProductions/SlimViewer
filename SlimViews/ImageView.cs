@@ -794,6 +794,60 @@ namespace SlimViews
             FileContext.CurrentId = FileContext.CurrentIdGetIdByFilePath(filePath);
         }
 
+        /// <summary>
+        /// Reloads the view with a new list of files and a specific target image.
+        /// Used by Rename/Convert commands to refresh the state.
+        /// </summary>
+        /// <param name="files">The files.</param>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="info">The information.</param>
+        internal void ChangeImage(IEnumerable<string?> files, string? filePath, string info)
+        {
+            // 1. Validate
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
+
+            // 2. Update File List
+            // We convert to List to ensure immediate evaluation
+            FileContext.Files = files.ToList();
+            Count = FileContext.Files.Count;
+
+            // 3. Update Thumbnails (Fire and forget task)
+            _ = GenerateThumbView(FileContext.Files);
+
+            // 4. Load the Main Image
+            // Use the async generator to keep UI responsive
+            _ = GenerateImageAsync(filePath);
+
+            // 5. Update IDs and Info
+            FileContext.CurrentId = FileContext.CurrentIdGetIdByFilePath(filePath);
+            Information = info;
+
+            // 6. Refresh Navigation Buttons
+            NavigationLogic();
+        }
+
+        /// <summary>
+        /// Saves the image using the external ImageProcessor.
+        /// Called by FileProcessingCommands.Save.
+        /// </summary>
+        /// <param name="path">The full file path.</param>
+        /// <param name="extension">The file extension (e.g., ".png").</param>
+        /// <param name="bitmap">The GDI+ Bitmap (System.Drawing.Bitmap).</param>
+        /// <returns>True if successful, False otherwise.</returns>
+        internal bool SaveImage(string path, string extension, System.Drawing.Bitmap bitmap)
+        {
+            // Update UI Status to "Working" (Red)
+            StatusImage = UiState.RedIconPath;
+
+            // Call the lower-level processor logic
+            bool success = ImageProcessor.SaveImage(path, extension, bitmap);
+
+            // Update UI Status to "Done" (Green)
+            StatusImage = UiState.GreenIconPath;
+
+            return success;
+        }
+
         // Logic Helpers
         private bool CanLoadFile(string? path) => !string.IsNullOrEmpty(path) && File.Exists(path) && ImagingResources.Appendix.Any(path.EndsWith);
 

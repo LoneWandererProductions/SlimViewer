@@ -205,12 +205,12 @@
 
         <Grid Grid.Row="3" Grid.Column="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="40" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="←" Command="{Binding Commands.Previous}" Visibility="{Binding LeftButtonVisibility}" VerticalAlignment="Center" Height="50" />
+            <Button Grid.Column="0" Content="←" Command="{Binding Commands.Previous}" Visibility="{Binding LeftButtonVisibility}" VerticalAlignment="Center" Height="50" Opacity="0.5"/>
 
             <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" IsTabStop="True"
                               ItemsSource="{Binding Bmp}" ImageGifPath="{Binding GifPath}"
@@ -218,7 +218,7 @@
                               SelectedFrameCommand="{Binding Commands.SelectedFrame}"
                               SelectedPointCommand="{Binding Commands.SelectedPoint}" />
 
-            <Button Grid.Column="2" Content="→" Command="{Binding Commands.Next}" Visibility="{Binding RightButtonVisibility}" VerticalAlignment="Center" Height="50" />
+            <Button Grid.Column="2" Content="→" Command="{Binding Commands.Next}" Visibility="{Binding RightButtonVisibility}" VerticalAlignment="Center" Height="50" Opacity="0.5"/>
         </Grid>
 
         <GridSplitter Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray" Visibility="{Binding ThumbnailVisibility}" />
@@ -241,13 +241,13 @@
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
 
-            <Button Content="D" Grid.Row="0" Grid.Column="0" Command="{Binding Commands.Delete}" IsEnabled="{Binding Path=IsImageActive}" />
-            <Button Content="//" Grid.Row="0" Grid.Column="1" Command="{Binding Commands.Explorer}" IsEnabled="{Binding Path=IsImageActive}" />
+            <Button Content="D" Grid.Row="0" Grid.Column="0" Command="{Binding Commands.Delete}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Delete" />
+            <Button Content="//" Grid.Row="0" Grid.Column="1" Command="{Binding Commands.Explorer}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Open in Explorer" />
 
-            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Path=Information}" TextWrapping="NoWrap" Focusable="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Path=Information}" TextWrapping="NoWrap" Focusable="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" IsReadOnly="True" />
 
-            <Image Grid.Row="2" Grid.Column="0" Source="{Binding StatusImage}" />
-            <Button Content="R" Grid.Row="2" Grid.Column="1" Command="{Binding Commands.Rename}" IsEnabled="{Binding Path=IsImageActive}" />
+            <Image Grid.Row="2" Grid.Column="0" Source="{Binding StatusImage}" ToolTip="Status Indicator" />
+            <Button Content="R" Grid.Row="2" Grid.Column="1" Command="{Binding Commands.Rename}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Rename" />
 
             <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap">
                 <TextBox.InputBindings>
