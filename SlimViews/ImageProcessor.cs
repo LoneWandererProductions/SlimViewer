@@ -400,7 +400,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Fills the area.
+        ///      Fills the area.
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="frame">The frame.</param>
@@ -408,17 +408,47 @@ namespace SlimViews
         /// <returns>Changed bitmap or in case of error the original</returns>
         public static Bitmap FillArea(Bitmap bitmap, SelectionFrame frame, Color color)
         {
+            // 1. Get the Mask Shape (Rectangle, Circle, Polygon)
             var mask = Translator.MapCodeToTool(frame.Tool);
             var point = new Point(frame.X, frame.Y);
 
+            // 2. FIX: Prepare Shape Parameters for Polygon/FreeForm
+            object shapeParams = null;
+
+            if (mask == MaskShape.Polygon)
+            {
+                if (frame.Points != null && frame.Points.Count > 0)
+                {
+                    // CRITICAL STEP: Convert WPF Points (System.Windows.Point) 
+                    // to GDI+ Points (System.Drawing.Point)
+                    shapeParams = frame.Points
+                        .Select(p => new Point((int)p.X, (int)p.Y))
+                        .ToArray();
+                }
+            }
+
             try
             {
-                bitmap = Render.FillAreaWithColor(bitmap, frame.Width, frame.Height, color, mask, startPoint: point);
+                // 3. Pass shapeParams to the Render engine
+                bitmap = Render.FillAreaWithColor(
+                    bitmap,
+                    frame.Width,
+                    frame.Height,
+                    color,
+                    mask,
+                    shapeParams: shapeParams, // <--- Pass the array here
+                    startPoint: point);
             }
             catch (ArgumentNullException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(EraseImage)));
+                _ = MessageBox.Show(ex.ToString(), string.Concat(ViewResources.ErrorMessage, nameof(FillArea)));
+            }
+            catch (ArgumentException ex)
+            {
+                // Catch the "Invalid shape parameters" exception from ImageStream
+                Trace.WriteLine(ex);
+                _ = MessageBox.Show("Failed to fill polygon: " + ex.Message, ViewResources.ErrorMessage);
             }
 
             return bitmap;
@@ -436,10 +466,28 @@ namespace SlimViews
             var mask = Translator.MapCodeToTool(frame.Tool);
             var point = new Point(frame.X, frame.Y);
 
+            // FIX: Prepare Polygon Points
+            object shapeParams = null;
+            if (mask == MaskShape.Polygon && frame.Points != null && frame.Points.Count > 0)
+            {
+                // Convert WPF Points -> GDI+ Points
+                shapeParams = frame.Points
+                    .Select(p => new Point((int)p.X, (int)p.Y))
+                    .ToArray();
+            }
+
             try
             {
-                //just overlay the whole image with the texture, will be changed later
-                return Generator.GenerateTextureOverlay(bitmap, frame.Width, frame.Height, texture, mask, point);
+                // FIX: Pass shapeParams to the Generator
+                // Ensure your GenerateTextureOverlay method accepts this argument!
+                return Generator.GenerateTextureOverlay(
+                    bitmap,
+                    frame.Width,
+                    frame.Height,
+                    texture,
+                    mask,
+                    point,          // StartPoint
+                    shapeParams);   // The Polygon Points
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
@@ -462,10 +510,28 @@ namespace SlimViews
             var mask = Translator.MapCodeToTool(frame.Tool);
             var point = new Point(frame.X, frame.Y);
 
+            // FIX: Prepare Polygon Points
+            object shapeParams = null;
+            if (mask == MaskShape.Polygon && frame.Points != null && frame.Points.Count > 0)
+            {
+                // Convert WPF Points -> GDI+ Points
+                shapeParams = frame.Points
+                    .Select(p => new Point((int)p.X, (int)p.Y))
+                    .ToArray();
+            }
+
             try
             {
-                //just overlay the whole image with the texture, will be changed later
-                return Render.FilterImageArea(bitmap, frame.Width, frame.Height, filter, mask, startPoint: point);
+                // FIX: Pass shapeParams to the Render engine
+                // Ensure your FilterImageArea method accepts this argument!
+                return Render.FilterImageArea(
+                    bitmap,
+                    frame.Width,
+                    frame.Height,
+                    filter,
+                    mask,
+                    shapeParams: shapeParams, // <--- The Polygon Points
+                    startPoint: point);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {

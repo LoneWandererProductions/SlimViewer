@@ -14,61 +14,62 @@
 /*
  * TODO — ImageZoom & SelectionAdorner Architecture Roadmap
  * --------------------------------------------------------
+ * CURRENT STATUS: Functional "Monolithic" Pattern.
+ * NEXT STEP: Refactor to "State/Strategy" Pattern (IToolHandler).
  *
  * 1. INPUT / EVENT SYSTEM
  * -----------------------
- * [ ] Move input handling (mouse down/move/up) from SelectionAdorner into ImageZoom
+ * [ ] Move input handling (mouse down/move/up) completely into ImageZoom
+ * (currently shared/delegated to Adorner)
  * [ ] Add a unified input dispatcher that forwards events to the current tool
  * [ ] Implement ToolContext to carry image transforms, image size, modifiers (Ctrl/Shift)
  *
  *
- * 2. TOOL SYSTEM REFINEMENT
- * -------------------------
+ * 2. TOOL SYSTEM REFINEMENT (The "Switch Statement" Refactor)
+ * -----------------------------------------------------------
  * [ ] Introduce IToolHandler interface:
- *       - OnMouseDown / OnMouseMove / OnMouseUp
- *       - RenderOverlay(DrawingContext dc)
- *       - Cancel() / Reset()
+ * - OnMouseDown / OnMouseMove / OnMouseUp
+ * - RenderOverlay(DrawingContext dc)
+ * - GetFrame() / Reset()
  *
- * [ ] Convert Rectangle, Ellipse, Dot, Trace, FreeForm into dedicated tool handler classes
+ * [ ] Convert Rectangle, Ellipse, Dot, Trace, FreeForm into dedicated tool classes
+ * (e.g., RectangleTool.cs, FreeFormTool.cs) to remove the massive switch statements.
  * [ ] Add ToolState / ToolSession object to store points, frame, geometry
- * [ ] Decouple selection logic from the adorner (adorner draws only)
+ * [ ] Decouple selection logic from the adorner (Adorner should only DRAW, not hold data)
  *
  *
  * 3. TRANSFORM PIPELINE
  * ---------------------
- * [ ] Replace single Transform with a TransformGroup:
- *       - ZoomTransform
- *       - ScrollOffsetTransform
- *       - RotationTransform (future use)
- *       - CropTransform (future use)
- *
+ * [ ] Replace manual Matrix math with a TransformGroup:
+ * - ZoomTransform
+ * - ScrollOffsetTransform
  * [ ] Store both:
- *       - DrawingTransform (image → screen)
- *       - InputTransform   (screen → image/pixel space)
- *
- * [ ] Update SelectionFrame to always use pixel-space coordinates
+ * - DrawingTransform (image → screen)
+ * - InputTransform   (screen → image/pixel space)
+ * [-] Update SelectionFrame to always use pixel-space coordinates
+ * (Currently handled via conversion in ImageProcessor.FillArea, but Frame itself stores WPF Points)
  *
  *
  * 4. ADORNER IMPROVEMENTS
  * ------------------------
- * [ ] Restrict adorner to visualization-only duties
- * [ ] Let adorner read data from current IToolHandler instead of owning points
- * [ ] Add double-buffering for smoother overlay drawing (optional)
- * [ ] Support drawing tool-specific overlays (lasso, handles, marquee)
+ * [ ] Restrict adorner to visualization-only duties (View)
+ * [ ] Let adorner read data from current IToolHandler instead of owning the Point Lists
+ * [ ] Add double-buffering or DrawingVisual for smoother overlay drawing (optional)
  *
  *
- * 5. IMAGE OPERATIONS (FUTURE)
- * ----------------------------
- * [ ] Integrate DirectBitmapImage operations into tool handlers (fill, stroke, erase)
- * [ ] Add support for brush size, brush hardness, opacity
- * [ ] Add selection commit logic (crop, cut, fill, invert, delete, outline)
+ * 5. IMAGE OPERATIONS (COMPLETED / INTEGRATED)
+ * --------------------------------------------
+ * [x] Integrate DirectBitmapImage operations (Done via ImageProcessor & ImageView)
+ * [x] Add selection commit logic (Done via SelectionAdorner.CaptureAndClear & Canvas_MouseUp)
+ * [x] Support FreeForm Polygon filling (Done via auto-close logic in CaptureAndClear)
+ * [ ] Add support for brush size/hardness visualization in the Adorner
  * [ ] Add pixel-snapping modes (whole pixel alignment when zoomed)
  *
  *
- * 6. EXTENDED TOOLSET (OPTIONAL NICE-TO-HAVE)
- * -------------------------------------------
- * [ ] Polygonal lasso tool
- * [ ] Magic-wand / flood-fill selection using your existing flood-fill helper
+ * 6. EXTENDED TOOLSET (FUTURE)
+ * ----------------------------
+ * [ ] Polygonal lasso tool (Click-to-add-point)
+ * [ ] Magic-wand / flood-fill selection (using existing flood-fill helper)
  * [ ] Text tool (typed overlay rendered to bitmap)
  * [ ] Stamp/cloning tool
  * [ ] Multi-layer support (background, overlay layers)
@@ -77,10 +78,9 @@
  * 7. PERFORMANCE & ARCHITECTURE
  * ------------------------------
  * [ ] Add invalidate throttling (Redraw only when needed)
- * [ ] Use DrawingVisual for overlays to reduce Adorner overhead
+ * [x] Clear "Ghost Frames" immediately after drawing (Done via CaptureAndClear)
  * [ ] Add high-DPI support for Zoom + PixelGrid alignment
- * [ ] Allow async pixel operations (large flood fills, transforms)
- *
+ * [ ] Allow async pixel operations for large fills
  *
  * END TODO LIST
  */

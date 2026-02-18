@@ -246,6 +246,9 @@ namespace CommonControls.Images
         /// <summary>
         /// Captures the current shape data, returns it, and immediately clears the visual drawing.
         /// </summary>
+        /// <summary>
+        /// Captures the current shape data, returns it, and immediately clears the visual drawing.
+        /// </summary>
         public SelectionFrame CaptureAndClear()
         {
             // 1. Prepare data variables
@@ -257,12 +260,30 @@ namespace CommonControls.Images
             {
                 if (FreeFormPoints.Count > 0)
                 {
+                    // Copy existing points
                     points = new List<Point>(FreeFormPoints);
 
-                    double minX = FreeFormPoints.Min(p => p.X);
-                    double minY = FreeFormPoints.Min(p => p.Y);
-                    double maxX = FreeFormPoints.Max(p => p.X);
-                    double maxY = FreeFormPoints.Max(p => p.Y);
+                    // --- FIX: AUTO-CLOSE THE SHAPE ---
+                    // If we have a valid shape (>2 points) and it isn't closed, close it.
+                    // This ensures the "Fill" algorithm knows where the boundary is.
+                    if (points.Count > 2)
+                    {
+                        var start = points[0];
+                        var end = points[points.Count - 1];
+
+                        // Simple check: if start != end, add start to the end
+                        if (start != end)
+                        {
+                            points.Add(start);
+                        }
+                    }
+                    // ---------------------------------
+
+                    // Calculate Bounding Box (after closing)
+                    double minX = points.Min(p => p.X);
+                    double minY = points.Min(p => p.Y);
+                    double maxX = points.Max(p => p.X);
+                    double maxY = points.Max(p => p.Y);
 
                     x = (int)minX;
                     y = (int)minY;
@@ -288,7 +309,8 @@ namespace CommonControls.Images
                 height = 1;
             }
 
-            // 3. Create the Frame (Must happen in one step because of 'init' properties)
+            // 3. Create the Frame
+            // We use 'points' (which now includes the closing point)
             var frame = new SelectionFrame
             {
                 Tool = Tool,
@@ -299,7 +321,7 @@ namespace CommonControls.Images
                 Points = points
             };
 
-            // 4. NUCLEAR CLEANUP (Visuals)
+            // 4. Cleanup
             _committedFrames.Clear();
             _committedFreeForms.Clear();
             FreeFormPoints.Clear();
