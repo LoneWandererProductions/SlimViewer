@@ -599,10 +599,10 @@ namespace CommonControls.Images
         }
 
         /// <summary>
-        ///     Handles the MouseUp event of the Grid control.
+        /// Handles the MouseUp event of the Grid control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             _mouseDown = false;
@@ -610,32 +610,36 @@ namespace CommonControls.Images
 
             if (SelectionAdorner == null) return;
 
-            switch (SelectionTool)
+            // 1. Identify "Immediate Action" tools (Drawing tools)
+            bool isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
+                                 SelectionTool == ImageZoomTools.Ellipse ||
+                                 SelectionTool == ImageZoomTools.FreeForm ||
+                                 SelectionTool == ImageZoomTools.Trace ||
+                                 SelectionTool == ImageZoomTools.Dot;
+
+            if (isDrawingTool)
             {
-                case ImageZoomTools.Move:
-                    break;
+                // 2. Capture the data AND Clear the visuals immediately
+                // This prevents the "Ghost Frame" from sticking around
+                SelectionFrame frame = SelectionAdorner.CaptureAndClear();
 
-                case ImageZoomTools.Rectangle:
-                case ImageZoomTools.Ellipse:
-                case ImageZoomTools.Dot:
-                    // CHANGED: Instead of Finishing, we Commit and keep going
-                    SelectionAdorner.CommitCurrentShape();
-                    break;
+                // 3. Validation: Ensure we actually drew something substantial
+                bool isValid = (frame.Width > 0 && frame.Height > 0) ||
+                               (frame.Points != null && frame.Points.Count > 0);
 
-                case ImageZoomTools.FreeForm:
-                    // FreeForm logic in your original code added points on move. 
-                    // Now, MouseUp ends the "stroke", so we commit that stroke.
-                    SelectionAdorner.CommitCurrentShape();
-                    break;
+                if (isValid)
+                {
+                    // 4. Fire the Command to the ViewModel (Update the Bitmap)
+                    SafeExecuteCommand(SelectedFrameCommand, frame);
 
-                case ImageZoomTools.Trace:
-                    SelectionAdorner.IsTracing = false;
-                    // Trace logic might differ, but usually acts like FreeForm
-                    break;
+                    // 5. Fire the Event (if anything else is listening)
+                    SelectedFrame?.Invoke(frame);
+                }
             }
-
-            // REMOVED: Do not remove the Adorner here.
-            // The Adorner stays alive to show previous shapes and allow drawing new ones.
+            else if (SelectionTool == ImageZoomTools.Move)
+            {
+                // Just release capture, do nothing else
+            }
         }
 
         /// <summary>

@@ -243,6 +243,74 @@ namespace CommonControls.Images
             return _imageTransform.Inverse.Transform(mousePosition);
         }
 
+        /// <summary>
+        /// Captures the current shape data, returns it, and immediately clears the visual drawing.
+        /// </summary>
+        public SelectionFrame CaptureAndClear()
+        {
+            // 1. Prepare data variables
+            int x = 0, y = 0, width = 0, height = 0;
+            List<Point> points = new List<Point>();
+
+            // 2. Calculate based on Tool Type
+            if (Tool == ImageZoomTools.FreeForm || Tool == ImageZoomTools.Trace)
+            {
+                if (FreeFormPoints.Count > 0)
+                {
+                    points = new List<Point>(FreeFormPoints);
+
+                    double minX = FreeFormPoints.Min(p => p.X);
+                    double minY = FreeFormPoints.Min(p => p.Y);
+                    double maxX = FreeFormPoints.Max(p => p.X);
+                    double maxY = FreeFormPoints.Max(p => p.Y);
+
+                    x = (int)minX;
+                    y = (int)minY;
+                    width = (int)(maxX - minX);
+                    height = (int)(maxY - minY);
+                }
+            }
+            else if (_startPoint.HasValue && _endPoint.HasValue)
+            {
+                // Rectangle / Ellipse
+                var selectionRect = new Rect(_startPoint.Value, _endPoint.Value);
+                x = (int)selectionRect.X;
+                y = (int)selectionRect.Y;
+                width = (int)selectionRect.Width;
+                height = (int)selectionRect.Height;
+            }
+            else if (Tool == ImageZoomTools.Dot && _startPoint.HasValue)
+            {
+                // Dot
+                x = (int)_startPoint.Value.X;
+                y = (int)_startPoint.Value.Y;
+                width = 1;
+                height = 1;
+            }
+
+            // 3. Create the Frame (Must happen in one step because of 'init' properties)
+            var frame = new SelectionFrame
+            {
+                Tool = Tool,
+                X = x,
+                Y = y,
+                Width = width,
+                Height = height,
+                Points = points
+            };
+
+            // 4. NUCLEAR CLEANUP (Visuals)
+            _committedFrames.Clear();
+            _committedFreeForms.Clear();
+            FreeFormPoints.Clear();
+            _startPoint = null;
+            _endPoint = null;
+
+            InvalidateVisual();
+
+            return frame;
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     When overridden in a derived class, participates in rendering operations that are directed by the layout system.
