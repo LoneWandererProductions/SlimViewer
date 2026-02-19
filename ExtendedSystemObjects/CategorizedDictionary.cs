@@ -1,10 +1,10 @@
 ﻿/*
-* COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     ExtendedSystemObjects
-* FILE:        ExtendedSystemObjects/CategorizedDictionary.cs
-* PURPOSE:     Extended Dictionary with an Category.
-* PROGRAMER:   Peter Geinitz (Wayfarer)
-*/
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:      ExtendedSystemObjects
+ * FILE:         ExtendedSystemObjects/CategorizedDictionary.cs
+ * PURPOSE:      Extended Dictionary with a Category.
+ * PROGRAMER:    Peter Geinitz (Wayfarer)
+ */
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable MemberCanBeInternal
@@ -71,14 +71,8 @@ namespace ExtendedSystemObjects
             get
             {
                 _lock.EnterReadLock();
-                try
-                {
-                    return _data.Count;
-                }
-                finally
-                {
-                    _lock.ExitReadLock();
-                }
+                try { return _data.Count; }
+                finally { _lock.ExitReadLock(); }
             }
         }
 
@@ -103,10 +97,7 @@ namespace ExtendedSystemObjects
 
                     throw new KeyNotFoundException($"Key '{key}' not found.");
                 }
-                finally
-                {
-                    _lock.ExitReadLock();
-                }
+                finally { _lock.ExitReadLock(); }
             }
             set
             {
@@ -122,10 +113,7 @@ namespace ExtendedSystemObjects
                         AddInternal(string.Empty, key, value);
                     }
                 }
-                finally
-                {
-                    _lock.ExitWriteLock();
-                }
+                finally { _lock.ExitWriteLock(); }
             }
         }
 
@@ -145,14 +133,8 @@ namespace ExtendedSystemObjects
         public void Add(string category, TK key, TV value)
         {
             _lock.EnterWriteLock();
-            try
-            {
-                AddInternal(NormalizeCategory(category), key, value);
-            }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
+            try { AddInternal(NormalizeCategory(category), key, value); }
+            finally { _lock.ExitWriteLock(); }
         }
 
         /// <summary>
@@ -190,16 +172,17 @@ namespace ExtendedSystemObjects
 
                 _data.Remove(key);
 
-                _categories[entry.Category].Remove(key);
-                if (_categories[entry.Category].Count == 0)
-                    _categories.Remove(entry.Category);
+                // Safe to assume category exists and set is not null because of AddInternal logic
+                if (_categories.TryGetValue(entry.Category, out var set))
+                {
+                    set.Remove(key);
+                    if (set.Count == 0)
+                        _categories.Remove(entry.Category);
+                }
 
                 return true;
             }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
+            finally { _lock.ExitWriteLock(); }
         }
 
         /// <summary>
@@ -212,14 +195,8 @@ namespace ExtendedSystemObjects
         public bool ContainsKey(TK key)
         {
             _lock.EnterReadLock();
-            try
-            {
-                return _data.ContainsKey(key);
-            }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            try { return _data.ContainsKey(key); }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -243,10 +220,7 @@ namespace ExtendedSystemObjects
                 value = default;
                 return false;
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -270,10 +244,7 @@ namespace ExtendedSystemObjects
                 category = null;
                 return false;
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -292,10 +263,7 @@ namespace ExtendedSystemObjects
 
                 throw new KeyNotFoundException();
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -307,32 +275,39 @@ namespace ExtendedSystemObjects
         /// <returns>True if success.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
+            // Fix: Normalize input category to ensure consistency with Add()
+            newCategory = NormalizeCategory(newCategory);
+
             _lock.EnterWriteLock();
             try
             {
                 if (!_data.TryGetValue(key, out var entry)) return false;
 
+                // Optimization: Don't do anything if category hasn't changed
+                if (string.Equals(entry.Category, newCategory, StringComparison.Ordinal))
+                    return true;
+
                 // Remove from old category
-                _categories[entry.Category].Remove(key);
-                if (_categories[entry.Category].Count == 0)
-                    _categories.Remove(entry.Category);
+                if (_categories.TryGetValue(entry.Category, out var oldSet))
+                {
+                    oldSet.Remove(key);
+                    if (oldSet.Count == 0)
+                        _categories.Remove(entry.Category);
+                }
 
                 // Add to new category
                 _data[key] = (newCategory, entry.Value);
-                if (!_categories.TryGetValue(newCategory, out var set))
+                if (!_categories.TryGetValue(newCategory, out var newSet))
                 {
-                    set = new HashSet<TK>();
-                    _categories[newCategory] = set;
+                    newSet = new HashSet<TK>();
+                    _categories[newCategory] = newSet;
                 }
 
-                set.Add(key);
+                newSet.Add(key);
 
                 return true;
             }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
+            finally { _lock.ExitWriteLock(); }
         }
 
         /// <summary>
@@ -344,12 +319,10 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                return _categories.Keys;
+                // Fix: Must snapshot keys inside the lock to allow safe iteration outside
+                return new List<string>(_categories.Keys);
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -364,14 +337,14 @@ namespace ExtendedSystemObjects
             try
             {
                 if (_categories.TryGetValue(category, out var set))
-                    return set;
+                {
+                    // Fix: Must snapshot the HashSet to allow safe iteration outside
+                    return new List<TK>(set);
+                }
 
                 return Array.Empty<TK>();
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -385,12 +358,10 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                return _data.Keys;
+                // Fix: Must snapshot keys inside the lock
+                return new List<TK>(_data.Keys);
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -408,10 +379,7 @@ namespace ExtendedSystemObjects
 
                 return null;
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
 
@@ -429,14 +397,12 @@ namespace ExtendedSystemObjects
                 if (!_categories.TryGetValue(category, out var keys))
                     return new Dictionary<TK, TV>();
 
+                // This already creates a new Dictionary (snapshot), so it is thread-safe
                 var dict = new Dictionary<TK, TV>(keys.Count);
                 foreach (var key in keys) dict[key] = _data[key].Value;
                 return dict;
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
         }
 
         /// <summary>
@@ -450,33 +416,38 @@ namespace ExtendedSystemObjects
                 _data.Clear();
                 _categories.Clear();
             }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
+            finally { _lock.ExitWriteLock(); }
         }
 
         /// <summary>
         /// Returns an enumerator over (Key, Category, Value) tuples.
-        /// Enumeration is thread-safe.
+        /// Enumeration is thread-safe via snapshotting.
         /// </summary>
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
         public IEnumerator<(TK Key, string Category, TV Value)> GetEnumerator()
         {
+            List<(TK, string, TV)> snapshot;
             _lock.EnterReadLock();
             try
             {
+                snapshot = new List<(TK, string, TV)>(_data.Count);
                 foreach (var kvp in _data)
-                    yield return (kvp.Key, kvp.Value.Category, kvp.Value.Value);
+                    snapshot.Add((kvp.Key, kvp.Value.Category, kvp.Value.Value));
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+            finally { _lock.ExitReadLock(); }
+
+            // Iterate outside the lock to avoid deadlocks or contention
+            foreach (var item in snapshot) yield return item;
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

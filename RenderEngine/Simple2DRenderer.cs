@@ -235,13 +235,8 @@ namespace RenderEngine
 
             var data = new float[]
             {
-                p0.x, p0.y, r, g, b, a,
-                p1.x, p1.y, r, g, b, a,
-                p2.x, p2.y, r, g, b, a,
-
-                p2.x, p2.y, r, g, b, a,
-                p3.x, p3.y, r, g, b, a,
-                p0.x, p0.y, r, g, b, a
+                p0.x, p0.y, r, g, b, a, p1.x, p1.y, r, g, b, a, p2.x, p2.y, r, g, b, a, p2.x, p2.y, r, g, b, a,
+                p3.x, p3.y, r, g, b, a, p0.x, p0.y, r, g, b, a
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
@@ -312,9 +307,7 @@ namespace RenderEngine
             var data = new float[]
             {
                 // x, y, u, v
-                p0.x, p0.y, 0f, 0f,
-                p1.x, p1.y, 1f, 0f,
-                p2.x, p2.y, 0.5f, 1f // UV mapping for triangle
+                p0.x, p0.y, 0f, 0f, p1.x, p1.y, 1f, 0f, p2.x, p2.y, 0.5f, 1f // UV mapping for triangle
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -347,12 +340,7 @@ namespace RenderEngine
 
             var data = new float[]
             {
-                p0.x, p0.y, 0f, 0f,
-                p1.x, p1.y, 1f, 0f,
-                p2.x, p2.y, 1f, 1f,
-
-                p2.x, p2.y, 1f, 1f,
-                p3.x, p3.y, 0f, 1f,
+                p0.x, p0.y, 0f, 0f, p1.x, p1.y, 1f, 0f, p2.x, p2.y, 1f, 1f, p2.x, p2.y, 1f, 1f, p3.x, p3.y, 0f, 1f,
                 p0.x, p0.y, 0f, 0f
             };
 
@@ -384,16 +372,7 @@ namespace RenderEngine
             float w = _width;
             float h = Height;
 
-            var data = new float[]
-            {
-                0, 0, 0, 0,
-                w, 0, 1, 0,
-                w, h, 1, 1,
-
-                w, h, 1, 1,
-                0, h, 0, 1,
-                0, 0, 0, 0
-            };
+            var data = new float[] { 0, 0, 0, 0, w, 0, 1, 0, w, h, 1, 1, w, h, 1, 1, 0, h, 0, 1, 0, 0, 0, 0 };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
@@ -410,11 +389,7 @@ namespace RenderEngine
         public int CreateCheckerboardTexture()
         {
             EnsureInitialized();
-            byte[] pixels = new byte[]
-            {
-                0, 0, 0, 255, 255, 255, 255, 255,
-                255, 255, 255, 255, 0, 0, 0, 255
-            };
+            byte[] pixels = new byte[] { 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 255 };
 
             int texId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texId);

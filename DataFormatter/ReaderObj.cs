@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/ReaderObj.cs
+ * FILE:        ReaderObj.cs
  * PURPOSE:     A really basic obj File reader, does the basic stuff nothing more!
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,6 @@
 // ReSharper disable UnusedType.Global
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DataFormatter
@@ -27,8 +26,7 @@ namespace DataFormatter
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Readable Obj File</returns>
-        [return: MaybeNull]
-        public static ObjFile ReadObj(string filePath)
+        public static ObjFile? ReadObj(string filePath)
         {
             var lst = ReadText.ReadFile(filePath);
             if (lst == null)

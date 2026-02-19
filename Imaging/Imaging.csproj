@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
     <ProjectReference Include="..\RenderEngine\RenderEngine.csproj" />
   </ItemGroup>
 

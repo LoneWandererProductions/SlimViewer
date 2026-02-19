@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/SegmentedCsvHandler.cs
+ * FILE:        SegmentedCsvHandler.cs
  * PURPOSE:     My custom format, it is a collection of csv files separated with an keyword.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -12,14 +12,14 @@ using System.Text;
 namespace DataFormatter
 {
     /// <summary>
-    ///     Separate multible csv files via keywords.
+    ///     Separate multiple csv files via keywords.
     /// </summary>
     public static class SegmentedCsvHandler
     {
         /// <summary>
         ///     Writes the CSV with layer keywords.
         /// </summary>
-        /// <param name="filepath">The filepath.</param>
+        /// <param name="filepath">The file path.</param>
         /// <param name="separator">The separator.</param>
         /// <param name="csvLayers">The CSV layers.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
@@ -46,13 +46,12 @@ namespace DataFormatter
         /// <summary>
         ///     Reads the CSV with layer keywords.
         /// </summary>
-        /// <param name="filepath">The filepath.</param>
-        /// <param name="separator">The separator.</param>
+        /// <param name="filePath">The file path.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of our special format file</returns>
-        public static List<string> ReadCsvWithLayerKeywords(string filepath, char separator, string layerKeyword)
+        public static List<string> ReadCsvWithLayerKeywords(string filePath, string layerKeyword)
         {
-            var lst = CsvHelper.ReadFileContent(filepath);
+            var lst = CsvHelper.ReadFileContent(filePath);
             if (lst == null)
             {
                 return null;

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatter/ReadTxtFile.cs
+ * FILE:        ReadTxtFile.cs
  * PURPOSE:     Read txt Files
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -28,8 +27,7 @@ namespace DataFormatter
         /// </summary>
         /// <param name="filePath">path of the file</param>
         /// <returns>the values as String[]. Can return null.</returns>
-        [return: MaybeNull]
-        public static List<string> ReadFile(string filePath)
+        public static List<string>? ReadFile(string filePath)
         {
             var parts = new List<string>();
             try
