@@ -721,6 +721,8 @@ namespace SlimViews
             Bmp = null;
             GifPath = null;
 
+            ClearHistory();
+
             if (Directory.Exists(FileContext.CurrentPath))
                 LoadThumbs(FileContext.CurrentPath);
             else
@@ -741,6 +743,8 @@ namespace SlimViews
             Image.Clear();
             GifPath = null;
             FileContext.GifPath = null;
+
+            ClearHistory();
 
             NextAction(this);
         }
@@ -974,6 +978,10 @@ namespace SlimViews
                 if (ext.Equals(ImagingResources.GifExt, StringComparison.OrdinalIgnoreCase))
                 {
                     if (GifPath?.Equals(filePath, StringComparison.OrdinalIgnoreCase) == true) return;
+
+                    //important for the undo/redo logic that we clear the history when loading a new image, otherwise the old image states would be mixed with the new ones and cause bugs.
+                    ClearHistory();
+
                     GifPath = filePath;
                     var info = ImageGifHandler.GetImageInfo(filePath);
                     Information = ViewResources.BuildGifInformation(filePath, info);
