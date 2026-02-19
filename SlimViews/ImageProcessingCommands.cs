@@ -27,9 +27,11 @@ namespace SlimViews
             if (owner?.Image?.Bitmap == null || string.IsNullOrWhiteSpace(filterName))
                 return;
 
+            owner.SaveUndoState();
+
             var filter = Translator.GetFilterFromString(filterName);
             using var btm = ImageProcessor.Filter(owner.Image.Bitmap, filter);
-            owner.CommitImageChange(btm.ToBitmapImage());
+            owner.CommitImageChange(btm);
         }
 
         /// <summary>
@@ -42,9 +44,12 @@ namespace SlimViews
             if (owner?.Image?.Bitmap == null || string.IsNullOrWhiteSpace(textureName))
                 return;
 
+            owner.SaveUndoState();
+
             var texture = Translator.GetTextureFromString(textureName);
             using var btm = ImageProcessor.Texture(owner.Image.Bitmap, texture);
-            owner.CommitImageChange(btm.ToBitmapImage());
+
+            owner.CommitImageChange(btm);
         }
 
         /// <summary>
@@ -57,8 +62,11 @@ namespace SlimViews
             if (owner?.Image?.Bitmap == null)
                 return;
 
+            owner.SaveUndoState();
+
             using var btm = ImageProcessor.Brighten(owner.Image.Bitmap);
-            owner.CommitImageChange(btm.ToBitmapImage());
+
+            owner.CommitImageChange(btm);
         }
 
         /// <summary>
@@ -71,8 +79,11 @@ namespace SlimViews
             if (owner?.Image?.Bitmap == null)
                 return;
 
+            owner.SaveUndoState();
+
             using var btm = ImageProcessor.Darken(owner.Image.Bitmap);
-            owner.CommitImageChange(btm.ToBitmapImage());
+
+            owner.CommitImageChange(btm);
         }
 
         /// <summary>
@@ -106,8 +117,11 @@ namespace SlimViews
             if (owner?.Image?.Bitmap == null)
                 return;
 
+            owner.SaveUndoState();
+
             using var btm = ImageProcessor.Pixelate(owner.Image.Bitmap, owner.PixelWidth);
-            owner.CommitImageChange(btm.ToBitmapImage());
+
+            owner.CommitImageChange(btm);
         }
 
         /// <summary>
@@ -120,9 +134,10 @@ namespace SlimViews
             if (owner?.Image?.Bitmap == null)
                 return;
 
-            owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, -90);
+            owner.SaveUndoState();
 
-            owner.CommitImageChange(owner.Image.BitmapSource);
+            var btm = ImageProcessor.RotateImage(owner.Image.Bitmap, -90);
+            owner.CommitImageChange(btm);
         }
 
         /// <summary>
@@ -135,8 +150,10 @@ namespace SlimViews
             if (owner?.Image?.Bitmap == null)
                 return;
 
-            owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, 90);
-            owner.CommitImageChange(owner.Image.BitmapSource);
+            owner.SaveUndoState();
+
+            var btm = ImageProcessor.RotateImage(owner.Image.Bitmap, 90);
+            owner.CommitImageChange(btm);
         }
     }
 }

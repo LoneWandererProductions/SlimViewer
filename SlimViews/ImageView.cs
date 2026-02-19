@@ -374,57 +374,74 @@ namespace SlimViews
         /// <value>
         /// The history.
         /// </value>
-        public UndoManager<BitmapImage> History { get; } = new UndoManager<BitmapImage>(5);
+        public UndoManager<Bitmap> History { get; } = new UndoManager<Bitmap>(5);
 
         /// <summary>
         /// Commits the image change.
         /// </summary>
-        /// <param name="newImage">The new image.</param>
-        internal void CommitImageChange(BitmapImage newImage)
+        /// <param name="newGdiBitmap">The new image.</param>
+        internal void CommitImageChange(Bitmap newGdiBitmap)
         {
-            if (newImage == null) return;
+            if (newGdiBitmap == null) return;
 
-            // Record the current state before replacing it
-            if (Bmp != null)
+            // Sync the background logic
+            Image.Bitmap = newGdiBitmap;
+
+            // Sync the UI
+            var newWpfImage = newGdiBitmap.ToBitmapImage();
+            if (newWpfImage.CanFreeze && !newWpfImage.IsFrozen)
             {
-                History.RecordState(Bmp);
+                newWpfImage.Freeze();
             }
-
-            // Freeze the new image to prevent cross-thread memory leaks
-            if (newImage.CanFreeze && !newImage.IsFrozen)
-            {
-                newImage.Freeze();
-            }
-
-            // Update the UI
-            Bmp = newImage;
+            Bmp = newWpfImage;
         }
 
         public void Undo()
-		{
-			if (!History.CanUndo) return;
-			Bmp = History.Undo(Bmp);
-		}
+        {
+            if (!History.CanUndo || Image?.Bitmap == null) return;
 
-		public void Redo()
-		{
-			if (!History.CanRedo) return;
-			Bmp = History.Redo(Bmp);
-		}
+            // Pass the current state, and get the old state back
+            Bitmap previousBitmap = History.Undo(Image.Bitmap);
 
-		public void ClearHistory()
+            // We don't call CommitImageChange here because we don't want to trigger a NEW save state,
+            // we just want to forcefully sync the properties backwards.
+            Image.Bitmap = previousBitmap;
+            Bmp = previousBitmap.ToBitmapImage();
+        }
+
+        public void Redo()
+        {
+            if (!History.CanRedo || Image?.Bitmap == null) return;
+
+            Bitmap nextBitmap = History.Redo(Image.Bitmap);
+            Image.Bitmap = nextBitmap;
+            Bmp = nextBitmap.ToBitmapImage();
+        }
+
+        public void ClearHistory()
 		{
 			History.Clear();
 		}
 
-		// -------------------------------------------------------------------
-		// 3. INITIALIZATION
-		// -------------------------------------------------------------------
+        /// <summary>
+        /// Saves the state of the undo.
+        /// </summary>
+        internal void SaveUndoState()
+        {
+            if (Image?.Bitmap != null)
+            {
+                History.RecordState((Bitmap)Image.Bitmap.Clone());
+            }
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ImageView"/> class.
-		/// </summary>
-		public ImageView()
+        // -------------------------------------------------------------------
+        // 3. INITIALIZATION
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageView"/> class.
+        /// </summary>
+        public ImageView()
         {
             Commands = new ImageViewCommands(this);
             Initialize();
@@ -545,24 +562,22 @@ namespace SlimViews
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
             // 1. Pencil Logic
-            if (MyDrawingState.ActiveTool == DrawTool.Pencil) // Replace with your actual Enum
+            if (MyDrawingState.ActiveTool == DrawTool.Pencil)
             {
+                // CRITICAL: Save before drawing!
+                SaveUndoState();
+
                 var color = ColorTranslator.FromHtml(MyDrawingState.BrushColor);
-
-                // Draw on the bitmap
                 Bitmap updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, (int)MyDrawingState.BrushSize);
+
+                // CRITICAL: Commit after drawing!
+                CommitImageChange(updatedBitmap);
             }
-
             // 2. Color Picker (Eyedropper) Logic
-            else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker) // Replace with your actual Enum
+            else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)
             {
-                // Use your existing static method to grab the HSV color
                 ColorHsv pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, 1);
-
-                // Convert it back to a standard Color so we can get the HTML hex code
                 var pickedColor = Color.FromArgb(pickedHsv.A, pickedHsv.R, pickedHsv.G, pickedHsv.B);
-
-                // Update your drawing state, which will automatically update your UI color picker!
                 MyDrawingState.BrushColor = ColorTranslator.ToHtml(pickedColor);
             }
         }
@@ -574,49 +589,52 @@ namespace SlimViews
         /// <param name="frame">The frame.</param>
         internal void SelectedFrameAction(SelectionFrame frame)
         {
+            if (Image?.Bitmap == null) return;
+
+            //Save state before the shape/filter alters the image
+            SaveUndoState();
+
+            Bitmap newBitmap = Image.Bitmap; // Default to current
+
             // A. Eraser is a global tool override
             if (MyDrawingState.ActiveTool == DrawTool.Eraser)
             {
-                Image.Bitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
-                Bmp = Image.BitmapSource;
-                return;
+                newBitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
             }
-
             // B. Shape Tools - Apply the Active Mode
-            if (MyDrawingState.ActiveTool == DrawTool.Shape)
+            else if (MyDrawingState.ActiveTool == DrawTool.Shape)
             {
                 switch (MyDrawingState.ActiveAreaMode)
                 {
                     case AreaMode.Fill:
                         var color = ColorTranslator.FromHtml(MyDrawingState.Fill.Color);
-                        Image.Bitmap = ImageProcessor.FillArea(Image.Bitmap, frame, color);
+                        newBitmap = ImageProcessor.FillArea(Image.Bitmap, frame, color);
                         break;
 
                     case AreaMode.Texture:
-                        // Convert String Name -> Enum safely
                         if (!string.IsNullOrEmpty(MyDrawingState.Texture.TextureName) &&
                             Enum.TryParse(MyDrawingState.Texture.TextureName, true, out TextureType texEnum))
                         {
-                            Image.Bitmap = ImageProcessor.FillTexture(Image.Bitmap, frame, texEnum);
+                            newBitmap = ImageProcessor.FillTexture(Image.Bitmap, frame, texEnum);
                         }
                         break;
 
                     case AreaMode.Filter:
-                        // Convert String Name -> Enum safely
                         if (!string.IsNullOrEmpty(MyDrawingState.Filter.FilterName) &&
                             Enum.TryParse(MyDrawingState.Filter.FilterName, true, out FiltersType filterEnum))
                         {
-                            Image.Bitmap = ImageProcessor.FillFilter(Image.Bitmap, frame, filterEnum);
+                            newBitmap = ImageProcessor.FillFilter(Image.Bitmap, frame, filterEnum);
                         }
                         break;
 
                     case AreaMode.Erase:
-                        Image.Bitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
+                        newBitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
                         break;
                 }
-
-                Bmp = Image.BitmapSource;
             }
+
+            // Route the resulting bitmap through the choke point
+            CommitImageChange(newBitmap);
         }
 
         /// <summary>
