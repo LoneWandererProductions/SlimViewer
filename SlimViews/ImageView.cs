@@ -83,7 +83,7 @@ namespace SlimViews
         /// <value>
         /// The command bindings.
         /// </value>
-        public Dictionary<Key, ICommand> CommandBindings { get; set; }
+        public Dictionary<Tuple<ModifierKeys, Key>, ICommand> CommandBindings { get; set; }
 
         // -------------------------------------------------------------------
         // 2. UI BINDING PROPERTIES (Proxies to Contexts)
@@ -424,14 +424,17 @@ namespace SlimViews
             // When user clicks the Toolbar, we map that state to the View behavior.
             MyDrawingState.ToolOrModeChanged += (s, e) => MapStateToZoomTool();
 
-            CommandBindings = new Dictionary<Key, ICommand>
+            CommandBindings = new Dictionary<Tuple<ModifierKeys, Key>, ICommand>
             {
-                { Key.O, Commands.Open },
-                { Key.S, Commands.Save },
-                { Key.Delete, Commands.Delete },
-                { Key.F5, Commands.Refresh },
-                { Key.Left, Commands.Previous },
-                { Key.Right, Commands.Next }
+                // Modified keys for file operations
+                { Tuple.Create(ModifierKeys.Control, Key.O), Commands.Open },
+                { Tuple.Create(ModifierKeys.Control, Key.S), Commands.Save },
+        
+                // Single keys for fast viewer navigation (ModifierKeys.None)
+                { Tuple.Create(ModifierKeys.None, Key.Delete), Commands.Delete },
+                { Tuple.Create(ModifierKeys.None, Key.F5), Commands.Refresh },
+                { Tuple.Create(ModifierKeys.None, Key.Left), Commands.Previous },
+                { Tuple.Create(ModifierKeys.None, Key.Right), Commands.Next }
             };
         }
 
