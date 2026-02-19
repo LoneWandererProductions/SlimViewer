@@ -16,11 +16,11 @@
 #nullable enable
 using CommonControls.Images;
 using CommonDialogs;
-using Exp;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
 using Imaging.Enums;
+using SlimControls;
 using SlimViews.Contexts;
 using System;
 using System.Collections.Generic;

@@ -1,16 +1,16 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Exp
- * FILE:        FilterSettings.cs
+ * PROJECT:     SlimControls
+ * FILE:        FillSettings.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.ComponentModel;
 
-namespace Exp
+namespace SlimControls
 {
-    public class FilterSettings : INotifyPropertyChanged
+    public class FillSettings : INotifyPropertyChanged
     {
         private bool _enabled;
 
@@ -24,7 +24,7 @@ namespace Exp
             }
         }
 
-        public string FilterName { get; set; }
+        public string Color { get; set; } = "#FFFFFF";
 
         public event PropertyChangedEventHandler PropertyChanged;
 

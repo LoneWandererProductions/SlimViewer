@@ -1,6 +1,6 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Exp
+ * PROJECT:     SlimControls
  * FILE:        TextureSettings.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 using System.ComponentModel;
 
-namespace Exp
+namespace SlimControls
 {
     public class TextureSettings : INotifyPropertyChanged
     {

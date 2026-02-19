@@ -1,16 +1,18 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
- * FILE:        BrushTool.cs
+ * FILE:        DrawTool.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace SlimControls
 {
-    public enum BrushTool
+    public enum DrawTool
     {
+        None,
         Pencil,
-        Eraser
+        Eraser,
+        Shape
     }
 }

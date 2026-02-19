@@ -1,7 +1,7 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
- * FILE:        EnumToBooleanConverter.cs
+ * FILE:        EnumToBoolConverter.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -12,18 +12,12 @@ using System.Windows.Data;
 
 namespace SlimControls
 {
-    public class EnumToBooleanConverter : IValueConverter
+    public class EnumToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null || parameter == null) return false;
-            return value.ToString() == parameter.ToString();
-        }
+            => value?.ToString() == parameter?.ToString();
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (parameter == null) return null;
-            return (bool)value ? Enum.Parse(targetType, parameter.ToString()) : Binding.DoNothing;
-        }
+            => (bool)value ? Enum.Parse(targetType, parameter.ToString()) : Binding.DoNothing;
     }
 }

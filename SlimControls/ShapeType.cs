@@ -8,13 +8,11 @@
 
 namespace SlimControls
 {
-    public partial class Toolbar
+    public enum ShapeType
     {
-        public enum ShapeType
-        {
-            Rectangle,
-            Ellipse,
-            Freeform
-        }
+        None,
+        Rectangle,
+        Ellipse,
+        Freeform
     }
 }

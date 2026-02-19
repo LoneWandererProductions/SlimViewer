@@ -1,6 +1,6 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Exp
+ * PROJECT:     SlimControls
  * FILE:        DrawingToolBarControl.xaml.cs
  * PURPOSE:     Toolbar for drawing tools
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Exp
+namespace SlimControls
 {
     public partial class DrawingToolBarControl : UserControl
     {

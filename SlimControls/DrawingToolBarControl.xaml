@@ -1,10 +1,10 @@
 ﻿<UserControl xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
              xmlns:CommonControls="clr-namespace:CommonControls;assembly=CommonControls"
              xmlns:converters="clr-namespace:CommonControls.Converter;assembly=CommonControls.Converter"
-             x:Class="Exp.DrawingToolBarControl"
+             x:Class="SlimControls.DrawingToolBarControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Exp"
+             xmlns:local="clr-namespace:SlimControls"
              x:Name="RootToolbar">
 
     <UserControl.Resources>

@@ -18,23 +18,6 @@ namespace SlimControls
     public static class Translator
     {
         /// <summary>
-        ///     Gets the tools from string.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <returns>SelectionTools enum</returns>
-        internal static ImageZoomTools GetToolsFromString(string command)
-        {
-            return command switch
-            {
-                ViewGuiResources.MoveText => ImageZoomTools.Move,
-                ViewGuiResources.RectangleText => ImageZoomTools.Rectangle,
-                ViewGuiResources.EllipseText => ImageZoomTools.Ellipse,
-                ViewGuiResources.FreeFormText => ImageZoomTools.FreeForm,
-                _ => ImageZoomTools.Move
-            };
-        }
-
-        /// <summary>
         ///     Gets the texture from string.
         /// </summary>
         /// <param name="command">The command.</param>
@@ -56,20 +39,6 @@ namespace SlimControls
         }
 
         /// <summary>
-        ///     Maps an ImageTools enum value to an integer code.
-        /// </summary>
-        internal static EnumTools MapToolToEnumTools(ImageTools tool)
-        {
-            return tool switch
-            {
-                ImageTools.Paint => EnumTools.Paint,
-                ImageTools.Erase => EnumTools.Erase,
-                ImageTools.Area => EnumTools.Area,
-                _ => EnumTools.Move // Default value for unknown tools
-            };
-        }
-
-        /// <summary>
         ///     Maps the code to tool.
         /// </summary>
         /// <param name="code">The code.</param>
@@ -82,41 +51,6 @@ namespace SlimControls
                 ImageZoomTools.Ellipse => MaskShape.Circle,
                 ImageZoomTools.FreeForm => MaskShape.Polygon,
                 _ => MaskShape.Rectangle
-            };
-        }
-
-        /// <summary>
-        ///     Gets the fill tool.
-        /// </summary>
-        /// <param name="enumString">The enum string.</param>
-        /// <returns></returns>
-        /// <exception cref="System.ArgumentException">Invalid enum string: {enumString} - enumString</exception>
-        public static EnumTools GetFillTool(string enumString)
-        {
-            // Attempt to parse the string to an EnumTools value
-            if (Enum.TryParse(enumString, out EnumTools result)) return result;
-
-            // If parsing fails, you could either throw an exception, return a default value, or handle it however you'd like.
-            return EnumTools.SolidColor;
-        }
-
-        /// <summary>
-        ///     Maps the enum tools to tool.
-        /// </summary>
-        /// <param name="toolCode">The tool code.</param>
-        /// <returns></returns>
-        public static ImageTools MapEnumToolsToTool(EnumTools toolCode)
-        {
-            return toolCode switch
-            {
-                EnumTools.Area => ImageTools.Area,
-                EnumTools.ColorSelect => ImageTools.ColorSelect,
-                EnumTools.Paint => ImageTools.Paint,
-                EnumTools.Erase => ImageTools.Erase,
-                EnumTools.Move => ImageTools.Move,
-                EnumTools.SolidColor => ImageTools.Area,
-                EnumTools.Texture => ImageTools.Area,
-                EnumTools.Filter => ImageTools.Area
             };
         }
 

@@ -1,6 +1,6 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Exp
+ * PROJECT:     SlimControls
  * FILE:        DrawingState.cs
  * PURPOSE:     Manages the state of the drawing tools and modes
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Exp
+namespace SlimControls
 {
     public class DrawingState : INotifyPropertyChanged
     {
@@ -19,7 +19,7 @@ namespace Exp
         private ShapeType _selectedShape; // Backing field for Shape
 
 
-        public event EventHandler? ToolOrModeChanged;
+        public event EventHandler ToolOrModeChanged;
 
         private bool _areAreaModesEnabled;
         public bool AreAreaModesEnabled
@@ -138,13 +138,13 @@ namespace Exp
             OnPropertyChanged(nameof(Erase));
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Called when [property changed].
         /// </summary>
         /// <param name="name">The name.</param>
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
