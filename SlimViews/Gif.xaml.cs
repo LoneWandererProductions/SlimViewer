@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Gif.xaml.cs
+ * FILE:        Gif.xaml.cs
  * PURPOSE:     Gif Editor Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

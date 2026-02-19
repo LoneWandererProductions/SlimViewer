@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/TextureConfig.xaml.cs
+ * FILE:        TextureConfig.xaml.cs
  * PURPOSE:     The main Xaml for Texture Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

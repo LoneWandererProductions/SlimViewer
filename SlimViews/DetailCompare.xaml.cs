@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/DetailCompare.xaml.cs
+ * FILE:        DetailCompare.xaml.cs
  * PURPOSE:     DetailCompare Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

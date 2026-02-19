@@ -1,7 +1,7 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/SearchView.cs
+ * FILE:        SearchView.cs
  * PURPOSE:     View Model for Search
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

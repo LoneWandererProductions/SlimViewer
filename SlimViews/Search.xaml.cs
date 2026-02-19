@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Search.xaml.cs
+ * FILE:        Search.xaml.cs
  * PURPOSE:     Search Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

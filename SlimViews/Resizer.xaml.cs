@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Resizer.xaml.cs
+ * FILE:        Resizer.xaml.cs
  * PURPOSE:     Window for the Resizer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

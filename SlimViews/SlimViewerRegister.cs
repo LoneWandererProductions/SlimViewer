@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/SlimViewerRegister.cs
+ * FILE:        SlimViewerRegister.cs
  * PURPOSE:     SlimViewer Register
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

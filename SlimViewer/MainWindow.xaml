@@ -7,9 +7,9 @@
         xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
         xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
         xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
-        xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews" 
         xmlns:local="clr-namespace:SlimViewer" 
         xmlns:slimControls="clr-namespace:SlimControls;assembly=SlimControls"
+        xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews" 
         d:DataContext="{d:DesignInstance Type=slimviews:ImageView}"
         mc:Ignorable="d"
         Title="Slim Viewer"
@@ -128,6 +128,18 @@
                     <MenuItem Header="Scale Image" Command="{Binding Commands.Scale}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Resize the image dimensions" />
                 </MenuItem>
 
+                <MenuItem Header="Experimental">
+                    <MenuItem Header="Open Cif" Command="{Binding Commands.OpenCif}" ToolTip="Open experimental CIF format" />
+                    <MenuItem Header="Convert to Cif" Command="{Binding Commands.ConvertCif}" ToolTip="Convert current image to CIF format" />
+                    <Separator />
+                    <CheckBox IsChecked="{Binding Path=CompressCif}" ToolTip="Enable compression for CIF files">Compress Cif</CheckBox>
+                </MenuItem>
+
+                <MenuItem Header="Help">
+                    <MenuItem Header="View Help" Command="{Binding Commands.ShowHelp}" InputGestureText="F1" ToolTip="Open the SlimViewer help documentation" />
+                    <Separator />
+                    <MenuItem Header="About SlimViewer" Command="{Binding Commands.ShowAbout}" ToolTip="View version, author, and license information" />
+                </MenuItem>
             </Menu>
 
             <Button Grid.Column="2" Content="Remove from List" Command="{Binding Commands.Clear}" IsEnabled="{Binding Path=IsImageActive}" Padding="5,2" ToolTip="Remove the current image from the viewer's list (does not delete the file)" />

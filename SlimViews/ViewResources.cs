@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/ViewResources.cs
+ * FILE:        ViewResources.cs
  * PURPOSE:     Resources for the SlimViewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

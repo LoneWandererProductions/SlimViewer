@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Converter.xaml.cs
+ * FILE:        Converter.xaml.cs
  * PURPOSE:     Basic Converter Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

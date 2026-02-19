@@ -102,6 +102,10 @@ namespace SlimViews
         public ICommand Next { get; }
         public ICommand Previous { get; }
 
+        public ICommand ShowHelp { get; }
+
+        public ICommand ShowAbout { get; }
+
         #endregion
 
         /// <summary>
@@ -166,6 +170,8 @@ namespace SlimViews
             ResizerWindow = Make_NoParamCmd(_imageMassService.ResizerWindow);
             AnalyzerWindow = Make_NoParamCmd(_imageMassService.AnalyzerWindow);
             GifWindow = Make_NoParamCmd(_imageMassService.GifWindow);
+            ShowHelp = Make_NoParamCmd(_imageMassService.ShowHelp);
+            ShowAbout = Make_NoParamCmd(_imageMassService.ShowAbout);
 
             // FilterConfig and TextureConfig previously accepted a string? parameter in original
             FilterConfig = Make_StringParamCmd(_imageMassService.FilterConfigWindow);

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/RenameView.cs
+ * FILE:        RenameView.cs
  * PURPOSE:     View Model for Rename
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/DetailCompareView.cs
+ * FILE:        DetailCompareView.cs
  * PURPOSE:     View Model for the Detail Viewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

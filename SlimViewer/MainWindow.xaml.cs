@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/MainWindow.xaml.cs
+ * FILE:        MainWindow.xaml.cs
  * PURPOSE:     Main Window for the SlimViewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

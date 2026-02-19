@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/FilterConfigView.cs
+ * FILE:        FilterConfigView.cs
  * PURPOSE:     View Model for Filter Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

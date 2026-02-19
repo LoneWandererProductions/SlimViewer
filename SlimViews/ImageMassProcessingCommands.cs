@@ -8,6 +8,7 @@
 
 using SlimControls;
 using SlimViews.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -217,6 +218,19 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The owner.</param>
         internal void GifWindow(ImageView owner) => InitDialog<Gif>(owner);
+
+        /// <summary>
+        /// Shows the help.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        internal void ShowHelp(ImageView owner) => InitDialog<HelpWindow>(owner);
+
+        /// <summary>
+        /// Shows the about.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        internal void ShowAbout(ImageView owner) => InitDialog<AboutWindow>(owner);
+
 
         /// <summary>
         /// Initializes the dialog.

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/ResizerView.cs
+ * FILE:        ResizerView.cs
  * PURPOSE:     View Model for Resizer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

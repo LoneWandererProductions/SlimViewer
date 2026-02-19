@@ -1,7 +1,7 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Config.cs
+ * FILE:        Config.cs
  * PURPOSE:     Config object and creator
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

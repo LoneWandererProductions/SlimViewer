@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/ImageProcessor.cs
+ * FILE:        ImageProcessor.cs
  * PURPOSE:     Basic Helper Methods that are used across controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

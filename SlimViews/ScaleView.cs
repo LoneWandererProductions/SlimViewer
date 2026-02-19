@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/ScaleView.cs
+ * FILE:        ScaleView.cs
  * PURPOSE:     View Model for Scale
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/TextureConfigView.cs
+ * FILE:        TextureConfigView.cs
  * PURPOSE:     The view for Texture Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

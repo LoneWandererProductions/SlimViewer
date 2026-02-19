@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/ImageView.cs
+ * FILE:        ImageView.cs
  * PURPOSE:     Main ViewModel. Acts as the "Traffic Controller" connecting:
  *              1. The View (UI Binding)
  *              2. The Data Contexts (File, Image, UI State)
@@ -367,14 +367,40 @@ namespace SlimViews
             }
         }
 
-        // -------------------------------------------------------------------
-        // 3. INITIALIZATION
-        // -------------------------------------------------------------------
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImageView"/> class.
+        /// Gets the history.
+        /// Instantiate the manager with a hard limit of 5
         /// </summary>
-        public ImageView()
+        /// <value>
+        /// The history.
+        /// </value>
+        public UndoManager<BitmapImage> History { get; } = new UndoManager<BitmapImage>(5);
+
+		public void Undo()
+		{
+			if (!History.CanUndo) return;
+			Bmp = History.Undo(Bmp);
+		}
+
+		public void Redo()
+		{
+			if (!History.CanRedo) return;
+			Bmp = History.Redo(Bmp);
+		}
+
+		public void ClearHistory()
+		{
+			History.Clear();
+		}
+
+		// -------------------------------------------------------------------
+		// 3. INITIALIZATION
+		// -------------------------------------------------------------------
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ImageView"/> class.
+		/// </summary>
+		public ImageView()
         {
             Commands = new ImageViewCommands(this);
             Initialize();
@@ -434,7 +460,8 @@ namespace SlimViews
                 { Tuple.Create(ModifierKeys.None, Key.Delete), Commands.Delete },
                 { Tuple.Create(ModifierKeys.None, Key.F5), Commands.Refresh },
                 { Tuple.Create(ModifierKeys.None, Key.Left), Commands.Previous },
-                { Tuple.Create(ModifierKeys.None, Key.Right), Commands.Next }
+                { Tuple.Create(ModifierKeys.None, Key.Right), Commands.Next },
+                { Tuple.Create(ModifierKeys.None, Key.F1), Commands.ShowHelp },
             };
         }
 

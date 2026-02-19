@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/ConverterView.cs
+ * FILE:        ConverterView.cs
  * PURPOSE:     View Model for the Converter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Scale.xaml.cs
+ * FILE:        Scale.xaml.cs
  * PURPOSE:     Window to scale an Image
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

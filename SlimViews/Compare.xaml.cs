@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViews/Compare.xaml.cs
+ * FILE:        Compare.xaml.cs
  * PURPOSE:     Basic Compare Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */

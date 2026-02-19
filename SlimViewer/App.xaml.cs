@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
- * FILE:        SlimViewer/App.xaml.cs
+ * FILE:        App.xaml.cs
  * PURPOSE:     Start up the SlimViewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
