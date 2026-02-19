@@ -13,6 +13,7 @@ namespace SlimControls
         None,
         Pencil,
         Eraser,
-        Shape
+        Shape,
+        ColorPicker
     }
 }

@@ -376,7 +376,31 @@ namespace SlimViews
         /// </value>
         public UndoManager<BitmapImage> History { get; } = new UndoManager<BitmapImage>(5);
 
-		public void Undo()
+        /// <summary>
+        /// Commits the image change.
+        /// </summary>
+        /// <param name="newImage">The new image.</param>
+        internal void CommitImageChange(BitmapImage newImage)
+        {
+            if (newImage == null) return;
+
+            // Record the current state before replacing it
+            if (Bmp != null)
+            {
+                History.RecordState(Bmp);
+            }
+
+            // Freeze the new image to prevent cross-thread memory leaks
+            if (newImage.CanFreeze && !newImage.IsFrozen)
+            {
+                newImage.Freeze();
+            }
+
+            // Update the UI
+            Bmp = newImage;
+        }
+
+        public void Undo()
 		{
 			if (!History.CanUndo) return;
 			Bmp = History.Undo(Bmp);
@@ -479,6 +503,7 @@ namespace SlimViews
             {
                 case DrawTool.Pencil:
                 case DrawTool.Eraser:
+                case DrawTool.ColorPicker:
                     // Pencil/Eraser behave like FreeForm drawing
                     ImageZoomTool = ImageZoomTools.FreeForm;
                     break;
@@ -513,19 +538,33 @@ namespace SlimViews
         /// Action triggered when a point is clicked (Pencil drawing, Color picking).
         /// </summary>
         /// <param name="wPoint">The w point.</param>
-        internal void SelectedPointAction(Point wPoint)
+        internal void SelectedPointAction(System.Windows.Point wPoint)
         {
+            if (Image?.Bitmap == null) return;
+
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
             // 1. Pencil Logic
-            if (MyDrawingState.ActiveTool == DrawTool.Pencil)
+            if (MyDrawingState.ActiveTool == DrawTool.Pencil) // Replace with your actual Enum
             {
                 var color = ColorTranslator.FromHtml(MyDrawingState.BrushColor);
-                Image.Bitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, (int)MyDrawingState.BrushSize);
-                Bmp = Image.BitmapSource;
+
+                // Draw on the bitmap
+                Bitmap updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, (int)MyDrawingState.BrushSize);
             }
 
-            // 2. Add Color Picker logic here if you implement an Eyedropper tool
+            // 2. Color Picker (Eyedropper) Logic
+            else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker) // Replace with your actual Enum
+            {
+                // Use your existing static method to grab the HSV color
+                ColorHsv pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, 1);
+
+                // Convert it back to a standard Color so we can get the HTML hex code
+                var pickedColor = Color.FromArgb(pickedHsv.A, pickedHsv.R, pickedHsv.G, pickedHsv.B);
+
+                // Update your drawing state, which will automatically update your UI color picker!
+                MyDrawingState.BrushColor = ColorTranslator.ToHtml(pickedColor);
+            }
         }
 
         /// <summary>
@@ -879,6 +918,14 @@ namespace SlimViews
         }
 
         // Logic Helpers
+
+        /// <summary>
+        /// Determines whether this instance [can load file] the specified path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance [can load file] the specified path; otherwise, <c>false</c>.
+        /// </returns>
         private bool CanLoadFile(string? path) => !string.IsNullOrEmpty(path) && File.Exists(path) && ImagingResources.Appendix.Any(path.EndsWith);
 
         /// <summary>

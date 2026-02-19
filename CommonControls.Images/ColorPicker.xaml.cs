@@ -53,7 +53,7 @@ namespace CommonControls.Images
             Alpha = alpha;
 
             // This is the trigger that will finally make it draw
-            this.SizeChanged += (s, e) => {
+            SizeChanged += (s, e) => {
                 if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
                 {
                     RedrawAsync();

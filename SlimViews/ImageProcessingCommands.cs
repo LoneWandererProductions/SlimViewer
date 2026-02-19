@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews
  * FILE:        ImageProcessingCommands.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Mostly image processing related commands, such as filters, textures, and transformations.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -29,7 +29,7 @@ namespace SlimViews
 
             var filter = Translator.GetFilterFromString(filterName);
             using var btm = ImageProcessor.Filter(owner.Image.Bitmap, filter);
-            owner.Bmp = btm.ToBitmapImage();
+            owner.CommitImageChange(btm.ToBitmapImage());
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace SlimViews
 
             var texture = Translator.GetTextureFromString(textureName);
             using var btm = ImageProcessor.Texture(owner.Image.Bitmap, texture);
-            owner.Bmp = btm.ToBitmapImage();
+            owner.CommitImageChange(btm.ToBitmapImage());
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace SlimViews
                 return;
 
             using var btm = ImageProcessor.Brighten(owner.Image.Bitmap);
-            owner.Bmp = btm.ToBitmapImage();
+            owner.CommitImageChange(btm.ToBitmapImage());
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace SlimViews
                 return;
 
             using var btm = ImageProcessor.Darken(owner.Image.Bitmap);
-            owner.Bmp = btm.ToBitmapImage();
+            owner.CommitImageChange(btm.ToBitmapImage());
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace SlimViews
                 return;
 
             using var btm = ImageProcessor.Pixelate(owner.Image.Bitmap, owner.PixelWidth);
-            owner.Bmp = btm.ToBitmapImage();
+            owner.CommitImageChange(btm.ToBitmapImage());
         }
 
         /// <summary>
@@ -121,7 +121,8 @@ namespace SlimViews
                 return;
 
             owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, -90);
-            owner.Bmp = owner.Image.BitmapSource;
+
+            owner.CommitImageChange(owner.Image.BitmapSource);
         }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace SlimViews
                 return;
 
             owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, 90);
-            owner.Bmp = owner.Image.BitmapSource;
+            owner.CommitImageChange(owner.Image.BitmapSource);
         }
     }
 }

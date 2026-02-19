@@ -108,7 +108,7 @@ namespace SlimControls
         private void UpdateSubStates()
         {
             // 1. Check if the Active Tool is "Simple"
-            bool isSimpleTool = ActiveTool == DrawTool.Pencil || ActiveTool == DrawTool.Eraser;
+            bool isSimpleTool = ActiveTool == DrawTool.Pencil || ActiveTool == DrawTool.Eraser || ActiveTool == DrawTool.ColorPicker;
 
             // 2. Main Switch: Enable/Disable the entire Mode group
             AreAreaModesEnabled = !isSimpleTool;

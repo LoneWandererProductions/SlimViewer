@@ -26,10 +26,14 @@
             <GroupBox Header="Draw" Margin="0,0,5,0" Padding="5">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
-                        <RadioButton Content="Pencil" GroupName="ToolGroup" Margin="0,0,0,5" ToolTip="Draw freehand lines"
+                        <RadioButton Content="Pencil" GroupName="ToolGroup" Margin="0,0,0,4" ToolTip="Draw freehand lines"
                                      IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Pencil}" />
-                        <RadioButton Content="Eraser" GroupName="ToolGroup" ToolTip="Erase parts of the image"
+
+                        <RadioButton Content="Eraser" GroupName="ToolGroup" Margin="0,0,0,4" ToolTip="Erase parts of the image"
                                      IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Eraser}" />
+
+                        <RadioButton Content="Picker" GroupName="ToolGroup" ToolTip="Pick a color from the image"
+                                     IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=ColorPicker}" />
                     </StackPanel>
 
                     <Images:ColorSelection StartColor="{Binding Path=ToolState.BrushColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
