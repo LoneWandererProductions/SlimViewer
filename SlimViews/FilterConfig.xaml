@@ -1,56 +1,65 @@
-﻿<!-- ReSharper disable once MemberCanBeInternal -->
-<Window x:Class="SlimViews.FilterConfig"
+﻿<Window x:Class="SlimViews.FilterConfig"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
-        Title="Filter Config" Height="350" Width="525">
-    <Window.DataContext>
-        <local:FilterConfigView x:Name="FilterView" />
-    </Window.DataContext>
-    <Grid Margin="5">
+        Title="Filter Configuration" Height="400" Width="400"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <!-- Added a row for buttons -->
         </Grid.RowDefinitions>
 
-        <ComboBox ItemsSource="{Binding FilterOptions}"
-                  SelectedItem="{Binding SelectedFilter}"
-                  Grid.Row="0" />
-
-        <StackPanel Grid.Row="1">
-            <Label Content="Factor" />
-            <TextBox Text="{Binding Factor, Mode=TwoWay}"
-                     IsEnabled="{Binding IsFactorActive}" />
-
-            <Label Content="Bias" />
-            <TextBox Text="{Binding Bias, Mode=TwoWay}"
-                     IsEnabled="{Binding IsBiasActive}" />
-
-            <Label Content="Sigma" />
-            <TextBox Text="{Binding Sigma, Mode=TwoWay}"
-                     IsEnabled="{Binding IsSigmaActive}" />
-
-            <Label Content="BaseWindowSize" />
-            <TextBox Text="{Binding BaseWindowSize, Mode=TwoWay}"
-                     IsEnabled="{Binding IsBaseWindowSizeActive}" />
-
-            <Label Content="Scale" />
-            <TextBox Text="{Binding Scale, Mode=TwoWay}"
-                     IsEnabled="{Binding IsScaleActive}" />
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Selected Filter Type" FontWeight="Bold" Margin="0,0,0,5"/>
+            <ComboBox ItemsSource="{Binding FilterOptions}"
+                      SelectedItem="{Binding SelectedFilter, UpdateSourceTrigger=PropertyChanged}" 
+                      ToolTip="Select the filter algorithm to configure" />
         </StackPanel>
 
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,10,0">
+                <Label Content="Factor" FontWeight="SemiBold" />
+                <TextBox Text="{Binding Factor, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsFactorActive}" Margin="0,0,0,10"
+                         ToolTip="The multiplier applied to the pixel values" />
+
+                <Label Content="Bias" FontWeight="SemiBold" />
+                <TextBox Text="{Binding Bias, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsBiasActive}" Margin="0,0,0,10"
+                         ToolTip="The offset added to the pixel values (Brightness shift)" />
+
+                <Label Content="Sigma" FontWeight="SemiBold" />
+                <TextBox Text="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsSigmaActive}" Margin="0,0,0,10"
+                         ToolTip="Standard deviation for blur kernels (Gaussian)" />
+
+                <Label Content="Base Window Size" FontWeight="SemiBold" />
+                <TextBox Text="{Binding BaseWindowSize, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsBaseWindowSizeActive}" Margin="0,0,0,10"
+                         ToolTip="The area of effect for the filter (Kernel Size)" />
+
+                <Label Content="Scale" FontWeight="SemiBold" />
+                <TextBox Text="{Binding Scale, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsScaleActive}" Margin="0,0,0,10"
+                         ToolTip="Final normalization factor" />
+            </StackPanel>
+        </ScrollViewer>
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="0,10,0,0">
-            <Button Content="Save" Width="75" Margin="5" Command="{Binding SaveCommand}" />
-            <Button Content="Reset" Width="75" Margin="5" Command="{Binding ResetCommand}" />
-            <Button Content="Cancel" Width="75" Margin="5" Command="{Binding CancelCommand}"
+            <Button Content="Save" Width="80" Margin="5" Command="{Binding SaveCommand}" />
+            <Button Content="Reset" Width="80" Margin="5" Command="{Binding ResetCommand}" />
+            <Button Content="Cancel" Width="80" Margin="5" 
+                    Command="{Binding CancelCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
         </StackPanel>
     </Grid>
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

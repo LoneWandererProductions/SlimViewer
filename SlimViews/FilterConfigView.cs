@@ -299,27 +299,45 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Saves the settings.
+        ///     Saves the current configuration to the image processor.
         /// </summary>
         private void SaveSettings()
         {
-            //create a new ImageFilterConfig object
-            var config = new FiltersConfig();
+            // FIXED: You must assign your ViewModel values to the config object!
+            var config = new FiltersConfig
+            {
+                Factor = Factor,
+                Bias = Bias,
+                Sigma = Sigma,
+                BaseWindowSize = BaseWindowSize,
+                Scale = Scale
+            };
 
-            // Update or better say reset the settings in ImageRegister
+            // Update the settings in the backend registry
             ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, config);
+
+            // Provide feedback if needed or just update the UI state
             UpdateActiveProperties();
+
+            // Todo Optional: You could show a small "Settings Saved" status message here
         }
 
         /// <summary>
-        ///     Resets the action.
+        ///     Resets the selected filter to default values.
         /// </summary>
-        /// <param name="obj">The object.</param>
         private void ResetAction(object obj)
         {
-            var config = new FiltersConfig();
-            // Update the settings in ImageRegister
-            ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, config);
+            var defaultConfig = new FiltersConfig(); // Pure defaults
+            ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, defaultConfig);
+
+            // Load the now-reset values back into the ViewModel fields
+            Factor = defaultConfig.Factor;
+            Bias = defaultConfig.Bias;
+            Sigma = defaultConfig.Sigma;
+            BaseWindowSize = defaultConfig.BaseWindowSize;
+            Scale = defaultConfig.Scale;
+
+            UpdateActiveProperties();
         }
 
         /// <summary>

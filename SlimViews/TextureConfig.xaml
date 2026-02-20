@@ -6,191 +6,109 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Title="Texture Config" Height="800" Width="450">
-    <Window.DataContext>
-        <local:TextureConfigView x:Name="TextureView" />
-    </Window.DataContext>
-    <Grid Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <!-- Texture Type -->
-            <RowDefinition Height="Auto" />
-            <!-- General Settings Title -->
-            <RowDefinition Height="Auto" />
-            <!-- Min Value -->
-            <RowDefinition Height="Auto" />
-            <!-- Max Value -->
-            <RowDefinition Height="Auto" />
-            <!-- Alpha -->
-            <RowDefinition Height="Auto" />
-            <!-- X Period -->
-            <RowDefinition Height="Auto" />
-            <!-- Y Period -->
-            <RowDefinition Height="Auto" />
-            <!-- Turbulence Power -->
-            <RowDefinition Height="Auto" />
-            <!-- Turbulence Size -->
-            <RowDefinition Height="Auto" />
-            <!-- Base Color -->
-            <RowDefinition Height="Auto" />
-            <!-- Is Monochrome -->
-            <RowDefinition Height="Auto" />
-            <!-- Is Tiled -->
-            <RowDefinition Height="Auto" />
-            <!-- Use Smooth Noise -->
-            <RowDefinition Height="Auto" />
-            <!-- Use Turbulence -->
-            <RowDefinition Height="Auto" />
-            <!-- XY Period -->
-            <RowDefinition Height="Auto" />
-            <!-- Crosshatch Settings Title -->
-            <RowDefinition Height="Auto" />
-            <!-- Line Spacing -->
-            <RowDefinition Height="Auto" />
-            <!-- Line Color -->
-            <RowDefinition Height="Auto" />
-            <!-- Line Thickness -->
-            <RowDefinition Height="Auto" />
-            <!-- Angle 1 -->
-            <RowDefinition Height="Auto" />
-            <!-- Angle 2 -->
-            <RowDefinition Height="Auto" />
-            <!-- Additional Texture Settings -->
-            <RowDefinition Height="Auto" />
-            <!-- Wave Frequency -->
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <!-- Wave Amplitude -->
-            <RowDefinition Height="Auto" />
-            <!-- Randomization Factor -->
-            <RowDefinition Height="Auto" />
-            <!-- Edge Jaggedness Limit -->
-            <RowDefinition Height="Auto" />
-            <!-- Jaggedness Threshold -->
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Texture Type Selection ComboBox -->
-        <TextBlock Grid.Row="0" FontWeight="Bold" Text="Texture Type" Margin="0,5" />
-        <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding TextureOptions}"
-                  SelectedItem="{Binding SelectedTexture}" Grid.ColumnSpan="2" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Margin="0,0,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-        <!-- General Settings -->
-        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Text="General Settings" Margin="0,10,0,5" />
+                <TextBlock Grid.Row="0" FontWeight="Bold" Text="Texture Type" Margin="0,5" />
+                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding TextureOptions}"
+                          SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}" 
+                          ToolTip="Select the pattern algorithm to configure" />
 
-        <Label Content="Min Value" Grid.Row="2" Grid.Column="0" />
-        <TextBox Text="{Binding MinValue, Mode=TwoWay}"
-                 IsEnabled="{Binding IsMinValueActive}" Grid.Row="2" Grid.Column="1" />
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" FontWeight="Bold" Text="General Settings" Margin="0,15,0,5" />
 
-        <Label Content="Max Value" Grid.Row="3" Grid.Column="0" />
-        <TextBox Text="{Binding MaxValue, Mode=TwoWay}"
-                 IsEnabled="{Binding IsMaxValueActive}" Grid.Row="3" Grid.Column="1" />
+                <Label Content="Min Value" Grid.Row="2" Grid.Column="0" />
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsMinValueActive}" ToolTip="Minimum intensity/noise threshold" />
 
-        <Label Content="Alpha" Grid.Row="4" Grid.Column="0" />
-        <TextBox Text="{Binding Alpha, Mode=TwoWay}"
-                 IsEnabled="{Binding IsAlphaActive}" Grid.Row="4" Grid.Column="1" />
+                <Label Content="Max Value" Grid.Row="3" Grid.Column="0" />
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsMaxValueActive}" ToolTip="Maximum intensity/noise threshold" />
 
-        <Label Content="X Period" Grid.Row="5" Grid.Column="0" />
-        <TextBox Text="{Binding XPeriod, Mode=TwoWay}"
-                 IsEnabled="{Binding IsXPeriodActive}" Grid.Row="5" Grid.Column="1" />
+                <Label Content="Alpha" Grid.Row="4" Grid.Column="0" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsAlphaActive}" ToolTip="Transparency of the generated texture (0-255)" />
 
-        <Label Content="Y Period" Grid.Row="6" Grid.Column="0" />
-        <TextBox Text="{Binding YPeriod, Mode=TwoWay}"
-                 IsEnabled="{Binding IsYPeriodActive}" Grid.Row="6" Grid.Column="1" />
+                <Label Content="X Period" Grid.Row="5" Grid.Column="0" />
+                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding XPeriod}" IsEnabled="{Binding IsXPeriodActive}" />
 
-        <Label Content="Turbulence Power" Grid.Row="7" Grid.Column="0" />
-        <TextBox Text="{Binding TurbulencePower, Mode=TwoWay}"
-                 IsEnabled="{Binding IsTurbulencePowerActive}" Grid.Row="7" Grid.Column="1" />
+                <Label Content="Y Period" Grid.Row="6" Grid.Column="0" />
+                <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding YPeriod}" IsEnabled="{Binding IsYPeriodActive}" />
 
-        <Label Content="Turbulence Size" Grid.Row="8" Grid.Column="0" />
-        <TextBox Text="{Binding TurbulenceSize, Mode=TwoWay}"
-                 IsEnabled="{Binding IsTurbulenceSizeActive}" Grid.Row="8" Grid.Column="1" />
+                <Label Content="Turbulence Power" Grid.Row="7" Grid.Column="0" />
+                <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding TurbulencePower}" IsEnabled="{Binding IsTurbulencePowerActive}" />
 
-        <Label Content="Base Color" Grid.Row="9" Grid.Column="0" />
-        <ComboBox SelectedItem="{Binding BaseColor, Mode=TwoWay}"
-                  IsEnabled="{Binding IsBaseColorActive}" Grid.Row="9" Grid.Column="1">
-            <ComboBoxItem Content="White" />
-            <ComboBoxItem Content="Black" />
-            <ComboBoxItem Content="Red" />
-            <ComboBoxItem Content="Green" />
-            <ComboBoxItem Content="Blue" />
-        </ComboBox>
+                <Label Content="Is Monochrome" Grid.Row="10" Grid.Column="0" />
+                <CheckBox Grid.Row="10" Grid.Column="1" IsChecked="{Binding IsMonochrome}" IsEnabled="{Binding IsMonochromeActive}" VerticalAlignment="Center" />
 
-        <Label Content="Is Monochrome" Grid.Row="10" Grid.Column="0" />
-        <CheckBox IsChecked="{Binding IsMonochrome, Mode=TwoWay}"
-                  IsEnabled="{Binding IsMonochromeActive}" Grid.Row="10" Grid.Column="1" />
+                <Label Content="Use Turbulence" Grid.Row="13" Grid.Column="0" />
+                <CheckBox Grid.Row="13" Grid.Column="1" IsChecked="{Binding UseTurbulence}" IsEnabled="{Binding IsUseTurbulenceActive}" VerticalAlignment="Center" />
 
-        <Label Content="Is Tiled" Grid.Row="11" Grid.Column="0" />
-        <CheckBox IsChecked="{Binding IsTiled, Mode=TwoWay}"
-                  IsEnabled="{Binding IsTiledActive}" Grid.Row="11" Grid.Column="1" />
+                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" FontWeight="Bold" Text="Crosshatch Settings" Margin="0,15,0,5" />
 
-        <Label Content="Use Smooth Noise" Grid.Row="12" Grid.Column="0" />
-        <CheckBox IsChecked="{Binding UseSmoothNoise, Mode=TwoWay}"
-                  IsEnabled="{Binding IsUseSmoothNoiseActive}" Grid.Row="12" Grid.Column="1" />
+                <Label Content="Line Spacing" Grid.Row="16" Grid.Column="0" />
+                <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding LineSpacing}" IsEnabled="{Binding IsLineSpacingActive}" />
 
-        <Label Content="Use Turbulence" Grid.Row="13" Grid.Column="0" />
-        <CheckBox IsChecked="{Binding UseTurbulence, Mode=TwoWay}"
-                  IsEnabled="{Binding IsUseTurbulenceActive}" Grid.Row="13" Grid.Column="1" />
+                <Label Content="Line Thickness" Grid.Row="18" Grid.Column="0" />
+                <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding LineThickness}" IsEnabled="{Binding IsLineThicknessActive}" />
 
-        <Label Content="XY Period" Grid.Row="14" Grid.Column="0" />
-        <TextBox Text="{Binding XyPeriod, Mode=TwoWay}"
-                 IsEnabled="{Binding IsXyPeriodActive}" Grid.Row="14" Grid.Column="1" />
+                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" FontWeight="Bold" Text="Advanced Texture Settings" Margin="0,15,0,5" />
 
-        <!-- Crosshatch Settings -->
-        <TextBlock Grid.Row="15" Grid.Column="0" FontWeight="Bold" Text="Crosshatch Settings" Margin="0,10,0,5" />
+                <Label Content="Wave Frequency" Grid.Row="22" Grid.Column="0" />
+                <TextBox Grid.Row="22" Grid.Column="1" Text="{Binding WaveFrequency}" IsEnabled="{Binding IsWaveFrequencyActive}" />
 
-        <Label Content="Line Spacing" Grid.Row="16" Grid.Column="0" />
-        <TextBox Text="{Binding LineSpacing, Mode=TwoWay}"
-                 IsEnabled="{Binding IsLineSpacingActive}" Grid.Row="16" Grid.Column="1" />
+                <Label Content="Randomization" Grid.Row="24" Grid.Column="0" />
+                <TextBox Grid.Row="24" Grid.Column="1" Text="{Binding RandomizationFactor}" IsEnabled="{Binding IsRandomizationFactorActive}" />
+            </Grid>
+        </ScrollViewer>
 
-        <Label Content="Line Color" Grid.Row="17" Grid.Column="0" />
-        <ComboBox SelectedItem="{Binding LineColor, Mode=TwoWay}"
-                  IsEnabled="{Binding IsLineColorActive}" Grid.Row="17" Grid.Column="1">
-            <ComboBoxItem Content="Black" />
-            <ComboBoxItem Content="White" />
-            <ComboBoxItem Content="Red" />
-            <ComboBoxItem Content="Green" />
-            <ComboBoxItem Content="Blue" />
-        </ComboBox>
-
-        <Label Content="Line Thickness" Grid.Row="18" Grid.Column="0" />
-        <TextBox Text="{Binding LineThickness, Mode=TwoWay}"
-                 IsEnabled="{Binding IsLineThicknessActive}" Grid.Row="18" Grid.Column="1" />
-
-        <Label Content="Angle Primary" Grid.Row="19" Grid.Column="0" />
-        <TextBox Text="{Binding AnglePrimary, Mode=TwoWay}"
-                 IsEnabled="{Binding IsAnglePrimaryActive}" Grid.Row="19" Grid.Column="1" />
-
-        <Label Content="Angle Secondary" Grid.Row="20" Grid.Column="0" />
-        <TextBox Text="{Binding AngleSecondary, Mode=TwoWay}"
-                 IsEnabled="{Binding IsAngleSecondaryActive}" Grid.Row="20" Grid.Column="1" />
-
-        <!-- Additional Texture Settings -->
-        <TextBlock Grid.Row="21" Grid.Column="0" FontWeight="Bold" Text="Additional Texture Settings" Margin="0,10,0,5" />
-
-        <Label Content="Wave Frequency" Grid.Row="22" Grid.Column="0" />
-        <TextBox Text="{Binding WaveFrequency, Mode=TwoWay}"
-                 IsEnabled="{Binding IsWaveFrequencyActive}" Grid.Row="22" Grid.Column="1" />
-
-        <Label Content="Wave Amplitude" Grid.Row="23" Grid.Column="0" />
-        <TextBox Text="{Binding WaveAmplitude, Mode=TwoWay}"
-                 IsEnabled="{Binding IsWaveAmplitudeActive}" Grid.Row="23" Grid.Column="1" />
-
-        <Label Content="Randomization Factor" Grid.Row="24" Grid.Column="0" />
-        <TextBox Text="{Binding RandomizationFactor, Mode=TwoWay}"
-                 IsEnabled="{Binding IsRandomizationFactorActive}" Grid.Row="24" Grid.Column="1" />
-
-        <Label Content="Edge Jaggedness Limit" Grid.Row="25" Grid.Column="0" />
-        <TextBox Text="{Binding EdgeJaggednessLimit, Mode=TwoWay}"
-                 IsEnabled="{Binding IsEdgeJaggednessLimitActive}" Grid.Row="25" Grid.Column="1" />
-
-        <Label Content="Jaggedness Threshold" Grid.Row="26" Grid.Column="0" />
-        <TextBox Text="{Binding JaggednessThreshold, Mode=TwoWay}"
-                 IsEnabled="{Binding IsJaggednessThresholdActive}" Grid.Row="26" Grid.Column="1" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Save" Width="80" Margin="5" Command="{Binding SaveCommand}" />
+            <Button Content="Reset" Width="80" Margin="5" Command="{Binding ResetCommand}" />
+            <Button Content="Cancel" Width="80" Margin="5" 
+                    Command="{Binding CancelCommand}" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+        </StackPanel>
     </Grid>
     <Window.Resources>
         <ResourceDictionary>
