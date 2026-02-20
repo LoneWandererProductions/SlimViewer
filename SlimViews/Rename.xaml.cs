@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
  * FILE:        Rename.xaml.cs
- * PURPOSE:     View Model for Rename
+ * PURPOSE:     Code-behind for Rename Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -16,8 +16,11 @@ namespace SlimViews
     /// <summary>
     ///     Basic Rename Window
     /// </summary>
-    internal sealed partial class Rename
+    internal sealed partial class Rename : Window
     {
+        // 1. Create a strongly-typed reference to your ViewModel
+        private readonly RenameView _viewModel;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="Rename" /> class.
@@ -25,6 +28,10 @@ namespace SlimViews
         public Rename()
         {
             InitializeComponent();
+
+            // 2. Instantiate and assign the DataContext manually
+            _viewModel = new RenameView();
+            DataContext = _viewModel;
         }
 
         /// <inheritdoc />
@@ -35,7 +42,11 @@ namespace SlimViews
         public Rename(Dictionary<int, string> observer)
         {
             InitializeComponent();
-            View.Observer = new ConcurrentDictionary<int, string>(observer);
+
+            // 2. Instantiate, inject the data, and assign the DataContext
+            _viewModel = new RenameView();
+            _viewModel.Observer = new ConcurrentDictionary<int, string>(observer);
+            DataContext = _viewModel;
         }
 
         /// <summary>
@@ -44,6 +55,6 @@ namespace SlimViews
         /// <value>
         ///     The observer.
         /// </value>
-        internal Dictionary<int, string> Observer => new(View.Observer);
+        internal Dictionary<int, string> Observer => new(_viewModel.Observer);
     }
 }

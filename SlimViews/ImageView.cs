@@ -33,7 +33,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ViewModel;
-using Point = System.Windows.Point;
 
 namespace SlimViews
 {

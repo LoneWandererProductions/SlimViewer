@@ -7,52 +7,74 @@
         mc:Ignorable="d"
         x:ClassModifier="internal"
         Title="Rename" Height="400" Width="400">
-    <Window.DataContext>
-        <local:RenameView x:Name="View" />
-    </Window.DataContext>
-    <Grid>
+
+    <Grid IsEnabled="{Binding IsNotWorking}" Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="50*" />
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="50*" />
-            <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"
-                 Text="{Binding Path= Replacement, Mode=TwoWay}" />
-        <Button Content="Remove Appendages" Grid.Column="1" Grid.Row="3"
-                Command="{Binding RemoveAppendageCommand}" />
-        <Button Content="Add Appendages" Grid.Column="1" Grid.Row="5"
-                Command="{Binding AddCommand}" />
-        <Button Content="Reorder" Grid.Column="1" Grid.Row="9" Command="{Binding ReorderCommand}" />
-        <Button Content="Remove Content" Grid.Column="1" Grid.Row="7" Command="{Binding RemoveCommand}" />
-        <Label Content="Add a String" Grid.Column="3" Grid.Row="5" />
-        <Label Content="Reorder Numbers" Grid.Column="3" Grid.Row="9" />
-        <Label Content="Remove Start String" Grid.Column="3" Grid.Row="3" />
-        <Label Content="Replacement String" Grid.Column="3" Grid.Row="1" />
-        <Button Content="Replace" Grid.Column="1" Grid.Row="11" Command="{Binding ReplaceCommand}" />
-        <TextBox Grid.Column="3" Grid.Row="11" TextWrapping="Wrap" Text="{Binding Replacer, Mode=TwoWay}" />
-        <Button Content="Remove Appendages at" Grid.Column="1" Grid.Row="13"
-                Command="{Binding AppendagesAtCommand}" />
-        <TextBox Grid.Column="3" Grid.Row="13" TextWrapping="Wrap" Text="{Binding Numbers, Mode=TwoWay}" />
+
+        <Label Content="Replacement String:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom"/>
+        <TextBox Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Height="25"
+                 Text="{Binding Path=Replacement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 ToolTip="Enter the target text you want to add, remove, or find." />
+
+        <Label Content="New String (For Replace):" Grid.Column="2" Grid.Row="0" VerticalAlignment="Bottom"/>
+        <TextBox Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Height="25"
+                 Text="{Binding Replacer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 ToolTip="Enter the new text that will replace the old text." />
+
+        <Button Content="Add Appendages" Grid.Column="0" Grid.Row="2" Margin="0,5,0,0" Height="25"
+                Command="{Binding AddCommand}" ToolTip="Appends the target text to the filenames." />
+        <Button Content="Remove Appendages" Grid.Column="2" Grid.Row="2" Margin="0,5,0,0" Height="25"
+                Command="{Binding RemoveAppendageCommand}" ToolTip="Removes the target text from the beginning or end." />
+
+        <Button Content="Remove Content" Grid.Column="0" Grid.Row="3" Margin="0,5,0,0" Height="25"
+                Command="{Binding RemoveCommand}" ToolTip="Removes all instances of the target text." />
+        <Button Content="Replace String" Grid.Column="2" Grid.Row="3" Margin="0,5,0,0" Height="25" 
+                Command="{Binding ReplaceCommand}" ToolTip="Replaces the target text with the new string." />
+
+        <Label Content="Chars to Strip from Start:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Bottom" Margin="0,5,0,0"/>
+        <TextBox Grid.Column="0" Grid.Row="5" TextWrapping="Wrap" Height="25"
+                 Text="{Binding Numbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <Button Content="Remove Appendages at" Grid.Column="2" Grid.Row="5" Margin="0,5,0,0" Height="25"
+                Command="{Binding AppendagesAtCommand}" ToolTip="Removes specific number of characters from start." />
+
+        <Button Content="Reorder Numbers" Grid.Column="0" Grid.Row="6" Margin="0,5,0,0" Height="25"
+                Command="{Binding ReorderCommand}" ToolTip="Automatically reorders the numbers found." />
+
+        <DataGrid Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" 
+                  ItemsSource="{Binding PreviewItems}" 
+                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderBrush="LightGray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Original Name" Binding="{Binding OriginalName}" Width="*" />
+                <DataGridTextColumn Header="New Name" Binding="{Binding NewName}" Width="*" />
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Content="Apply Changes to Disk" Grid.Row="10" Grid.Column="2" Height="35" 
+                FontWeight="Bold" Background="#4CAF50" Foreground="White"
+                Command="{Binding ApplyChangesCommand}" 
+                ToolTip="Permanently rename the files on your hard drive." />
     </Grid>
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

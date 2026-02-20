@@ -8,7 +8,6 @@
 
 using SlimControls;
 using SlimViews.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -60,7 +59,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Rename the Folder action.
+        /// Rename the Folder action.
         /// </summary>
         /// <param name="owner">The owner.</param>
         internal void FolderRenameWindow(ImageView owner)
@@ -69,6 +68,7 @@ namespace SlimViews
 
             var dct = new Dictionary<int, string>();
 
+            // 1. Build the dictionary (Partial vs Full)
             if (owner.UiState.Thumb.IsSelectionValid)
             {
                 foreach (var id in owner.UiState.Thumb.Selection.Keys.Where(id =>
@@ -80,20 +80,33 @@ namespace SlimViews
                 dct = new Dictionary<int, string>(owner.FileContext.Observer);
             }
 
-
+            // 2. Open the Window
             var rename = new Rename(dct)
             {
+                // Note: Topmost = true keeps this above EVERY app in Windows (like your web browser). 
+                // Setting Owner is usually enough to keep it above your main app safely.
                 Topmost = true,
                 Owner = owner.UiState.Main
             };
+
             _ = rename.ShowDialog();
 
-            //refresh the Filename, no need to refresh all, we don't need to reload everything, to save time
-            if (SlimViewerRegister.Changed && owner.UiState.Thumb.IsSelectionValid)
-                owner.FileContext.Observer = rename.Observer;
-            else
+            // 3. Merge changes back safely
+            if (SlimViewerRegister.Changed)
+            {
+                // Safely update the backend Dictionary without destroying unselected items
                 foreach (var (key, value) in rename.Observer)
+                {
                     owner.FileContext.Observer[key] = value;
+                }
+
+                // CRITICAL: Force the UI to update by assigning a new dictionary reference 
+                // to the ViewModel's public property
+                owner.Observer = new Dictionary<int, string>(owner.FileContext.Observer);
+
+                // Reset the flag
+                SlimViewerRegister.ResetRenaming();
+            }
         }
 
         /// <summary>
