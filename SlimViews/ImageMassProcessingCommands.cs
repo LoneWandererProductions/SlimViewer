@@ -200,17 +200,22 @@ namespace SlimViews
         /// Show the similar search window.
         /// </summary>
         /// <param name="owner">The owner.</param>
-        internal void SimilarWindow(ImageView owner)
+        /// <param name="parameter">The parameter.</param>
+        public void SimilarWindow(ImageView owner, object? parameter)
         {
-            var compareWindow =
-                new Compare(owner.UseSubFolders, owner.FileContext.CurrentPath, owner, owner.Similarity)
-                {
-                    Topmost = true,
-                    Owner = owner.UiState.Main
-                };
-            compareWindow.Show();
+            // If no parameter is passed, default to 90
+            int similarity = 90;
+            if (parameter != null && int.TryParse(parameter.ToString(), out var result))
+            {
+                similarity = result;
+            }
 
-            SlimViewerRegister.CompareView = true;
+            var compareWindow = new Compare(owner.UseSubFolders, owner.FileContext.CurrentPath, owner, similarity)
+            {
+                Topmost = true,
+                Owner = owner.UiState.Main
+            };
+            compareWindow.Show();
         }
 
         /// <summary>

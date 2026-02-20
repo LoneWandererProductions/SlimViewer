@@ -111,29 +111,38 @@ namespace SlimViews
         /// <param name="imageView">Parent ImageView for callbacks.</param>
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
         internal async Task AsyncInitiate(bool subFolders, string currentFolder,
-            ImageView imageView, int similarity = 0)
+                    ImageView imageView, int similarity = 0)
         {
             _imageView = imageView;
-            Status = ViewResources.StatusCompareStart;
+
+            // UI Feedback: Let the user know exactly what kind of search is running
+            Status = similarity == 0
+                ? "Scanning for exact duplicates..."
+                : $"Scanning for images with {similarity}% similarity...";
 
             _duplicates = await Task.Run(() =>
             {
+                // This is the "Tricky" part: 
+                // similarity == 0 means bit-for-bit check
+                // similarity > 0 means visual histogram/perceptual check
                 return similarity == 0
                     ? _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
                     : _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix, similarity);
             }).ConfigureAwait(false);
 
-            if (_duplicates == null)
+            if (_duplicates == null || _duplicates.Count == 0)
             {
-                Status = ViewResources.StatusCompareFinished;
+                Status = "No matching images found.";
                 return;
             }
 
-            _rows = (_duplicates.Count + 9) / 10; // Ceiling division
+            // Ceiling division for pagination
+            _rows = (_duplicates.Count + 9) / 10;
             _index = 0;
 
+            // Trigger the UI thread update
             GenerateView();
-            Status = ViewResources.StatusCompareFinished;
+            Status = $"Found {_duplicates.Count} groups of matches.";
         }
 
         /// <summary>

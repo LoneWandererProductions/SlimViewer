@@ -165,7 +165,7 @@ namespace SlimViews
             FolderConvert = Make_NoParamCmd(_imageMassService.FolderConvertWindow);
             FolderRename = Make_NoParamCmd(_imageMassService.FolderRenameWindow);
             Duplicate = Make_NoParamCmd(_imageMassService.DuplicateWindow);
-            Similar = Make_NoParamCmd(_imageMassService.SimilarWindow);
+            Similar = Make_ObjParamCmd(_imageMassService.SimilarWindow);
             FolderSearch = Make_NoParamCmd(_imageMassService.FolderSearch);
             ResizerWindow = Make_NoParamCmd(_imageMassService.ResizerWindow);
             AnalyzerWindow = Make_NoParamCmd(_imageMassService.AnalyzerWindow);
