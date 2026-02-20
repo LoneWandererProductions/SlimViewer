@@ -775,8 +775,6 @@ namespace SlimViews
             IsUseSmoothNoiseActive = usedProperties.Contains(nameof(UseSmoothNoise));
             IsUseTurbulenceActive = usedProperties.Contains(nameof(UseTurbulence));
             IsXyPeriodActive = usedProperties.Contains(nameof(XyPeriod));
-
-            // FIXED: These were mismatched in the original code
             IsRandomizationFactorActive = usedProperties.Contains(nameof(RandomizationFactor));
             IsEdgeJaggednessLimitActive = usedProperties.Contains(nameof(EdgeJaggednessLimit));
             IsJaggednessThresholdActive = usedProperties.Contains(nameof(JaggednessThreshold));
@@ -796,12 +794,31 @@ namespace SlimViews
             RaiseAllActivePropertiesChanged();
         }
 
+        /// <summary>
+        /// Raises all active properties changed.
+        /// </summary>
         private void RaiseAllActivePropertiesChanged()
         {
             OnPropertyChanged(nameof(IsMinValueActive));
             OnPropertyChanged(nameof(IsMaxValueActive));
             OnPropertyChanged(nameof(IsAlphaActive));
-            // ... etc for all booleans ...
+            OnPropertyChanged(nameof(IsXPeriodActive));
+            OnPropertyChanged(nameof(IsYPeriodActive));
+            OnPropertyChanged(nameof(IsTurbulencePowerActive));
+            OnPropertyChanged(nameof(IsTurbulenceSizeActive));
+            OnPropertyChanged(nameof(IsBaseColorActive));
+            OnPropertyChanged(nameof(IsMonochromeActive));
+            OnPropertyChanged(nameof(IsTiledActive));
+            OnPropertyChanged(nameof(IsUseSmoothNoiseActive));
+            OnPropertyChanged(nameof(IsUseTurbulenceActive));
+            OnPropertyChanged(nameof(IsXyPeriodActive));
+            OnPropertyChanged(nameof(IsAnglePrimaryActive));
+            OnPropertyChanged(nameof(IsAngleSecondaryActive));
+            OnPropertyChanged(nameof(IsWaveFrequency));
+            OnPropertyChanged(nameof(IsWaveAmplitude));
+            OnPropertyChanged(nameof(IsRandomizationFactor));
+            OnPropertyChanged(nameof(IsEdgeJaggednessLimit));
+            OnPropertyChanged(nameof(IsJaggednessThreshold));
         }
 
         /// <summary>

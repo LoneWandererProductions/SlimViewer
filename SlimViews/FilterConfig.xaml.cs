@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViewer
  * FILE:        FilterConfig.xaml.cs
- * PURPOSE:     Basic Converter Window
+ * PURPOSE:     Configuration for our Filters
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -15,26 +15,34 @@ namespace SlimViews
     /// <summary>
     ///     Configuration for our Filters
     /// </summary>
-    public partial class FilterConfig
+    public partial class FilterConfig : Window
     {
+        private readonly FilterConfigView _viewModel;
+
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:SlimViews.FilterConfig" /> class.
+        ///     Initializes a new instance of the <see cref="FilterConfig" /> class.
         /// </summary>
         public FilterConfig()
         {
             InitializeComponent();
+            _viewModel = new FilterConfigView();
+            DataContext = _viewModel;
         }
 
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="FilterConfig" /> class.
         /// </summary>
-        /// <param name="filter">The filter.</param>
+        /// <param name="filter">The filter type to pre-select.</param>
         public FilterConfig(FiltersType filter)
         {
             InitializeComponent();
-            FilterView.SelectedFilter = filter;
+            _viewModel = new FilterConfigView();
+            DataContext = _viewModel;
+
+            // Explicitly set the filter on the instance we just created
+            _viewModel.SelectedFilter = filter;
         }
     }
 }
