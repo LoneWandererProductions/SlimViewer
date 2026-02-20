@@ -9,17 +9,19 @@
 // ReSharper disable MemberCanBePrivate.Global, if we make it private the Property Changed event will not be triggered in the Window
 // ReSharper disable MemberCanBeInternal, must be public, else the View Model won't work
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Input;
 using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
 using Imaging.Enums;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using ViewModel;
 
 namespace SlimViews
@@ -27,10 +29,6 @@ namespace SlimViews
     /// <inheritdoc />
     /// <summary>
     ///     View for Resizer
-    ///     TODO:
-    ///     Add Resize Options
-    ///     Add optional Filters
-    ///     Add File Converter
     /// </summary>
     internal sealed class ResizerView : ViewModelBase
     {
@@ -95,17 +93,28 @@ namespace SlimViews
         private int _width = 100;
 
         /// <summary>
-        /// The current path
+        ///     The current path
         /// </summary>
         private string _currentPath;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResizerView"/> class.
+        ///     Indicates whether the view model is currently processing files.
+        /// </summary>
+        private bool _isWorking;
+
+        /// <summary>
+        ///     The current status message displayed to the user.
+        /// </summary>
+        private string _statusMessage = "Ready";
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ResizerView"/> class.
         /// </summary>
         /// <param name="currentPath">The current path.</param>
         public ResizerView(string currentPath)
         {
             _currentPath = currentPath;
+            Input = currentPath; // Pre-fill input if they launch from an active folder
         }
 
         /// <summary>
@@ -225,13 +234,50 @@ namespace SlimViews
         }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether this instance is actively processing files.
+        ///     Used to lock the UI during heavy I/O operations.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is working; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsWorking
+        {
+            get => _isWorking;
+            set
+            {
+                SetProperty(ref _isWorking, value, nameof(IsWorking));
+                OnPropertyChanged(nameof(IsNotWorking));
+            }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether the UI should be enabled (inverse of IsWorking).
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if it is safe to interact with the UI; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsNotWorking => !IsWorking;
+
+        /// <summary>
+        ///     Gets or sets the status message to provide UI feedback.
+        /// </summary>
+        /// <value>
+        ///     The status message.
+        /// </value>
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set => SetProperty(ref _statusMessage, value, nameof(StatusMessage));
+        }
+
+        /// <summary>
         ///     Gets the process command.
         /// </summary>
         /// <value>
         ///     The process command.
         /// </value>
         public ICommand ProcessCommand =>
-            _processCommand ??= new DelegateCommand<object>(ProcessAction, CanExecute);
+            _processCommand ??= new AsyncDelegateCommand<object>(ProcessActionAsync, CanExecute);
 
         /// <summary>
         ///     Gets the cancel command.
@@ -309,63 +355,100 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Processes the action.
+        ///     Asynchronously processes all images in the input folder.
+        ///     Handles resizing, filtering, format conversion, and saves to the output folder.
         /// </summary>
         /// <param name="obj">The object.</param>
-        private void ProcessAction(object obj)
+        private async Task ProcessActionAsync(object obj)
         {
-            double height = _height;
-            double width = _width;
-
             if (!Directory.Exists(_input) || !Directory.Exists(_output))
-                // TODO: Show a message box indicating directories are missing
+            {
+                MessageBox.Show("Please select valid Input and Output directories.", "Invalid Directories", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
 
             var files = FileHandleSearch.GetFilesByExtensionFullPath(_input, ImagingResources.Appendix, false);
 
             if (files.IsNullOrEmpty())
-                // TODO: Show a message box indicating no files found
-                return;
-
-            foreach (var filePath in files)
             {
-                if (!File.Exists(filePath)) continue;
+                MessageBox.Show("No valid images found in the Input directory.", "No Files", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
-                var bitmap = ImageProcessor.LoadImage(filePath);
+            IsWorking = true;
+            int count = 0;
+            int total = files.Count;
 
-                if (bitmap == null) continue;
-
-                // Apply selected filter option
-                if (_selectedFilterOption != FiltersType.None)
-                    bitmap = ImageProcessor.Filter(bitmap, _selectedFilterOption);
-
-                // Resize the image based on percentage or absolute dimensions
-                if (_isPercentagesChecked)
+            try
+            {
+                // Wrap the heavy processing loop in Task.Run to keep the UI thread responsive
+                await Task.Run(() =>
                 {
-                    height = bitmap.Height * height / 100;
-                    width = bitmap.Width * width / 100;
-                }
+                    foreach (var filePath in files)
+                    {
+                        if (!File.Exists(filePath)) continue;
 
-                var iHeight = (int)height;
-                var iWidth = (int)width;
+                        count++;
+                        // Dispatcher is required here to safely update the UI property from a background thread
+                        Application.Current.Dispatcher.Invoke(() => StatusMessage = $"Processing {count} of {total}...");
 
-                if (iHeight == 0 || iWidth == 0) continue;
+                        using var bitmap = ImageProcessor.LoadImage(filePath);
+                        if (bitmap == null) continue;
 
-                bitmap = ImageProcessor.Resize(bitmap, iWidth, iHeight);
+                        var currentBitmap = bitmap;
 
-                // Determine the file extension is set, if not use the current one
-                if (string.IsNullOrEmpty(SelectedExtension))
-                {
-                    SelectedExtension = Path.GetExtension(filePath);
+                        // Apply selected filter option
+                        if (_selectedFilterOption != FiltersType.None)
+                        {
+                            currentBitmap = ImageProcessor.Filter(currentBitmap, _selectedFilterOption);
+                        }
 
-                    if (string.IsNullOrEmpty(SelectedExtension)) continue;
-                }
+                        // Use local variables to calculate dimensions so we don't overwrite the user's base settings
+                        double targetHeight = _height;
+                        double targetWidth = _width;
 
-                var name = Path.GetFileName(filePath);
-                var target = Path.Combine(_output, name);
+                        // Resize the image based on percentage or absolute dimensions
+                        if (_isPercentagesChecked)
+                        {
+                            targetHeight = currentBitmap.Height * (_height / 100.0);
+                            targetWidth = currentBitmap.Width * (_width / 100.0);
+                        }
 
-                // Save the modified image with the determined file extension
-                _ = ImageProcessor.SaveImage(target, SelectedExtension, bitmap);
+                        var iHeight = (int)targetHeight;
+                        var iWidth = (int)targetWidth;
+
+                        if (iHeight > 0 && iWidth > 0)
+                        {
+                            currentBitmap = ImageProcessor.Resize(currentBitmap, iWidth, iHeight);
+                        }
+
+                        // Determine the file extension to save as, falling back to original if none selected
+                        string saveExtension = string.IsNullOrEmpty(SelectedExtension)
+                            ? Path.GetExtension(filePath)
+                            : SelectedExtension;
+
+                        if (string.IsNullOrEmpty(saveExtension)) continue;
+
+                        var name = Path.GetFileName(filePath);
+                        var targetPath = Path.Combine(_output, name);
+
+                        // Save the modified image with the determined file extension
+                        _ = ImageProcessor.SaveImage(targetPath, saveExtension, currentBitmap);
+                    }
+                });
+
+                StatusMessage = "Processing Complete!";
+                MessageBox.Show($"Successfully processed {count} images.", "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = "Error occurred.";
+                Trace.WriteLine(ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsWorking = false;
             }
         }
     }

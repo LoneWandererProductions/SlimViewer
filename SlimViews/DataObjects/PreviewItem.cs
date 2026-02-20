@@ -1,14 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     PreviewItem
- * FILE:        PreviewItem.cs
+ * FILE:        SlimViews.DataObjects.cs
  * PURPOSE:     Preview Object for the Rename Window
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.DataObjects
 {
     /// <summary>
     ///     Represents a single file in the rename preview grid.

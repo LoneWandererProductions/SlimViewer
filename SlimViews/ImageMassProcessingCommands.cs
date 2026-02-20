@@ -197,7 +197,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Similars the window.
+        /// Show the similar search window.
         /// </summary>
         /// <param name="owner">The owner.</param>
         internal void SimilarWindow(ImageView owner)
