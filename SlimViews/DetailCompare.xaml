@@ -1,18 +1,16 @@
-﻿<!-- ReSharper disable once MemberCanBeInternal -->
-<Window
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:SlimViews"
-    xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-    xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images" x:Class="SlimViews.DetailCompare"
-    mc:Ignorable="d"
-    Title="Detailed Image Comparer" Height="450" Width="1000">
-    <Window.DataContext>
-        <local:DetailCompareView x:Name="View" />
-    </Window.DataContext>
-    <Grid>
+﻿<Window x:Class="SlimViews.DetailCompare"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SlimViews"
+        xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
+        xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
+        mc:Ignorable="d" x:ClassModifier="internal"
+        Title="Detailed Image Comparer" Height="450" Width="1000"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid IsEnabled="{Binding IsNotWorking}" Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="5" />
@@ -35,11 +33,14 @@
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
             <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding BmpOne }" />
-            <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenOneCommand}" />
+            <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenOneCommand}" ToolTip="Load Image 1" />
+
             <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                     Text="{Binding Path=PathOne}" />
+                     Text="{Binding Path=PathOne, Mode=OneWay}" IsReadOnly="True" ToolTip="File path for Image 1" />
         </Grid>
+
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
+
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5" />
@@ -55,11 +56,14 @@
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
             <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding BmpTwo}" />
-            <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenTwoCommand}" />
+            <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenTwoCommand}" ToolTip="Load Image 2" />
+
             <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                     Text="{Binding Path=PathTwo}" />
+                     Text="{Binding Path=PathTwo, Mode=OneWay}" IsReadOnly="True" ToolTip="File path for Image 2" />
         </Grid>
+
         <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
+
         <Grid Grid.Column="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5" />
@@ -78,22 +82,25 @@
                 <RowDefinition />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-            <Button Content="Show Differences" Grid.Column="1" Grid.Row="1" Command="{Binding DifferenceCommand}"
-                    ToolTip="Create Difference Image" />
+            <Button Content="Diff Image" Grid.Column="1" Grid.Row="1" Command="{Binding DifferenceCommand}"
+                    ToolTip="Generate a visual difference overlay on Image 1" />
             <Button Content="Export" Grid.Column="5" Grid.Row="1" Command="{Binding ExportCommand}"
                     ToolTip="Export Information as Text file and diff Image if available." />
-            <Image Grid.Row="1" Grid.Column="7" Source="{Binding StatusImage}" />
+
+            <Image Grid.Row="1" Grid.Column="7" Source="{Binding StatusImage}" ToolTip="Status Indicator" />
+
             <TabControl Grid.Row="2" Grid.ColumnSpan="7" Grid.Column="1">
                 <TabItem Header="Information">
-                    <RichTextBox Name="Information" />
+                    <RichTextBox Name="Information" IsReadOnly="True" />
                 </TabItem>
                 <TabItem Header="Color Details">
-                    <TextBox Name="ColorInformation" />
+                    <TextBox Name="ColorInformation" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
                 </TabItem>
             </TabControl>
+
             <Images:ColorSelection Grid.Column="3" Grid.Row="1"
-                                   StartColor="{Binding Colors,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                   VerticalAlignment="Top" />
+                                   StartColor="{Binding Colors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   VerticalAlignment="Top" ToolTip="Select color to highlight differences" />
         </Grid>
     </Grid>
     <Window.Resources>

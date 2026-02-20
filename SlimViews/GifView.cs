@@ -529,15 +529,17 @@ namespace SlimViews
                 if (Directory.Exists(_gifExport)) Directory.Delete(_gifExport, true);
                 Directory.CreateDirectory(_gifExport);
 
-                OutputPath = path;
-
-
                 // ensure directories exist
                 if (!Directory.Exists(_imageExport)) Directory.CreateDirectory(_imageExport);
                 if (!Directory.Exists(_gifExport)) Directory.CreateDirectory(_gifExport);
             }, token).ConfigureAwait(false);
 
-            IsActive = true;
+            // SAFELY update UI-bound properties on the main thread
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                OutputPath = path;
+                IsActive = true;
+            });
         }
 
         /// <summary>

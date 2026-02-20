@@ -9,15 +9,18 @@
 // ReSharper disable MemberCanBeInternal
 
 using Imaging;
+using System.Windows;
 
 namespace SlimViews
 {
-    /// <inheritdoc cref="Search" />
+    /// <inheritdoc cref="Window" />
     /// <summary>
     ///     Search Window
     /// </summary>
-    public sealed partial class Search
+    public sealed partial class Search : Window
     {
+        private readonly SearchView _viewModel;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:SlimViews.Search" /> class.
@@ -25,6 +28,8 @@ namespace SlimViews
         public Search()
         {
             InitializeComponent();
+            _viewModel = new SearchView();
+            DataContext = _viewModel;
         }
 
         /// <inheritdoc />
@@ -38,8 +43,10 @@ namespace SlimViews
         public Search(bool subFolders, string currentFolder, ImageView imageView, ColorHsv color)
         {
             InitializeComponent();
+            _viewModel = new SearchView();
+            DataContext = _viewModel;
 
-            View.Initialize(subFolders, currentFolder, imageView, color);
+            _viewModel.Initialize(subFolders, currentFolder, imageView, color);
         }
     }
 }

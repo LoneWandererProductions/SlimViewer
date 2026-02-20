@@ -1,17 +1,15 @@
-﻿<Window
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-    xmlns:slimViews="clr-namespace:SlimViews"
-    xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
-    x:Class="SlimViews.Compare"
-    mc:Ignorable="d"
-    Title="Compare" Height="800" Width="300" x:ClassModifier="internal">
-    <Window.DataContext>
-        <slimViews:CompareView x:Name="View" />
-    </Window.DataContext>
+﻿<Window x:Class="SlimViews.Compare"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
+        xmlns:slimViews="clr-namespace:SlimViews"
+        xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
+        mc:Ignorable="d"
+        Title="Compare Images" Height="800" Width="320" x:ClassModifier="internal"
+        WindowStartupLocation="CenterOwner">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80" />
@@ -20,83 +18,76 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Grid.ColumnSpan="3">
-            <Grid>
+
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="3">
+            <Grid Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
-                                   ItemsSource="{Binding ObserverFirst}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="0" />
+                                   ItemsSource="{Binding Observers[0]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="0" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"
-                                   ItemsSource="{Binding ObserverSecond}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="1" />
+                                   ItemsSource="{Binding Observers[1]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="1" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2"
-                                   ItemsSource="{Binding ObserverThird}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="2" />
+                                   ItemsSource="{Binding Observers[2]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="2" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"
-                                   ItemsSource="{Binding ObserverFourth}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="2" />
+                                   ItemsSource="{Binding Observers[3]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="3" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4"
-                                   ItemsSource="{Binding ObserverFifth}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="4" />
+                                   ItemsSource="{Binding Observers[4]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="4" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="5"
-                                   ItemsSource="{Binding ObserverSixth}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="5" />
+                                   ItemsSource="{Binding Observers[5]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="5" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="6"
-                                   ItemsSource="{Binding ObserverSeventh}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="6" />
+                                   ItemsSource="{Binding Observers[6]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="6" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="7"
-                                   ItemsSource="{Binding ObserverEight}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="7" />
+                                   ItemsSource="{Binding Observers[7]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="7" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="8"
-                                   ItemsSource="{Binding ObserverNinth}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="8" />
+                                   ItemsSource="{Binding Observers[8]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="8" />
+
                 <Images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="9"
-                                   ItemsSource="{Binding ObserverTenth}"
-                                   ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1"
-                                   Tag="9" />
+                                   ItemsSource="{Binding Observers[9]}" ImageClicked="OnImageClicked"
+                                   ThumbCellSize="100" ThumbHeight="1" Tag="9" />
             </Grid>
         </ScrollViewer>
-        <Button Content="Next" HorizontalAlignment="Stretch" Grid.Row="1"
-                Command="{Binding NextCommand}" Grid.Column="2" />
-        <Button Content="Previous" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0"
-                Command="{Binding PreviousCommand}" />
-        <Label Grid.Column="1" Grid.Row="1"
-               Content="{Binding Path=Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+        <Button Content="Previous" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0"
+                Command="{Binding PreviousCommand}" ToolTip="Go to previous page" />
+
+        <Label Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+               Content="{Binding Path=Status}" FontWeight="SemiBold" Foreground="#333333" />
+
+        <Button Content="Next" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2"
+                Command="{Binding NextCommand}" ToolTip="Go to next page" />
     </Grid>
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

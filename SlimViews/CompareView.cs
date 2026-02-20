@@ -166,6 +166,10 @@ namespace SlimViews
         ///     Generates the observer groups for the current page.
         ///     Updates each dictionary in-place to preserve WPF bindings.
         /// </summary>
+        /// <summary>
+        ///     Generates the observer groups for the current page.
+        ///     Replaces dictionaries to trigger ObservableCollection updates.
+        /// </summary>
         private void GenerateView()
         {
             if (_duplicates == null || _duplicates.Count == 0)
@@ -173,38 +177,25 @@ namespace SlimViews
 
             int baseIndex = _index * 10;
 
-            // WPF binding note: ObservableCollection tracks Add/Remove but not indexer replacement.
-            // Dictionaries inside collection do not implement INotifyPropertyChanged.
-            // Therefore we update each dictionary in-place to preserve bindings rather than replace them.
             for (int i = 0; i < 10; i++)
             {
                 var group = _duplicates.ElementAtOrDefault(baseIndex + i);
 
+                // Create a fresh dictionary so ObservableCollection fires a "Replace" event
+                var newDict = new Dictionary<int, string>();
+
                 if (group != null)
                 {
-                    if (Observers[i] == null)
-                        Observers[i] = new Dictionary<int, string>();
-                    else
-                        Observers[i].Clear();
-
                     int idx = 0;
                     foreach (var path in group)
-                        Observers[i][idx++] = path;
+                    {
+                        newDict[idx++] = path;
+                    }
+                }
 
-                    // Optional: could raise OnPropertyChanged(nameof(Observers)) here if replacing dictionary entirely
-                }
-                else
-                {
-                    if (Observers[i] != null)
-                        Observers[i].Clear(); // clearing preserves binding while showing no items
-                }
+                // This indexer assignment physically forces the UI to update!
+                Observers[i] = newDict;
             }
-
-            // Paging logic summary:
-            // _index * 10 calculates the starting observer group for the current page.
-            // Each page can have up to 10 observer groups (0..9).
-            // _rows is calculated as ceiling(_duplicates.Count / 10) to cover partial pages.
-            // Observers[0..9] corresponds to UI slots for the current page.
         }
 
         /// <summary>

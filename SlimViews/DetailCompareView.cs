@@ -133,6 +133,19 @@ namespace SlimViews
         private string _statusImage;
 
         /// <summary>
+        /// The is working
+        /// </summary>
+        private bool _isWorking;
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is not working.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is not working; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsNotWorking => !IsWorking;
+
+        /// <summary>
         ///     The information RichTextBox
         /// </summary>
         public RichTextBox RtBoxInformation;
@@ -156,6 +169,22 @@ namespace SlimViews
             OpenTwoCommand = new DelegateCommand<object>(OpenTwoAction, CanExecute);
             DifferenceCommand = new DelegateCommand<object>(DifferenceAction, CanExecute);
             ExportCommand = new DelegateCommand<object>(ExportAction, CanExecute);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is working.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is working; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsWorking
+        {
+            get => _isWorking;
+            set
+            {
+                SetProperty(ref _isWorking, value, nameof(IsWorking));
+                OnPropertyChanged(nameof(IsNotWorking));
+            }
         }
 
         /// <summary>
@@ -246,39 +275,51 @@ namespace SlimViews
         private async void OpenOneAction(object obj)
         {
             var pathObj = OpenFile();
-
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
-            _similarity = null;
-            _difference = null;
-            _colorOne = null;
-
-            // Check if file extension is supported
-            if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
+            IsWorking = true;
+            try
             {
-                _ = MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}",
-                    ViewResources.ErrorMessage);
-                return;
+                _similarity = null;
+                _difference = null;
+                _colorOne = null;
+
+                if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
+                {
+                    MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}", ViewResources.ErrorMessage);
+                    return;
+                }
+
+                var btm = ImageProcessor.GenerateImage(pathObj.FilePath);
+                if (btm == null) return;
+
+                PathOne = pathObj.FilePath;
+                _btmOne = btm;
+                BmpOne = btm.ToBitmapImage();
+
+                _informationOne = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpOne) + Environment.NewLine;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RtBoxInformation.AppendText(_informationOne);
+                    RtBoxInformation.ScrollToEnd();
+                });
+
+                Compare();
+
+                StatusImage = _redIcon;
+
+                var text = await ComputeText(btm);
+                await AppendTextAsync(TxtBoxColorInformation, text);
+
+                _colorOne = text;
+
+                // Force WPF to enable the diff/export buttons
+                CommandManager.InvalidateRequerySuggested();
             }
-
-            var btm = ImageProcessor.GenerateImage(pathObj.FilePath);
-            if (btm == null) return;
-
-            PathOne = pathObj.FilePath;
-
-            _btmOne = btm;
-            BmpOne = btm.ToBitmapImage();
-
-            _informationOne = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpOne);
-
-            Compare();
-
-            StatusImage = _redIcon;
-
-            var text = await ComputeText(btm);
-            await AppendTextAsync(TxtBoxColorInformation, text);
-
-            _colorOne = text;
+            finally
+            {
+                IsWorking = false;
+            }
         }
 
         /// <summary>
@@ -287,40 +328,52 @@ namespace SlimViews
         private async void OpenTwoAction(object obj)
         {
             var pathObj = OpenFile();
-
-            _similarity = null;
-            _difference = null;
-            _colorTwo = null;
-
             if (string.IsNullOrEmpty(pathObj?.FilePath)) return;
 
-            // Check if file extension is supported
-            if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
+            IsWorking = true;
+            try
             {
-                _ = MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}",
-                    ViewResources.ErrorMessage);
-                return;
+                _similarity = null;
+                _difference = null;
+                _colorTwo = null;
+
+                if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
+                {
+                    MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}", ViewResources.ErrorMessage);
+                    return;
+                }
+
+                var btm = ImageProcessor.GenerateImage(pathObj.FilePath);
+                if (btm == null) return;
+
+                PathTwo = pathObj.FilePath;
+                _btmTwo = btm;
+                BmpTwo = btm.ToBitmapImage();
+
+                // FIXED: Append information safely to UI thread
+                _informationTwo = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo) + Environment.NewLine;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RtBoxInformation.AppendText(_informationTwo);
+                    RtBoxInformation.ScrollToEnd();
+                });
+
+                Compare();
+
+                StatusImage = _redIcon;
+
+                var text = await ComputeText(btm);
+                await AppendTextAsync(TxtBoxColorInformation, text);
+
+                _colorTwo = text;
+
+                // Force WPF to enable the diff/export buttons
+                CommandManager.InvalidateRequerySuggested();
             }
-
-            var btm = ImageProcessor.GenerateImage(pathObj.FilePath);
-            if (btm == null) return;
-
-            PathTwo = pathObj.FilePath;
-            _btmTwo = btm;
-            BmpTwo = btm.ToBitmapImage();
-
-            _informationTwo = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo);
-            RtBoxInformation.AppendText(_informationTwo);
-            RtBoxInformation.ScrollToEnd();
-
-            Compare();
-
-            StatusImage = _redIcon;
-
-            var text = await ComputeText(btm);
-            await AppendTextAsync(TxtBoxColorInformation, text);
-
-            _colorTwo = text;
+            finally
+            {
+                IsWorking = false;
+            }
         }
 
         /// <summary>
@@ -396,8 +449,12 @@ namespace SlimViews
             var data = _analysis.CompareImages(_btmOne, _btmTwo);
 
             _similarity = $"{ViewResources.Similarity}{data.Similarity}{Environment.NewLine}";
-            RtBoxInformation.AppendText(_similarity);
-            RtBoxInformation.ScrollToEnd();
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                RtBoxInformation.AppendText(_similarity);
+                RtBoxInformation.ScrollToEnd();
+            });
         }
 
         /// <summary>

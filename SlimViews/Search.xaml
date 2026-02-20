@@ -1,16 +1,14 @@
-﻿<!-- ReSharper disable once MemberCanBeInternal -->
-<Window x:Class="SlimViews.Search"
+﻿<Window x:Class="SlimViews.Search"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
-        Title="Search" Height="150" Width="650">
-    <Window.DataContext>
-        <local:SearchView x:Name="View" />
-    </Window.DataContext>
-    <Grid>
+        Title="Search Images" Height="150" Width="650"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <Grid IsEnabled="{Binding IsNotWorking}" Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="120" />
@@ -34,28 +32,33 @@
             <RowDefinition Height="25" />
             <RowDefinition />
         </Grid.RowDefinitions>
+
+        <Label Content="Contains string: " Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" />
         <TextBox Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Grid.ColumnSpan="8"
-                 Text="{Binding Path=SearchString}" />
-        <TextBox Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Path=R}"
-                 VerticalAlignment="Stretch" />
-        <TextBox Grid.Column="4" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Path=G}"
-                 VerticalAlignment="Stretch" />
-        <TextBox Grid.Column="6" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Path=B}"
-                 VerticalAlignment="Stretch" />
-        <Label Content="Contains string: " Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1"
-               VerticalAlignment="Stretch" />
-        <Label Content="Contains RGB Values: " Grid.Column="1" Grid.Row="4" VerticalAlignment="Stretch"
-               HorizontalAlignment="Stretch" />
-        <Label Content="Color Range: " Grid.Column="8" Grid.Row="4" />
-        <TextBox Grid.Column="9" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Stretch"
-                 Text="{Binding Path=Range}"
-                 HorizontalAlignment="Stretch" />
-        <Button Content="Search" Grid.Column="11" HorizontalAlignment="Stretch" Grid.Row="4"
-                VerticalAlignment="Stretch" Command="{Binding SearchByColorCommand}" />
-        <Button Content="Search" Grid.Column="11" Grid.Row="1" HorizontalAlignment="Stretch"
-                Command="{Binding SearchByTextCommand}"
-                VerticalAlignment="Stretch" />
+                 Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 ToolTip="Find images where the file name contains this exact text" />
+
+        <Button Content="Search" Grid.Column="11" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                Command="{Binding SearchByTextCommand}" ToolTip="Search by file name" />
+
+        <Label Content="Contains RGB Values: " Grid.Column="1" Grid.Row="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+
+        <TextBox Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Stretch"
+                 Text="{Binding Path=Red, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Red Value (0-255)" />
+        <TextBox Grid.Column="4" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Stretch"
+                 Text="{Binding Path=Green, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Green Value (0-255)" />
+        <TextBox Grid.Column="6" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Stretch"
+                 Text="{Binding Path=Blue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Blue Value (0-255)" />
+
+        <Label Content="Color Range: " Grid.Column="8" Grid.Row="4" VerticalAlignment="Center" />
+        <TextBox Grid.Column="9" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                 Text="{Binding Path=Range, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 ToolTip="Tolerance for the color search (e.g., 3 means it will match colors slightly lighter or darker)" />
+
+        <Button Content="Search" Grid.Column="11" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Stretch" 
+                Command="{Binding SearchByColorCommand}" ToolTip="Scan all images for this specific color" />
     </Grid>
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

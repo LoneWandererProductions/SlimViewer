@@ -16,8 +16,10 @@ namespace SlimViews
     /// <summary>
     ///     Compares two images in detail
     /// </summary>
-    public sealed partial class DetailCompare
+    internal sealed partial class DetailCompare : Window
     {
+        private readonly DetailCompareView _viewModel;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailCompare" /> class.
@@ -25,8 +27,11 @@ namespace SlimViews
         public DetailCompare()
         {
             InitializeComponent();
-            View.RtBoxInformation = Information;
-            View.TxtBoxColorInformation = ColorInformation;
+            _viewModel = new DetailCompareView();
+            DataContext = _viewModel;
+
+            _viewModel.RtBoxInformation = Information;
+            _viewModel.TxtBoxColorInformation = ColorInformation;
         }
     }
 }
