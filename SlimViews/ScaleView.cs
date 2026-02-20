@@ -20,8 +20,19 @@ namespace SlimViews
     /// </summary>
     internal sealed class ScaleView : ViewModelBase
     {
+        /// <summary>
+        /// The degree
+        /// </summary>
         private int _degree;
+
+        /// <summary>
+        /// The okay command
+        /// </summary>
         private ICommand _okayCommand;
+
+        /// <summary>
+        /// The scaling
+        /// </summary>
         private float _scaling = 1;
 
         /// <summary>
@@ -32,27 +43,33 @@ namespace SlimViews
             get => _degree;
             set
             {
-                if (_degree != value && IsValidDegree(value))
+                if (IsValidDegree(value))
                 {
                     _degree = value;
-                    OnPropertyChanged(nameof(Degree));
                 }
+
+                // Always raise property changed, even if validation fails.
+                // This forces the UI TextBox to revert to the previous valid number
+                // instead of leaving the invalid text on the screen.
+                OnPropertyChanged(nameof(Degree));
             }
         }
 
         /// <summary>
-        ///     Gets or sets the scaling factor.
+        ///     Gets or sets the scaling factor. Must be greater than 0.
         /// </summary>
         public float Scaling
         {
             get => _scaling;
             set
             {
-                if (!Equals(_scaling, value))
+                // Basic validation: You can't scale an image to 0 or negative size
+                if (value > 0)
                 {
                     _scaling = value;
-                    OnPropertyChanged(nameof(Scaling));
                 }
+
+                OnPropertyChanged(nameof(Scaling));
             }
         }
 
