@@ -143,7 +143,7 @@ namespace Imaging
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 
-            // 1. Get the raw data into a WriteableBitmap first. 
+            // 1. Get the raw data into a WriteableBitmap first.
             // We use Bgra32 because it matches GDI+ 32bpp format exactly.
             var width = bitmap.Width;
             var height = bitmap.Height;

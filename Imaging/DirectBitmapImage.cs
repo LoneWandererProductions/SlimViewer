@@ -165,7 +165,7 @@ namespace Imaging
         ///     Fills the bitmap with a uniform color using SIMD.
         /// </summary>
         /// <param name="color">The color to fill with.</param>
-        public unsafe void FillSimd(Color color)
+        public void FillSimd(Color color)
         {
             var packed = (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
 

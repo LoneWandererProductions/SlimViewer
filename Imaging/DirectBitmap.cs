@@ -154,7 +154,12 @@ namespace Imaging
         /// <inheritdoc />
         public int Width { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets or sets the bits handle.
+        /// </summary>
+        /// <value>
+        /// The bits handle.
+        /// </value>
         private GCHandle BitsHandle { get; set; }
 
         /// <inheritdoc />
