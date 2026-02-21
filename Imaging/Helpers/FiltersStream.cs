@@ -430,7 +430,7 @@ namespace Imaging.Helpers
                 result.SetPixels(pixelsToSet);
 
                 // CRITICAL: We must clone because 'result' is about to die
-                return (Bitmap)result.Bitmap.Clone();
+                return (Bitmap)result.UnsafeBitmap.Clone();
             }
             catch (Exception ex)
             {
@@ -483,7 +483,7 @@ namespace Imaging.Helpers
             }
 
             // Dispose the base bitmap and return the dithered result
-            return new Bitmap(dbm.Bitmap);
+            return new Bitmap(dbm.UnsafeBitmap);
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace Imaging.Helpers
             var gaussianKernel = ImageHelper.GenerateGaussianKernel(sigma, 5);
 
             // Apply the Gaussian blur filter
-            return ApplyFilter(dbmBase.Bitmap, gaussianKernel);
+            return ApplyFilter(dbmBase.UnsafeBitmap, gaussianKernel);
         }
 
         /// <summary>
@@ -906,7 +906,7 @@ namespace Imaging.Helpers
         /// <returns>Filtered Image</returns>
         private static Bitmap? SubtractImages(Image imgOne, Image imgTwo)
         {
-            var result = new DirectBitmap(imgOne.Width, imgOne.Height);
+            var dbm = new DirectBitmap(imgOne.Width, imgOne.Height);
             // Prepare a list to store the pixels to set in bulk using SIMD
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
@@ -930,9 +930,9 @@ namespace Imaging.Helpers
             // Use SIMD to set all the pixels in bulk
             try
             {
-                result.SetPixels(pixelsToSet);
+                dbm.SetPixels(pixelsToSet);
 
-                return result.Bitmap;
+                return new Bitmap(dbm.UnsafeBitmap);
             }
             catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
             {

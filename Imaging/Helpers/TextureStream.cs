@@ -80,7 +80,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(noiseBitmap.Bitmap);
+            return new Bitmap(noiseBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(cloudsBitmap.Bitmap);
+            return new Bitmap(cloudsBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(marbleBitmap.Bitmap);
+            return new Bitmap(marbleBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace Imaging.Helpers
             pixelData.Clear();
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(woodBitmap.Bitmap);
+            return new Bitmap(woodBitmap.UnsafeBitmap);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace Imaging.Helpers
             waveBitmap.SetPixels(pixelArray);
 
             // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return new Bitmap(waveBitmap.Bitmap);
+            return new Bitmap(waveBitmap.UnsafeBitmap);
         }
 
         /// <summary>

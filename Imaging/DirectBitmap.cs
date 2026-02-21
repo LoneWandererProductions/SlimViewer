@@ -84,7 +84,7 @@ namespace Imaging
                 }
             }
 
-            Bitmap = new Bitmap(
+            UnsafeBitmap = new Bitmap(
                 Width,
                 Height,
                 Width * Marshal.SizeOf<Pixel32>(),
@@ -120,7 +120,7 @@ namespace Imaging
                 Height = image.Height;
                 Initiate();
 
-                using var graphics = Graphics.FromImage(Bitmap);
+                using var graphics = Graphics.FromImage(UnsafeBitmap);
                 graphics.DrawImage(image, new Rectangle(0, 0, Width, Height), 0, 0, Width, Height, GraphicsUnit.Pixel);
             }
             catch (Exception ex)
@@ -134,11 +134,14 @@ namespace Imaging
 
         /// <summary>
         ///     Gets the bitmap.
+        ///     Be careful, we pass a reference that never gets copied, so any changes to this Bitmap will affect the DirectBitmap and vice versa.
+        ///     GcHandle is pinned, so the memory address of the pixel data will not change, allowing for direct manipulation of the bitmap's pixels.
+        ///     This memory is not managed by the .NET runtime, so it is crucial to ensure that it is properly released to avoid memory leaks. Always call Dispose() when done with the DirectBitmap to free the pinned handle and associated resources.
         /// </summary>
         /// <value>
         ///     The bitmap.
         /// </value>
-        public Bitmap Bitmap { get; private set; }
+        public Bitmap UnsafeBitmap { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="DirectBitmap" /> is disposed.
@@ -211,7 +214,7 @@ namespace Imaging
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
 
             // Create Bitmap from pinned Pixel32 array
-            Bitmap = new Bitmap(
+            UnsafeBitmap = new Bitmap(
                 Width,
                 Height,
                 Width * Marshal.SizeOf<Pixel32>(), // stride in bytes
@@ -511,7 +514,7 @@ namespace Imaging
         /// <returns>BitmapImage image data</returns>
         public BitmapImage ToBitmapImage()
         {
-            return Bitmap.ToBitmapImage();
+            return UnsafeBitmap.ToBitmapImage();
         }
 
         /// <summary>
@@ -594,7 +597,7 @@ namespace Imaging
             if (disposing)
             {
                 // Managed resources (objects that implement IDisposable)
-                Bitmap?.Dispose();
+                UnsafeBitmap?.Dispose();
             }
 
             // Unmanaged resources/Handles (Free these always)
