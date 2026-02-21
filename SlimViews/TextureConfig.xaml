@@ -4,7 +4,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Title="Texture Config" Height="800" Width="450">
@@ -52,7 +51,7 @@
 
                 <TextBlock Grid.Row="0" FontWeight="Bold" Text="Texture Type" Margin="0,5" />
                 <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding TextureOptions}"
-                          SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}" 
+                          SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}"
                           ToolTip="Select the pattern algorithm to configure" />
 
                 <TextBlock Grid.Row="1" Grid.ColumnSpan="2" FontWeight="Bold" Text="General Settings" Margin="0,15,0,5" />
@@ -76,37 +75,46 @@
                 <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding YPeriod}" IsEnabled="{Binding IsYPeriodActive}" />
 
                 <Label Content="Turbulence Power" Grid.Row="7" Grid.Column="0" />
-                <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding TurbulencePower}" IsEnabled="{Binding IsTurbulencePowerActive}" />
+                <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding TurbulencePower}"
+                         IsEnabled="{Binding IsTurbulencePowerActive}" />
 
                 <Label Content="Is Monochrome" Grid.Row="10" Grid.Column="0" />
-                <CheckBox Grid.Row="10" Grid.Column="1" IsChecked="{Binding IsMonochrome}" IsEnabled="{Binding IsMonochromeActive}" VerticalAlignment="Center" />
+                <CheckBox Grid.Row="10" Grid.Column="1" IsChecked="{Binding IsMonochrome}"
+                          IsEnabled="{Binding IsMonochromeActive}" VerticalAlignment="Center" />
 
                 <Label Content="Use Turbulence" Grid.Row="13" Grid.Column="0" />
-                <CheckBox Grid.Row="13" Grid.Column="1" IsChecked="{Binding UseTurbulence}" IsEnabled="{Binding IsUseTurbulenceActive}" VerticalAlignment="Center" />
+                <CheckBox Grid.Row="13" Grid.Column="1" IsChecked="{Binding UseTurbulence}"
+                          IsEnabled="{Binding IsUseTurbulenceActive}" VerticalAlignment="Center" />
 
-                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" FontWeight="Bold" Text="Crosshatch Settings" Margin="0,15,0,5" />
+                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" FontWeight="Bold" Text="Crosshatch Settings"
+                           Margin="0,15,0,5" />
 
                 <Label Content="Line Spacing" Grid.Row="16" Grid.Column="0" />
-                <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding LineSpacing}" IsEnabled="{Binding IsLineSpacingActive}" />
+                <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding LineSpacing}"
+                         IsEnabled="{Binding IsLineSpacingActive}" />
 
                 <Label Content="Line Thickness" Grid.Row="18" Grid.Column="0" />
-                <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding LineThickness}" IsEnabled="{Binding IsLineThicknessActive}" />
+                <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding LineThickness}"
+                         IsEnabled="{Binding IsLineThicknessActive}" />
 
-                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" FontWeight="Bold" Text="Advanced Texture Settings" Margin="0,15,0,5" />
+                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" FontWeight="Bold" Text="Advanced Texture Settings"
+                           Margin="0,15,0,5" />
 
                 <Label Content="Wave Frequency" Grid.Row="22" Grid.Column="0" />
-                <TextBox Grid.Row="22" Grid.Column="1" Text="{Binding WaveFrequency}" IsEnabled="{Binding IsWaveFrequencyActive}" />
+                <TextBox Grid.Row="22" Grid.Column="1" Text="{Binding WaveFrequency}"
+                         IsEnabled="{Binding IsWaveFrequencyActive}" />
 
                 <Label Content="Randomization" Grid.Row="24" Grid.Column="0" />
-                <TextBox Grid.Row="24" Grid.Column="1" Text="{Binding RandomizationFactor}" IsEnabled="{Binding IsRandomizationFactorActive}" />
+                <TextBox Grid.Row="24" Grid.Column="1" Text="{Binding RandomizationFactor}"
+                         IsEnabled="{Binding IsRandomizationFactorActive}" />
             </Grid>
         </ScrollViewer>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
             <Button Content="Save" Width="80" Margin="5" Command="{Binding SaveCommand}" />
             <Button Content="Reset" Width="80" Margin="5" Command="{Binding ResetCommand}" />
-            <Button Content="Cancel" Width="80" Margin="5" 
-                    Command="{Binding CancelCommand}" 
+            <Button Content="Cancel" Width="80" Margin="5"
+                    Command="{Binding CancelCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
         </StackPanel>
     </Grid>

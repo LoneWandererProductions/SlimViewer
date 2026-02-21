@@ -363,7 +363,8 @@ namespace SlimViews
         {
             if (!Directory.Exists(_input) || !Directory.Exists(_output))
             {
-                MessageBox.Show("Please select valid Input and Output directories.", "Invalid Directories", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select valid Input and Output directories.", "Invalid Directories",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -371,7 +372,8 @@ namespace SlimViews
 
             if (files.IsNullOrEmpty())
             {
-                MessageBox.Show("No valid images found in the Input directory.", "No Files", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("No valid images found in the Input directory.", "No Files", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 return;
             }
 
@@ -390,7 +392,8 @@ namespace SlimViews
 
                         count++;
                         // Dispatcher is required here to safely update the UI property from a background thread
-                        Application.Current.Dispatcher.Invoke(() => StatusMessage = $"Processing {count} of {total}...");
+                        Application.Current.Dispatcher.Invoke(() =>
+                            StatusMessage = $"Processing {count} of {total}...");
 
                         using var bitmap = ImageProcessor.LoadImage(filePath);
                         if (bitmap == null) continue;
@@ -438,7 +441,8 @@ namespace SlimViews
                 });
 
                 StatusMessage = "Processing Complete!";
-                MessageBox.Show($"Successfully processed {count} images.", "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Successfully processed {count} images.", "Complete", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

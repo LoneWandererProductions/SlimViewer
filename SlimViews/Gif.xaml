@@ -3,8 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
-        xmlns:local="clr-namespace:SlimViews"
         xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
         mc:Ignorable="d"
         Title="Gif Editor" Height="450" Width="800" Loaded="Window_Loaded">
@@ -15,11 +13,16 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="Menu">
-                <MenuItem Header="Open Gif" Command="{Binding OpenCommand}" ToolTip="Break a GIF down into individual frames" />
-                <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" ToolTip="Combine a folder of images into a single GIF" />
-                <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}" IsEnabled="{Binding Path=IsActive}" ToolTip="Delete temporary files" />
-                <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path=IsActive}" ToolTip="Save selected frames as a new GIF" />
-                <MenuItem Header="Save as images" Command="{Binding SaveImagesCommand}" IsEnabled="{Binding Path=IsActive}" ToolTip="Export selected frames as individual images" />
+                <MenuItem Header="Open Gif" Command="{Binding OpenCommand}"
+                          ToolTip="Break a GIF down into individual frames" />
+                <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}"
+                          ToolTip="Combine a folder of images into a single GIF" />
+                <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}"
+                          IsEnabled="{Binding Path=IsActive}" ToolTip="Delete temporary files" />
+                <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path=IsActive}"
+                          ToolTip="Save selected frames as a new GIF" />
+                <MenuItem Header="Save as images" Command="{Binding SaveImagesCommand}"
+                          IsEnabled="{Binding Path=IsActive}" ToolTip="Export selected frames as individual images" />
                 <Separator />
                 <MenuItem Header="Close" Command="{Binding CloseCommand}" />
             </MenuItem>
@@ -88,7 +91,8 @@
                 <Label Grid.Row="5" Grid.Column="0" Content="Output Path" VerticalAlignment="Center" />
 
                 <CheckBox Content="Auto Clear" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Stretch"
-                          IsEnabled="{Binding Path=AutoClear}" ToolTip="Automatically delete temporary frames when closing" />
+                          IsEnabled="{Binding Path=AutoClear}"
+                          ToolTip="Automatically delete temporary frames when closing" />
 
                 <TextBox Grid.Row="1" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Path=FilePath, Mode=OneWay}" IsReadOnly="True" Background="#F0F0F0" />
@@ -97,7 +101,8 @@
                 <TextBox Grid.Row="5" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Path=OutputPath, Mode=OneWay}" IsReadOnly="True" Background="#F0F0F0" />
 
-                <Button Grid.Row="7" Grid.Column="0" Content="Clear" Command="{Binding ClearCommand}" ToolTip="Manually clear temporary files" />
+                <Button Grid.Row="7" Grid.Column="0" Content="Clear" Command="{Binding ClearCommand}"
+                        ToolTip="Manually clear temporary files" />
             </Grid>
         </Grid>
     </Grid>

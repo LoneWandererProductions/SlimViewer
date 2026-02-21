@@ -7,9 +7,9 @@
         xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
         xmlns:commonControls="clr-namespace:CommonControls;assembly=CommonControls"
         xmlns:external="clr-namespace:CommonControls;assembly=CommonControls"
-        xmlns:local="clr-namespace:SlimViewer" 
+        xmlns:local="clr-namespace:SlimViewer"
         xmlns:slimControls="clr-namespace:SlimControls;assembly=SlimControls"
-        xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews" 
+        xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews"
         d:DataContext="{d:DesignInstance Type=slimviews:ImageView}"
         mc:Ignorable="d"
         Title="Slim Viewer"
@@ -49,24 +49,36 @@
 
             <Menu Grid.Column="0" VerticalAlignment="Center">
                 <MenuItem Header="Menu">
-                    <MenuItem Header="Open" Command="{Binding Commands.Open}" InputGestureText="Ctrl+O" ToolTip="Open an image file" />
-                    <MenuItem Header="Open Folder" Command="{Binding Commands.Folder}" ToolTip="Open all images in a folder" />
-                    <MenuItem Header="Open CBZ" Command="{Binding Commands.OpenCbz}" ToolTip="Open a comic book archive (CBZ)" />
+                    <MenuItem Header="Open" Command="{Binding Commands.Open}" InputGestureText="Ctrl+O"
+                              ToolTip="Open an image file" />
+                    <MenuItem Header="Open Folder" Command="{Binding Commands.Folder}"
+                              ToolTip="Open all images in a folder" />
+                    <MenuItem Header="Open CBZ" Command="{Binding Commands.OpenCbz}"
+                              ToolTip="Open a comic book archive (CBZ)" />
                     <Separator />
-                    <MenuItem Header="Search" Command="{Binding Commands.FolderSearch}" InputGestureText="Ctrl+F" ToolTip="Search for files by name or color" />
+                    <MenuItem Header="Search" Command="{Binding Commands.FolderSearch}" InputGestureText="Ctrl+F"
+                              ToolTip="Search for files by name or color" />
                     <Separator />
-                    <MenuItem Header="Save" Command="{Binding Commands.Save}" IsEnabled="{Binding Path=IsImageActive}" InputGestureText="Ctrl+S" ToolTip="Save the currently active image" />
-                    <MenuItem Header="Delete" Command="{Binding Commands.Delete}" IsEnabled="{Binding Path=IsImageActive}" InputGestureText="Del" ToolTip="Delete the current image from disk" />
-                    <MenuItem Header="Refresh" Command="{Binding Commands.Refresh}" IsEnabled="{Binding Path=IsImageActive}" InputGestureText="F5" ToolTip="Reload the current image" />
+                    <MenuItem Header="Save" Command="{Binding Commands.Save}" IsEnabled="{Binding Path=IsImageActive}"
+                              InputGestureText="Ctrl+S" ToolTip="Save the currently active image" />
+                    <MenuItem Header="Delete" Command="{Binding Commands.Delete}"
+                              IsEnabled="{Binding Path=IsImageActive}" InputGestureText="Del"
+                              ToolTip="Delete the current image from disk" />
+                    <MenuItem Header="Refresh" Command="{Binding Commands.Refresh}"
+                              IsEnabled="{Binding Path=IsImageActive}" InputGestureText="F5"
+                              ToolTip="Reload the current image" />
                     <Separator />
                     <MenuItem Header="Close" Command="{Binding Commands.Close}" ToolTip="Close the application" />
                 </MenuItem>
 
                 <MenuItem Header="Edit">
                     <MenuItem Header="Filter">
-                        <MenuItem Header="Configure Filter" Command="{Binding Commands.FilterConfig}" ToolTip="Open filter configuration settings" />
+                        <MenuItem Header="Configure Filter" Command="{Binding Commands.FilterConfig}"
+                                  ToolTip="Open filter configuration settings" />
                         <Separator />
-                        <MenuItem Header="Sepia" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSepia}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Sepia" Command="{Binding Commands.ApplyFilter}"
+                                  CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSepia}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
                         <MenuItem Header="Pixelate Image">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -75,60 +87,78 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBox Text="{Binding Path=PixelWidth, Mode=TwoWay}" ToolTip="Pixelation width" />
-                                <Button Content="Okay" Grid.Column="2" Command="{Binding Commands.Pixelate}" IsEnabled="{Binding Path=IsImageActive}" />
+                                <Button Content="Okay" Grid.Column="2" Command="{Binding Commands.Pixelate}"
+                                        IsEnabled="{Binding Path=IsImageActive}" />
                             </Grid>
                         </MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="Texture">
-                        <MenuItem Header="Configure Texture" Command="{Binding Commands.TextureConfig}" ToolTip="Open texture configuration settings" />
+                        <MenuItem Header="Configure Texture" Command="{Binding Commands.TextureConfig}"
+                                  ToolTip="Open texture configuration settings" />
                         <Separator />
-                        <MenuItem Header="TextureNoise" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureNoise}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureNoise" Command="{Binding Commands.ApplyTexture}"
+                                  CommandParameter="{x:Static slimControls:ViewGuiResources.TextureNoise}"
+                                  IsEnabled="{Binding Path=IsImageActive}" />
                     </MenuItem>
 
                     <Separator />
-                    <MenuItem Header="Mirror" Command="{Binding Commands.Mirror}" IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Rotate 90°" Command="{Binding Commands.RotateForward}" IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Rotate -90°" Command="{Binding Commands.RotateBackward}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Mirror" Command="{Binding Commands.Mirror}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Rotate 90°" Command="{Binding Commands.RotateForward}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Rotate -90°" Command="{Binding Commands.RotateBackward}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
                     <Separator />
-                    <MenuItem Header="Brighten" Command="{Binding Commands.Brighten}" IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Darken" Command="{Binding Commands.Darken}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Brighten" Command="{Binding Commands.Brighten}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Darken" Command="{Binding Commands.Darken}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
                     <Separator />
-                    <MenuItem Header="Scale Image" Command="{Binding Commands.Scale}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Scale Image" Command="{Binding Commands.Scale}"
+                              IsEnabled="{Binding Path=IsImageActive}" />
                 </MenuItem>
 
                 <MenuItem Header="Tools">
-                    <MenuItem Header="Batch Rename" Command="{Binding Commands.FolderRename}" ToolTip="Rename multiple files at once" />
-                    <MenuItem Header="Format Converter" Command="{Binding Commands.FolderConvert}" ToolTip="Convert multiple files to another format" />
-                    <MenuItem Header="Mass Resizer" Command="{Binding Commands.ResizerWindow}" ToolTip="Resize all images in a folder" />
+                    <MenuItem Header="Batch Rename" Command="{Binding Commands.FolderRename}"
+                              ToolTip="Rename multiple files at once" />
+                    <MenuItem Header="Format Converter" Command="{Binding Commands.FolderConvert}"
+                              ToolTip="Convert multiple files to another format" />
+                    <MenuItem Header="Mass Resizer" Command="{Binding Commands.ResizerWindow}"
+                              ToolTip="Resize all images in a folder" />
                     <Separator />
-                    <MenuItem Header="Find Duplicates" Command="{Binding Commands.Duplicate}" ToolTip="Search for exact duplicate images" />
+                    <MenuItem Header="Find Duplicates" Command="{Binding Commands.Duplicate}"
+                              ToolTip="Search for exact duplicate images" />
                     <MenuItem Header="Find Similar Images">
-                        <MenuItem Header="Near Identical (95%)" 
-                          Command="{Binding Commands.Similar}" 
-                          CommandParameter="95" 
-                          ToolTip="Find images with very minor differences." />
-                                    <MenuItem Header="Highly Similar (90%)" 
-                          Command="{Binding Commands.Similar}" 
-                          CommandParameter="90" 
-                          ToolTip="The recommended setting for finding duplicates and resizes." />
-                                    <MenuItem Header="Visual Match (80%)" 
-                          Command="{Binding Commands.Similar}" 
-                          CommandParameter="80" 
-                          ToolTip="Find images that share the same composition." />
-                                    <MenuItem Header="Loose Match (70%)" 
-                          Command="{Binding Commands.Similar}" 
-                          CommandParameter="70" 
-                          ToolTip="Find photos from the same session or burst." />
+                        <MenuItem Header="Near Identical (95%)"
+                                  Command="{Binding Commands.Similar}"
+                                  CommandParameter="95"
+                                  ToolTip="Find images with very minor differences." />
+                        <MenuItem Header="Highly Similar (90%)"
+                                  Command="{Binding Commands.Similar}"
+                                  CommandParameter="90"
+                                  ToolTip="The recommended setting for finding duplicates and resizes." />
+                        <MenuItem Header="Visual Match (80%)"
+                                  Command="{Binding Commands.Similar}"
+                                  CommandParameter="80"
+                                  ToolTip="Find images that share the same composition." />
+                        <MenuItem Header="Loose Match (70%)"
+                                  Command="{Binding Commands.Similar}"
+                                  CommandParameter="70"
+                                  ToolTip="Find photos from the same session or burst." />
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}" ToolTip="Open the GIF creation and extraction tool" />
-                    <MenuItem Header="Image Analyzer" Command="{Binding Commands.AnalyzerWindow}" ToolTip="View detailed color and metadata analysis" />
+                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}"
+                              ToolTip="Open the GIF creation and extraction tool" />
+                    <MenuItem Header="Image Analyzer" Command="{Binding Commands.AnalyzerWindow}"
+                              ToolTip="View detailed color and metadata analysis" />
                 </MenuItem>
 
                 <MenuItem Header="Experimental">
-                    <MenuItem Header="Open Cif" Command="{Binding Commands.OpenCif}" ToolTip="Open experimental CIF format" />
-                    <MenuItem Header="Convert to Cif" Command="{Binding Commands.ConvertCif}" ToolTip="Convert current image to CIF format" />
+                    <MenuItem Header="Open Cif" Command="{Binding Commands.OpenCif}"
+                              ToolTip="Open experimental CIF format" />
+                    <MenuItem Header="Convert to Cif" Command="{Binding Commands.ConvertCif}"
+                              ToolTip="Convert current image to CIF format" />
                     <Separator />
                     <CheckBox IsChecked="{Binding Path=CompressCif}" ToolTip="Enable compression for CIF files">Compress Cif</CheckBox>
                 </MenuItem>
@@ -140,25 +170,33 @@
                 </MenuItem>
             </Menu>
 
-            <Button Grid.Column="2" Content="Remove from List" Command="{Binding Commands.Clear}" IsEnabled="{Binding Path=IsImageActive}" Padding="5,2" ToolTip="Remove the current image from the viewer's list (does not delete the file)" />
+            <Button Grid.Column="2" Content="Remove from List" Command="{Binding Commands.Clear}"
+                    IsEnabled="{Binding Path=IsImageActive}" Padding="5,2"
+                    ToolTip="Remove the current image from the viewer's list (does not delete the file)" />
 
             <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
-                <Label Content="File Count:" VerticalAlignment="Center" FontWeight="Bold"/>
-                <Label Content="{Binding Path=Count}" VerticalAlignment="Center" Margin="0,0,10,0" ToolTip="Total number of images in the current list"/>
-                <Images:ColorPickerMenu x:Name="ColorPick" ColorChangedCommand="{Binding Commands.ColorChanged}" ToolTip="Select background color" />
+                <Label Content="File Count:" VerticalAlignment="Center" FontWeight="Bold" />
+                <Label Content="{Binding Path=Count}" VerticalAlignment="Center" Margin="0,0,10,0"
+                       ToolTip="Total number of images in the current list" />
+                <Images:ColorPickerMenu x:Name="ColorPick" ColorChangedCommand="{Binding Commands.ColorChanged}"
+                                        ToolTip="Select background color" />
             </StackPanel>
 
-            <Slider Grid.Column="6" Minimum="0.1" Maximum="5.0" Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}" VerticalAlignment="Center" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Adjust zoom level" />
+            <Slider Grid.Column="6" Minimum="0.1" Maximum="5.0"
+                    Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}" VerticalAlignment="Center"
+                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Adjust zoom level" />
         </Grid>
 
-        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,1,0,1" Background="#F5F5F5" Padding="2">
-            <slimControls:DrawingToolBarControl 
+        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,1,0,1"
+                Background="#F5F5F5" Padding="2">
+            <slimControls:DrawingToolBarControl
                 HorizontalAlignment="Left"
                 ToolState="{Binding DataContext.MyDrawingState, RelativeSource={RelativeSource AncestorType=Window}}"
                 ToolChangedCommand="{Binding DataContext.Commands.ToolChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
         </Border>
 
-        <GridSplitter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray" />
+        <GridSplitter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center" Background="Gray" />
 
         <Grid Grid.Row="3" Grid.Column="1">
             <Grid.ColumnDefinitions>
@@ -167,7 +205,9 @@
                 <ColumnDefinition Width="40" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="←" Command="{Binding Commands.Previous}" Visibility="{Binding LeftButtonVisibility}" VerticalAlignment="Center" Height="50" Opacity="0.5" ToolTip="Previous Image (Left Arrow)" />
+            <Button Grid.Column="0" Content="←" Command="{Binding Commands.Previous}"
+                    Visibility="{Binding LeftButtonVisibility}" VerticalAlignment="Center" Height="50" Opacity="0.5"
+                    ToolTip="Previous Image (Left Arrow)" />
 
             <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" IsTabStop="True"
                               ItemsSource="{Binding Bmp}" ImageGifPath="{Binding GifPath}"
@@ -175,10 +215,13 @@
                               SelectedFrameCommand="{Binding Commands.SelectedFrame}"
                               SelectedPointCommand="{Binding Commands.SelectedPoint}" />
 
-            <Button Grid.Column="2" Content="→" Command="{Binding Commands.Next}" Visibility="{Binding RightButtonVisibility}" VerticalAlignment="Center" Height="50" Opacity="0.5" ToolTip="Next Image (Right Arrow)" />
+            <Button Grid.Column="2" Content="→" Command="{Binding Commands.Next}"
+                    Visibility="{Binding RightButtonVisibility}" VerticalAlignment="Center" Height="50" Opacity="0.5"
+                    ToolTip="Next Image (Right Arrow)" />
         </Grid>
 
-        <GridSplitter Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray" Visibility="{Binding ThumbnailVisibility}" />
+        <GridSplitter Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center" Background="Gray" Visibility="{Binding ThumbnailVisibility}" />
 
         <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}">
             <Grid.RowDefinitions>
@@ -198,22 +241,31 @@
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
 
-            <Button Content="D" Grid.Row="0" Grid.Column="0" Command="{Binding Commands.Delete}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Delete file from disk (Del)" />
-            <Button Content="//" Grid.Row="0" Grid.Column="1" Command="{Binding Commands.Explorer}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Open file location in Windows Explorer" />
+            <Button Content="D" Grid.Row="0" Grid.Column="0" Command="{Binding Commands.Delete}"
+                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Delete file from disk (Del)" />
+            <Button Content="//" Grid.Row="0" Grid.Column="1" Command="{Binding Commands.Explorer}"
+                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Open file location in Windows Explorer" />
 
-            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Path=Information}" TextWrapping="NoWrap" Focusable="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" IsReadOnly="True" ToolTip="Image Information" />
+            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Path=Information}"
+                     TextWrapping="NoWrap" Focusable="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     IsReadOnly="True" ToolTip="Image Information" />
 
             <Image Grid.Row="2" Grid.Column="0" Source="{Binding StatusImage}" ToolTip="Current application status" />
-            <Button Content="R" Grid.Row="2" Grid.Column="1" Command="{Binding Commands.Rename}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Rename current image" />
+            <Button Content="R" Grid.Row="2" Grid.Column="1" Command="{Binding Commands.Rename}"
+                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Rename current image" />
 
-            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" ToolTip="File Name (Press Enter to rename)">
+            <TextBox Grid.Row="2" Grid.Column="2"
+                     Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     TextWrapping="Wrap" ToolTip="File Name (Press Enter to rename)">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding Commands.Rename}" Key="Enter" />
                 </TextBox.InputBindings>
             </TextBox>
 
-            <Button Content="Move" Grid.Row="2" Grid.Column="3" Command="{Binding Commands.Move}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Move current image to another folder" />
-            <Button Content="Move All" Grid.Row="2" Grid.Column="5" Command="{Binding Commands.MoveAll}" IsEnabled="{Binding Path=IsImageActive}" ToolTip="Move all images in list to another folder" />
+            <Button Content="Move" Grid.Row="2" Grid.Column="3" Command="{Binding Commands.Move}"
+                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Move current image to another folder" />
+            <Button Content="Move All" Grid.Row="2" Grid.Column="5" Command="{Binding Commands.MoveAll}"
+                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Move all images in list to another folder" />
 
             <Images:Thumbnails Name="Thumbnail" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6"
                                ItemsSource="{Binding Observer}" ThumbCellSize="100" ThumbHeight="1"

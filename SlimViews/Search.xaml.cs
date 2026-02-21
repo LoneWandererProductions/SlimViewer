@@ -17,8 +17,11 @@ namespace SlimViews
     /// <summary>
     ///     Search Window
     /// </summary>
-    public sealed partial class Search : Window
+    public sealed partial class Search
     {
+        /// <summary>
+        /// The view model
+        /// </summary>
         private readonly SearchView _viewModel;
 
         /// <inheritdoc />

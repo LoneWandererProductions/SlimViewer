@@ -6,15 +6,15 @@
         Background="#F5F5F5">
     <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="SlimViewer" FontSize="24" FontWeight="Bold" Foreground="#333"/>
-        <TextBlock Grid.Row="1" Text="Version 1.0.0 | Created by Peter Geinitz (Wayfarer)" 
-                   FontSize="12" Foreground="#666" Margin="0,5,0,15"/>
+        <TextBlock Grid.Row="0" Text="SlimViewer" FontSize="24" FontWeight="Bold" Foreground="#333" />
+        <TextBlock Grid.Row="1" Text="Version 1.0.0 | Created by Peter Geinitz (Wayfarer)"
+                   FontSize="12" Foreground="#666" Margin="0,5,0,15" />
 
         <GroupBox Grid.Row="2" Header="License Agreement" Padding="5">
             <TextBox IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="White">
@@ -26,7 +26,7 @@
             </TextBox>
         </GroupBox>
 
-        <Button Grid.Row="3" Content="Close" Width="100" Height="30" HorizontalAlignment="Right" 
+        <Button Grid.Row="3" Content="Close" Width="100" Height="30" HorizontalAlignment="Right"
                 Margin="0,15,0,0" IsCancel="True" Click="Button_Click" />
     </Grid>
 </Window>

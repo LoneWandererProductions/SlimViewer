@@ -22,10 +22,15 @@ namespace SlimControls
         public event EventHandler ToolOrModeChanged;
 
         private bool _areAreaModesEnabled;
+
         public bool AreAreaModesEnabled
         {
             get => _areAreaModesEnabled;
-            set { _areAreaModesEnabled = value; OnPropertyChanged(); }
+            set
+            {
+                _areAreaModesEnabled = value;
+                OnPropertyChanged();
+            }
         }
 
         private void OnToolOrModeChanged()
@@ -79,17 +84,27 @@ namespace SlimControls
 
         // Brush Properties (added full implementation for notification)
         private double _brushSize = 5;
+
         public double BrushSize
         {
             get => _brushSize;
-            set { _brushSize = value; OnPropertyChanged(); }
+            set
+            {
+                _brushSize = value;
+                OnPropertyChanged();
+            }
         }
 
         private string _brushColor = "#000000";
+
         public string BrushColor
         {
             get => _brushColor;
-            set { _brushColor = value; OnPropertyChanged(); }
+            set
+            {
+                _brushColor = value;
+                OnPropertyChanged();
+            }
         }
 
         public double BrushOpacity { get; set; } = 1.0;
@@ -108,7 +123,8 @@ namespace SlimControls
         private void UpdateSubStates()
         {
             // 1. Check if the Active Tool is "Simple"
-            bool isSimpleTool = ActiveTool == DrawTool.Pencil || ActiveTool == DrawTool.Eraser || ActiveTool == DrawTool.ColorPicker;
+            bool isSimpleTool = ActiveTool == DrawTool.Pencil || ActiveTool == DrawTool.Eraser ||
+                                ActiveTool == DrawTool.ColorPicker;
 
             // 2. Main Switch: Enable/Disable the entire Mode group
             AreAreaModesEnabled = !isSimpleTool;

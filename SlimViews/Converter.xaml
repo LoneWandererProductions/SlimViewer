@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
         x:ClassModifier="internal"
         Title="Format Converter" Height="250" Width="300"
@@ -29,23 +28,26 @@
 
         <ComboBox ItemsSource="{Binding Path=SelectedSource}"
                   SelectedItem="{Binding Path=SourceSelect, UpdateSourceTrigger=PropertyChanged}"
-                  Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" 
+                  Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch"
                   ToolTip="Select the current format of the images you want to convert" />
 
         <ComboBox ItemsSource="{Binding Path=ExtensionSource}"
                   SelectedItem="{Binding Path=ExtensionSelect, UpdateSourceTrigger=PropertyChanged}"
-                  Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Stretch" 
+                  Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Stretch"
                   ToolTip="Select the new format you want to convert the images into" />
 
-        <Button Content="Okay" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Stretch"
+        <Button Content="Okay" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="5"
+                VerticalAlignment="Stretch"
                 Command="{Binding OkayCommand}"
-                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                 ToolTip="Apply conversion settings" />
 
-        <Label Content="{Binding Path=Source}" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Center" 
+        <Label Content="{Binding Path=Source}" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1"
+               VerticalAlignment="Center"
                ToolTip="Current Source Extension" />
 
-        <Label Content="{Binding Path=Target}" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Center" 
+        <Label Content="{Binding Path=Target}" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3"
+               VerticalAlignment="Center"
                ToolTip="Current Target Extension" />
     </Grid>
 

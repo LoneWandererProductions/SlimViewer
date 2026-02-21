@@ -335,6 +335,7 @@ namespace ExtendedSystemObjects
                 _buffer = IntPtr.Zero;
                 _ptr = null; // EnsureNotDisposed checks often rely on this being null
             }
+
             _disposed = true;
         }
     }

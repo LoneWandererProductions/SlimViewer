@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
         x:ClassModifier="internal"
         Title="Rename" Height="400" Width="400">
@@ -28,14 +27,14 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Content="Replacement String:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom"/>
+        <Label Content="Replacement String:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom" />
         <TextBox Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Height="25"
-                 Text="{Binding Path=Replacement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 Text="{Binding Path=Replacement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  ToolTip="Enter the target text you want to add, remove, or find." />
 
-        <Label Content="New String (For Replace):" Grid.Column="2" Grid.Row="0" VerticalAlignment="Bottom"/>
+        <Label Content="New String (For Replace):" Grid.Column="2" Grid.Row="0" VerticalAlignment="Bottom" />
         <TextBox Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Height="25"
-                 Text="{Binding Replacer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 Text="{Binding Replacer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  ToolTip="Enter the new text that will replace the old text." />
 
         <Button Content="Add Appendages" Grid.Column="0" Grid.Row="2" Margin="0,5,0,0" Height="25"
@@ -45,10 +44,11 @@
 
         <Button Content="Remove Content" Grid.Column="0" Grid.Row="3" Margin="0,5,0,0" Height="25"
                 Command="{Binding RemoveCommand}" ToolTip="Removes all instances of the target text." />
-        <Button Content="Replace String" Grid.Column="2" Grid.Row="3" Margin="0,5,0,0" Height="25" 
+        <Button Content="Replace String" Grid.Column="2" Grid.Row="3" Margin="0,5,0,0" Height="25"
                 Command="{Binding ReplaceCommand}" ToolTip="Replaces the target text with the new string." />
 
-        <Label Content="Chars to Strip from Start:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Bottom" Margin="0,5,0,0"/>
+        <Label Content="Chars to Strip from Start:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Bottom"
+               Margin="0,5,0,0" />
         <TextBox Grid.Column="0" Grid.Row="5" TextWrapping="Wrap" Height="25"
                  Text="{Binding Numbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -58,8 +58,8 @@
         <Button Content="Reorder Numbers" Grid.Column="0" Grid.Row="6" Margin="0,5,0,0" Height="25"
                 Command="{Binding ReorderCommand}" ToolTip="Automatically reorders the numbers found." />
 
-        <DataGrid Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" 
-                  ItemsSource="{Binding PreviewItems}" 
+        <DataGrid Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"
+                  ItemsSource="{Binding PreviewItems}"
                   AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                   HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderBrush="LightGray">
             <DataGrid.Columns>
@@ -69,9 +69,9 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="Apply Changes to Disk" Grid.Row="10" Grid.Column="2" Height="35" 
+        <Button Content="Apply Changes to Disk" Grid.Row="10" Grid.Column="2" Height="35"
                 FontWeight="Bold" Background="#4CAF50" Foreground="White"
-                Command="{Binding ApplyChangesCommand}" 
+                Command="{Binding ApplyChangesCommand}"
                 ToolTip="Permanently rename the files on your hard drive." />
     </Grid>
 

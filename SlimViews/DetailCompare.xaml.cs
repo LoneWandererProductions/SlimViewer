@@ -16,8 +16,11 @@ namespace SlimViews
     /// <summary>
     ///     Compares two images in detail
     /// </summary>
-    internal sealed partial class DetailCompare : Window
+    internal sealed partial class DetailCompare
     {
+        /// <summary>
+        /// The view model
+        /// </summary>
         private readonly DetailCompareView _viewModel;
 
         /// <inheritdoc />

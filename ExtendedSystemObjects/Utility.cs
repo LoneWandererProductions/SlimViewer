@@ -96,6 +96,7 @@ namespace ExtendedSystemObjects
                 return sorted[^1] + 1;
             }
         }
+
         /// <summary>
         ///     Performs binary search on a sorted span of integers.
         /// </summary>
@@ -109,7 +110,6 @@ namespace ExtendedSystemObjects
         {
             return BinarySearch(sortedKeys, sortedKeys.Length, target);
         }
-
 
 
         /// <summary>
@@ -365,6 +365,7 @@ namespace ExtendedSystemObjects
                     start = i;
                 }
             }
+
             return result;
         }
     }

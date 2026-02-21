@@ -22,7 +22,8 @@ namespace ExtendedSystemObjects
     ///      A high-performance, immutable lookup map using unmanaged arrays.
     ///      Suitable for value types only. Keys must be unique.
     /// </summary>
-    public sealed unsafe class ImmutableLookupMapUnmanaged<TKey, TValue> : IDisposable, IEnumerable<KeyValuePair<TKey, TValue>>
+    public sealed unsafe class ImmutableLookupMapUnmanaged<TKey, TValue> : IDisposable,
+        IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : unmanaged, IEquatable<TKey>
         where TValue : unmanaged
     {

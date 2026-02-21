@@ -788,9 +788,6 @@ namespace SlimViews
 
             var savedSettings = ImageProcessor.Render.ImageSettings.GetSettings(SelectedTexture);
 
-            // ... (Value assignments remain similar but now correctly gated) ...
-
-            // Crucially, call OnPropertyChanged for all booleans so the UI enables/disables boxes instantly
             RaiseAllActivePropertiesChanged();
         }
 

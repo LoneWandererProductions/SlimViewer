@@ -16,7 +16,7 @@ namespace SlimViews
     /// <summary>
     ///     Basic Rename Window
     /// </summary>
-    internal sealed partial class Rename : Window
+    internal sealed partial class Rename
     {
         // 1. Create a strongly-typed reference to your ViewModel
         private readonly RenameView _viewModel;
@@ -44,8 +44,10 @@ namespace SlimViews
             InitializeComponent();
 
             // 2. Instantiate, inject the data, and assign the DataContext
-            _viewModel = new RenameView();
-            _viewModel.Observer = new ConcurrentDictionary<int, string>(observer);
+            _viewModel = new RenameView
+            {
+                Observer = new ConcurrentDictionary<int, string>(observer)
+            };
             DataContext = _viewModel;
         }
 

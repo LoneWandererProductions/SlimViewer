@@ -15,8 +15,11 @@ namespace SlimViews
     /// <summary>
     ///     Configuration for our Filters
     /// </summary>
-    public partial class FilterConfig : Window
+    public partial class FilterConfig
     {
+        /// <summary>
+        /// The view model
+        /// </summary>
         private readonly FilterConfigView _viewModel;
 
         /// <inheritdoc />

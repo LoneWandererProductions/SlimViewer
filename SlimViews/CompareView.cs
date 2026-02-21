@@ -111,7 +111,7 @@ namespace SlimViews
         /// <param name="imageView">Parent ImageView for callbacks.</param>
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
         internal async Task AsyncInitiate(bool subFolders, string currentFolder,
-                    ImageView imageView, int similarity = 0)
+            ImageView imageView, int similarity = 0)
         {
             _imageView = imageView;
 
@@ -122,7 +122,7 @@ namespace SlimViews
 
             _duplicates = await Task.Run(() =>
             {
-                // This is the "Tricky" part: 
+                // This is the "Tricky" part:
                 // similarity == 0 means bit-for-bit check
                 // similarity > 0 means visual histogram/perceptual check
                 return similarity == 0

@@ -53,7 +53,8 @@ namespace CommonControls.Images
             Alpha = alpha;
 
             // This is the trigger that will finally make it draw
-            SizeChanged += (s, e) => {
+            SizeChanged += (s, e) =>
+            {
                 if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
                 {
                     RedrawAsync();
@@ -276,14 +277,16 @@ namespace CommonControls.Images
                 // Try exact math first
                 if (GetSvFromPoint(dx, dy, layout.InnerRadius, _h, out double s, out double v))
                 {
-                    _s = s; _v = v;
+                    _s = s;
+                    _v = v;
                 }
                 else
                 {
                     // MAGNET FIX: We are inside the circle, but outside the triangle.
                     // Snap to the closest edge (Clamp).
                     GetSvFromPointClamped(dx, dy, layout.InnerRadius, _h, out s, out v);
-                    _s = s; _v = v;
+                    _s = s;
+                    _v = v;
                 }
 
                 OnPropertyChanged(nameof(Sat));
@@ -340,7 +343,11 @@ namespace CommonControls.Images
         // This is the "Magic" pixel drawer (Same as before)
         private void RedrawAsync()
         {
-            if (!CheckAccess()) { Dispatcher.BeginInvoke(new Action(RedrawAsync)); return; }
+            if (!CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(RedrawAsync));
+                return;
+            }
 
             // 1. Get the AVAILABLE space from the parent container (The Grid in Column 0)
             // We cast Parent to FrameworkElement to get its ActualWidth/Height
@@ -404,6 +411,7 @@ namespace CommonControls.Images
                     }
                 }
             }
+
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, size, size));
             _bitmap.Unlock();
         }
@@ -509,8 +517,8 @@ namespace CommonControls.Images
             double c = size / 2.0;
 
             return (
-                CenterX: c,      // Defined X
-                CenterY: c,      // Defined Y (Same as X for a square)
+                CenterX: c, // Defined X
+                CenterY: c, // Defined Y (Same as X for a square)
                 Size: size,
                 Radius: c,
                 InnerRadius: c * 0.85
@@ -553,7 +561,6 @@ namespace CommonControls.Images
             s = Math.Max(0, Math.Min(1, s));
             v = Math.Max(0, Math.Min(1, v));
         }
-
 
 
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)

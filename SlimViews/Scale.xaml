@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SlimViews"
         mc:Ignorable="d"
         x:ClassModifier="internal"
         Title="Scale and Rotate" Height="220" Width="300"
@@ -28,22 +27,25 @@
         </Grid.RowDefinitions>
 
         <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch" 
-                 Text="{Binding Path=Degree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 VerticalAlignment="Stretch"
+                 Text="{Binding Path=Degree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  ToolTip="Enter a degree between -360 and 360" />
 
         <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="3" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch" 
-                 Text="{Binding Path=Scaling, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 VerticalAlignment="Stretch"
+                 Text="{Binding Path=Scaling, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  ToolTip="Enter a multiplier (e.g., 2 for double size, 0.5 for half size)" />
 
-        <Button Content="Okay" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Stretch"
+        <Button Content="Okay" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="5"
+                VerticalAlignment="Stretch"
                 Command="{Binding OkayCommand}"
-                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                 ToolTip="Apply settings and close" />
 
-        <Label Content="Rotation Degree" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Center" />
-        <Label Content="Scale Factor" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Center" />
+        <Label Content="Rotation Degree" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1"
+               VerticalAlignment="Center" />
+        <Label Content="Scale Factor" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3"
+               VerticalAlignment="Center" />
     </Grid>
 
     <Window.Resources>

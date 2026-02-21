@@ -413,6 +413,7 @@ namespace ExtendedSystemObjects
                 copy.Length = Length; // Set length before sorting so AsSpan() works
                 copy.Sort();
             }
+
             return copy;
         }
 

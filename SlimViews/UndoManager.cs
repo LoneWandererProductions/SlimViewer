@@ -16,21 +16,50 @@ namespace SlimViews
     /// <typeparam name="T">The type of state object being tracked (e.g., BitmapSource).</typeparam>
     public class UndoManager<T>
     {
+        /// <summary>
+        /// The limit
+        /// </summary>
         private readonly int _limit;
+
+        /// <summary>
+        /// The undo stack
+        /// </summary>
         private readonly LinkedList<T> _undoStack = new LinkedList<T>();
+
+        /// <summary>
+        /// The redo stack
+        /// </summary>
         private readonly LinkedList<T> _redoStack = new LinkedList<T>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndoManager{T}"/> class.
+        /// </summary>
+        /// <param name="limit">The limit.</param>
         public UndoManager(int limit = 5)
         {
             _limit = limit;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can undo.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance can undo; otherwise, <c>false</c>.
+        /// </value>
         public bool CanUndo => _undoStack.Count > 0;
+
+        /// <summary>
+        /// Gets a value indicating whether this instance can redo.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance can redo; otherwise, <c>false</c>.
+        /// </value>
         public bool CanRedo => _redoStack.Count > 0;
 
         /// <summary>
         /// Call this BEFORE applying a filter or making a change.
         /// </summary>
+        /// <param name="state">The state.</param>
         public void RecordState(T state)
         {
             _undoStack.AddLast(state);
@@ -48,6 +77,8 @@ namespace SlimViews
         /// <summary>
         /// Moves back one step. Returns the previous state.
         /// </summary>
+        /// <param name="currentState">State of the current.</param>
+        /// <returns></returns>
         public T Undo(T currentState)
         {
             if (!CanUndo) return currentState;
@@ -65,6 +96,8 @@ namespace SlimViews
         /// <summary>
         /// Moves forward one step. Returns the next state.
         /// </summary>
+        /// <param name="currentState">State of the current.</param>
+        /// <returns></returns>
         public T Redo(T currentState)
         {
             if (!CanRedo) return currentState;

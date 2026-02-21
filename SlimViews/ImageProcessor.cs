@@ -417,9 +417,9 @@ namespace SlimViews
 
             if (mask == MaskShape.Polygon)
             {
-                if (frame.Points != null && frame.Points.Count > 0)
+                if (frame.Points is { Count: > 0 })
                 {
-                    // CRITICAL STEP: Convert WPF Points (System.Windows.Point) 
+                    // CRITICAL STEP: Convert WPF Points (System.Windows.Point)
                     // to GDI+ Points (System.Drawing.Point)
                     shapeParams = frame.Points
                         .Select(p => new Point((int)p.X, (int)p.Y))
@@ -468,7 +468,7 @@ namespace SlimViews
 
             // FIX: Prepare Polygon Points
             object shapeParams = null;
-            if (mask == MaskShape.Polygon && frame.Points != null && frame.Points.Count > 0)
+            if (mask == MaskShape.Polygon && frame.Points is { Count: > 0 })
             {
                 // Convert WPF Points -> GDI+ Points
                 shapeParams = frame.Points
@@ -486,8 +486,8 @@ namespace SlimViews
                     frame.Height,
                     texture,
                     mask,
-                    point,          // StartPoint
-                    shapeParams);   // The Polygon Points
+                    point, // StartPoint
+                    shapeParams); // The Polygon Points
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
             {
@@ -512,7 +512,7 @@ namespace SlimViews
 
             // FIX: Prepare Polygon Points
             object shapeParams = null;
-            if (mask == MaskShape.Polygon && frame.Points != null && frame.Points.Count > 0)
+            if (mask == MaskShape.Polygon && frame.Points is { Count: > 0 })
             {
                 // Convert WPF Points -> GDI+ Points
                 shapeParams = frame.Points

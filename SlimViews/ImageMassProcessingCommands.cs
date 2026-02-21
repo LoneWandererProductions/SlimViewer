@@ -83,7 +83,7 @@ namespace SlimViews
             // 2. Open the Window
             var rename = new Rename(dct)
             {
-                // Note: Topmost = true keeps this above EVERY app in Windows (like your web browser). 
+                // Note: Topmost = true keeps this above EVERY app in Windows (like your web browser).
                 // Setting Owner is usually enough to keep it above your main app safely.
                 Topmost = true,
                 Owner = owner.UiState.Main
@@ -100,7 +100,7 @@ namespace SlimViews
                     owner.FileContext.Observer[key] = value;
                 }
 
-                // CRITICAL: Force the UI to update by assigning a new dictionary reference 
+                // CRITICAL: Force the UI to update by assigning a new dictionary reference
                 // to the ViewModel's public property
                 owner.Observer = new Dictionary<int, string>(owner.FileContext.Observer);
 

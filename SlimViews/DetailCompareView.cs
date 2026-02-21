@@ -286,7 +286,8 @@ namespace SlimViews
 
                 if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
                 {
-                    MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}", ViewResources.ErrorMessage);
+                    MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}",
+                        ViewResources.ErrorMessage);
                     return;
                 }
 
@@ -297,7 +298,8 @@ namespace SlimViews
                 _btmOne = btm;
                 BmpOne = btm.ToBitmapImage();
 
-                _informationOne = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpOne) + Environment.NewLine;
+                _informationOne = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpOne) +
+                                  Environment.NewLine;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RtBoxInformation.AppendText(_informationOne);
@@ -339,7 +341,8 @@ namespace SlimViews
 
                 if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
                 {
-                    MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}", ViewResources.ErrorMessage);
+                    MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}",
+                        ViewResources.ErrorMessage);
                     return;
                 }
 
@@ -351,7 +354,8 @@ namespace SlimViews
                 BmpTwo = btm.ToBitmapImage();
 
                 // FIXED: Append information safely to UI thread
-                _informationTwo = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo) + Environment.NewLine;
+                _informationTwo = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo) +
+                                  Environment.NewLine;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RtBoxInformation.AppendText(_informationTwo);

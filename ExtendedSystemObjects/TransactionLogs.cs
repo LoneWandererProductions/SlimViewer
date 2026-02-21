@@ -238,6 +238,7 @@ namespace ExtendedSystemObjects
                 {
                     return key;
                 }
+
                 return -1;
             }
         }

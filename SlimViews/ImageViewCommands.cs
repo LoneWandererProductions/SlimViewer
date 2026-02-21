@@ -60,6 +60,7 @@ namespace SlimViews
         /// The open CBZ Command.
         /// </value>
         public ICommand OpenCbz { get; }
+
         public ICommand Open { get; }
         public ICommand Save { get; }
         public ICommand Delete { get; }

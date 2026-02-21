@@ -109,7 +109,7 @@ namespace SlimViews
             get => _red;
             set
             {
-                if (value >= 0 && value <= 255) SetProperty(ref _red, value, nameof(Red));
+                if (value is >= 0 and <= 255) SetProperty(ref _red, value, nameof(Red));
             }
         }
 
@@ -121,7 +121,7 @@ namespace SlimViews
             get => _green;
             set
             {
-                if (value >= 0 && value <= 255) SetProperty(ref _green, value, nameof(Green));
+                if (value is >= 0 and <= 255) SetProperty(ref _green, value, nameof(Green));
             }
         }
 
@@ -133,7 +133,7 @@ namespace SlimViews
             get => _blue;
             set
             {
-                if (value >= 0 && value <= 255) SetProperty(ref _blue, value, nameof(Blue));
+                if (value is >= 0 and <= 255) SetProperty(ref _blue, value, nameof(Blue));
             }
         }
 
@@ -176,14 +176,16 @@ namespace SlimViews
         /// <summary>
         ///     Initializes the SearchView with the specified parameters.
         /// </summary>
-        public void Initialize(bool includeSubfolders, string currentFolder, ImageView imageView, ColorHsv initialColor = null)
+        public void Initialize(bool includeSubfolders, string currentFolder, ImageView imageView,
+            ColorHsv initialColor = null)
         {
             _includeSubfolders = includeSubfolders;
 
             // FIXED: Check the passed parameter, not the private field
             if (string.IsNullOrEmpty(currentFolder))
             {
-                _ = MessageBox.Show(ViewResources.ErrorDirectoryMessage, nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show(ViewResources.ErrorDirectoryMessage, nameof(ArgumentException), MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -191,7 +193,8 @@ namespace SlimViews
 
             if (imageView == null)
             {
-                _ = MessageBox.Show(ViewResources.ErrorObjectMessage, nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show(ViewResources.ErrorObjectMessage, nameof(ArgumentException), MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -223,7 +226,8 @@ namespace SlimViews
 
                 if (files.IsNullOrEmpty())
                 {
-                    MessageBox.Show("No files found matching that text.", "Search Result", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("No files found matching that text.", "Search Result", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                     return;
                 }
 
@@ -249,7 +253,8 @@ namespace SlimViews
 
                 if (files.IsNullOrEmpty())
                 {
-                    MessageBox.Show("No files found matching that color.", "Search Result", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("No files found matching that color.", "Search Result", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                     return;
                 }
 
@@ -259,12 +264,14 @@ namespace SlimViews
             catch (ArgumentException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.Message, nameof(ArgumentException), MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show(ex.Message, nameof(ArgumentException), MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
             catch (InvalidOperationException ex)
             {
                 Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.Message, nameof(InvalidOperationException), MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(ex.Message, nameof(InvalidOperationException), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
             finally
             {

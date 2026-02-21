@@ -15,8 +15,11 @@ namespace SlimViews
     /// <summary>
     ///     Result Set for Image Comparer
     /// </summary>
-    internal sealed partial class Compare : Window
+    internal sealed partial class Compare
     {
+        /// <summary>
+        /// The view model
+        /// </summary>
         private readonly CompareView _viewModel;
 
         /// <inheritdoc />
@@ -44,8 +47,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Called when [image clicked].
+        /// Called when [image clicked].
         /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ImageEventArgs"/> instance containing the event data.</param>
         private void OnImageClicked(object sender, ImageEventArgs e)
         {
             if (sender is FrameworkElement element && int.TryParse(element.Tag.ToString(), out var observerIndex))

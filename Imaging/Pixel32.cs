@@ -89,5 +89,4 @@ namespace Imaging
         /// <returns></returns>
         public bool Equals(Pixel32 other) => AreEqual(this, other);
     }
-
 }

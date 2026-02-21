@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBeMadeStatic.Local
 // ReSharper disable MemberCanBeInternal
 
+#nullable enable
 using CommonControls.Images;
 using CommonDialogs;
 using ExtendedSystemObjects;
@@ -261,7 +262,7 @@ namespace SlimViews
         /// <summary>
         ///     Gets or sets the thumbnail container (internal).
         /// </summary>
-        internal Thumbnails Thumbnail { private get; set; } = null!;
+        internal Thumbnails Thumbnail { private get; set; }
 
         /// <summary>
         ///     Computed image export path under OutputPath.
@@ -456,8 +457,6 @@ namespace SlimViews
                 Information = $"Clear failed: {ex.Message}";
             }
         }
-
-        private bool _isClosing;
 
         /// <summary>
         ///     Closes the application (preserves original behavior).

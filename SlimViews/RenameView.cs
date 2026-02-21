@@ -165,7 +165,8 @@ namespace SlimViews
         /// <value>
         ///     The remove appendage command.
         /// </value>
-        public ICommand RemoveAppendageCommand => _removeAppendageCommand ??= new DelegateCommand<object>(RemoveAppendageAction, CanExecute);
+        public ICommand RemoveAppendageCommand => _removeAppendageCommand ??=
+            new DelegateCommand<object>(RemoveAppendageAction, CanExecute);
 
         /// <summary>
         ///     Gets the add command.
@@ -189,7 +190,8 @@ namespace SlimViews
         /// <value>
         ///     The reorder command.
         /// </value>
-        public ICommand ReorderCommand => _reorderCommand ??= new DelegateCommand<object>(ReorderCommandAction, CanExecute);
+        public ICommand ReorderCommand =>
+            _reorderCommand ??= new DelegateCommand<object>(ReorderCommandAction, CanExecute);
 
         /// <summary>
         ///     Gets the replace command.
@@ -197,7 +199,8 @@ namespace SlimViews
         /// <value>
         ///     The replace command.
         /// </value>
-        public ICommand ReplaceCommand => _replaceCommand ??= new DelegateCommand<object>(ReplaceCommandAction, CanExecute);
+        public ICommand ReplaceCommand =>
+            _replaceCommand ??= new DelegateCommand<object>(ReplaceCommandAction, CanExecute);
 
         /// <summary>
         ///     Gets the appendages at command.
@@ -205,16 +208,18 @@ namespace SlimViews
         /// <value>
         ///     The appendages at command.
         /// </value>
-        public ICommand AppendagesAtCommand => _appendagesAtCommand ??= new DelegateCommand<object>(AppendagesAtAction, CanExecute);
+        public ICommand AppendagesAtCommand =>
+            _appendagesAtCommand ??= new DelegateCommand<object>(AppendagesAtAction, CanExecute);
 
         /// <summary>
-        ///     Gets the apply changes command. 
+        ///     Gets the apply changes command.
         ///     This is the only command that actually executes file operations on the disk.
         /// </summary>
         /// <value>
         ///     The apply changes command.
         /// </value>
-        public ICommand ApplyChangesCommand => _applyChangesCommand ??= new AsyncDelegateCommand<object>(ApplyChangesAsync, CanExecute);
+        public ICommand ApplyChangesCommand =>
+            _applyChangesCommand ??= new AsyncDelegateCommand<object>(ApplyChangesAsync, CanExecute);
 
         /// <summary>
         ///     Gets or sets the observer.
@@ -376,7 +381,8 @@ namespace SlimViews
                 foreach (var item in PreviewItems)
                 {
                     // Only process files where the name actually changed and hasn't already succeeded
-                    if (!string.Equals(item.OriginalName, item.NewName, StringComparison.OrdinalIgnoreCase) && item.Status != "Success")
+                    if (!string.Equals(item.OriginalName, item.NewName, StringComparison.OrdinalIgnoreCase) &&
+                        item.Status != "Success")
                     {
                         var directory = Path.GetDirectoryName(item.OriginalPath);
                         if (string.IsNullOrEmpty(directory)) continue;

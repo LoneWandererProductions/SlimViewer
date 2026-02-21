@@ -13,13 +13,21 @@ namespace SlimViews
     /// <summary>
     /// Simple help window for the SlimViewer.
     /// </summary>
-    public partial class HelpWindow : Window
+    public partial class HelpWindow
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HelpWindow"/> class.
+        /// </summary>
         public HelpWindow()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Handles the Click event of the Button control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
