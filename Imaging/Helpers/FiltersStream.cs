@@ -73,7 +73,7 @@ namespace Imaging.Helpers
             using var atr = new ImageAttributes();
 
             //set the color matrix attribute
-            FiltersConfig settings;
+            FiltersConfig? settings;
 
             switch (filter)
             {
@@ -301,6 +301,8 @@ namespace Imaging.Helpers
                 g.FillRectangle(brush, x, y, rectWidth, rectHeight);
             }
 
+            dbm.Dispose();
+
             return processedImage;
         }
 
@@ -399,7 +401,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="baseWindowSize">Size of the base window.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyAnisotropicKuwahara(Bitmap image, int baseWindowSize = 5)
+        private static Bitmap? ApplyAnisotropicKuwahara(Bitmap image, int baseWindowSize = 5)
         {
             var dbmBase = new DirectBitmap(image);
             var result = new DirectBitmap(image.Width, image.Height);
@@ -426,17 +428,20 @@ namespace Imaging.Helpers
             try
             {
                 result.SetPixels(pixelsToSet);
-                dbmBase.Dispose();
 
-                return result.Bitmap;
+                // CRITICAL: We must clone because 'result' is about to die
+                return (Bitmap)result.Bitmap.Clone();
             }
-            catch (Exception ex) when (ex is InvalidOperationException or NullReferenceException or ArgumentException)
+            catch (Exception ex)
             {
                 _imageSettings?.SetError(ex);
-                Trace.WriteLine($"{ImagingResources.ErrorPixel} {ex.Message}");
+                Trace.WriteLine(ex);
+                return null;
             }
-
-            return null;
+            finally
+            {
+                result.Dispose(); // Now we can safely dispose the wrapper
+            }
         }
 
         /// <summary>
@@ -447,7 +452,7 @@ namespace Imaging.Helpers
         private static Bitmap ApplyFloydSteinbergDithering(Bitmap image)
         {
             var dbmBase = new DirectBitmap(image);
-            var result = new DirectBitmap(image.Width, image.Height);
+            var dbm = new DirectBitmap(image.Width, image.Height);
 
             // Convert to grayscale
             var grayBitmap = FilterImage(image, FiltersType.GrayScale);
@@ -468,7 +473,7 @@ namespace Imaging.Helpers
 
                 // Find the closest color in the palette
                 var newColor = GetNearestColor(oldIntensity, palette);
-                result.SetPixel(x, y, newColor);
+                dbm.SetPixel(x, y, newColor);
 
                 // Calculate the quantization error
                 var error = oldIntensity - newColor.R;
@@ -477,7 +482,8 @@ namespace Imaging.Helpers
                 DistributeError(dbmBase, x, y, error, ditherMatrix);
             }
 
-            return result.Bitmap;
+            // Dispose the base bitmap and return the dithered result
+            return new Bitmap(dbm.Bitmap);
         }
 
         /// <summary>
@@ -598,6 +604,7 @@ namespace Imaging.Helpers
         private static Bitmap ColorDodgeBlend(Bitmap baseImage, Bitmap blendImage)
         {
             var result = new Bitmap(baseImage.Width, baseImage.Height);
+
             for (var y = 0; y < baseImage.Height; y++)
             for (var x = 0; x < baseImage.Width; x++)
             {
@@ -897,7 +904,7 @@ namespace Imaging.Helpers
         /// <param name="imgOne">The img1.</param>
         /// <param name="imgTwo">The img2.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap SubtractImages(Image imgOne, Image imgTwo)
+        private static Bitmap? SubtractImages(Image imgOne, Image imgTwo)
         {
             var result = new DirectBitmap(imgOne.Width, imgOne.Height);
             // Prepare a list to store the pixels to set in bulk using SIMD

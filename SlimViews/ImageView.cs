@@ -372,23 +372,6 @@ namespace SlimViews
         // --- Transient / Command Properties ---
 
         /// <summary>
-        /// The pixel width
-        /// </summary>
-        private int _pixelWidth = 10;
-
-        /// <summary>
-        /// Gets or sets the width of the pixel.
-        /// </summary>
-        /// <value>
-        /// The width of the pixel.
-        /// </value>
-        public int PixelWidth
-        {
-            get => _pixelWidth;
-            set => SetProperty(ref _pixelWidth, value >= 2 ? value : 2);
-        }
-
-        /// <summary>
         /// The similarity
         /// </summary>
         private int _similarity;

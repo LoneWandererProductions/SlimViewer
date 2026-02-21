@@ -9,6 +9,7 @@
 using Imaging;
 using SlimControls;
 using System.Drawing;
+using System.Reflection.Metadata;
 
 namespace SlimViews
 {
@@ -111,15 +112,21 @@ namespace SlimViews
         ///     Pixelates the owner's image based on the view's pixel width.
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
-        /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void Pixelate(ImageView owner, object obj)
+        /// <param name="parameter">Unused parameter (reserved for future use).</param>
+        internal void Pixelate(ImageView owner, object parameter)
         {
             if (owner?.Image?.Bitmap == null)
                 return;
+            var pixelWidth = 2;
+
+            if (parameter != null && int.TryParse(parameter.ToString(), out var result))
+            {
+                pixelWidth = result;
+            }
 
             owner.SaveUndoState();
 
-            using var btm = ImageProcessor.Pixelate(owner.Image.Bitmap, owner.PixelWidth);
+            using var btm = ImageProcessor.Pixelate(owner.Image.Bitmap, pixelWidth);
 
             owner.CommitImageChange(btm);
         }

@@ -589,21 +589,18 @@ namespace Imaging
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (Disposed)
-            {
-                return;
-            }
+            if (Disposed) return;
 
             if (disposing)
             {
-                // free managed resources
+                // Managed resources (objects that implement IDisposable)
                 Bitmap?.Dispose();
+            }
 
-                // Free the GCHandle if it is allocated
-                if (BitsHandle.IsAllocated)
-                {
-                    BitsHandle.Free();
-                }
+            // Unmanaged resources/Handles (Free these always)
+            if (BitsHandle.IsAllocated)
+            {
+                BitsHandle.Free();
             }
 
             Disposed = true;

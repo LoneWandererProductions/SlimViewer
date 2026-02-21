@@ -50,117 +50,128 @@
             <Menu Grid.Column="0" VerticalAlignment="Center">
                 <MenuItem Header="Menu">
                     <MenuItem Header="Open" Command="{Binding Commands.Open}" InputGestureText="Ctrl+O"
-                              ToolTip="Open an image file" />
+                  ToolTip="Open an image file" />
                     <MenuItem Header="Open Folder" Command="{Binding Commands.Folder}"
-                              ToolTip="Open all images in a folder" />
+                  ToolTip="Open all images in a folder" />
                     <MenuItem Header="Open CBZ" Command="{Binding Commands.OpenCbz}"
-                              ToolTip="Open a comic book archive (CBZ)" />
+                  ToolTip="Open a comic book archive (CBZ)" />
                     <Separator />
                     <MenuItem Header="Search" Command="{Binding Commands.FolderSearch}" InputGestureText="Ctrl+F"
-                              ToolTip="Search for files by name or color" />
+                  ToolTip="Search for files by name or color" />
                     <Separator />
                     <MenuItem Header="Save" Command="{Binding Commands.Save}" IsEnabled="{Binding Path=IsImageActive}"
-                              InputGestureText="Ctrl+S" ToolTip="Save the currently active image" />
+                  InputGestureText="Ctrl+S" ToolTip="Save the currently active image" />
                     <MenuItem Header="Delete" Command="{Binding Commands.Delete}"
-                              IsEnabled="{Binding Path=IsImageActive}" InputGestureText="Del"
-                              ToolTip="Delete the current image from disk" />
+                  IsEnabled="{Binding Path=IsImageActive}" InputGestureText="Del"
+                  ToolTip="Delete the current image from disk" />
                     <MenuItem Header="Refresh" Command="{Binding Commands.Refresh}"
-                              IsEnabled="{Binding Path=IsImageActive}" InputGestureText="F5"
-                              ToolTip="Reload the current image" />
+                  IsEnabled="{Binding Path=IsImageActive}" InputGestureText="F5"
+                  ToolTip="Reload the current image" />
                     <Separator />
                     <MenuItem Header="Close" Command="{Binding Commands.Close}" ToolTip="Close the application" />
                 </MenuItem>
 
-                <MenuItem Header="Edit">
+                <MenuItem Header="Edit" >
                     <MenuItem Header="Filter">
                         <MenuItem Header="Configure Filter" Command="{Binding Commands.FilterConfig}"
-                                  ToolTip="Open filter configuration settings" />
+                      ToolTip="Open filter configuration settings" />
                         <Separator />
-                        <MenuItem Header="Sepia" Command="{Binding Commands.ApplyFilter}"
-                                  CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSepia}"
-                                  IsEnabled="{Binding Path=IsImageActive}" />
-                        <MenuItem Header="Pixelate Image">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="10" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox Text="{Binding Path=PixelWidth, Mode=TwoWay}" ToolTip="Pixelation width" />
-                                <Button Content="Okay" Grid.Column="2" Command="{Binding Commands.Pixelate}"
-                                        IsEnabled="{Binding Path=IsImageActive}" />
-                            </Grid>
+                        <MenuItem Header="TextureNoise" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureNoise}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureClouds" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureClouds}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureMarble" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureMarble}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureWood" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureWood}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureWave" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureWave}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureCrosshatch" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureCrosshatch}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureConcrete" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureConcrete}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="TextureCanvas" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureCanvas}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Pixelate">
+                            <MenuItem Header="Fine (4px)" Command="{Binding Commands.Pixelate}" CommandParameter="4" 
+                          ToolTip="Subtle pixelation." />
+                            <MenuItem Header="Medium (8px)" Command="{Binding Commands.Pixelate}" CommandParameter="8" 
+                          ToolTip="Standard pixelation." />
+                            <MenuItem Header="Chunky (16px)" Command="{Binding Commands.Pixelate}" CommandParameter="16" 
+                          ToolTip="Heavy pixelation." />
+                            <MenuItem Header="Abstract (32px)" Command="{Binding Commands.Pixelate}" CommandParameter="32" 
+                          ToolTip="Mosaic look." />
                         </MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="Texture">
                         <MenuItem Header="Configure Texture" Command="{Binding Commands.TextureConfig}"
-                                  ToolTip="Open texture configuration settings" />
+                      ToolTip="Open texture configuration settings" />
                         <Separator />
-                        <MenuItem Header="TextureNoise" Command="{Binding Commands.ApplyTexture}"
-                                  CommandParameter="{x:Static slimControls:ViewGuiResources.TextureNoise}"
-                                  IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Sepia" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSepia}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="GrayScale" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterGrayScale}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="BlackAndWhite" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterBlackAndWhite}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Invert" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterInvert}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Polaroid" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterPolaroid}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Contour" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterContour}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Brightness" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterBrightness}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Contrast" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterContrast}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="HueShift" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterHueShift}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="ColorBalance" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterColorBalance}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Vintage" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterVintage}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Sharpen" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSharpen}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="GaussianBlur" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterGaussianBlur}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Emboss" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterEmboss}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="BoxBlur" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterBoxBlur}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Laplacian" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterLaplacian}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="EdgeEnhance" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterEdgeEnhance}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="MotionBlur" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterMotionBlur}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="UnsharpMask" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterUnsharpMask}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="DifferenceOfGaussians" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterDifferenceOfGaussians}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="Crosshatch" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterCrosshatch}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="FloydSteinbergDithering" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterFloydSteinbergDithering}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="AnisotropicKuwahara" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterAnisotropicKuwahara}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="SupersamplingAntialiasing" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSupersamplingAntialiasing}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="PostProcessingAntialiasing" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterPostProcessingAntialiasing}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <MenuItem Header="PencilSketchEffect" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterPencilSketchEffect}" IsEnabled="{Binding Path=IsImageActive}" />
+                        <Separator />
                     </MenuItem>
 
                     <Separator />
-                    <MenuItem Header="Mirror" Command="{Binding Commands.Mirror}"
-                              IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Rotate 90°" Command="{Binding Commands.RotateForward}"
-                              IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Rotate -90°" Command="{Binding Commands.RotateBackward}"
-                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Mirror" Command="{Binding Commands.Mirror}" IsEnabled="{Binding Path=IsImageActive}"/>
+                    <MenuItem Header="Rotate 90°" Command="{Binding Commands.RotateForward}" IsEnabled="{Binding Path=IsImageActive}"/>
+                    <MenuItem Header="Rotate -90°" Command="{Binding Commands.RotateBackward}" IsEnabled="{Binding Path=IsImageActive}"/>
+
                     <Separator />
-                    <MenuItem Header="Brighten" Command="{Binding Commands.Brighten}"
-                              IsEnabled="{Binding Path=IsImageActive}" />
-                    <MenuItem Header="Darken" Command="{Binding Commands.Darken}"
-                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Brighten" Command="{Binding Commands.Brighten}" IsEnabled="{Binding Path=IsImageActive}"/>
+                    <MenuItem Header="Darken" Command="{Binding Commands.Darken}" IsEnabled="{Binding Path=IsImageActive}"/>
+
                     <Separator />
-                    <MenuItem Header="Scale Image" Command="{Binding Commands.Scale}"
-                              IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Scale Image" Command="{Binding Commands.Scale}" IsEnabled="{Binding Path=IsImageActive}" />
+                    <MenuItem Header="Export to String" Command="{Binding Commands.ExportString}" IsEnabled="{Binding Path=IsImageActive}"/>
                 </MenuItem>
 
                 <MenuItem Header="Tools">
                     <MenuItem Header="Batch Rename" Command="{Binding Commands.FolderRename}"
-                              ToolTip="Rename multiple files at once" />
+                  ToolTip="Rename multiple files at once" />
                     <MenuItem Header="Format Converter" Command="{Binding Commands.FolderConvert}"
-                              ToolTip="Convert multiple files to another format" />
+                  ToolTip="Convert multiple files to another format" />
                     <MenuItem Header="Mass Resizer" Command="{Binding Commands.ResizerWindow}"
-                              ToolTip="Resize all images in a folder" />
+                  ToolTip="Resize all images in a folder" />
                     <Separator />
                     <MenuItem Header="Find Duplicates" Command="{Binding Commands.Duplicate}"
-                              ToolTip="Search for exact duplicate images" />
+                  ToolTip="Search for exact duplicate images" />
                     <MenuItem Header="Find Similar Images">
-                        <MenuItem Header="Near Identical (95%)"
-                                  Command="{Binding Commands.Similar}"
-                                  CommandParameter="95"
-                                  ToolTip="Find images with very minor differences." />
-                        <MenuItem Header="Highly Similar (90%)"
-                                  Command="{Binding Commands.Similar}"
-                                  CommandParameter="90"
-                                  ToolTip="The recommended setting for finding duplicates and resizes." />
-                        <MenuItem Header="Visual Match (80%)"
-                                  Command="{Binding Commands.Similar}"
-                                  CommandParameter="80"
-                                  ToolTip="Find images that share the same composition." />
-                        <MenuItem Header="Loose Match (70%)"
-                                  Command="{Binding Commands.Similar}"
-                                  CommandParameter="70"
-                                  ToolTip="Find photos from the same session or burst." />
+                        <MenuItem Header="Near Identical (95%)" Command="{Binding Commands.Similar}" CommandParameter="95" />
+                        <MenuItem Header="Highly Similar (90%)" Command="{Binding Commands.Similar}" CommandParameter="90" />
+                        <MenuItem Header="Visual Match (80%)" Command="{Binding Commands.Similar}" CommandParameter="80" />
+                        <MenuItem Header="Loose Match (70%)" Command="{Binding Commands.Similar}" CommandParameter="70" />
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}"
-                              ToolTip="Open the GIF creation and extraction tool" />
-                    <MenuItem Header="Image Analyzer" Command="{Binding Commands.AnalyzerWindow}"
-                              ToolTip="View detailed color and metadata analysis" />
+                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}" />
+                    <MenuItem Header="Image Analyzer" Command="{Binding Commands.AnalyzerWindow}" />
                 </MenuItem>
 
                 <MenuItem Header="Experimental">
-                    <MenuItem Header="Open Cif" Command="{Binding Commands.OpenCif}"
-                              ToolTip="Open experimental CIF format" />
-                    <MenuItem Header="Convert to Cif" Command="{Binding Commands.ConvertCif}"
-                              ToolTip="Convert current image to CIF format" />
+                    <MenuItem Header="Open Cif" Command="{Binding Commands.OpenCif}" />
+                    <MenuItem Header="Convert to Cif" Command="{Binding Commands.ConvertCif}" />
                     <Separator />
-                    <CheckBox IsChecked="{Binding Path=CompressCif}" ToolTip="Enable compression for CIF files">Compress Cif</CheckBox>
+                    <MenuItem Header="Compress Cif" 
+                  IsCheckable="True" 
+                  IsChecked="{Binding Path=CompressCif}" 
+                  ToolTip="Enable compression for CIF files" />
                 </MenuItem>
 
                 <MenuItem Header="Help">
@@ -169,7 +180,7 @@
                     <MenuItem Header="About SlimViewer" Command="{Binding Commands.ShowAbout}" />
                 </MenuItem>
             </Menu>
-
+            
             <Button Grid.Column="2" Content="Remove from List" Command="{Binding Commands.Clear}"
                     IsEnabled="{Binding Path=IsImageActive}" Padding="5,2"
                     ToolTip="Remove the current image from the viewer's list (does not delete the file)" />
