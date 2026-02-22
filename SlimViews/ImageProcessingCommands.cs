@@ -75,7 +75,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void Darken(ImageView owner, string obj)
+        internal void Darken(ImageView owner, object obj)
         {
             if (owner?.Image?.Bitmap == null)
                 return;

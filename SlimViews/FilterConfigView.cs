@@ -6,12 +6,14 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Input;
 using Imaging;
 using Imaging.Enums;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 using ViewModel;
 
 namespace SlimViews
@@ -74,20 +76,30 @@ namespace SlimViews
         private double _sigma;
 
         /// <summary>
+        /// The configuration folder path
+        /// </summary>
+        private readonly string _configFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config");
+
+        /// <summary>
+        /// The configuration file path
+        /// </summary>
+        private readonly string _configFilePath;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="FilterConfigView" /> class.
         /// </summary>
         public FilterConfigView()
         {
-            CurrentConfig = new FiltersConfig(); // Initialize with default values
+            _configFilePath = Path.Combine(_configFolderPath, "FilterSettings.json");
 
-            // Set properties from CurrentConfig
-            Factor = CurrentConfig.Factor;
-            Bias = CurrentConfig.Bias;
-            Sigma = CurrentConfig.Sigma;
-            BaseWindowSize = CurrentConfig.BaseWindowSize;
-            Scale = CurrentConfig.Scale;
+            // 1. Load from disk into the Facade
+            LoadSettingsFromFile();
 
-            UpdateActiveProperties();
+            // 2. Set the default selected filter (e.g., the first one)
+            SelectedFilter = FilterOptions.FirstOrDefault();
+
+            // 3. UpdateActiveProperties will now pull the LOADED settings from the Facade 
+            // because it calls ImagingFacade.GetFilterSettings(SelectedFilter)
         }
 
         /// <summary>
@@ -262,7 +274,7 @@ namespace SlimViews
         private void UpdateActiveProperties()
         {
             // Get the used properties for the selected filter
-            var usedProperties = ImageProcessor.Render.ImageSettings.GetUsedProperties(SelectedFilter);
+            var usedProperties = ImagingFacade.GetFilterProperties(SelectedFilter);
 
             // Update active state for each property based on the selected filter
             IsFactorActive = usedProperties.Contains(nameof(Factor));
@@ -271,8 +283,8 @@ namespace SlimViews
             IsBaseWindowSizeActive = usedProperties.Contains(nameof(BaseWindowSize));
             IsScaleActive = usedProperties.Contains(nameof(Scale));
 
-            // Retrieve the saved settings for the selected filter
-            var savedSettings = ImageProcessor.Render.ImageSettings.GetSettings(SelectedFilter);
+            // SWITCHED TO FACADE: Retrieve the saved settings for the selected filter
+            var savedSettings = ImagingFacade.GetFilterSettings(SelectedFilter);
 
             // Set the properties from the saved settings, if the property is active
             if (IsFactorActive) Factor = savedSettings.Factor;
@@ -303,7 +315,6 @@ namespace SlimViews
         /// </summary>
         private void SaveSettings()
         {
-            // FIXED: You must assign your ViewModel values to the config object!
             var config = new FiltersConfig
             {
                 Factor = Factor,
@@ -314,12 +325,13 @@ namespace SlimViews
             };
 
             // Update the settings in the backend registry
-            ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, config);
+            ImagingFacade.SetFilterSettings(SelectedFilter, config);
+
+            // Persist the configuration to the local folder
+            PersistSettingsToDisk();
 
             // Provide feedback if needed or just update the UI state
             UpdateActiveProperties();
-
-            // Todo Optional: You could show a small "Settings Saved" status message here
         }
 
         /// <summary>
@@ -328,7 +340,11 @@ namespace SlimViews
         private void ResetAction(object obj)
         {
             var defaultConfig = new FiltersConfig(); // Pure defaults
-            ImageProcessor.Render.ImageSettings.SetSettings(SelectedFilter, defaultConfig);
+
+            ImagingFacade.SetFilterSettings(SelectedFilter, defaultConfig);
+
+            //  Persist the reset state to the local folder
+            PersistSettingsToDisk();
 
             // Load the now-reset values back into the ViewModel fields
             Factor = defaultConfig.Factor;
@@ -348,6 +364,49 @@ namespace SlimViews
         {
             // Close the window
             if (obj is Window window) window.Close();
+        }
+
+        /// <summary>
+        /// Saves the current settings from the Facade to a local JSON file.
+        /// </summary>
+        private void PersistSettingsToDisk()
+        {
+            try
+            {
+                // Ensure the Config directory exists
+                if (!Directory.Exists(_configFolderPath))
+                {
+                    Directory.CreateDirectory(_configFolderPath);
+                }
+
+                // Get JSON from Facade and write to disk
+                string jsonConfig = ImagingFacade.GetSettingsAsJson();
+                File.WriteAllText(_configFilePath, jsonConfig);
+            }
+            catch (Exception ex)
+            {
+                // Push errors to your Facade's logger
+                ImagingFacade.LogError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Loads previously saved settings from the local JSON file.
+        /// </summary>
+        private void LoadSettingsFromFile()
+        {
+            try
+            {
+                if (File.Exists(_configFilePath))
+                {
+                    string jsonConfig = File.ReadAllText(_configFilePath);
+                    ImagingFacade.LoadSettingsFromJson(jsonConfig);
+                }
+            }
+            catch (Exception ex)
+            {
+                ImagingFacade.LogError(ex);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Imaging;
@@ -160,36 +161,26 @@ namespace SlimViews
         private double _yPeriod;
 
         /// <summary>
+        /// The configuration folder path
+        /// </summary>
+        private readonly string _configFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config");
+
+        /// <summary>
+        /// The configuration file path
+        /// </summary>
+        private readonly string _configFilePath;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="TextureConfigView" /> class.
         /// </summary>
         public TextureConfigView()
         {
-            var defaultConfig = new TextureConfiguration(); // Initialize with default values
+            _configFilePath = Path.Combine(_configFolderPath, "TextureSettings.json");
+            LoadSettingsFromFile();
 
-            // Set properties from the default configuration
-            MinValue = defaultConfig.MinValue;
-            MaxValue = defaultConfig.MaxValue;
-            Alpha = defaultConfig.Alpha;
-            XPeriod = defaultConfig.XPeriod;
-            YPeriod = defaultConfig.YPeriod;
-            TurbulencePower = defaultConfig.TurbulencePower;
-            TurbulenceSize = defaultConfig.TurbulenceSize;
-            BaseColor = defaultConfig.BaseColor;
-            IsMonochrome = defaultConfig.IsMonochrome;
-            IsTiled = defaultConfig.IsTiled;
-            UseSmoothNoise = defaultConfig.UseSmoothNoise;
-            UseTurbulence = defaultConfig.UseTurbulence;
-            XyPeriod = defaultConfig.XyPeriod;
-            LineSpacing = defaultConfig.LineSpacing;
-            LineColor = defaultConfig.LineColor;
-            LineThickness = defaultConfig.LineThickness;
-            AnglePrimary = defaultConfig.AnglePrimary;
-            AngleSecondary = defaultConfig.AngleSecondary;
-            WaveFrequency = defaultConfig.WaveFrequency;
-            WaveAmplitude = defaultConfig.WaveAmplitude;
-            RandomizationFactor = defaultConfig.RandomizationFactor;
-            EdgeJaggednessLimit = defaultConfig.EdgeJaggednessLimit;
-            JaggednessThreshold = defaultConfig.JaggednessThreshold;
+            // Pull the specific settings for the current SelectedTexture instead of hard defaults
+            var currentConfig = ImagingFacade.GetTextureSettings(SelectedTexture) ?? new TextureConfiguration();
+            LoadFromConfig(currentConfig);
 
             UpdateActiveProperties();
         }
@@ -214,8 +205,14 @@ namespace SlimViews
             get => _selectedTexture;
             set
             {
-                SetProperty(ref _selectedTexture, value, nameof(SelectedTexture));
-                UpdateActiveProperties();
+                if (SetProperty(ref _selectedTexture, value, nameof(SelectedTexture)))
+                {
+                    // Sync values from Facade for the new selection
+                    var config = ImagingFacade.GetTextureSettings(value);
+                    if (config != null) LoadFromConfig(config);
+
+                    UpdateActiveProperties();
+                }
             }
         }
 
@@ -601,13 +598,44 @@ namespace SlimViews
         /// </value>
         public bool IsXyPeriodActive { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is randomization factor active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is randomization factor active; otherwise, <c>false</c>.
+        /// </value>
         public bool IsRandomizationFactorActive { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is edge jaggedness limit active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is edge jaggedness limit active; otherwise, <c>false</c>.
+        /// </value>
         public bool IsEdgeJaggednessLimitActive { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is jaggedness threshold active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is jaggedness threshold active; otherwise, <c>false</c>.
+        /// </value>
         public bool IsJaggednessThresholdActive { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is wave frequency active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is wave frequency active; otherwise, <c>false</c>.
+        /// </value>
         public bool IsWaveFrequencyActive { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is wave amplitude active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is wave amplitude active; otherwise, <c>false</c>.
+        /// </value>
         public bool IsWaveAmplitudeActive { get; set; }
 
         /// <summary>
@@ -741,8 +769,13 @@ namespace SlimViews
         private void ResetAction(object obj)
         {
             var config = new TextureConfiguration();
-            // Update the settings in ImageRegister
-            ImageProcessor.Render.ImageSettings.SetSettings(SelectedTexture, config);
+
+            ImagingFacade.SetTextureSettings(SelectedTexture, config);
+            LoadFromConfig(config);
+
+            //  Persist the reset state to the local folder
+            PersistSettingsToDisk();
+            UpdateActiveProperties();
         }
 
         /// <summary>
@@ -760,7 +793,7 @@ namespace SlimViews
         /// </summary>
         private void UpdateActiveProperties()
         {
-            var usedProperties = ImageProcessor.Render.ImageSettings.GetUsedProperties(SelectedTexture);
+            var usedProperties = ImagingFacade.GetTextureProperties(SelectedTexture);
 
             IsMinValueActive = usedProperties.Contains(nameof(MinValue));
             IsMaxValueActive = usedProperties.Contains(nameof(MaxValue));
@@ -809,13 +842,16 @@ namespace SlimViews
             OnPropertyChanged(nameof(IsUseSmoothNoiseActive));
             OnPropertyChanged(nameof(IsUseTurbulenceActive));
             OnPropertyChanged(nameof(IsXyPeriodActive));
+            OnPropertyChanged(nameof(IsRandomizationFactorActive));
+            OnPropertyChanged(nameof(IsEdgeJaggednessLimitActive));
+            OnPropertyChanged(nameof(IsJaggednessThresholdActive));
+            OnPropertyChanged(nameof(IsWaveFrequencyActive));
+            OnPropertyChanged(nameof(IsWaveAmplitudeActive));
+            OnPropertyChanged(nameof(IsLineSpacingActive));
+            OnPropertyChanged(nameof(IsLineColorActive));
+            OnPropertyChanged(nameof(IsLineThicknessActive));
             OnPropertyChanged(nameof(IsAnglePrimaryActive));
             OnPropertyChanged(nameof(IsAngleSecondaryActive));
-            OnPropertyChanged(nameof(IsWaveFrequency));
-            OnPropertyChanged(nameof(IsWaveAmplitude));
-            OnPropertyChanged(nameof(IsRandomizationFactor));
-            OnPropertyChanged(nameof(IsEdgeJaggednessLimit));
-            OnPropertyChanged(nameof(IsJaggednessThreshold));
         }
 
         /// <summary>
@@ -851,8 +887,92 @@ namespace SlimViews
                 JaggednessThreshold = JaggednessThreshold
             };
 
-            // Update the settings in ImageRegister
-            ImageProcessor.Render.ImageSettings.SetSettings(SelectedTexture, config);
+            // Update the settings in the backend registry
+            ImagingFacade.SetTextureSettings(SelectedTexture, config);
+
+            // Persist the configuration to the local folder
+            PersistSettingsToDisk();
+
+            // Provide feedback if needed or just update the UI state
+            UpdateActiveProperties();
+        }
+
+        /// <summary>
+        /// Maps a configuration object's values to the ViewModel properties.
+        /// </summary>
+        /// <param name="config">The configuration to load.</param>
+        private void LoadFromConfig(TextureConfiguration config)
+        {
+            if (config == null) return;
+
+            BaseColor = config.BaseColor;
+            LineColor = config.LineColor;
+            MinValue = config.MinValue;
+            MaxValue = config.MaxValue;
+            Alpha = config.Alpha;
+            XPeriod = config.XPeriod;
+            YPeriod = config.YPeriod;
+            TurbulencePower = config.TurbulencePower;
+            TurbulenceSize = config.TurbulenceSize;
+            BaseColor = config.BaseColor;
+            IsMonochrome = config.IsMonochrome;
+            IsTiled = config.IsTiled;
+            UseSmoothNoise = config.UseSmoothNoise;
+            UseTurbulence = config.UseTurbulence;
+            XyPeriod = config.XyPeriod;
+            LineSpacing = config.LineSpacing;
+            LineColor = config.LineColor;
+            LineThickness = config.LineThickness;
+            AnglePrimary = config.AnglePrimary;
+            AngleSecondary = config.AngleSecondary;
+            WaveFrequency = config.WaveFrequency;
+            WaveAmplitude = config.WaveAmplitude;
+            RandomizationFactor = config.RandomizationFactor;
+            EdgeJaggednessLimit = config.EdgeJaggednessLimit;
+            JaggednessThreshold = config.JaggednessThreshold;
+        }
+
+        /// <summary>
+        /// Saves the current settings from the Facade to a local JSON file.
+        /// </summary>
+        private void PersistSettingsToDisk()
+        {
+            try
+            {
+                // Ensure the Config directory exists
+                if (!Directory.Exists(_configFolderPath))
+                {
+                    Directory.CreateDirectory(_configFolderPath);
+                }
+
+                // Get JSON from Facade and write to disk
+                string jsonConfig = ImagingFacade.GetSettingsAsJson();
+                File.WriteAllText(_configFilePath, jsonConfig);
+            }
+            catch (Exception ex)
+            {
+                // Push errors to your Facade's logger
+                ImagingFacade.LogError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Loads previously saved settings from the local JSON file.
+        /// </summary>
+        private void LoadSettingsFromFile()
+        {
+            try
+            {
+                if (File.Exists(_configFilePath))
+                {
+                    string jsonConfig = File.ReadAllText(_configFilePath);
+                    ImagingFacade.LoadSettingsFromJson(jsonConfig);
+                }
+            }
+            catch (Exception ex)
+            {
+                ImagingFacade.LogError(ex);
+            }
         }
     }
 }
