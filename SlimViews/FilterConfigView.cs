@@ -28,7 +28,7 @@ namespace SlimViews
         /// <summary>
         ///     The current configuration
         /// </summary>
-        private readonly FiltersConfig _currentConfig;
+        private readonly FilterConfiguration _currentConfig;
 
         /// <summary>
         ///     The base window size
@@ -181,7 +181,7 @@ namespace SlimViews
         /// <value>
         ///     The current configuration.
         /// </value>
-        public FiltersConfig CurrentConfig
+        public FilterConfiguration CurrentConfig
         {
             get => _currentConfig;
             init
@@ -315,7 +315,7 @@ namespace SlimViews
         /// </summary>
         private void SaveSettings()
         {
-            var config = new FiltersConfig
+            var config = new FilterConfiguration
             {
                 Factor = Factor,
                 Bias = Bias,
@@ -339,7 +339,7 @@ namespace SlimViews
         /// </summary>
         private void ResetAction(object obj)
         {
-            var defaultConfig = new FiltersConfig(); // Pure defaults
+            var defaultConfig = new FilterConfiguration(); // Pure defaults
 
             ImagingFacade.SetFilterSettings(SelectedFilter, defaultConfig);
 

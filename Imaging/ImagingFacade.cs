@@ -42,15 +42,15 @@ namespace Imaging
         /// Retrieves the configuration for a specific filter type.
         /// </summary>
         /// <param name="filter">The filter type.</param>
-        /// <returns>The current <see cref="FiltersConfig"/> for the filter.</returns>
-        public static FiltersConfig GetFilterSettings(FiltersType filter) => Register.GetSettings(filter);
+        /// <returns>The current <see cref="FilterConfiguration"/> for the filter.</returns>
+        public static FilterConfiguration GetFilterSettings(FiltersType filter) => Register.GetSettings(filter);
 
         /// <summary>
         /// Updates the configuration for a specific filter type.
         /// </summary>
         /// <param name="filter">The filter type.</param>
         /// <param name="config">The new filter configuration.</param>
-        public static void SetFilterSettings(FiltersType filter, FiltersConfig config) =>
+        public static void SetFilterSettings(FiltersType filter, FilterConfiguration config) =>
             Register.SetSettings(filter, config);
 
         /// <summary>
@@ -201,17 +201,20 @@ namespace Imaging
             => new ImageRender().FilterImage(image, filter);
 
         /// <summary>
-        ///     Applies a filter to a specified area of the bitmap with optional shape masking.
+        /// Applies a filter to a specified area of the bitmap with optional shape masking.
         /// </summary>
         /// <param name="image">The source bitmap.</param>
         /// <param name="filter">The filter type.</param>
         /// <param name="shape">The mask shape.</param>
         /// <param name="shapeParams">Optional parameters for the mask shape.</param>
         /// <param name="startPoint">Optional start point for the filter.</param>
-        /// <returns>The filtered <see cref="Bitmap"/>.</returns>
-        public static Bitmap ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape, object shapeParams,
+        /// <returns>
+        /// The filtered <see cref="Bitmap" />.
+        /// </returns>
+
+        public static Bitmap? ApplyFilterArea(Bitmap image, FiltersType filter, MaskShape shape, object? shapeParams = null,
             Point? startPoint = null)
-            => new ImageRender().FilterImageArea(image, null, null, filter, shape, shapeParams, startPoint);
+            => new FilterGenerator().GenerateFilterOverlay(image, image.Width, image.Height, filter, shape, startPoint, shapeParams);
 
         #endregion
 
@@ -333,12 +336,27 @@ namespace Imaging
         /// </summary>
         /// <param name="frames">The frames to include in the GIF.</param>
         /// <param name="target">The output file path.</param>
-        public static void CreateGif(IEnumerable<FrameInfo> frames, string target)
+        public static void CreateGif(IEnumerable<FrameInfo>? frames, string target)
             => new ImageRender().CreateGif(frames, target);
 
         #endregion
 
         #region Textures
+
+        /// <summary>
+        /// Generates a standalone procedural texture.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="shapeParams">The shape parameters.</param>
+        /// <param name="startPoint">The start point.</param>
+        /// <returns>
+        /// The generated texture as a <see cref="Bitmap" />.
+        /// </returns>
+        public static Bitmap? GenerateTextureOverlay(Bitmap image, TextureType type, MaskShape shape,
+                    object? shapeParams = null, Point? startPoint = null)
+                    => new TextureGenerator().GenerateTextureOverlay(image, image.Width, image.Height, type, shape, startPoint, shapeParams);
 
         /// <summary>
         ///     Generates a procedural texture using the specified type, mask shape, and parameters.
