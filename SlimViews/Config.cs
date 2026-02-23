@@ -24,7 +24,7 @@ namespace SlimViews
         /// <summary>
         ///     The path
         /// </summary>
-        private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), nameof(Config));
+        private static readonly string Path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), string.Concat(nameof(Config), ".xml"));
 
         /// <summary>
         ///     Gets or sets a value indicating whether [GIF clean up].
