@@ -83,7 +83,7 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
         /// </value>
-        private static bool MainAutoPlayGif { get; set; }
+        internal static bool MainAutoPlayGif { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [main sub folders].
@@ -156,7 +156,7 @@ namespace SlimViews
             MainAutoClean = obj.MainAutoClean;
             MainSimilarity = obj.MainSimilarity;
             MainSubFolders = obj.MainSubFolders;
-            MainCompressCif = MainCompressCif;
+            MainCompressCif = obj.MainCompressCif;
         }
 
         /// <summary>

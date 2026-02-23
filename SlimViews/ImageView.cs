@@ -425,6 +425,9 @@ namespace SlimViews
             Bmp = newWpfImage;
         }
 
+        /// <summary>
+        /// Undoes this instance.
+        /// </summary>
         public void Undo()
         {
             if (!History.CanUndo || Image?.Bitmap == null) return;
@@ -438,6 +441,9 @@ namespace SlimViews
             Bmp = previousBitmap.ToBitmapImage();
         }
 
+        /// <summary>
+        /// Redoes this instance.
+        /// </summary>
         public void Redo()
         {
             if (!History.CanRedo || Image?.Bitmap == null) return;
@@ -447,6 +453,9 @@ namespace SlimViews
             Bmp = nextBitmap.ToBitmapImage();
         }
 
+        /// <summary>
+        /// Clears the history.
+        /// </summary>
         public void ClearHistory()
         {
             History.Clear();
@@ -732,10 +741,19 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void CloseAction(object obj)
         {
-            var config = SlimViewerRegister.GetRegister();
-            if (UiState.ImageZoomControl != null)
-                config.MainAutoPlayGif = UiState.ImageZoomControl.AutoplayGifImage;
+            // 1. Update the register with the CURRENT state of the UI/ViewModel
+            SlimViewerRegister.MainSubFolders = UseSubFolders;
+            SlimViewerRegister.MainCompressCif = CompressCif;
+            SlimViewerRegister.MainSimilarity = Similarity;
+            SlimViewerRegister.MainAutoClean = AutoClean;
 
+            if (UiState.ImageZoomControl != null)
+                SlimViewerRegister.MainAutoPlayGif = UiState.ImageZoomControl.AutoplayGifImage;
+
+            // 2. Extract the updated Config object from the Register
+            var config = SlimViewerRegister.GetRegister();
+
+            // 3. Save it to disk
             Config.SetConfig(config);
 
             if (AutoClean)

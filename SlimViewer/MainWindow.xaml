@@ -161,6 +161,10 @@
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}" />
+                    <MenuItem Header="Autoplay GIFs" 
+                      IsCheckable="True" 
+                      IsChecked="{Binding AutoplayGifImage, ElementName=ImageControl, Mode=TwoWay}" 
+                      ToolTip="Automatically play animated GIFs when opened" />
                     <MenuItem Header="Image Analyzer" Command="{Binding Commands.AnalyzerWindow}" />
                 </MenuItem>
 
