@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      Imaging.Cifs
+ * PROJECT:     Imaging.Cifs
  * FILE:        CifProcessing.cs
  * PURPOSE:     Processing of our custom Image Format, with custom compression
  * PROGRAMER:   Peter Geinitz (Wayfarer)

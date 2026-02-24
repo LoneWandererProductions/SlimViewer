@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      Imaging.Cifs
+ * PROJECT:     Imaging.Cifs
  * FILE:        CifImageData.cs
  * PURPOSE:     The Parser Object that will hold the actual Image Data
  * PROGRAMER:   Peter Geinitz (Wayfarer)

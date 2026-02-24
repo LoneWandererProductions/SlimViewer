@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      Imaging.Cifs
+ * PROJECT:     Imaging.Cifs
  * FILE:        CifMetadata.cs
  * PURPOSE:     The Parser Object that will hold the actual meta Image Data
  * PROGRAMER:   Peter Geinitz (Wayfarer)

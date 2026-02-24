@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      Imaging.Cifs
+ * PROJECT:     Imaging.Cifs
  * FILE:        ICustomImageFormat.cs
  * PURPOSE:     Implementation and main entry of our custom Image Format
  *              Main use is a small save footprint and Image Color manipulation on a large scale
