@@ -6,6 +6,7 @@
 * PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
+using Imaging.Gifs;
 using System;
 using System.IO;
 

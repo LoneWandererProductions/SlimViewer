@@ -8,6 +8,7 @@
 
 #nullable enable
 using Imaging;
+using Imaging.Cifs;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 

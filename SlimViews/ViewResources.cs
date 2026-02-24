@@ -8,7 +8,7 @@
 
 using System;
 using System.Windows.Media.Imaging;
-using Imaging;
+using Imaging.Gifs;
 
 namespace SlimViews
 {
