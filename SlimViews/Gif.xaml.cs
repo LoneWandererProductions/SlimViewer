@@ -35,6 +35,13 @@ namespace SlimViews
         /// </summary>
         private GifView _view;
 
+        /// <summary>
+        /// Gets or sets the initial file path.
+        /// </summary>
+        /// <value>
+        /// The initial file path.
+        /// </value>
+        public string? InitialFilePath { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Gif"/> class.
@@ -51,8 +58,7 @@ namespace SlimViews
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _view = new GifView(Thumb);
-
+            _view = new GifView(Thumb, InitialFilePath);
             DataContext = _view;
         }
 
@@ -64,16 +70,6 @@ namespace SlimViews
         private void Thumb_ImageClicked(object sender, ImageEventArgs itemId)
         {
             _view.ChangeImage(itemId.Id);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Raises the <see cref="Window.Closing" /> event.
-        /// </summary>
-        /// <param name="e">A <see cref="CancelEventArgs" /> that contains the event data.</param>
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            _view.CloseCommand.Execute(null); // VM will decide if it's allowed
         }
 
         /// <summary>

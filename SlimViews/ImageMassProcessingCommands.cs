@@ -235,7 +235,32 @@ namespace SlimViews
         /// GIFs the window.
         /// </summary>
         /// <param name="owner">The owner.</param>
-        internal void GifWindow(ImageView owner) => InitDialog<Gif>(owner);
+        /// <param name="filePath">The file path.</param>
+        internal void GifWindow(ImageView owner, string filePath)
+        {
+            // 1. Manually create the window (Don't use InitDialog yet)
+            var gifWindow = new Gif
+            {
+                Owner = owner.UiState.Main,
+                Topmost = true,
+                InitialFilePath = filePath // SET THIS BEFORE SHOWING
+            };
+
+            // 2. Perform the registration that InitDialog usually does
+            _subWindows.Add(gifWindow);
+            gifWindow.Closed += (_, __) => _subWindows.Remove(gifWindow);
+
+            if (gifWindow is IClosableByCommand closable)
+            {
+                closable.RequestCloseAction = () =>
+                {
+                    if (gifWindow.IsLoaded) gifWindow.Close();
+                };
+            }
+
+            // 3. NOW show it. Window_Loaded will now see the correct InitialFilePath.
+            gifWindow.Show();
+        }
 
         /// <summary>
         /// Shows the help.

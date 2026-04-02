@@ -63,12 +63,33 @@ namespace SlimViews
 
         public ICommand Open { get; }
         public ICommand Save { get; }
+
+        /// <summary>
+        /// Gets the delete.
+        /// </summary>
+        /// <value>
+        /// The delete.
+        /// </value>
         public ICommand Delete { get; }
         public ICommand Refresh { get; }
         public ICommand Pixelate { get; }
         public ICommand Similar { get; }
         public ICommand Duplicate { get; }
+
+        /// <summary>
+        /// Gets the rename.
+        /// </summary>
+        /// <value>
+        /// The rename.
+        /// </value>
         public ICommand Rename { get; }
+
+        /// <summary>
+        /// Gets the folder.
+        /// </summary>
+        /// <value>
+        /// The folder.
+        /// </value>
         public ICommand Folder { get; }
         public ICommand Mirror { get; }
         public ICommand RotateForward { get; }
@@ -84,6 +105,12 @@ namespace SlimViews
         public ICommand MoveAll { get; }
         public ICommand OpenCif { get; }
         public ICommand ConvertCif { get; }
+        /// <summary>
+        /// Gets the GIF window.
+        /// </summary>
+        /// <value>
+        /// The GIF window.
+        /// </value>
         public ICommand GifWindow { get; }
         public ICommand AnalyzerWindow { get; }
         public ICommand ExportString { get; }
@@ -170,9 +197,9 @@ namespace SlimViews
             FolderSearch = Make_NoParamCmd(_imageMassService.FolderSearch);
             ResizerWindow = Make_NoParamCmd(_imageMassService.ResizerWindow);
             AnalyzerWindow = Make_NoParamCmd(_imageMassService.AnalyzerWindow);
-            GifWindow = Make_NoParamCmd(_imageMassService.GifWindow);
             ShowHelp = Make_NoParamCmd(_imageMassService.ShowHelp);
             ShowAbout = Make_NoParamCmd(_imageMassService.ShowAbout);
+            GifWindow = Make_StringParamCmd(_imageMassService.GifWindow);
 
             // FilterConfig and TextureConfig previously accepted a string? parameter in original
             FilterConfig = Make_StringParamCmd(_imageMassService.FilterConfigWindow);

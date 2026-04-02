@@ -80,20 +80,56 @@ namespace SlimViews
         /// </summary>
         private CancellationTokenSource? _cts;
 
-        // Add this field
+        /// <summary>
+        /// The delays
+        /// </summary>
         private Dictionary<int, int> _delays = new();
-        private int _currentDelay = 100; // Default 100ms
-        private int _selectedId = -1;    // Track which frame is currently active
 
+        /// <summary>
+        /// The current delay
+        /// Default 100ms
+        /// </summary>
+        private int _currentDelay = 100;
 
+        /// <summary>
+        /// The selected identifier
+        /// </summary>
+        private int _selectedId = -1;
+
+        /// <summary>
+        /// The set delay command
+        /// </summary>
         private ICommand? _setDelayCommand;
+
+        /// <summary>
+        /// The set all delay command
+        /// </summary>
         private ICommand? _setAllDelayCommand;
+
+        /// <summary>
+        /// The open command
+        /// </summary>
         private ICommand? _openCommand;
+
+        /// <summary>
+        /// The open folder command
+        /// </summary>
         private ICommand? _openFolderCommand;
+
+        /// <summary>
+        /// The clear command
+        /// </summary>
         private ICommand? _clearCommand;
+
+        /// <summary>
+        /// The save GIF command
+        /// </summary>
         private ICommand? _saveGifCommand;
+
+        /// <summary>
+        /// The save images command
+        /// </summary>
         private ICommand? _saveImagesCommand;
-        private ICommand? _closeCommand;
 
         /// <summary>
         ///     Path where individual frames are extracted to.
@@ -114,11 +150,14 @@ namespace SlimViews
         ///     Initializes a new instance of the <see cref="GifView"/> class.
         /// </summary>
         /// <param name="thumb">The thumbnail control reference.</param>
-        public GifView(Thumbnails thumb)
+        public GifView(Thumbnails thumb, string? initialFilePath)
         {
             Thumbnail = thumb;
             // Sync local AutoClear with the global register immediately on load
             AutoClear = SlimViewerRegister.GifCleanUp;
+
+            // Initialize the file path if provided (e.g., from command line or drag-and-drop)
+            FilePath = initialFilePath ?? string.Empty;
         }
 
         /// <summary>
@@ -281,15 +320,6 @@ namespace SlimViews
         /// The save images command.
         /// </value>
         public ICommand SaveImagesCommand => GetCommand(ref _saveImagesCommand, async _ => await SaveImagesActionAsync());
-
-        /// <summary>
-        /// Gets the close command.
-        /// </summary>
-        /// <value>
-        /// The close command.
-        /// </value>
-        public ICommand CloseCommand => GetCommand(ref _closeCommand, _ => CloseAction());
-
 
         /// <summary>
         /// Gets the set delay command.
@@ -620,19 +650,6 @@ namespace SlimViews
             {
                 Information = $"Clear Failed: {ex.Message}";
             }
-        }
-
-        /// <summary>
-        ///     Handles window closing logic.
-        /// </summary>
-        private void CloseAction()
-        {
-            // If AutoClear is on, clean up before leaving
-            if (AutoClear) ClearAction();
-
-            // Find the active window and close it. 
-            // (In strict MVVM, this might be done via a Service, but this works for a tool window)
-            Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
         }
 
         /// <summary>

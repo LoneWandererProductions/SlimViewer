@@ -63,9 +63,24 @@ public sealed class AsyncDelegateCommand<T> : ICommand
     /// </summary>
     /// <param name="parameter">The parameter for the predicate.</param>
     /// <returns>True if the command can execute, otherwise false.</returns>
-    public bool CanExecute(object parameter)
+    public bool CanExecute(object? parameter)
     {
-        return _canExecute?.Invoke((T)parameter) ?? true;
+        // If no restriction is set, always allow
+        if (_canExecute == null) return true;
+
+        try
+        {
+            // Try to cast and invoke. 
+            // If parameter is null, it passes null to your CanRun method.
+            return _canExecute.Invoke((T)parameter!);
+        }
+        catch
+        {
+            // If the cast fails (e.g., wrong type sent from XAML), 
+            // return true so the button stays enabled and 
+            // we handle the error during Execute instead.
+            return true;
+        }
     }
 
     /// <summary>
@@ -84,4 +99,6 @@ public sealed class AsyncDelegateCommand<T> : ICommand
         add => CommandManager.RequerySuggested += value;
         remove => CommandManager.RequerySuggested -= value;
     }
+
+
 }

@@ -35,6 +35,7 @@ namespace SlimViews.Contexts
 
         /// <summary>
         /// Gets or sets the name of the file.
+        /// The current active file name being viewed or manipulated. This is used for display purposes and to track the current file in the context of the ImageView.
         /// </summary>
         /// <value>
         /// The name of the file.

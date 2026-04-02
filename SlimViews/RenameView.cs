@@ -33,12 +33,12 @@ namespace SlimViews
         /// <summary>
         ///     The add command
         /// </summary>
-        private ICommand _addCommand;
+        private ICommand? _addCommand;
 
         /// <summary>
         ///     The appendages at command
         /// </summary>
-        private ICommand _appendagesAtCommand;
+        private ICommand? _appendagesAtCommand;
 
         /// <summary>
         ///     The numbers
@@ -48,37 +48,37 @@ namespace SlimViews
         /// <summary>
         ///     The remove appendage command
         /// </summary>
-        private ICommand _removeAppendageCommand;
+        private ICommand? _removeAppendageCommand;
 
         /// <summary>
         ///     The remove command
         /// </summary>
-        private ICommand _removeCommand;
+        private ICommand? _removeCommand;
 
         /// <summary>
         ///     The reorder command
         /// </summary>
-        private ICommand _reorderCommand;
+        private ICommand? _reorderCommand;
 
         /// <summary>
         ///     The replace command
         /// </summary>
-        private ICommand _replaceCommand;
+        private ICommand? _replaceCommand;
 
         /// <summary>
         ///     The apply changes command (commits to disk)
         /// </summary>
-        private ICommand _applyChangesCommand;
+        private ICommand? _applyChangesCommand;
 
         /// <summary>
         ///     The replacement
         /// </summary>
-        private string _replacement;
+        private string? _replacement;
 
         /// <summary>
         ///     The replacer
         /// </summary>
-        private string _replacer;
+        private string? _replacer;
 
         /// <summary>
         ///     Indicates whether the view model is currently processing files.
@@ -88,7 +88,7 @@ namespace SlimViews
         /// <summary>
         ///     The internal dictionary keeping track of all files.
         /// </summary>
-        private ConcurrentDictionary<int, string> _observer;
+        private ConcurrentDictionary<int, string>? _observer;
 
         /// <summary>
         ///     Gets the collection of items bound to the Preview DataGrid in the UI.
@@ -268,7 +268,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         private void RemoveAppendageAction(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Replacement)) return;
+            if (Replacement == null) Replacement = string.Empty;
 
             foreach (var item in PreviewItems)
             {

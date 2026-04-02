@@ -67,19 +67,18 @@
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
             <Grid Grid.Column="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="25" />
                     <ColumnDefinition Width="5" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="5" />
-                    <RowDefinition Height="50" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="5" />
-                    <RowDefinition Height="50" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="5" />
-                    <RowDefinition Height="50" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="5" />
                     <RowDefinition Height="25" />
                     <RowDefinition />
@@ -88,7 +87,7 @@
 
                 <Label Grid.Row="1" Grid.Column="0" Content="File Path" VerticalAlignment="Center" />
                 <TextBox Grid.Row="1" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Path=FilePath, Mode=OneWay}" IsReadOnly="True" Background="#F0F0F0" />
+                         Text="{Binding Path=FilePath, Mode=OneWay}" IsReadOnly="False" Background="#F0F0F0" />
 
                 <Label Grid.Row="3" Grid.Column="0" Content="Information" VerticalAlignment="Center" />
                 <TextBox Grid.Row="3" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"

@@ -160,7 +160,7 @@
                         <MenuItem Header="Loose Match (70%)" Command="{Binding Commands.Similar}" CommandParameter="70" />
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}" />
+                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}" CommandParameter="{Binding GifPath}"/>
                     <MenuItem Header="Autoplay GIFs" 
                       IsCheckable="True" 
                       IsChecked="{Binding AutoplayGifImage, ElementName=ImageControl, Mode=TwoWay}" 
