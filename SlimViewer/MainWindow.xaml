@@ -39,11 +39,11 @@
         <Grid Grid.Row="0" Grid.Column="1" Margin="0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
 
@@ -215,9 +215,9 @@
 
         <Grid Grid.Row="3" Grid.Column="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0" Content="←" Command="{Binding Commands.Previous}"
@@ -240,15 +240,15 @@
 
         <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="25" />
+                <RowDefinition Height="30" />
                 <RowDefinition Height="5" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="5" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25" />
-                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="30" />
                 <ColumnDefinition />
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="10" />
@@ -257,9 +257,9 @@
             </Grid.ColumnDefinitions>
 
             <Button Content="D" Grid.Row="0" Grid.Column="0" Command="{Binding Commands.Delete}"
-                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Delete file from disk (Del)" />
+                    ToolTip="Delete file from disk (Del)" />
             <Button Content="//" Grid.Row="0" Grid.Column="1" Command="{Binding Commands.Explorer}"
-                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Open file location in Windows Explorer" />
+                    ToolTip="Open file location in Windows Explorer" />
 
             <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Path=Information}"
                      TextWrapping="NoWrap" Focusable="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -267,7 +267,7 @@
 
             <Image Grid.Row="2" Grid.Column="0" Source="{Binding StatusImage}" ToolTip="Current application status" />
             <Button Content="R" Grid.Row="2" Grid.Column="1" Command="{Binding Commands.Rename}"
-                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Rename current image" />
+                    ToolTip="Rename current image" />
 
             <TextBox Grid.Row="2" Grid.Column="2"
                      Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -278,9 +278,9 @@
             </TextBox>
 
             <Button Content="Move" Grid.Row="2" Grid.Column="3" Command="{Binding Commands.Move}"
-                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Move current image to another folder" />
+                    ToolTip="Move current image to another folder" />
             <Button Content="Move All" Grid.Row="2" Grid.Column="5" Command="{Binding Commands.MoveAll}"
-                    IsEnabled="{Binding Path=IsImageActive}" ToolTip="Move all images in list to another folder" />
+                    ToolTip="Move all images in list to another folder" />
 
             <Images:Thumbnails Name="Thumbnail" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6"
                                ItemsSource="{Binding Observer}" ThumbCellSize="100" ThumbHeight="1"

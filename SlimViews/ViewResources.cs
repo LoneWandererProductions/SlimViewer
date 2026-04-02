@@ -280,7 +280,7 @@ namespace SlimViews
             return string.Concat(gifPath, ImageName,
                 info.Name, ImageHeight, info.Height, ImageWidth,
                 info.Width,
-                ImageSize, info.Size, Frames.Length, info.Frames);
+                ImageSize, info.Size, Frames.Length, "Frames: ", info.Frames.Count);
         }
 
         /// <summary>

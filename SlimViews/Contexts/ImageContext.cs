@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-#nullable enable
 using Imaging;
 using Imaging.Cifs;
 using System.Drawing;

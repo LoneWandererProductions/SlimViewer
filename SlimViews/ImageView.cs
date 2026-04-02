@@ -831,8 +831,10 @@ namespace SlimViews
             }
 
             GenerateView(pathObj.FilePath);
+            if (Image.HasImage || !string.IsNullOrEmpty(GifPath)) IsImageActive = true;
+
             LoadThumbs(pathObj.Folder, pathObj.FilePath);
-            if (Image.HasImage) IsImageActive = true;
+
         }
 
         /// <summary>
@@ -860,7 +862,6 @@ namespace SlimViews
             Image.Bitmap = Image.CustomImageFormat.GetImageFromCif(pathObj.FilePath);
             if (Image.Bitmap == null) return;
 
-            IsImageActive = true;
             Bmp = Image.BitmapSource;
             FileName = Path.GetFileName(FileContext.FilePath);
             Information = ViewResources.BuildImageInformation(FileContext.FilePath, FileName, Bmp);
@@ -875,8 +876,8 @@ namespace SlimViews
             var path = DialogHandler.ShowFolder(FileContext.CurrentPath);
             if (!Directory.Exists(path)) return;
 
+            if (!string.IsNullOrEmpty(path) || !string.IsNullOrEmpty(GifPath)) IsImageActive = true;
             LoadThumbs(path);
-            if (!string.IsNullOrEmpty(path)) IsImageActive = true;
         }
 
         /// <summary>
