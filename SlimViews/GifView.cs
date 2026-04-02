@@ -6,9 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-#nullable enable
+using Common.Dialogs;
 using CommonControls.Images;
-using CommonDialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;

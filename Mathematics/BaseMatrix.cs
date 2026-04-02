@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/BaseMatrix.cs
+ * FILE:        BaseMatrix.cs
  * PURPOSE:     Matrix Object with some basic Operators
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix
@@ -16,12 +16,11 @@ using ExtendedSystemObjects;
 
 namespace Mathematics
 {
-    /// <inheritdoc />
     /// <summary>
     ///     Idea and Inspiration:
     ///     https://bratched.com/en/?s=matrix
     /// </summary>
-    public sealed class BaseMatrix : IDisposable
+    public sealed class BaseMatrix
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="BaseMatrix" /> class.
@@ -65,14 +64,6 @@ namespace Mathematics
         }
 
         /// <summary>
-        ///     Gets a value indicating whether this <see cref="BaseMatrix" /> is disposed.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if disposed; otherwise, <c>false</c>.
-        /// </value>
-        private bool Disposed { get; set; }
-
-        /// <summary>
         ///     Gets or sets the matrix.
         /// </summary>
         /// <value>
@@ -108,54 +99,7 @@ namespace Mathematics
         public double this[int x, int y]
         {
             get => Matrix[x, y];
-            init => Matrix[x, y] = value;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Free up all the Memory.
-        ///     See:
-        ///     https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1063?view=vs-2019
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing">
-        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
-        ///     unmanaged resources.
-        /// </param>
-        private void Dispose(bool disposing)
-        {
-            if (Disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                // free managed resources
-                Matrix = null;
-            }
-
-            Disposed = true;
-        }
-
-        /// <summary>
-        ///     NOTE: Leave out the finalizer altogether if this class doesn't
-        ///     own unmanaged resources, but leave the other methods
-        ///     exactly as they are.
-        ///     Finalizes an instance of the <see cref="BaseMatrix" /> class.
-        /// </summary>
-        ~BaseMatrix()
-        {
-            // Finalizer calls Dispose(false)
-            Dispose(false);
+            set => Matrix[x, y] = value;
         }
 
         /// <summary>
@@ -303,6 +247,12 @@ namespace Mathematics
         /// <returns>Equal or not</returns>
         public bool Equals(BaseMatrix other)
         {
+            // 1. If the other object is null, they obviously aren't equal.
+            if (other is null) return false;
+
+            // 2. Optimization: If they point to the exact same memory, they are equal.
+            if (ReferenceEquals(this, other)) return true;
+
             return MatrixUtility.UnsafeCompare(this, other);
         }
 
@@ -326,7 +276,8 @@ namespace Mathematics
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Matrix);
+            // A simple, safe hash for dynamic matrices
+            return Matrix != null ? HashCode.Combine(Width, Height) : 0;
         }
 
         /// <summary>
@@ -339,7 +290,13 @@ namespace Mathematics
         /// </returns>
         public static bool operator ==(BaseMatrix first, BaseMatrix second)
         {
-            return first?.Equals(second) == true;
+            // Use the pattern 'is null' to bypass custom == operators and prevent infinite loops
+            if (first is null)
+            {
+                return second is null;
+            }
+
+            return first.Equals(second);
         }
 
         /// <summary>
@@ -357,22 +314,22 @@ namespace Mathematics
 
         /// <summary>
         ///     Performs an explicit conversion from <see cref="BaseMatrix" /> to <see cref="Vector3D" />.
-        ///     Here is the only case where w will be set!
-        ///     Only usable for 3D stuff.
+        ///     Only usable for 3D stuff with Homogeneous Coordinates (1x4 or 4x4 matrices).
         /// </summary>
         /// <param name="first">The first.</param>
         /// <returns>
         ///     The result of the conversion.
         /// </returns>
+        /// <exception cref="InvalidCastException">Thrown when the matrix does not contain enough elements.</exception>
         public static explicit operator Vector3D(BaseMatrix first)
         {
-            if (first.Height != 4 && first.Width != 4)
+            // Use 'is null' here!
+            if (first is null || (first.Height != 4 && first.Width != 4))
             {
-                return null;
+                throw new InvalidCastException("Matrix dimensions must be 4 to cast to a Vector3D.");
             }
 
-            var v = new Vector3D(first[0, 0], first[0, 1], first[0, 2]);
-            v.SetW(first[0, 3]);
+            var v = new Vector3D(first[0, 0], first[0, 1], first[0, 2], first[0, 3]);
             return v;
         }
 
@@ -385,7 +342,7 @@ namespace Mathematics
         /// </returns>
         public static implicit operator BaseMatrix(double[,] m)
         {
-            return new BaseMatrix { Matrix = m };
+            return new BaseMatrix(m);
         }
 
         /// <summary>

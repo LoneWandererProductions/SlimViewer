@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Projection3DCamera.cs
+ * FILE:        Projection3DCamera.cs
  * PURPOSE:     Does the heavy liftign for the 3D Display and joins all the Matrices
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms
@@ -128,8 +128,14 @@ namespace Mathematics
             var matCameraRot = Projection3DConstants.RotateY(transform.Yaw);
 
             var vLookDir = transform.Target * matCameraRot;
-            var vTarget = transform.Position + vLookDir;
 
+            // 1. Unpack the nullable Position safely
+            var pos = transform.Position ?? Vector3D.ZeroVector;
+
+            // 2. Add two solid Vector3D structs together
+            var vTarget = pos + vLookDir;
+
+            // 3. Pass the guaranteed solid Vector3D into LookAt
             return Projection3DConstants.LookAt(transform, vTarget);
         }
 
@@ -163,17 +169,19 @@ namespace Mathematics
 
             //converted r matrix
             transform.Right = new Vector3D(cosYaw, 0, -sinYaw);
-
             transform.Up = new Vector3D(sinYaw * sinPitch, cosPitch, cosYaw * sinPitch);
-
             transform.Forward = new Vector3D(sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw);
 
-            // The inverse camera's translation
-            var transl = new Vector3D(-(transform.Right * transform.Position),
-                -(transform.Up * transform.Position),
-                -(transform.Forward * transform.Position));
+            // 1. SAFELY UNWRAP NULLABLE POSITION
+            // If Position is null, default to 0,0,0 so the dot product resolves to 0 safely.
+            var pos = transform.Position ?? Vector3D.ZeroVector;
 
-            //{ 1 0 0 0  0 1 - 0 0 - 0 0 1 0 - 0 - 0 - 0 1  }
+            // The inverse camera's translation using the unwrapped position
+            var transl = new Vector3D(
+                -(transform.Right * pos),
+                -(transform.Up * pos),
+                -(transform.Forward * pos)
+            );
 
             // Join rotation and translation in a single matrix
             // instead of calculating their multiplication
@@ -184,7 +192,8 @@ namespace Mathematics
                 { transform.Right.Z, transform.Up.Z, transform.Forward.Z, 0 }, { transl.X, transl.Y, transl.Z, 1 }
             };
 
-            return new BaseMatrix { Matrix = viewMatrix };
+            // 2. USE THE CONSTRUCTOR INSTEAD OF OBJECT INITIALIZER
+            return new BaseMatrix(viewMatrix);
         }
     }
 }

@@ -92,11 +92,43 @@ namespace ExtendedSystemObjects
         /// The <see cref="TValue"/>.
         /// </value>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>Value at Key</returns>
         public TValue this[int key]
         {
             get => Get(key);
             set => Set(key, value);
+        }
+
+        /// <summary>
+        ///     Gets the values.
+        /// </summary>
+        /// <value>
+        ///     The values.
+        /// </value>
+        public IEnumerable<TValue> Values
+        {
+            get
+            {
+                return GetValuesSnapshot();
+            }
+        }
+
+        /// <summary>
+        /// Gets the values snapshot.
+        /// </summary>
+        /// <returns>List of Values</returns>
+        private List<TValue> GetValuesSnapshot()
+        {
+            var values = new List<TValue>(Count);
+            for (var i = 0; i < Capacity; i++)
+            {
+                var entry = _entries[i];
+                if (entry.Used == SharedResources.Occupied)
+                {
+                    values.Add(entry.Value);
+                }
+            }
+            return values;
         }
 
         /// <summary>
@@ -146,7 +178,7 @@ namespace ExtendedSystemObjects
                 if (slot.Used == SharedResources.Empty)
                 {
                     // Reclaim first tombstone found in the chain, or use this empty slot
-                    int targetIdx = (firstTombstone != -1) ? firstTombstone : idx;
+                    var targetIdx = (firstTombstone != -1) ? firstTombstone : idx;
 
                     ref var target = ref _entries[targetIdx];
                     target.Key = key;
@@ -176,11 +208,12 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key {key} not found.</exception>
+        /// <exception cref="KeyNotFoundException">Key {key} not found.</exception>
         public TValue Get(int key)
         {
             var idx = FindIndex(key);
             if (idx >= 0) return _entries[idx].Value;
+
             throw new KeyNotFoundException($"Key {key} not found.");
         }
 
@@ -266,6 +299,7 @@ namespace ExtendedSystemObjects
         public void Resize()
         {
             if (_capacityPowerOf2 >= MaxPowerOf2) return;
+
             Rehash(_capacityPowerOf2 + 1);
         }
 
@@ -301,7 +335,7 @@ namespace ExtendedSystemObjects
             _entries = (EntryGeneric<TValue>*)Marshal.AllocHGlobal(sizeof(EntryGeneric<TValue>) * Capacity);
             Unsafe.InitBlock(_entries, 0, (uint)(sizeof(EntryGeneric<TValue>) * Capacity));
 
-            int oldCount = Count;
+            var oldCount = Count;
             Count = 0;
             _usedCount = 0;
 

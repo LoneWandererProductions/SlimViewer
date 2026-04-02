@@ -18,7 +18,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <summary>
     ///     The Sql connection string class

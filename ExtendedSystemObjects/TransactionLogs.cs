@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:      ExtendedSystemObjects
- * FILE:         ExtendedSystemObjects/TransactionLogs.cs
+ * FILE:         TransactionLogs.cs
  * PURPOSE:      Basic Transaction Log, log Changes
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * DESCRIPTION:
@@ -93,13 +93,10 @@ namespace ExtendedSystemObjects
             {
                 var log = new LogEntry
                 {
-                    State = LogState.Add,
-                    Data = item,
-                    UniqueIdentifier = uniqueIdentifier,
-                    StartData = startData
+                    State = LogState.Add, Data = item, UniqueIdentifier = uniqueIdentifier, StartData = startData
                 };
 
-                int key = GetNewKey();
+                var key = GetNewKey();
                 Changelog[key] = log;
                 _lookupIndex[(uniqueIdentifier, LogState.Add)] = key; // Update Index
                 Changed = true;
@@ -123,15 +120,13 @@ namespace ExtendedSystemObjects
 
                 var item = Changelog[id].Data;
 
-                int key = GetNewKey();
+                var key = GetNewKey();
                 Changelog[key] = new LogEntry
                 {
-                    State = LogState.Remove,
-                    Data = item,
-                    UniqueIdentifier = uniqueIdentifier
+                    State = LogState.Remove, Data = item, UniqueIdentifier = uniqueIdentifier
                 };
 
-                // Note: We generally don't index 'Remove' unless we need to query it later, 
+                // Note: We generally don't index 'Remove' unless we need to query it later,
                 // but for consistency we can add it or just leave it as a transaction record.
                 _lookupIndex[(uniqueIdentifier, LogState.Remove)] = key;
 
@@ -156,20 +151,16 @@ namespace ExtendedSystemObjects
                 {
                     Changelog[entry] = new LogEntry
                     {
-                        State = LogState.Change,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
+                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                     };
                     Changed = true;
                 }
                 else if (entry == -1)
                 {
-                    int key = GetNewKey();
+                    var key = GetNewKey();
                     Changelog[key] = new LogEntry
                     {
-                        State = LogState.Change,
-                        Data = item,
-                        UniqueIdentifier = uniqueIdentifier
+                        State = LogState.Change, Data = item, UniqueIdentifier = uniqueIdentifier
                     };
                     _lookupIndex[(uniqueIdentifier, LogState.Change)] = key; // Update Index
                     Changed = true;
@@ -191,7 +182,7 @@ namespace ExtendedSystemObjects
                     return -1;
                 }
 
-                // Optimization: We can simply look up the 'Add' state for this unique ID 
+                // Optimization: We can simply look up the 'Add' state for this unique ID
                 // directly from our index instead of reverse iterating the whole dictionary.
                 if (_lookupIndex.TryGetValue((reference.UniqueIdentifier, LogState.Add), out var addKey))
                 {
@@ -250,7 +241,7 @@ namespace ExtendedSystemObjects
         public int GetNewKey()
         {
             // Optimized from O(N) scan to O(1) increment
-            // No lock needed here if called inside existing locks, 
+            // No lock needed here if called inside existing locks,
             // but for safety we use Interlocked or assume caller holds _lock.
             return ++_currentKey;
         }

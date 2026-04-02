@@ -9,7 +9,6 @@
 using Imaging;
 using SlimControls;
 using System.Drawing;
-using System.Reflection.Metadata;
 
 namespace SlimViews
 {

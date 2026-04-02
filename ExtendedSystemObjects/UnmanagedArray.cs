@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/IUnmanagedArray.cs
+ * FILE:        IUnmanagedArray.cs
  * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similar to IntArray.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -172,7 +172,7 @@ namespace ExtendedSystemObjects
             if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 1 || index + count > Length) throw new ArgumentOutOfRangeException(nameof(count));
 
-            int moveCount = Length - (index + count);
+            var moveCount = Length - (index + count);
             if (moveCount > 0)
             {
                 // Use Spans to perform a high-speed memmove
@@ -244,7 +244,7 @@ namespace ExtendedSystemObjects
         /// <param name="index">The index.</param>
         /// <param name="value">The value.</param>
         /// <param name="count">The count.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// <exception cref="ArgumentOutOfRangeException">
         ///     index
         ///     or
         ///     count
@@ -252,11 +252,12 @@ namespace ExtendedSystemObjects
         public void InsertAt(int index, T value, int count = 1)
         {
             if (index < 0 || index > Length) throw new ArgumentOutOfRangeException(nameof(index));
+
             if (count <= 0) return;
 
             EnsureCapacity(Length + count);
 
-            int moveCount = Length - index;
+            var moveCount = Length - index;
             if (moveCount > 0)
             {
                 var source = new ReadOnlySpan<T>(_ptr + index, moveCount);
@@ -303,7 +304,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Ensures the not disposed.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">T</exception>
+        /// <exception cref="ObjectDisposedException">T</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureNotDisposed()
         {

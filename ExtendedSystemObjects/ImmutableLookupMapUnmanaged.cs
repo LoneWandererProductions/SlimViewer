@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:      ExtendedSystemObjects
- * FILE:         ExtendedSystemObjects/ImmutableLookupMap.cs
+ * FILE:         ImmutableLookupMap.cs
  * PURPOSE:      A high-performance, immutable lookup map that uses an array-based internal structure for fast key-value lookups.
  * This version is limited to unmanaged types and uses UnmanagedArray<T>.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -72,20 +72,20 @@ namespace ExtendedSystemObjects
             _mask = _capacity - 1;
 
             _entries = new UnmanagedArray<Entry>(_capacity);
-            Entry* entriesPtr = _entries.Pointer;
+            var entriesPtr = _entries.Pointer;
 
             foreach (var kvp in data)
             {
-                TKey key = kvp.Key;
-                TValue value = kvp.Value;
-                int hash = GetHash(key) & _mask;
-                bool placed = false;
+                var key = kvp.Key;
+                var value = kvp.Value;
+                var hash = GetHash(key) & _mask;
+                var placed = false;
 
                 // 2. Linear Probing for cache line efficiency
                 for (var i = 0; i < _capacity; i++)
                 {
-                    int index = (int)((uint)(hash + i) & (uint)_mask);
-                    Entry* entry = entriesPtr + index;
+                    var index = (int)((uint)(hash + i) & (uint)_mask);
+                    var entry = entriesPtr + index;
 
                     if (entry->IsPresent == 0)
                     {
@@ -125,14 +125,14 @@ namespace ExtendedSystemObjects
         ///      Returns an enumerator for iterating over the key-value pairs in the map.
         /// </summary>
         /// <remarks>
-        ///      Note: We avoid pointers here because yield return cannot exist in an unsafe context 
+        ///      Note: We avoid pointers here because yield return cannot exist in an unsafe context
         ///      that captures pointers. We use the array indexer instead.
         /// </remarks>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             for (var i = 0; i < _capacity; i++)
             {
-                // We use the safe indexer of UnmanagedArray. 
+                // We use the safe indexer of UnmanagedArray.
                 // This causes a value-copy of the Entry struct, but it's yield-compatible.
                 var entry = _entries[i];
 
@@ -163,13 +163,13 @@ namespace ExtendedSystemObjects
         /// <exception cref="KeyNotFoundException">Thrown if the key is not found in the map.</exception>
         public TValue Get(TKey key)
         {
-            int hash = GetHash(key) & _mask;
-            Entry* entriesPtr = _entries.Pointer;
+            var hash = GetHash(key) & _mask;
+            var entriesPtr = _entries.Pointer;
 
             for (var i = 0; i < _capacity; i++)
             {
-                int index = (hash + i) & _mask;
-                Entry* entry = entriesPtr + index;
+                var index = (hash + i) & _mask;
+                var entry = entriesPtr + index;
 
                 if (entry->IsPresent == 0) break;
 
@@ -193,13 +193,13 @@ namespace ExtendedSystemObjects
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            int hash = GetHash(key) & _mask;
-            Entry* entriesPtr = _entries.Pointer;
+            var hash = GetHash(key) & _mask;
+            var entriesPtr = _entries.Pointer;
 
             for (var i = 0; i < _capacity; i++)
             {
-                int index = (hash + i) & _mask;
-                Entry* entry = entriesPtr + index;
+                var index = (hash + i) & _mask;
+                var entry = entriesPtr + index;
 
                 if (entry->IsPresent == 0) break;
 

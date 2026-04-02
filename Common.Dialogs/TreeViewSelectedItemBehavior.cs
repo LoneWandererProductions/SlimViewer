@@ -1,6 +1,6 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        TreeViewSelectedItemBehavior.cs
  * PURPOSE:     Provides an attached property to bind TreeView.SelectedItem to a ViewModel
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <summary>
     /// Provides an attached property that enables binding the <see cref="TreeView.SelectedItem"/> to a property in a ViewModel.

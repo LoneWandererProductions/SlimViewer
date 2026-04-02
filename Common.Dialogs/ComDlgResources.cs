@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        ComDlgResources.cs
  * PURPOSE:     String Resources for Dialog Controls
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-namespace CommonDialogs;
+namespace Common.Dialogs;
 
 /// <summary>
 ///     The common Dialog Control resources class.

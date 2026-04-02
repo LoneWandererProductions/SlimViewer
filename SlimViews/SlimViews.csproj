@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
     <ProjectReference Include="..\CommonControls.Converter\CommonControls.Converter.csproj" />
     <ProjectReference Include="..\CommonControls.Images\CommonControls.Images.csproj" />
-    <ProjectReference Include="..\CommonDialogs\CommonDialogs.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />

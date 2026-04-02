@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        SqlConnect.cs
  * PURPOSE:     Generic Sql Dialog for a connection String
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@
 
 using System.Windows;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

@@ -9,7 +9,7 @@
 // ReSharper disable MemberCanBePrivate.Global, if we make it private the Property Changed event will not be triggered in the Window
 // ReSharper disable MemberCanBeInternal, must be public, else the View Model won't work
 
-using CommonDialogs;
+using Common.Dialogs;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;

@@ -1,6 +1,6 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        FolderBrowser.xaml.cs
  * PURPOSE:     Basic Folder Browser dialog based on WPF, using my own FolderControl.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using System.ComponentModel;
 using System.Windows;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

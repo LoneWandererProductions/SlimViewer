@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:      ExtendedSystemObjects
- * FILE:         ExtendedSystemObjects/VaultItem.cs
+ * FILE:         VaultItem.cs
  * PURPOSE:      Holds an Item that can expire
  * PROGRAMER:    Peter Geinitz (Wayfarer)
  */
@@ -26,9 +26,7 @@ namespace ExtendedSystemObjects
         ///      Initializes a new instance of the <see cref="VaultItem{TU}" /> class.
         ///      Needed for Json serialization.
         /// </summary>
-        public VaultItem()
-        {
-        }
+        public VaultItem() { }
 
         /// <summary>
         ///      Initializes a new instance of the <see cref="VaultItem{U}" /> class.
@@ -157,14 +155,8 @@ namespace ExtendedSystemObjects
             // 3. Handle Value Types (Existing)
             if (typeof(T).IsValueType)
             {
-                try
-                {
-                    return Marshal.SizeOf(typeof(T));
-                }
-                catch
-                {
-                    return IntPtr.Size;
-                }
+                try { return Marshal.SizeOf(typeof(T)); }
+                catch { return IntPtr.Size; }
             }
 
             // 4. Handle Reference Types (Existing)
@@ -176,7 +168,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public override string ToString()
         {
-            string status = HasExpired ? "EXPIRED" : (HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent");
+            var status = HasExpired ? "EXPIRED" : (HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent");
             return $"VaultItem<{typeof(TU).Name}> | {status} | Size: {DataSize} bytes | Desc: {Description}";
         }
     }

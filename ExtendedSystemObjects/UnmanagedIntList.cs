@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
- * FILE:        ExtendedSystemObjects/UnmanagedIntList.cs
+ * FILE:        UnmanagedIntList.cs
  * PURPOSE:     Provides a high-performance list implementation for integer values using unmanaged memory.
  *              Designed for scenarios requiring manual memory control.
  *              Not inherently thread-safe.
@@ -166,13 +166,13 @@ namespace ExtendedSystemObjects
             }
 #endif
 
-            int moveCount = Length - (index + count);
+            var moveCount = Length - (index + count);
             if (moveCount > 0)
             {
                 // Source: Elements after the deleted range
-                ReadOnlySpan<int> source = new ReadOnlySpan<int>(_ptr + index + count, moveCount);
+                var source = new ReadOnlySpan<int>(_ptr + index + count, moveCount);
                 // Destination: The start of the deleted range
-                Span<int> destination = new Span<int>(_ptr + index, moveCount);
+                var destination = new Span<int>(_ptr + index, moveCount);
 
                 // This is a high-speed memmove equivalent
                 source.CopyTo(destination);
@@ -187,7 +187,7 @@ namespace ExtendedSystemObjects
         ///     Resizes the specified new size.
         /// </summary>
         /// <param name="newSize">The new size.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">newSize</exception>
+        /// <exception cref="ArgumentOutOfRangeException">newSize</exception>
         public void Resize(int newSize)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(newSize);
@@ -296,7 +296,7 @@ namespace ExtendedSystemObjects
         {
             if (values.IsEmpty) return;
 
-            int count = values.Length;
+            var count = values.Length;
             EnsureCapacity(Length + count);
 
             // Copy the entire span directly into the unmanaged buffer
@@ -355,7 +355,7 @@ namespace ExtendedSystemObjects
         /// <param name="index">The index.</param>
         /// <param name="value">The value.</param>
         /// <param name="count">The count.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        /// <exception cref="ArgumentOutOfRangeException">index</exception>
         public void InsertAt(int index, int value, int count = 1)
         {
             EnsureNotDisposed();
@@ -369,13 +369,13 @@ namespace ExtendedSystemObjects
 
             EnsureCapacity(Length + count);
 
-            int moveCount = Length - index;
+            var moveCount = Length - index;
             if (moveCount > 0)
             {
                 // Source: Elements from index to the end
-                ReadOnlySpan<int> source = new ReadOnlySpan<int>(_ptr + index, moveCount);
+                var source = new ReadOnlySpan<int>(_ptr + index, moveCount);
                 // Destination: The new position after the gap
-                Span<int> destination = new Span<int>(_ptr + index + count, moveCount);
+                var destination = new Span<int>(_ptr + index + count, moveCount);
 
                 source.CopyTo(destination);
             }
@@ -395,7 +395,7 @@ namespace ExtendedSystemObjects
         public Span<int> AsSpan()
         {
             EnsureNotDisposed();
-            // Fix: Use 'Length' instead of 'Capacity' 
+            // Fix: Use 'Length' instead of 'Capacity'
             // to prevent access to uninitialized memory.
             return new Span<int>(_ptr, Length);
         }
@@ -451,8 +451,8 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="array">The array.</param>
         /// <param name="arrayIndex">Index of the array.</param>
-        /// <exception cref="System.ArgumentNullException">array</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">arrayIndex</exception>
+        /// <exception cref="ArgumentNullException">array</exception>
+        /// <exception cref="ArgumentOutOfRangeException">arrayIndex</exception>
         public void CopyTo(int[] array, int arrayIndex = 0)
         {
             EnsureNotDisposed();
@@ -495,7 +495,7 @@ namespace ExtendedSystemObjects
         ///     Copies to.
         /// </summary>
         /// <param name="target">The target.</param>
-        /// <exception cref="System.ArgumentException">Target span too small</exception>
+        /// <exception cref="ArgumentException">Target span too small</exception>
         public void CopyTo(Span<int> target)
         {
 #if DEBUG
@@ -519,7 +519,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Ensures the not disposed.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">UnmanagedIntList</exception>
+        /// <exception cref="ObjectDisposedException">UnmanagedIntList</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureNotDisposed()
         {

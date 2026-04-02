@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
-using static OpenTK.Graphics.OpenGL.GL;
 
 // ReSharper disable UnusedMember.Local
 
@@ -272,7 +271,7 @@ namespace Imaging.Helpers
 
             var waveBitmap = new DirectBitmap(width, height);
             var pixelArray = new (int x, int y, Color color)[width * height];
-            int index = 0;
+            var index = 0;
 
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)

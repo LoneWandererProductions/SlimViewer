@@ -6,7 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using CommonDialogs;
+using Common.Dialogs;
 using FileHandler;
 using Imaging;
 using System;

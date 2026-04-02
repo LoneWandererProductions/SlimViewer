@@ -1,6 +1,6 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        FolderItemViewModel.cs
  * PURPOSE:     ViewModel representing a single folder or file in a TreeView
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,11 +9,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <inheritdoc />
     /// <summary>
@@ -61,11 +60,12 @@ namespace CommonDialogs
             set
             {
                 if (_isSelected == value) return;
+
                 _isSelected = value;
                 OnPropertyChanged(nameof(IsSelected));
 
                 if (_isSelected)
-                    _parentVM.SelectedFolder = this; // ← direct, safe
+                    _parentVm.SelectedFolder = this; // ← direct, safe
             }
         }
 
@@ -77,18 +77,18 @@ namespace CommonDialogs
         /// <summary>
         /// The parent vm
         /// </summary>
-        private readonly FolderViewModel _parentVM;
+        private readonly FolderViewModel _parentVm;
 
         /// <summary>
         /// Initializes a new instance of <see cref="FolderItemViewModel" /> for a given path.
         /// </summary>
         /// <param name="path">Full path of the folder or file.</param>
-        /// <param name="parentVM">The parent vm.</param>
-        public FolderItemViewModel(string path, FolderViewModel parentVM)
+        /// <param name="parentVm">The parent vm.</param>
+        public FolderItemViewModel(string path, FolderViewModel parentVm)
         {
             Path = path;
-            Header = System.IO.Path.GetFileName(path) ?? path;
-            _parentVM = parentVM;
+            Header = System.IO.Path.GetFileName(path);
+            _parentVm = parentVm;
             HasChildren = SafeHasChildren(path);
         }
 
@@ -122,10 +122,12 @@ namespace CommonDialogs
         {
             try
             {
-                return Directory.EnumerateFileSystemEntries(path).Any();
+                using var enumerator = Directory.EnumerateFileSystemEntries(path).GetEnumerator();
+                return enumerator.MoveNext();
             }
             catch
             {
+                // Handles UnauthorizedAccess, PathTooLong, or DirectoryNotFound
                 return false;
             }
         }
@@ -143,11 +145,11 @@ namespace CommonDialogs
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     foreach (var dir in dirs)
-                        Children.Add(new FolderItemViewModel(dir, _parentVM));
+                        Children.Add(new FolderItemViewModel(dir, _parentVm));
 
                     foreach (var file in files)
                         Children.Add(
-                            new FolderItemViewModel(file, _parentVM) { Header = System.IO.Path.GetFileName(file) });
+                            new FolderItemViewModel(file, _parentVm) { Header = System.IO.Path.GetFileName(file) });
                 });
             }
             catch

@@ -197,7 +197,7 @@ namespace Imaging
 
             var span = Bits.AsSpan();
 
-            for (int i = 0; i < span.Length; i++)
+            for (var i = 0; i < span.Length; i++)
             {
                 var p = span[i];
 
@@ -253,7 +253,7 @@ namespace Imaging
         /// Format: BGRA (32-bit uint). Alpha is premultiplied at runtime.
         /// </summary>
         /// <param name="src">Source pixels to blend (same size as current bitmap)</param>
-        /// <exception cref="System.ArgumentException">Source must match image size</exception>
+        /// <exception cref="ArgumentException">Source must match image size</exception>
         public void BlendInt(uint[] src)
         {
             DirectBitmapCore.BlendInt(Bits, src);
@@ -271,7 +271,7 @@ namespace Imaging
                 var dst = (Pixel32*)_bitmap.BackBuffer; // treat back buffer as Pixel32[]
                 var span = Bits.AsSpan(); // Pixel32[]
 
-                for (int i = 0; i < span.Length; i++)
+                for (var i = 0; i < span.Length; i++)
                 {
                     dst[i] = span[i]; // direct struct copy
                 }

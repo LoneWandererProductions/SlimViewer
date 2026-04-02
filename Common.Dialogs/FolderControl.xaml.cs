@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        FolderControl.cs
  * PURPOSE:     FolderView Control, drop-in replacement for FolderBrowser, improved and thread-safe
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 using System.Windows.Controls;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <inheritdoc cref="UserControl" />
     /// <summary>

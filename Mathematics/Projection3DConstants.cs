@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Mathematics
- * FILE:        Mathematics/Projection3DConstants.cs
+ * FILE:        Projection3DConstants.cs
  * PURPOSE:     Holds the basic 3D Matrices
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms
@@ -54,16 +54,21 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix LookAt(Transform transform, Vector3D target)
         {
-            var forward = (target - transform.Position).Normalize(); // Z axis
+            // 1. UNWRAP THE NULLABLE SAFELY! 
+            // If Position is null, default to 0,0,0 so the math doesn't crash.
+            var pos = transform.Position ?? Vector3D.ZeroVector;
+
+            // Now everything is a solid Vector3D struct, and the compiler is happy.
+            var forward = (target - pos).Normalize(); // Z axis
 
             var right = transform.Up.CrossProduct(forward).Normalize(); // X axis
 
             var up = forward.CrossProduct(right); // Y axis
 
             // The inverse camera's translation
-            var transl = new Vector3D(-(right * transform.Position),
-                -(up * transform.Position),
-                -(forward * transform.Position));
+            var transl = new Vector3D(-(right * pos),
+                -(up * pos),
+                -(forward * pos));
 
             double[,] viewMatrix =
             {
@@ -71,7 +76,7 @@ namespace Mathematics
                 { transl.X, transl.Y, transl.Z, 1 }
             };
 
-            return new BaseMatrix { Matrix = viewMatrix };
+            return new BaseMatrix(viewMatrix);
         }
 
         /// <summary>

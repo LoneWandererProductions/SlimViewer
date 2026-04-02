@@ -35,7 +35,7 @@ namespace Imaging
     ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
-    public sealed class DirectBitmap : IDisposable, IEquatable<DirectBitmap>, IPixelSurface
+    public sealed class DirectBitmap : IEquatable<DirectBitmap>, IPixelSurface
     {
         /// <summary>
         ///     The synchronize lock
@@ -75,9 +75,9 @@ namespace Imaging
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
 
             using var bmp = new Bitmap(image);
-            for (int y = 0; y < Height; y++)
+            for (var y = 0; y < Height; y++)
             {
-                for (int x = 0; x < Width; x++)
+                for (var x = 0; x < Width; x++)
                 {
                     var c = bmp.GetPixel(x, y);
                     Bits[y * Width + x] = new Pixel32(c.R, c.G, c.B, c.A);
@@ -261,7 +261,7 @@ namespace Imaging
                 {
                     Buffer.MemoryCopy(
                         (void*)srcData.Scan0,
-                        (void*)pDest,
+                        pDest,
                         dbm.Bits.Length * 4,
                         dbm.Bits.Length * 4
                     );

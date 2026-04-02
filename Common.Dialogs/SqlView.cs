@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        SqlConnect.cs
  * PURPOSE:     View for Sql Connection dialog
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,7 +16,7 @@ using System.Windows;
 using System.Windows.Input;
 using ViewModel;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <inheritdoc />
     /// <summary>

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
- * FILE:        CommonDialogsPathObject.cs
+ * PROJECT:     Common.Dialogs
+ * FILE:        PathObject.cs
  * PURPOSE:     Helper Object for FileIoHandler
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -11,7 +11,7 @@
 
 using System.IO;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <summary>
     ///     Save some Time and return basic Values

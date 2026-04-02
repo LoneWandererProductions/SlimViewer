@@ -1,6 +1,6 @@
 ﻿/* 
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonDialogs
+ * PROJECT:     Common.Dialogs
  * FILE:        FolderViewModel.cs
  * PURPOSE:     ViewModel for FolderControl UserControl, handles folder navigation and loading
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using ViewModel;
 
-namespace CommonDialogs
+namespace Common.Dialogs
 {
     /// <inheritdoc />
     /// <summary>
-    /// ViewModel for the <see cref="T:CommonDialogs.FolderControl" /> UserControl.
+    /// ViewModel for the <see cref="T:Common.Dialogs.FolderControl" /> UserControl.
     /// Handles folder navigation, file/folder loading, and command bindings for UI interaction.
     /// Implements async loading to keep the UI responsive.
     /// </summary>
@@ -234,7 +234,7 @@ namespace CommonDialogs
 
                 var newDirPath = Path.Combine(Paths, ComDlgResources.NewFolder);
                 var dirName = newDirPath;
-                int i = 1;
+                var i = 1;
 
                 while (Directory.Exists(dirName))
                     dirName = $"{newDirPath} ({i++})";
@@ -273,9 +273,9 @@ namespace CommonDialogs
         {
             Paths = path;
 
-            string[] directories =
+            var directories =
                 Directory.Exists(path) ? Directory.GetDirectories(path) : Directory.GetLogicalDrives();
-            string[] files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
+            var files = ShowFiles && Directory.Exists(path) ? Directory.GetFiles(path) : Array.Empty<string>();
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -290,7 +290,7 @@ namespace CommonDialogs
                 {
                     foreach (var file in files)
                         FolderItems.Add(
-                            new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) ?? file });
+                            new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) });
                 }
             });
         }
@@ -308,10 +308,10 @@ namespace CommonDialogs
                     return null;
 
                 // Normalize path (removes trailing slashes)
-                string full = Path.GetFullPath(path);
+                var full = Path.GetFullPath(path);
 
                 // Detect root (C:\, D:\, etc.)
-                string? root = Path.GetPathRoot(full);
+                var root = Path.GetPathRoot(full);
                 if (root != null &&
                     root.Equals(full, StringComparison.OrdinalIgnoreCase))
                 {

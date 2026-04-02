@@ -12,7 +12,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -171,6 +170,7 @@ namespace Imaging.Gifs
         internal static void CreateGif(IEnumerable<(Bitmap Image, int DelayMs)> frames, string target)
         {
             if (frames == null) return;
+
             GifCreator(frames, target);
         }
 
@@ -190,23 +190,19 @@ namespace Imaging.Gifs
         }
 
         /// <summary>
-        ///    Create the gif with a fixed delay.
+        /// Create the gif with a fixed delay.
         /// </summary>
         /// <param name="btm">A list of Bitmaps.</param>
         /// <param name="target">The target.</param>
-        /// <summary>
-        ///     Create the gif from a list of Bitmaps.
-        /// </summary>
-        /// <param name="btm">A list of Bitmaps.</param>
-        /// <param name="target">The target.</param>
+        /// <param name="delayMs">The delay ms.</param>
         private static void GifCreator(IEnumerable<Bitmap> btm, string target, int delayMs)
         {
             var gEnc = new GifBitmapEncoder();
-            ushort gifDelay = (ushort)(delayMs / 10); // Convert to hundredths of a second
+            var gifDelay = (ushort)(delayMs / 10); // Convert to hundredths of a second
 
             foreach (var bmpImage in btm)
             {
-                nint hBitmap = bmpImage.GetHbitmap();
+                var hBitmap = bmpImage.GetHbitmap();
                 try
                 {
                     var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
@@ -240,7 +236,7 @@ namespace Imaging.Gifs
 
             foreach (var frame in frames)
             {
-                nint hBitmap = frame.Image.GetHbitmap();
+                var hBitmap = frame.Image.GetHbitmap();
                 try
                 {
                     var src = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
@@ -323,7 +319,8 @@ namespace Imaging.Gifs
             var fileBytes = ms.ToArray();
 
             // This is the NETSCAPE2.0 Application Extension.
-            var applicationExtension = new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+            var applicationExtension =
+                new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
 
             var newBytes = new List<byte>(fileBytes.Length + applicationExtension.Length);
             newBytes.AddRange(fileBytes.Take(13));
