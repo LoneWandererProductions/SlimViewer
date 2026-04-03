@@ -6,55 +6,66 @@
         xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
         mc:Ignorable="d"
         Title="Gif Editor" Height="450" Width="800" Loaded="Window_Loaded">
-    <Grid>
+    <Grid Background="#FDFDFD">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="28" />
         </Grid.RowDefinitions>
-        <Menu Grid.Row="0">
-            <MenuItem Header="Menu">
-                <MenuItem Header="Open Gif" Command="{Binding OpenCommand}"
-                          ToolTip="Break a GIF down into individual frames" />
-                <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}"
-                          ToolTip="Combine a folder of images into a single GIF" />
-                <MenuItem Header="Clear Output Folder" Command="{Binding ClearCommand}"
-                          IsEnabled="{Binding Path=IsActive}" ToolTip="Delete temporary files" />
-                <MenuItem Header="Save as gif" Command="{Binding SaveGifCommand}" IsEnabled="{Binding Path=IsActive}"
-                          ToolTip="Save selected frames as a new GIF" />
-                <MenuItem Header="Save as images" Command="{Binding SaveImagesCommand}"
-                          IsEnabled="{Binding Path=IsActive}" ToolTip="Export selected frames as individual images" />
+
+        <ToolBarTray Grid.Row="0" Background="#F5F5F5">
+            <ToolBar>
+                <Button Command="{Binding OpenCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📂 "/>
+                        <TextBlock Text="Open GIF"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding OpenFolderCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📁 "/>
+                        <TextBlock Text="Open Folder"/>
+                    </StackPanel>
+                </Button>
                 <Separator />
-                <MenuItem Header="Close" Command="{Binding CloseCommand}" />
-            </MenuItem>
-        </Menu>
+                <Button Command="{Binding SaveGifCommand}" IsEnabled="{Binding IsActive}" FontWeight="Bold">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="💾 "/>
+                        <TextBlock Text="Save GIF"/>
+                    </StackPanel>
+                </Button>
+                <Separator />
+                <Button Command="{Binding ClearCommand}" Foreground="Firebrick">
+                    <TextBlock Text="Clear All" />
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="280" />
             </Grid.ColumnDefinitions>
+
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="5" />
-                    <RowDefinition />
-                    <RowDefinition Height="5" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="120" />
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="5" />
-                </Grid.ColumnDefinitions>
 
-                <Images:ImageZoom Grid.Column="1" Grid.Row="1"
-                                  AutoplayGifImage="True"
-                                  ImageGifPath="{Binding GifPath}"
-                                  ItemsSource="{Binding Bmp}" />
+                <Border Grid.Row="0" Background="#333">
+                    <ScrollViewer>
+                        <ContentControl Content="{Binding ActiveFrameView}" />
+                    </ScrollViewer>
+                </Border>
 
-                <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto"
-                              Grid.Column="3" Grid.Row="1" Focusable="False">
-                    <Images:Thumbnails Name="Thumb"
+                <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="#CCC" />
+
+                <Border Grid.Row="2" Background="#EEE" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <Images:Thumbnails Name="Thumb"
                                        ItemsSource="{Binding Observer}"
                                        ThumbCellSize="100"
                                        ThumbHeight="1"
@@ -62,76 +73,30 @@
                                        SelectBox="True"
                                        IsCheckBoxSelected="True"
                                        ImageClicked="Thumb_ImageClicked" />
-                </ScrollViewer>
+                    </ScrollViewer>
+                </Border>
             </Grid>
-            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
-            <Grid Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="5" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="5" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="5" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="5" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="5" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition />
-                    <RowDefinition Height="5" />
-                </Grid.RowDefinitions>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="File Path" VerticalAlignment="Center" />
-                <TextBox Grid.Row="1" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Path=FilePath, Mode=OneWay}" IsReadOnly="False" Background="#F0F0F0" />
+            <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Stretch" Background="#DDD" />
 
-                <Label Grid.Row="3" Grid.Column="0" Content="Information" VerticalAlignment="Center" />
-                <TextBox Grid.Row="3" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Path=Information, Mode=OneWay}" IsReadOnly="True" Background="#F0F0F0" />
-
-                <Label Grid.Row="5" Grid.Column="0" Content="Output Path" VerticalAlignment="Center" />
-                <TextBox Grid.Row="5" Grid.Column="2" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Path=OutputPath, Mode=OneWay}" IsReadOnly="True" Background="#F0F0F0" />
-
-                <Button Grid.Row="7" Grid.Column="0" Content="Clear" Command="{Binding ClearCommand}"
-                        ToolTip="Manually clear temporary files" />
-                <CheckBox Content="Auto Clear" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Stretch"
-                          IsEnabled="{Binding Path=AutoClear}"
-                          ToolTip="Automatically delete temporary frames when closing" />
-
-                <GroupBox Header="Frame Timing" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Top" Margin="0,10,0,0" Padding="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="5"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="50"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Label Content="Delay (ms):" VerticalAlignment="Center"/>
-
-                        <TextBox Grid.Column="1" Text="{Binding CurrentDelay, UpdateSourceTrigger=PropertyChanged}" 
-                                 VerticalContentAlignment="Center" ToolTip="Delay in milliseconds (100ms = 10fps)"/>
-
-                        <Button Grid.Column="3" Content="Set" Command="{Binding SetDelayCommand}" 
-                                ToolTip="Apply delay to currently selected frame" />
-
-                        <Button Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Content="Apply to All Frames" 
-                                Command="{Binding SetAllDelayCommand}" 
-                                ToolTip="Set this delay for every frame in the list"/>
-                    </Grid>
-                </GroupBox>
-            </Grid>
+            <ScrollViewer Grid.Column="2" Padding="15">
+                <StackPanel>
+                    <GroupBox Header="Frame Timing">
+                        <StackPanel Margin="5">
+                            <DockPanel>
+                                <TextBlock Text="Delay (ms):" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding CurrentDelay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                            </DockPanel>
+                            <Button Content="Apply to All" Command="{Binding SetAllDelayCommand}" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
+
+        <StatusBar Grid.Row="2">
+            <TextBlock Text="{Binding Information}" />
+        </StatusBar>
     </Grid>
     <Window.Resources>
         <ResourceDictionary>

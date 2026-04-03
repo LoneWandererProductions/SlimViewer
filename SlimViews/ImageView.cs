@@ -58,7 +58,7 @@ namespace SlimViews
         /// <summary>
         /// The image Context, holding all image-related data and operations.
         /// </summary>
-        internal readonly ImageContext Image = new();
+        public readonly ImageContext Image = new();
 
         /// <summary>
         /// The UI state Context, holding all UI-related state (button visibility, status images, etc).
@@ -185,24 +185,6 @@ namespace SlimViews
         }
 
         // --- Image Context Proxies ---
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is image active.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is image active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsImageActive
-        {
-            get => Image.IsImageActive;
-            set
-            {
-                if (Image.IsImageActive == value) return;
-
-                Image.IsImageActive = value;
-                OnPropertyChanged(nameof(IsImageActive));
-            }
-        }
 
         /// <summary>
         /// Gets or sets the BMP.
@@ -525,7 +507,7 @@ namespace SlimViews
             // Set Initial UI State
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
-            IsImageActive = false;
+            Image.IsImageActive = false;
 
             // CRITICAL: Subscribe to the DrawingState.
             // When user clicks the Toolbar, we map that state to the View behavior.
@@ -770,9 +752,11 @@ namespace SlimViews
         /// <summary>
         /// Refreshes the action.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        internal void RefreshAction(object obj)
+        /// <param name="caller">The caller.</param>
+        internal void RefreshAction(string caller)
         {
+            Trace.WriteLine(string.Concat("Caller: ", caller));
+
             FileContext.CurrentId = -1;
             FileContext.FilePath = string.Empty;
             Bmp = null;
@@ -831,7 +815,7 @@ namespace SlimViews
             }
 
             GenerateView(pathObj.FilePath);
-            if (Image.HasImage || !string.IsNullOrEmpty(GifPath)) IsImageActive = true;
+            if (Image.HasImage || !string.IsNullOrEmpty(GifPath)) Image.IsImageActive = true;
 
             LoadThumbs(pathObj.Folder, pathObj.FilePath);
 
@@ -847,7 +831,7 @@ namespace SlimViews
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             GenerateCbrView(pathObj);
-            if (Image.HasImage) IsImageActive = true;
+            if (Image.HasImage) Image.IsImageActive = true;
         }
 
         /// <summary>
@@ -876,7 +860,7 @@ namespace SlimViews
             var path = DialogHandler.ShowFolder(FileContext.CurrentPath);
             if (!Directory.Exists(path)) return;
 
-            if (!string.IsNullOrEmpty(path) || !string.IsNullOrEmpty(GifPath)) IsImageActive = true;
+            if (!string.IsNullOrEmpty(path) || !string.IsNullOrEmpty(GifPath)) Image.IsImageActive = true;
             LoadThumbs(path);
         }
 
@@ -910,11 +894,17 @@ namespace SlimViews
         /// <param name="id">The identifier.</param>
         public void ChangeImage(int id)
         {
-            if (!Observer.ContainsKey(id)) return;
+            // 1. Unified Guard Clause, check if file still exists before trying to load, if not refresh the view to update the observer and thumbnail list
+            if (!Observer.TryGetValue(id, out var path) || !File.Exists(path))
+            {
+                RefreshAction(nameof(ChangeImage));
+                return;
+            }
 
+            // 2. Execution Block
             FileContext.CurrentId = id;
             NavigationLogic();
-            GenerateView(Observer[id]);
+            GenerateView(path);
         }
 
         /// <summary>
@@ -971,7 +961,7 @@ namespace SlimViews
         internal void ChangeImage(IEnumerable<string?> files, string? filePath, string info)
         {
             // 1. Validate
-            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
+            if (!CanLoadFile(filePath)) return;
 
             // 2. Update File List
             // We convert to List to ensure immediate evaluation
@@ -1001,7 +991,7 @@ namespace SlimViews
         /// <param name="extension">The file extension (e.g., ".png").</param>
         /// <param name="bitmap">The GDI+ Bitmap (System.Drawing.Bitmap).</param>
         /// <returns>True if successful, False otherwise.</returns>
-        internal bool SaveImage(string path, string extension, System.Drawing.Bitmap bitmap)
+        internal bool SaveImage(string path, string extension, Bitmap bitmap)
         {
             // Update UI Status to "Working" (Red)
             StatusImage = UiState.RedIconPath;
@@ -1033,7 +1023,9 @@ namespace SlimViews
         /// <param name="filePath">The file path.</param>
         internal async void GenerateView(string? filePath)
         {
-            var info = FileHandleSearch.GetFileDetails(filePath);
+            //we always check before we load so the path must exist
+            var info = FileHandleSearch.GetFileDetails(filePath!);
+
             if (info == null)
             {
                 Bmp = null;
@@ -1173,9 +1165,13 @@ namespace SlimViews
             }
 
             ThumbnailVisibility = UiState.ThumbnailState();
-            IsImageActive = Image.Bitmap != null;
+            Image.IsImageActive = Image.HasImage;
         }
 
+        /// <summary>
+        /// Images the loaded command action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         public void ImageLoadedCommandAction(object obj)
         {
             if (!string.IsNullOrEmpty(StatusImage)) StatusImage = UiState.GreenIconPath;

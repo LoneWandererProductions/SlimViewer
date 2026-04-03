@@ -174,7 +174,7 @@ namespace SlimViews
             Close = new DelegateCommand<object>(owner.CloseAction, CanRun);
             OpenCbz = new DelegateCommand<object>(owner.OpenCbzAction, CanRun);
             Open = new DelegateCommand<object>(owner.OpenAction, CanRun);
-            Refresh = new DelegateCommand<object>(owner.RefreshAction, CanRun);
+            Refresh = new DelegateCommand<string>(owner.RefreshAction, CanRun);
             Folder = new DelegateCommand<object>(owner.FolderAction, CanRun);
             Clear = new DelegateCommand<object>(owner.ClearAction, CanRun);
             OpenCif = new DelegateCommand<object>(owner.OpenCifAction, CanRun);

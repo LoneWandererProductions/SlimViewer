@@ -8,8 +8,10 @@
 
 using Imaging;
 using Imaging.Cifs;
+using Microsoft.VisualBasic;
 using System.Drawing;
 using System.Windows.Media.Imaging;
+using ViewModel;
 
 namespace SlimViews.Contexts
 {
@@ -17,9 +19,20 @@ namespace SlimViews.Contexts
     /// Holds all image-related state and operations used by <see cref="ImageView"/>.
     /// Pure data + a few helpers; no UI dependencies.
     /// </summary>
-    public sealed class ImageContext
+    public sealed class ImageContext : ViewModelBase
     {
+        /// <summary>
+        /// The is image active
+        /// </summary>
+        private bool _isImageActive;
+
         // Core image data
+        /// <summary>
+        /// Gets or sets the bitmap.
+        /// </summary>
+        /// <value>
+        /// The bitmap.
+        /// </value>
         public Bitmap? Bitmap { get; set; }
 
         /// <summary>
@@ -66,7 +79,18 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if this instance is image active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsImageActive { get; set; }
+        public bool IsImageActive
+        {
+            get => _isImageActive;
+            set
+            {
+                if (_isImageActive == value) return;
+
+                _isImageActive = value;
+                OnPropertyChanged(nameof(IsImageActive));
+            }
+        }
+
 
         // Cached flags
 

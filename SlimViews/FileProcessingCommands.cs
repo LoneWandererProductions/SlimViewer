@@ -143,6 +143,8 @@ namespace SlimViews
                 owner.UiState.Thumb.RemoveSingleItem(owner.FileContext.CurrentId);
                 owner.NextAction(this);
             }
+
+            owner.RefreshAction(nameof(FileProcessingCommands));
         }
 
         /// <summary>
@@ -206,6 +208,8 @@ namespace SlimViews
                 _ = MessageBox.Show($"{ViewResources.MessageMoved}{movedCount}",
                     ViewResources.MessageSuccess, MessageBoxButton.OK);
             }
+
+            owner.RefreshAction(nameof(FileProcessingCommands));
         }
 
         /// <summary>
@@ -247,6 +251,8 @@ namespace SlimViews
             }
 
             _ = FileHandleCut.CutFiles(sourceFiles, targetDir, false);
+
+            owner.RefreshAction(nameof(FileProcessingCommands));
         }
 
         /// <summary>
