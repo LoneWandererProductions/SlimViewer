@@ -26,6 +26,16 @@ namespace SlimViews.Contexts
         /// </summary>
         private bool _isImageActive;
 
+        /// <summary>
+        /// The bitmap
+        /// </summary>
+        private Bitmap? _bitmap;
+
+        /// <summary>
+        /// The bitmap image
+        /// </summary>
+        private BitmapImage? _bitmapImage;
+
         // Core image data
         /// <summary>
         /// Gets or sets the bitmap.
@@ -33,7 +43,18 @@ namespace SlimViews.Contexts
         /// <value>
         /// The bitmap.
         /// </value>
-        public Bitmap? Bitmap { get; set; }
+        public Bitmap? Bitmap
+        {
+            get => _bitmap;
+            set
+            {
+                if (SetProperty(ref _bitmap, value))
+                {
+                    // Manually tell the UI that IsImageActive also changed
+                    OnPropertyChanged(nameof(IsImageActive));
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the custom image format.
@@ -51,7 +72,18 @@ namespace SlimViews.Contexts
         /// <value>
         /// The bitmap image.
         /// </value>
-        internal BitmapImage? BitmapImage { get; set; }
+        internal BitmapImage? BitmapImage
+        {
+            get => _bitmapImage;
+            set
+            {
+                if (SetProperty(ref _bitmapImage, value))
+                {
+                    // Manually tell the UI that IsImageActive also changed
+                    OnPropertyChanged(nameof(IsImageActive));
+                }
+            }
+        }
 
         // Filters, textures, and processing
 
@@ -79,18 +111,7 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if this instance is image active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsImageActive
-        {
-            get => _isImageActive;
-            set
-            {
-                if (_isImageActive == value) return;
-
-                _isImageActive = value;
-                OnPropertyChanged(nameof(IsImageActive));
-            }
-        }
-
+        public bool IsImageActive => HasImage;
 
         // Cached flags
 
@@ -100,7 +121,7 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if this instance has image; otherwise, <c>false</c>.
         /// </value>
-        internal bool HasImage => Bitmap != null || BitmapSource != null;
+        public bool HasImage => Bitmap != null || BitmapSource != null;
 
         // Internal helpers
 
@@ -127,7 +148,6 @@ namespace SlimViews.Contexts
         {
             Bitmap?.Dispose();
             Bitmap = null;
-            IsImageActive = false;
             Information = null;
         }
     }

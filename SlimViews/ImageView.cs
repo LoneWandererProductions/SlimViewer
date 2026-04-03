@@ -13,7 +13,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
-#nullable enable
 using Common.Dialogs;
 using Common.Images;
 using ExtendedSystemObjects;
@@ -492,7 +491,6 @@ namespace SlimViews
             // Set Initial UI State
             LeftButtonVisibility = RightButtonVisibility = Visibility.Hidden;
             ThumbnailVisibility = Visibility.Visible;
-            Image.IsImageActive = false;
 
             // CRITICAL: Subscribe to the DrawingState.
             // When user clicks the Toolbar, we map that state to the View behavior.
@@ -813,7 +811,6 @@ namespace SlimViews
             }
 
             GenerateView(pathObj.FilePath);
-            if (Image.HasImage || !string.IsNullOrEmpty(GifPath)) Image.IsImageActive = true;
 
             LoadThumbs(pathObj.Folder, pathObj.FilePath);
 
@@ -829,7 +826,6 @@ namespace SlimViews
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             GenerateCbrView(pathObj);
-            if (Image.HasImage) Image.IsImageActive = true;
         }
 
         /// <summary>
@@ -858,7 +854,6 @@ namespace SlimViews
             var path = DialogHandler.ShowFolder(FileContext.CurrentPath);
             if (!Directory.Exists(path)) return;
 
-            if (!string.IsNullOrEmpty(path) || !string.IsNullOrEmpty(GifPath)) Image.IsImageActive = true;
             LoadThumbs(path);
         }
 
@@ -1217,7 +1212,6 @@ namespace SlimViews
             }
 
             ThumbnailVisibility = UiState.ThumbnailState();
-            Image.IsImageActive = Image.HasImage;
         }
 
         /// <summary>
