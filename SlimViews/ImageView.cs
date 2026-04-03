@@ -756,7 +756,7 @@ namespace SlimViews
         internal void RefreshAction(string caller)
         {
             Trace.WriteLine(string.Concat("Caller: ", caller));
-
+            //TODO incomplete
             FileContext.CurrentId = -1;
             FileContext.FilePath = string.Empty;
             Bmp = null;
