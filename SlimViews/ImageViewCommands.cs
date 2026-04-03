@@ -7,7 +7,7 @@
  */
 
 #nullable enable
-using CommonControls.Images;
+using Common.Images;
 using Imaging;
 using System;
 using System.Threading.Tasks;

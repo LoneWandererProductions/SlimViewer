@@ -12,17 +12,61 @@ using System.Runtime.CompilerServices;
 
 namespace SlimControls
 {
+    /// <summary>
+    /// Manages the state of the drawing tools and modes. This class is responsible for tracking the active tool, area mode, selected shape, and related settings. 
+    /// It implements INotifyPropertyChanged to allow the UI to react to changes in the state.
+    /// </summary>
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
     public class DrawingState : INotifyPropertyChanged
     {
+        /// <summary>
+        /// The active tool
+        /// </summary>
         private DrawTool _activeTool;
+
+        /// <summary>
+        /// The active area mode
+        /// </summary>
         private AreaMode _activeAreaMode;
-        private ShapeType _selectedShape; // Backing field for Shape
 
+        /// <summary>
+        /// The selected shape
+        /// Backing field for Shape
+        /// </summary>
+        private ShapeType _selectedShape; 
 
+        /// <summary>
+        /// Occurs when [tool or mode changed].
+        /// </summary>
         public event EventHandler ToolOrModeChanged;
 
+        /// <summary>
+        /// The brush size
+        /// </summary>
+        private double _brushSize = 5;
+
+        /// <summary>
+        /// The are area modes enabled
+        /// </summary>
         private bool _areAreaModesEnabled;
 
+
+        /// <summary>
+        /// The brush color
+        /// </summary>
+        private string _brushColor = "#000000";
+
+        /// <summary>
+        /// The brush opacity
+        /// </summary>
+        private double _brushOpacity = 1.0;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [are area modes enabled].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [are area modes enabled]; otherwise, <c>false</c>.
+        /// </value>
         public bool AreAreaModesEnabled
         {
             get => _areAreaModesEnabled;
@@ -33,9 +77,18 @@ namespace SlimControls
             }
         }
 
+        /// <summary>
+        /// Called when [tool or mode changed].
+        /// </summary>
         private void OnToolOrModeChanged()
             => ToolOrModeChanged?.Invoke(this, EventArgs.Empty);
 
+        /// <summary>
+        /// Gets or sets the active tool.
+        /// </summary>
+        /// <value>
+        /// The active tool.
+        /// </value>
         public DrawTool ActiveTool
         {
             get => _activeTool;
@@ -52,6 +105,12 @@ namespace SlimControls
         }
 
 
+        /// <summary>
+        /// Gets or sets the active area mode.
+        /// </summary>
+        /// <value>
+        /// The active area mode.
+        /// </value>
         public AreaMode ActiveAreaMode
         {
             get => _activeAreaMode;
@@ -65,7 +124,12 @@ namespace SlimControls
             }
         }
 
-        // 2. Added SelectedShape Property
+        /// <summary>
+        /// Gets or sets the selected shape.
+        /// </summary>
+        /// <value>
+        /// The selected shape.
+        /// </value>
         public ShapeType SelectedShape
         {
             get => _selectedShape;
@@ -82,9 +146,12 @@ namespace SlimControls
             }
         }
 
-        // Brush Properties (added full implementation for notification)
-        private double _brushSize = 5;
-
+        /// <summary>
+        /// Gets or sets the size of the brush.
+        /// </summary>
+        /// <value>
+        /// The size of the brush.
+        /// </value>
         public double BrushSize
         {
             get => _brushSize;
@@ -95,8 +162,12 @@ namespace SlimControls
             }
         }
 
-        private string _brushColor = "#000000";
-
+        /// <summary>
+        /// Gets or sets the color of the brush.
+        /// </summary>
+        /// <value>
+        /// The color of the brush.
+        /// </value>
         public string BrushColor
         {
             get => _brushColor;
@@ -107,12 +178,54 @@ namespace SlimControls
             }
         }
 
-        public double BrushOpacity { get; set; } = 1.0;
+        /// <summary>
+        /// Gets or sets the brush opacity.
+        /// </summary>
+        /// <value>
+        /// The brush opacity.
+        /// </value>
+        public double BrushOpacity
+        {
+            get => _brushOpacity;
+            set
+            {
+                if (Math.Abs(_brushOpacity - value) < 0.01) return;
+                _brushOpacity = value;
+                OnPropertyChanged();
+            }
+        }
 
         // Sub-states (These hold the data for the specific modes)
+        /// <summary>
+        /// Gets the fill.
+        /// </summary>
+        /// <value>
+        /// The fill.
+        /// </value>
         public FillSettings Fill { get; } = new();
+
+        /// <summary>
+        /// Gets the texture.
+        /// </summary>
+        /// <value>
+        /// The texture.
+        /// </value>
         public TextureSettings Texture { get; } = new();
+
+        /// <summary>
+        /// Gets the filter.
+        /// </summary>
+        /// <value>
+        /// The filter.
+        /// </value>
         public FilterSettings Filter { get; } = new();
+
+        /// <summary>
+        /// Gets the erase.
+        /// </summary>
+        /// <value>
+        /// The erase.
+        /// </value>
         public EraseSettings Erase { get; } = new();
 
 
@@ -154,6 +267,9 @@ namespace SlimControls
             OnPropertyChanged(nameof(Erase));
         }
 
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>

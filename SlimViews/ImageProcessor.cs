@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using Common.Dialogs;
-using CommonControls.Images;
+using Common.Images;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;

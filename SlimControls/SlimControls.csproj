@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonControls.Converter\CommonControls.Converter.csproj" />
-    <ProjectReference Include="..\CommonControls.Images\CommonControls.Images.csproj" />
-    <ProjectReference Include="..\CommonControls\CommonControls.csproj" />
+    <ProjectReference Include="..\Common.Controls\Common.Controls.csproj" />
+    <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
+    <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
   </ItemGroup>
 

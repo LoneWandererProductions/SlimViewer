@@ -6,7 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using CommonControls.Images;
+using Common.Images;
 using System.Windows;
 
 namespace SlimViews

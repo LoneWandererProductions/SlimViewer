@@ -1,6 +1,6 @@
-﻿<UserControl xmlns:Images="clr-namespace:CommonControls.Images;assembly=CommonControls.Images"
-             xmlns:CommonControls="clr-namespace:CommonControls;assembly=CommonControls"
-             xmlns:converters="clr-namespace:CommonControls.Converter;assembly=CommonControls.Converter"
+﻿<UserControl xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
+             xmlns:CommonControls="clr-namespace:Common.Controls;assembly=Common.Controls"
+             xmlns:converters="clr-namespace:Common.Converter;assembly=Common.Converter"
              x:Class="SlimControls.DrawingToolBarControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -27,6 +27,13 @@
             <GroupBox Header="Draw" Margin="0,0,5,0" Padding="5">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
+                        <TextBlock 
+                        Text="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat=Opacity: {0:P0}}" 
+                        HorizontalAlignment="Center" FontSize="10" />
+                                        <Slider Minimum="0.1" Maximum="1.0" TickFrequency="0.1" IsSnapToTickEnabled="True"
+                            Value="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            ToolTip="Adjust brush transparency" />
+
                         <RadioButton Content="Pencil" GroupName="ToolGroup" Margin="0,0,0,4"
                                      ToolTip="Draw freehand lines"
                                      IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Pencil}" />

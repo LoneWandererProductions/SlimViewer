@@ -7,7 +7,7 @@
  */
 
 using Common.Dialogs;
-using CommonControls.Images;
+using Common.Images;
 using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;

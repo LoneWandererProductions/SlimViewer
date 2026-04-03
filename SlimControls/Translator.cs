@@ -6,7 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using CommonControls.Images;
+using Common.Images;
 using Imaging.Enums;
 
 namespace SlimControls
