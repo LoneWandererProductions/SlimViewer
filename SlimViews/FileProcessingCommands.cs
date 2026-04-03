@@ -256,9 +256,6 @@ namespace SlimViews
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
         internal async Task Rename(ImageView owner, object obj)
         {
-            if (owner == null || !owner.IsImageActive)
-                return;
-
             if (!owner.Observer.TryGetValue(owner.FileContext.CurrentId, out string? file) || !File.Exists(file))
                 return;
 
