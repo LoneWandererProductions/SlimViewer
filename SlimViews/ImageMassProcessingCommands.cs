@@ -102,7 +102,7 @@ namespace SlimViews
 
                 // CRITICAL: Force the UI to update by assigning a new dictionary reference
                 // to the ViewModel's public property
-                owner.Observer = new Dictionary<int, string>(owner.FileContext.Observer);
+                owner.FileContext.Observer = new Dictionary<int, string>(owner.FileContext.Observer);
 
                 // Reset the flag
                 SlimViewerRegister.ResetRenaming();

@@ -9,14 +9,20 @@
 using FileHandler;
 using System.Collections.Generic;
 using System.Linq;
+using ViewModel;
 
 namespace SlimViews.Contexts
 {
     /// <summary>
     /// File context holds all file-related state and operations for the ImageView, including file lists, current file tracking, and related metadata.
     /// </summary>
-    internal sealed class FileContext
+    public sealed class FileContext : ViewModelBase
     {
+        /// <summary>
+        /// The observer
+        /// </summary>
+        private Dictionary<int, string> _observer;
+
         /// <summary>
         /// Gets or sets the count.
         /// </summary>
@@ -31,7 +37,17 @@ namespace SlimViews.Contexts
         /// <value>
         /// The observer.
         /// </value>
-        public Dictionary<int, string> Observer { get; set; } = new();
+        public Dictionary<int, string> Observer
+        {
+            get => _observer;
+            set
+            {
+                _observer = value;
+                // This is the "Dinner Bell" for WPF. 
+                // Without this, the XAML binding won't refresh.
+                OnPropertyChanged(nameof(Observer));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name of the file.

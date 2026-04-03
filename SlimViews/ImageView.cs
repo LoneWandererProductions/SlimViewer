@@ -67,8 +67,12 @@ namespace SlimViews
 
         /// <summary>
         /// The file context, holding all file-related data (current path, list of files, observer for navigation).
+        /// For Databinding leave it as Property!
         /// </summary>
-        internal readonly FileContext FileContext = new();
+        /// <value>
+        /// The file context.
+        /// </value>
+        public FileContext FileContext { get; } = new();
 
         /// <summary>
         /// Commands handler for this view.
@@ -144,25 +148,6 @@ namespace SlimViews
 
                 FileContext.FileName = value;
                 OnPropertyChanged(nameof(FileName));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the observer.
-        /// </summary>
-        /// <value>
-        /// The observer.
-        /// </value>
-        public Dictionary<int, string?>? Observer
-        {
-            get => FileContext.Observer;
-            set
-            {
-                if (FileContext.Observer == value) return;
-
-                FileContext.Observer = value;
-                OnPropertyChanged(nameof(Observer));
-                NavigationLogic();
             }
         }
 
@@ -699,9 +684,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void NextAction(object obj)
         {
-            if (Observer == null || !Observer.Any()) return;
+            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
-            ChangeImage(Utility.GetNextElement(FileContext.CurrentId, Observer.Keys.ToList()));
+            ChangeImage(Utility.GetNextElement(FileContext.CurrentId, FileContext.Observer.Keys.ToList()));
             UiState.Thumb.Next();
             NavigationLogic();
         }
@@ -712,9 +697,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void PreviousAction(object obj)
         {
-            if (Observer == null || !Observer.Any()) return;
+            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
-            ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, Observer.Keys.ToList()));
+            ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, FileContext.Observer.Keys.ToList()));
             UiState.Thumb.Previous();
             NavigationLogic();
         }
@@ -753,21 +738,34 @@ namespace SlimViews
         /// Refreshes the action.
         /// </summary>
         /// <param name="caller">The caller.</param>
-        internal void RefreshAction(string caller)
+        /// <summary>
+        /// Refreshes the action and thoroughly resets the view state.
+        /// </summary>
+        /// <param name="caller">The caller.</param>
+        internal async Task RefreshActionAsync(string caller)
         {
-            Trace.WriteLine(string.Concat("Caller: ", caller));
-            //TODO incomplete
+            Trace.WriteLine($"Caller: {caller}"); // Slightly cleaner using string interpolation
+                                                  // 1. Reset state via FileContext (triggers OnPropertyChanged for Observer)
+            FileContext.Clear();
+            FileContext.Files = new List<string?>();
             FileContext.CurrentId = -1;
             FileContext.FilePath = string.Empty;
-            Bmp = null;
-            GifPath = null;
 
+            // 2. Reset local UI-only state
+            Bmp = null;
+            if (Image != null) Image.Bitmap = null;
+            Information = string.Empty;
             ClearHistory();
 
+            // 3. Reload if directory exists
             if (Directory.Exists(FileContext.CurrentPath))
-                LoadThumbs(FileContext.CurrentPath);
-            else
-                Observer = null;
+            {
+                // LoadThumbs calls GenerateThumbView, which updates FileContext.Observer
+                await LoadThumbs(FileContext.CurrentPath);
+            }
+
+            // 4. Update button states
+            NavigationLogic();
         }
 
         /// <summary>
@@ -776,7 +774,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void ClearAction(object obj)
         {
-            if (!Observer.ContainsKey(FileContext.CurrentId)) return;
+            if (!FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
 
             UiState.Thumb.RemoveSingleItem(FileContext.CurrentId);
             if (Count > 0) Count--;
@@ -894,17 +892,14 @@ namespace SlimViews
         /// <param name="id">The identifier.</param>
         public void ChangeImage(int id)
         {
-            // 1. Unified Guard Clause, check if file still exists before trying to load, if not refresh the view to update the observer and thumbnail list
-            if (!Observer.TryGetValue(id, out var path) || !File.Exists(path))
+            if (!FileContext.Observer.TryGetValue(id, out var path) || !File.Exists(path))
             {
-                RefreshAction(nameof(ChangeImage));
+                RefreshActionAsync(nameof(ChangeImage));
                 return;
             }
 
-            // 2. Execution Block
-            FileContext.CurrentId = id;
-            NavigationLogic();
-            GenerateView(path);
+            // Just pass the path and ID to the core pipeline
+            UpdateImageState(targetPath: path, targetId: id);
         }
 
         /// <summary>
@@ -913,26 +908,7 @@ namespace SlimViews
         /// <param name="files">The files.</param>
         public void ChangeImage(IEnumerable<string> files)
         {
-            FileContext.Files = files.ToList();
-            Count = FileContext.Files.Count;
-
-            try
-            {
-                FileContext.CurrentPath = Path.GetDirectoryName(FileContext.Files[0]);
-            }
-            catch (ArgumentException ex)
-            {
-                Trace.WriteLine(ex);
-                MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
-                return;
-            }
-
-            Bmp = null;
-            GifPath = null;
-            FileContext.CurrentId = -1;
-
-            _ = GenerateThumbView(FileContext.Files);
-            Image.Information = string.Concat(ViewResources.DisplayImages, FileContext.Files.Count);
+            UpdateImageState(newFiles: files);
         }
 
         /// <summary>
@@ -943,12 +919,7 @@ namespace SlimViews
         {
             if (!CanLoadFile(filePath)) return;
 
-            GenerateView(filePath);
-
-            var folder = Path.GetDirectoryName(filePath);
-            if (folder != FileContext.CurrentPath && folder != null) LoadThumbs(folder, filePath);
-
-            FileContext.CurrentId = FileContext.CurrentIdGetIdByFilePath(filePath);
+            UpdateImageState(targetPath: filePath);
         }
 
         /// <summary>
@@ -960,27 +931,10 @@ namespace SlimViews
         /// <param name="info">The information.</param>
         internal void ChangeImage(IEnumerable<string?> files, string? filePath, string info)
         {
-            // 1. Validate
             if (!CanLoadFile(filePath)) return;
 
-            // 2. Update File List
-            // We convert to List to ensure immediate evaluation
-            FileContext.Files = files.ToList();
-            Count = FileContext.Files.Count;
-
-            // 3. Update Thumbnails (Fire and forget task)
-            _ = GenerateThumbView(FileContext.Files);
-
-            // 4. Load the Main Image
-            // Use the async generator to keep UI responsive
-            _ = GenerateImageAsync(filePath);
-
-            // 5. Update IDs and Info
-            FileContext.CurrentId = FileContext.CurrentIdGetIdByFilePath(filePath);
-            Information = info;
-
-            // 6. Refresh Navigation Buttons
-            NavigationLogic();
+            // Filter out nulls if your files list contains them, or pass as-is if FileContext expects it
+            UpdateImageState(targetPath: filePath, newFiles: files.Where(f => f != null)!, customInfo: info);
         }
 
         /// <summary>
@@ -1007,6 +961,80 @@ namespace SlimViews
 
         // Logic Helpers
 
+
+        /// <summary>
+        /// The central pipeline for all image and context changes.
+        /// Guarantees state is updated in a strict, predictable order.
+        /// </summary>
+        /// <param name="targetPath">The target path.</param>
+        /// <param name="targetId">The target identifier.</param>
+        /// <param name="newFiles">The new files.</param>
+        /// <param name="customInfo">The custom information.</param>
+        private void UpdateImageState(string? targetPath = null, int? targetId = null, IEnumerable<string>? newFiles = null, string? customInfo = null)
+        {
+            // ==========================================
+            // PHASE 1: Update File Context & Thumbnails
+            // ==========================================
+            if (newFiles != null)
+            {
+                FileContext.Files = newFiles.ToList();
+                Count = FileContext.Files.Count;
+
+                try
+                {
+                    FileContext.CurrentPath = FileContext.Files.Any()
+                        ? Path.GetDirectoryName(FileContext.Files[0])
+                        : string.Empty;
+                }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                    MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
+                    return; // Halt pipeline on critical error
+                }
+
+                _ = GenerateThumbView(FileContext.Files);
+            }
+            else if (!string.IsNullOrEmpty(targetPath))
+            {
+                // If we didn't get an explicit list of files, check if the folder changed
+                var folder = Path.GetDirectoryName(targetPath);
+                if (folder != null && folder != FileContext.CurrentPath)
+                {
+                    // Note: I assume LoadThumbs updates FileContext.Files internally
+                    LoadThumbs(folder, targetPath);
+                }
+            }
+
+            // ==========================================
+            // PHASE 2: Load Target Image & Metadata
+            // ==========================================
+            if (!string.IsNullOrEmpty(targetPath))
+            {
+                // A specific image was requested
+                FileContext.CurrentId = targetId ?? FileContext.CurrentIdGetIdByFilePath(targetPath);
+                _ = GenerateImageAsync(targetPath);
+
+                // If no custom info was provided, let GenerateImageAsync handle it (or set a default)
+                if (!string.IsNullOrEmpty(customInfo)) Information = customInfo;
+            }
+            else
+            {
+                // No image requested (e.g., just loaded a fresh folder) -> Clear image state
+                FileContext.CurrentId = -1;
+                Bmp = null;
+                GifPath = null;
+
+                Information = customInfo ?? string.Concat(ViewResources.DisplayImages, Count);
+            }
+
+            // ==========================================
+            // PHASE 3: Finalize UI
+            // ==========================================
+            NavigationLogic();
+        }
+
+
         /// <summary>
         /// Determines whether this instance [can load file] the specified path.
         /// </summary>
@@ -1016,7 +1044,6 @@ namespace SlimViews
         /// </returns>
         private bool CanLoadFile(string? path) => !string.IsNullOrEmpty(path) && File.Exists(path) &&
                                                   ImagingResources.Appendix.Any(path.EndsWith);
-
         /// <summary>
         /// Generates the view.
         /// </summary>
@@ -1080,9 +1107,11 @@ namespace SlimViews
         /// </summary>
         /// <param name="folder">The folder.</param>
         /// <param name="filePath">The file path.</param>
-        internal void LoadThumbs(string folder, string? filePath = null)
+        internal async Task LoadThumbs(string folder, string? filePath = null)
         {
-            GenerateThumbView(folder);
+            // Await the folder processing so we don't move to selection too early
+            await GenerateThumbView(folder).ConfigureAwait(true);
+
             if (!string.IsNullOrEmpty(filePath))
                 FileContext.CurrentId = FileContext.CurrentIdGetIdByFilePath(filePath);
             else
@@ -1094,41 +1123,64 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Generates the thumb view.
+        /// Generates the thumb view from a folder path.
         /// </summary>
-        /// <param name="folder">The folder.</param>
-        private void GenerateThumbView(string folder)
+        private async Task GenerateThumbView(string folder)
         {
             FileContext.CurrentPath = folder;
             StatusImage = UiState.RedIconPath;
-            FileContext.Files =
-                FileHandleSearch.GetFilesByExtensionFullPath(folder, ImagingResources.Appendix, UiState.UseSubFolders);
 
-            if (FileContext.IsFilesEmpty)
+            // 1. Fetch and Sort files
+            var files = FileHandleSearch.GetFilesByExtensionFullPath(
+                folder,
+                ImagingResources.Appendix,
+                UiState.UseSubFolders);
+
+            if (files == null || files.Count == 0)
             {
                 Count = 0;
-                Observer = null;
+                FileContext.Observer = null;
                 GifPath = null;
                 Bmp = null;
+                NavigationLogic(); // Update UI for empty state
                 return;
             }
 
+            FileContext.Files = files;
+            Count = files.Count;
+
+            // Use the sorted list if your FileContext provides it
+            var sortedFiles = FileContext.FilesSorted;
+
+            // 2. WAIT for the dictionary generation to complete
+            // This is the crucial change: 'await' instead of '_'
+            await GenerateThumbView(sortedFiles).ConfigureAwait(true);
+
+            // 3. Now that Observer is guaranteed to be set, update the UI
             NavigationLogic();
-            Count = FileContext.Files.Count;
-            FileContext.Files = FileContext.FilesSorted;
-            _ = GenerateThumbView(FileContext.Files).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Generates the thumb view.
+        /// Generates the dictionary and updates the UI source.
         /// </summary>
-        /// <param name="lst">List of Image files..</param>
         private async Task GenerateThumbView(IReadOnlyCollection<string?> lst)
         {
-            if (!IsThumbsVisible) return;
+            if (!IsThumbsVisible || lst == null) return;
 
             StatusImage = UiState.RedIconPath;
-            _ = await Task.Run(() => Observer = lst.ToDictionary()).ConfigureAwait(false);
+
+            // Create the dictionary in the background
+            var dict = await Task.Run(() => lst.ToDictionary()).ConfigureAwait(false);
+
+            // Switch back to the UI thread to update the property
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                // This triggers FileContext.OnPropertyChanged(nameof(Observer))
+                FileContext.Observer = dict;
+
+                StatusImage = UiState.GreenIconPath;
+                NavigationLogic();
+            });
         }
 
         /// <summary>

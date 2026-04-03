@@ -94,7 +94,7 @@ namespace SlimViews
                 return;
 
             // nothing to do if no current item and no selection
-            if (!owner.Observer.ContainsKey(owner.FileContext.CurrentId) && owner.UiState.IsSelectionEmpty)
+            if (!owner.FileContext.Observer.ContainsKey(owner.FileContext.CurrentId) && owner.UiState.IsSelectionEmpty)
                 return;
 
             var idsToDelete = owner.UiState.IsSelectionEmpty
@@ -107,7 +107,7 @@ namespace SlimViews
             {
                 try
                 {
-                    if (!owner.Observer.TryGetValue(id, out var filePath))
+                    if (!owner.FileContext.Observer.TryGetValue(id, out var filePath))
                         continue;
 
                     var deleted = await FileHandleSafeDelete.DeleteFile(filePath);
@@ -144,7 +144,7 @@ namespace SlimViews
                 owner.NextAction(this);
             }
 
-            owner.RefreshAction(nameof(FileProcessingCommands));
+            owner.RefreshActionAsync(nameof(FileProcessingCommands));
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace SlimViews
 
             foreach (var id in fileIds)
             {
-                if (!owner.Observer.TryGetValue(id, out var sourcePath) || !File.Exists(sourcePath))
+                if (!owner.FileContext.Observer.TryGetValue(id, out var sourcePath) || !File.Exists(sourcePath))
                     continue;
 
                 var fileName = Path.GetFileName(sourcePath);
@@ -209,7 +209,7 @@ namespace SlimViews
                     ViewResources.MessageSuccess, MessageBoxButton.OK);
             }
 
-            owner.RefreshAction(nameof(FileProcessingCommands));
+            owner.RefreshActionAsync(nameof(FileProcessingCommands));
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace SlimViews
 
             _ = FileHandleCut.CutFiles(sourceFiles, targetDir, false);
 
-            owner.RefreshAction(nameof(FileProcessingCommands));
+            owner.RefreshActionAsync(nameof(FileProcessingCommands));
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace SlimViews
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
         internal async Task Rename(ImageView owner, object obj)
         {
-            if (!owner.Observer.TryGetValue(owner.FileContext.CurrentId, out string? file) || !File.Exists(file))
+            if (!owner.FileContext.Observer.TryGetValue(owner.FileContext.CurrentId, out string? file) || !File.Exists(file))
                 return;
 
             var folder = Path.GetDirectoryName(file);
@@ -296,7 +296,7 @@ namespace SlimViews
                 return;
             }
 
-            owner.Observer[owner.FileContext.CurrentId] = newFilePath;
+            owner.FileContext.Observer[owner.FileContext.CurrentId] = newFilePath;
             owner.GenerateView(newFilePath);
         }
 
