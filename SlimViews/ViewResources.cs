@@ -20,9 +20,15 @@ namespace SlimViews
         /// <summary>
         ///     The file open Options (const). Value: "Image Files(*.png)|*.png|Image Files(*.jpg)|*.jpg|Image
         ///     Files(*.Bmp)|*.Bmp|Image Files(*.gif)|*.gif|Image Files(*.tif)|*.tif|All files (*.*)|*.*".
+        ///     All is finally first.
         /// </summary>
         internal const string FileOpen =
-            "Image Files(*.jpg)|*.jpg|Image Files(*.png)|*.png|Image Files(*.Bmp)|*.Bmp|Image Files(*.gif)|*.gif|Image Files(*.tif)|*.tif|All files (*.*)|*.*";
+            "All Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif;*.tiff|" +
+            "JPEG (*.jpg)|*.jpg;*.jpeg|" +
+            "Portable Network Graphics (*.png)|*.png|" +
+            "Bitmap (*.bmp)|*.bmp|" +
+            "GIF (*.gif)|*.gif|" +
+            "TIFF (*.tif)|*.tif;*.tiff";
 
         /// <summary>
         ///     The file open CBR (const). Value: "Comic Book File (*.cbz)|*.cbz".
@@ -82,7 +88,6 @@ namespace SlimViews
         ///     The Display Images (const). Value: "New Images loaded: "
         /// </summary>
         internal const string DisplayImages = "New Images loaded: ";
-
 
         /// <summary>
         ///     The Message Box Message (const). Value: "Shall we overwrite the file?."

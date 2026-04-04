@@ -31,9 +31,9 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="5" />
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="1" Margin="0,5">
@@ -160,7 +160,7 @@
                         <MenuItem Header="Loose Match (70%)" Command="{Binding Commands.Similar}" CommandParameter="70" />
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}" CommandParameter="{Binding GifPath}"/>
+                    <MenuItem Header="Gif Editor" Command="{Binding Commands.GifWindow}" CommandParameter="{Binding Image.GifPath}"/>
                     <MenuItem Header="Autoplay GIFs" 
                       IsCheckable="True" 
                       IsChecked="{Binding AutoplayGifImage, ElementName=ImageControl, Mode=TwoWay}" 
@@ -225,7 +225,7 @@
                     ToolTip="Previous Image (Left Arrow)" />
 
             <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" IsTabStop="True"
-                              ItemsSource="{Binding Bmp}" ImageGifPath="{Binding GifPath}"
+                              ItemsSource="{Binding Bmp}" ImageGifPath="{Binding Image.GifPath}"
                               SelectionTool="{Binding ImageZoomTool}"
                               SelectedFrameCommand="{Binding Commands.SelectedFrame}"
                               SelectedPointCommand="{Binding Commands.SelectedPoint}" />
@@ -240,11 +240,11 @@
 
         <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="100" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30" />

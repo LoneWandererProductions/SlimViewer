@@ -69,9 +69,8 @@
                                        ItemsSource="{Binding Observer}"
                                        ThumbCellSize="100"
                                        ThumbHeight="1"
-                                       ThumbWidth="1"
-                                       SelectBox="True"
-                                       IsCheckBoxSelected="True"
+                                       SelectBox="False"
+                                       IsCheckBoxSelected="False"
                                        ImageClicked="Thumb_ImageClicked" />
                     </ScrollViewer>
                 </Border>

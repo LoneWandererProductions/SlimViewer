@@ -135,10 +135,7 @@ namespace SlimViews
             }
             else
             {
-                owner.Bmp = null;
-                owner.Image.Bitmap = null;
-                owner.GifPath = null;
-                owner.FileContext.GifPath = null;
+                owner.Image.Clear();
 
                 owner.UiState.Thumb.RemoveSingleItem(owner.FileContext.CurrentId);
                 owner.NextAction(this);

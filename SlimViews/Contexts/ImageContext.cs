@@ -36,6 +36,11 @@ namespace SlimViews.Contexts
         /// </summary>
         private BitmapImage? _bitmapImage;
 
+        /// <summary>
+        /// The GIF path
+        /// </summary>
+        private string? _gifPath;
+
         // Core image data
         /// <summary>
         /// Gets or sets the bitmap.
@@ -49,6 +54,27 @@ namespace SlimViews.Contexts
             set
             {
                 if (SetProperty(ref _bitmap, value))
+                {
+                    // Manually tell the UI that IsImageActive also changed
+                    OnPropertyChanged(nameof(IsImageActive));
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the GIF path.
+        /// Now  directly data-bound, but still part of the core image data since it represents an alternative way to load/display an image.
+        /// </summary>
+        /// <value>
+        /// The GIF path.
+        /// </value>
+        public string? GifPath
+        {
+            get => _gifPath;
+            set
+            {
+                if (SetProperty(ref _gifPath, value))
                 {
                     // Manually tell the UI that IsImageActive also changed
                     OnPropertyChanged(nameof(IsImageActive));
@@ -121,7 +147,7 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if this instance has image; otherwise, <c>false</c>.
         /// </value>
-        public bool HasImage => Bitmap != null || BitmapSource != null;
+        public bool HasImage => Bitmap != null || BitmapSource != null || string.IsNullOrEmpty(GifPath);
 
         // Internal helpers
 
@@ -148,6 +174,7 @@ namespace SlimViews.Contexts
         {
             Bitmap?.Dispose();
             Bitmap = null;
+            GifPath = string.Empty;
             Information = null;
         }
     }

@@ -56,8 +56,12 @@ namespace SlimViews
 
         /// <summary>
         /// The image Context, holding all image-related data and operations.
+        /// For Databinding it needs to be a Property.
         /// </summary>
-        public readonly ImageContext Image = new();
+        /// <value>
+        /// The image.
+        /// </value>
+        public ImageContext Image { get; } = new();
 
         /// <summary>
         /// The UI state Context, holding all UI-related state (button visibility, status images, etc).
@@ -147,24 +151,6 @@ namespace SlimViews
 
                 FileContext.FileName = value;
                 OnPropertyChanged(nameof(FileName));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the GIF path.
-        /// </summary>
-        /// <value>
-        /// The GIF path.
-        /// </value>
-        public string? GifPath
-        {
-            get => FileContext.GifPath;
-            set
-            {
-                if (FileContext.GifPath == value) return;
-
-                FileContext.GifPath = value;
-                OnPropertyChanged(nameof(GifPath));
             }
         }
 
@@ -778,8 +764,6 @@ namespace SlimViews
             if (Count > 0) Count--;
 
             Image.Clear();
-            GifPath = null;
-            FileContext.GifPath = null;
 
             ClearHistory();
 
@@ -1017,8 +1001,7 @@ namespace SlimViews
             {
                 // No image requested (e.g., just loaded a fresh folder) -> Clear image state
                 FileContext.CurrentId = -1;
-                Bmp = null;
-                GifPath = null;
+                Image.Clear();
 
                 Information = customInfo ?? string.Concat(ViewResources.DisplayImages, Count);
             }
@@ -1050,8 +1033,7 @@ namespace SlimViews
 
             if (info == null)
             {
-                Bmp = null;
-                GifPath = null;
+                Image.Clear();
                 LoadThumbs(FileContext.CurrentPath);
                 return;
             }
@@ -1070,12 +1052,12 @@ namespace SlimViews
                 var ext = Path.GetExtension(filePath);
                 if (ext.Equals(ImagingResources.GifExt, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (GifPath?.Equals(filePath, StringComparison.OrdinalIgnoreCase) == true) return;
+                    if (Image.GifPath?.Equals(filePath, StringComparison.OrdinalIgnoreCase) == true) return;
 
                     //important for the undo/redo logic that we clear the history when loading a new image, otherwise the old image states would be mixed with the new ones and cause bugs.
                     ClearHistory();
 
-                    GifPath = filePath;
+                    Image.GifPath = filePath;
                     var info = ImageGifHandler.GetImageInfo(filePath);
                     Information = ViewResources.BuildGifInformation(filePath, info);
                 }
@@ -1083,7 +1065,7 @@ namespace SlimViews
                 {
                     Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
                     Bmp = Image.BitmapSource; // Trigger UI update
-                    GifPath = null;
+                    Image.GifPath = null;
                     Information = ViewResources.BuildImageInformation(filePath, FileName, Bmp);
                 }
 
@@ -1112,8 +1094,7 @@ namespace SlimViews
             else
             {
                 FileContext.CurrentId = -1;
-                Bmp = null;
-                GifPath = null;
+                Image.Clear();
             }
         }
 
@@ -1135,8 +1116,7 @@ namespace SlimViews
             {
                 Count = 0;
                 FileContext.Observer = null;
-                GifPath = null;
-                Bmp = null;
+                Image.Clear();
                 NavigationLogic(); // Update UI for empty state
                 return;
             }

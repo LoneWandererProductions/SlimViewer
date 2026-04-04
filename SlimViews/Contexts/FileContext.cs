@@ -83,14 +83,6 @@ namespace SlimViews.Contexts
         internal string CurrentPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the GIF path.
-        /// </summary>
-        /// <value>
-        /// The GIF path.
-        /// </value>
-        internal string GifPath { get; set; }
-
-        /// <summary>
         /// Gets a value indicating whether this instance is files empty.
         /// </summary>
         /// <value>
@@ -137,7 +129,6 @@ namespace SlimViews.Contexts
         {
             Count = 0;
             Observer = null;
-            GifPath = null;
         }
     }
 }
