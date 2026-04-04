@@ -40,6 +40,11 @@ namespace SlimViews.Contexts
         /// </summary>
         private bool _compressCif;
 
+        /// <summary>
+        /// The information
+        /// </summary>
+        private string? _information;
+
         // Core image data
         /// <summary>
         /// Gets or sets the bitmap.
@@ -59,7 +64,6 @@ namespace SlimViews.Contexts
                 }
             }
         }
-
 
         /// <summary>
         /// Gets or sets the GIF path.
@@ -163,20 +167,31 @@ namespace SlimViews.Contexts
         // Internal helpers
 
         /// <summary>
+        /// Gets the information.
+        /// </summary>
+        /// <value>
+        /// The information.
+        /// </value>
+        public string? Information
+        {
+            get => _information;
+            set
+            {
+                if (SetProperty(ref _information, value))
+                {
+                    // Manually tell the UI that IsImageActive also changed
+                    OnPropertyChanged(nameof(Information));
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the bitmap source.
         /// </summary>
         /// <value>
         /// The bitmap source.
         /// </value>
         internal BitmapImage? BitmapSource => Bitmap?.ToBitmapImage();
-
-        /// <summary>
-        /// Gets the information.
-        /// </summary>
-        /// <value>
-        /// The information.
-        /// </value>
-        public string? Information { get; internal set; }
 
         /// <summary>
         /// Optional helper: reset without reallocating the object

@@ -263,11 +263,11 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Open file location in Windows Explorer" />
 
-            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Path=Information}"
+            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Path=Image.Information}"
                      TextWrapping="NoWrap" Focusable="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                      IsReadOnly="True" ToolTip="Image Information" />
 
-            <Image Grid.Row="2" Grid.Column="0" Source="{Binding StatusImage}" ToolTip="Current application status" />
+            <Image Grid.Row="2" Grid.Column="0" Source="{Binding UiState.StatusImage}" ToolTip="Current application status" />
             <Button Content="R" Grid.Row="2" Grid.Column="1" Command="{Binding Commands.Rename}"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Rename current image" />

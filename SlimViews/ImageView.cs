@@ -32,7 +32,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using ViewModel;
 
 namespace SlimViews
@@ -65,8 +64,12 @@ namespace SlimViews
 
         /// <summary>
         /// The UI state Context, holding all UI-related state (button visibility, status images, etc).
+        /// For Databinding leave it as Property!
         /// </summary>
-        internal readonly UiState UiState = new();
+        /// <value>
+        /// The state of the UI.
+        /// </value>
+        public UiState UiState { get; } = new();
 
         /// <summary>
         /// The file context, holding all file-related data (current path, list of files, observer for navigation).
@@ -136,24 +139,6 @@ namespace SlimViews
             }
         }
 
-        // --- Image Context Proxies ---
-
-        /// <summary>
-        /// Gets or sets the information.
-        /// </summary>
-        /// <value>
-        /// The information.
-        /// </value>
-        public string Information
-        {
-            get => Image.Information;
-            set
-            {
-                Image.Information = value;
-                OnPropertyChanged();
-            }
-        }
-
         // --- UI State Proxies ---
 
         /// <summary>
@@ -200,22 +185,6 @@ namespace SlimViews
             set
             {
                 UiState.ThumbnailVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the status image.
-        /// </summary>
-        /// <value>
-        /// The status image.
-        /// </value>
-        public string StatusImage
-        {
-            get => UiState.StatusImage;
-            set
-            {
-                UiState.StatusImage = value;
                 OnPropertyChanged();
             }
         }
@@ -772,7 +741,7 @@ namespace SlimViews
 
             Image.BitmapImage = Image.BitmapSource;
             FileContext.FileName = Path.GetFileName(FileContext.FilePath);
-            Information = ViewResources.BuildImageInformation(FileContext.FilePath, FileContext.FileName, Image.BitmapImage);
+            Image.Information = ViewResources.BuildImageInformation(FileContext.FilePath, FileContext.FileName, Image.BitmapImage);
         }
 
         /// <summary>
@@ -873,13 +842,13 @@ namespace SlimViews
         internal bool SaveImage(string path, string extension, Bitmap bitmap)
         {
             // Update UI Status to "Working" (Red)
-            StatusImage = UiState.RedIconPath;
+            UiState.StatusImage = UiState.RedIconPath;
 
             // Call the lower-level processor logic
             bool success = ImageProcessor.SaveImage(path, extension, bitmap);
 
             // Update UI Status to "Done" (Green)
-            StatusImage = UiState.GreenIconPath;
+            UiState.StatusImage = UiState.GreenIconPath;
 
             return success;
         }
@@ -941,7 +910,7 @@ namespace SlimViews
                 _ = GenerateImageAsync(targetPath);
 
                 // If no custom info was provided, let GenerateImageAsync handle it (or set a default)
-                if (!string.IsNullOrEmpty(customInfo)) Information = customInfo;
+                if (!string.IsNullOrEmpty(customInfo)) Image.Information = customInfo;
             }
             else
             {
@@ -949,7 +918,7 @@ namespace SlimViews
                 FileContext.CurrentId = -1;
                 Image.Clear();
 
-                Information = customInfo ?? string.Concat(ViewResources.DisplayImages, Count);
+                Image.Information = customInfo ?? string.Concat(ViewResources.DisplayImages, Count);
             }
 
             // ==========================================
@@ -993,6 +962,12 @@ namespace SlimViews
         /// <param name="filePath">The file path.</param>
         private async Task GenerateImageAsync(string? filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                Trace.WriteLine($"File not found: {filePath}");
+                return;
+            }
+
             try
             {
                 var ext = Path.GetExtension(filePath);
@@ -1005,14 +980,14 @@ namespace SlimViews
 
                     Image.GifPath = filePath;
                     var info = ImageGifHandler.GetImageInfo(filePath);
-                    Information = ViewResources.BuildGifInformation(filePath, info);
+                    Image.Information = ViewResources.BuildGifInformation(filePath, info);
                 }
                 else
                 {
                     Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update
                     Image.GifPath = null;
-                    Information = ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
+                    Image.Information = ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
                 }
 
                 FileContext.FilePath = filePath;
@@ -1050,7 +1025,7 @@ namespace SlimViews
         private async Task GenerateThumbView(string folder)
         {
             FileContext.CurrentPath = folder;
-            StatusImage = UiState.RedIconPath;
+            UiState.StatusImage = UiState.RedIconPath;
 
             // 1. Fetch and Sort files
             var files = FileHandleSearch.GetFilesByExtensionFullPath(
@@ -1088,7 +1063,7 @@ namespace SlimViews
         {
             if (!IsThumbsVisible || lst == null) return;
 
-            StatusImage = UiState.RedIconPath;
+            UiState.StatusImage = UiState.RedIconPath;
 
             // Create the dictionary in the background
             var dict = await Task.Run(() => lst.ToDictionary()).ConfigureAwait(false);
@@ -1099,7 +1074,7 @@ namespace SlimViews
                 // This triggers FileContext.OnPropertyChanged(nameof(Observer))
                 FileContext.Observer = dict;
 
-                StatusImage = UiState.GreenIconPath;
+                UiState.StatusImage = UiState.GreenIconPath;
                 NavigationLogic();
             });
         }
@@ -1146,7 +1121,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         public void ImageLoadedCommandAction(object obj)
         {
-            if (!string.IsNullOrEmpty(StatusImage)) StatusImage = UiState.GreenIconPath;
+            if (!string.IsNullOrEmpty(UiState.StatusImage)) UiState.StatusImage = UiState.GreenIconPath;
         }
 
         /// <summary>

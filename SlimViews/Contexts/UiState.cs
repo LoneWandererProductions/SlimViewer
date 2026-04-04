@@ -10,6 +10,7 @@ using Common.Images;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using ViewModel;
 
 namespace SlimViews.Contexts
 {
@@ -17,8 +18,13 @@ namespace SlimViews.Contexts
     /// ImageView UI State, holds all UI-related state and references to controls used by <see cref="ImageView"/>.
     /// </summary>
     /// <seealso cref="System.IEquatable&lt;SlimViews.Contexts.UiState&gt;" />
-    public record UiState
+    public class UiState : ViewModelBase
     {
+        /// <summary>
+        /// The status image
+        /// </summary>
+        private string? _statusImage;
+
         /// <summary>
         ///     Gets or sets the root.
         /// </summary>
@@ -33,7 +39,15 @@ namespace SlimViews.Contexts
         /// <value>
         /// The status image.
         /// </value>
-        internal string StatusImage { get; set; }
+        public string? StatusImage
+        {
+            get => _statusImage;
+            set
+            {
+                _statusImage = value;
+                OnPropertyChanged(nameof(StatusImage));
+            }
+        }
 
         /// <summary>
         /// Gets the green icon path.
