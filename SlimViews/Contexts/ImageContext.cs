@@ -162,7 +162,7 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if this instance has image; otherwise, <c>false</c>.
         /// </value>
-        public bool HasImage => Bitmap != null || BitmapSource != null || string.IsNullOrEmpty(GifPath);
+        public bool HasImage => Bitmap != null || BitmapImage != null || !string.IsNullOrEmpty(GifPath);
 
         // Internal helpers
 
