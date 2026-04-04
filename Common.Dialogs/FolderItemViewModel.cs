@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using ViewModel;
 
 namespace Common.Dialogs
 {
@@ -19,7 +20,7 @@ namespace Common.Dialogs
     /// <summary>
     /// Represents a single folder or file in a TreeView. Supports lazy loading of children and selection tracking.
     /// </summary>
-    public sealed class FolderItemViewModel : INotifyPropertyChanged
+    public sealed class FolderItemViewModel : ViewModelBase
     {
         /// <summary>
         /// Gets the full path of this folder or file.
@@ -162,30 +163,37 @@ namespace Common.Dialogs
         {
             try
             {
-                var dirs = Directory.GetDirectories(Path);
-                var files = Directory.GetFiles(Path);
+                var dirs = Array.Empty<string>();
+                var files = Array.Empty<string>();
+
+                await Task.Run(() =>
+                {
+                    if (Directory.Exists(Path))
+                    {
+                        dirs = Directory.GetDirectories(Path);
+                        files = Directory.GetFiles(Path);
+                    }
+                });
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     foreach (var dir in dirs)
                         Children.Add(new FolderItemViewModel(dir, _parentVm));
 
-                    foreach (var file in files)
-                        Children.Add(
-                            new FolderItemViewModel(file, _parentVm) { Header = System.IO.Path.GetFileName(file) });
+                    if (_parentVm.ShowFiles)
+                    {
+                        foreach (var file in files)
+                            Children.Add(new FolderItemViewModel(file, _parentVm)
+                            {
+                                Header = System.IO.Path.GetFileName(file)
+                            });
+                    }
                 });
             }
             catch
             {
-                // Access denied or IO exceptions are silently ignored
+                // ignore
             }
         }
-
-        /// <summary>
-        /// Raises the <see cref="PropertyChanged"/> event for a property.
-        /// </summary>
-        /// <param name="propertyName">Name of the property that changed.</param>
-        private void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

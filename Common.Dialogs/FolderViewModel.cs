@@ -26,10 +26,35 @@ namespace Common.Dialogs
     public sealed class FolderViewModel : ViewModelBase
     {
         /// <summary>
+        /// The start folder
+        /// </summary>
+        private string? _startFolder;
+
+        /// <summary>
         /// Collection of folders and files displayed in the TreeView.
         /// Each item is a <see cref="FolderItemViewModel"/>.
         /// </summary>
         public ObservableCollection<FolderItemViewModel> FolderItems { get; } = new();
+
+        /// <summary>
+        /// Gets or sets the start folder.
+        /// </summary>
+        /// <value>
+        /// The start folder.
+        /// </value>
+        public string? StartFolder
+        {
+            get => _startFolder;
+            set
+            {
+                if (_startFolder == value) return;
+                _startFolder = value;
+                OnPropertyChanged(nameof(StartFolder));
+
+                if (!string.IsNullOrEmpty(value) && Directory.Exists(value))
+                    _ = LoadRootAsync(value);
+            }
+        }
 
         /// <summary>
         /// The selected folder
