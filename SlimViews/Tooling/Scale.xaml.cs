@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        Scale.xaml.cs
  * PURPOSE:     Window to scale an Image
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 using System.Windows;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

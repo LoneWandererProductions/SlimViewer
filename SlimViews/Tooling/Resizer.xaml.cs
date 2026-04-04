@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        Resizer.xaml.cs
  * PURPOSE:     Window for the Resizer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using System.Windows;
 using System.Windows.Markup;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <summary>
     ///     Window for mass converting Images in a Folder

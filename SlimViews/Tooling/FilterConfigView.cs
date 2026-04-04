@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        FilterConfigView.cs
  * PURPOSE:     View Model for Filter Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,13 +16,13 @@ using System.Windows;
 using System.Windows.Input;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc />
     /// <summary>
     ///     Set Input Fields active or Inactive based on the used Filter
     /// </summary>
-    /// <seealso cref="ViewModel.ViewModelBase" />
+    /// <seealso cref="ViewModelBase" />
     public sealed class FilterConfigView : ViewModelBase
     {
         /// <summary>

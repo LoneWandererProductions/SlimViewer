@@ -8,7 +8,6 @@
 
 using Imaging;
 using Imaging.Cifs;
-using Microsoft.VisualBasic;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using ViewModel;
@@ -21,11 +20,6 @@ namespace SlimViews.Contexts
     /// </summary>
     public sealed class ImageContext : ViewModelBase
     {
-        /// <summary>
-        /// The is image active
-        /// </summary>
-        private bool _isImageActive;
-
         /// <summary>
         /// The bitmap
         /// </summary>
@@ -40,6 +34,11 @@ namespace SlimViews.Contexts
         /// The GIF path
         /// </summary>
         private string? _gifPath;
+
+        /// <summary>
+        /// The compress cif
+        /// </summary>
+        private bool _compressCif;
 
         // Core image data
         /// <summary>
@@ -83,22 +82,13 @@ namespace SlimViews.Contexts
         }
 
         /// <summary>
-        /// Gets or sets the custom image format.
-        /// Only used internal no data Binding
-        /// </summary>
-        /// <value>
-        /// The custom image format.
-        /// </value>
-        internal CustomImageFormat? CustomImageFormat { get; set; }
-
-        /// <summary>
         /// Gets or sets the bitmap image.
         /// Only used internal no data Binding
         /// </summary>
         /// <value>
         /// The bitmap image.
         /// </value>
-        internal BitmapImage? BitmapImage
+        public BitmapImage? BitmapImage
         {
             get => _bitmapImage;
             set
@@ -107,9 +97,19 @@ namespace SlimViews.Contexts
                 {
                     // Manually tell the UI that IsImageActive also changed
                     OnPropertyChanged(nameof(IsImageActive));
+                    OnPropertyChanged(nameof(BitmapImage));
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the custom image format.
+        /// Only used internal no data Binding
+        /// </summary>
+        /// <value>
+        /// The custom image format.
+        /// </value>
+        internal CustomImageFormat? CustomImageFormat { get; set; }
 
         // Filters, textures, and processing
 
@@ -127,7 +127,18 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if [compress cif]; otherwise, <c>false</c>.
         /// </value>
-        public bool CompressCif { get; set; }
+        public bool CompressCif
+        {
+            get => _compressCif;
+            set
+            {
+                if (SetProperty(ref _compressCif, value))
+                {
+                    // Manually tell the UI that IsImageActive also changed
+                    OnPropertyChanged(nameof(CompressCif));
+                }
+            }
+        }
 
         // Display and zoom
 

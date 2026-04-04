@@ -136,59 +136,7 @@ namespace SlimViews
             }
         }
 
-        /// <summary>
-        /// Gets or sets the name of the file.
-        /// </summary>
-        /// <value>
-        /// The name of the file.
-        /// </value>
-        public string FileName
-        {
-            get => FileContext.FileName;
-            set
-            {
-                if (FileContext.FileName == value) return;
-
-                FileContext.FileName = value;
-                OnPropertyChanged(nameof(FileName));
-            }
-        }
-
         // --- Image Context Proxies ---
-
-        /// <summary>
-        /// Gets or sets the BMP.
-        /// </summary>
-        /// <value>
-        /// The BMP.
-        /// </value>
-        public BitmapImage? Bmp
-        {
-            get => Image.BitmapImage;
-            set
-            {
-                if (Image.BitmapImage == value) return;
-
-                Image.BitmapImage = value;
-                OnPropertyChanged(nameof(Bmp));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [compress cif].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [compress cif]; otherwise, <c>false</c>.
-        /// </value>
-        public bool CompressCif
-        {
-            get => Image.CompressCif;
-            set
-            {
-                Image.CompressCif = value;
-                OnPropertyChanged();
-            }
-        }
 
         /// <summary>
         /// Gets or sets the information.
@@ -376,7 +324,7 @@ namespace SlimViews
                 newWpfImage.Freeze();
             }
 
-            Bmp = newWpfImage;
+            Image.BitmapImage = newWpfImage;
         }
 
         /// <summary>
@@ -392,7 +340,7 @@ namespace SlimViews
             // We don't call CommitImageChange here because we don't want to trigger a NEW save state,
             // we just want to forcefully sync the properties backwards.
             Image.Bitmap = previousBitmap;
-            Bmp = previousBitmap.ToBitmapImage();
+            Image.BitmapImage = previousBitmap.ToBitmapImage();
         }
 
         /// <summary>
@@ -404,7 +352,7 @@ namespace SlimViews
 
             Bitmap nextBitmap = History.Redo(Image.Bitmap);
             Image.Bitmap = nextBitmap;
-            Bmp = nextBitmap.ToBitmapImage();
+            Image.BitmapImage = nextBitmap.ToBitmapImage();
         }
 
         /// <summary>
@@ -454,7 +402,7 @@ namespace SlimViews
             ImageZoom imageZoom, Window mainWindow, Thumbnails thumb, ColorPickerMenu colorPick) : this()
         {
             UseSubFolders = subFolders;
-            CompressCif = compressCif;
+            Image.CompressCif = compressCif;
             Similarity = similarity;
             AutoClean = autoClean;
 
@@ -696,7 +644,7 @@ namespace SlimViews
         {
             // 1. Update the register with the CURRENT state of the UI/ViewModel
             SlimViewerRegister.MainSubFolders = UseSubFolders;
-            SlimViewerRegister.MainCompressCif = CompressCif;
+            SlimViewerRegister.MainCompressCif = Image.CompressCif;
             SlimViewerRegister.MainSimilarity = Similarity;
             SlimViewerRegister.MainAutoClean = AutoClean;
 
@@ -736,9 +684,7 @@ namespace SlimViews
             FileContext.FilePath = string.Empty;
 
             // 2. Reset local UI-only state
-            Bmp = null;
-            if (Image != null) Image.Bitmap = null;
-            Information = string.Empty;
+            if (Image != null) Image.Clear();
             ClearHistory();
 
             // 3. Reload if directory exists
@@ -824,9 +770,9 @@ namespace SlimViews
             Image.Bitmap = Image.CustomImageFormat.GetImageFromCif(pathObj.FilePath);
             if (Image.Bitmap == null) return;
 
-            Bmp = Image.BitmapSource;
-            FileName = Path.GetFileName(FileContext.FilePath);
-            Information = ViewResources.BuildImageInformation(FileContext.FilePath, FileName, Bmp);
+            Image.BitmapImage = Image.BitmapSource;
+            FileContext.FileName = Path.GetFileName(FileContext.FilePath);
+            Information = ViewResources.BuildImageInformation(FileContext.FilePath, FileContext.FileName, Image.BitmapImage);
         }
 
         /// <summary>
@@ -1064,13 +1010,13 @@ namespace SlimViews
                 else
                 {
                     Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
-                    Bmp = Image.BitmapSource; // Trigger UI update
+                    Image.BitmapImage = Image.BitmapSource; // Trigger UI update
                     Image.GifPath = null;
-                    Information = ViewResources.BuildImageInformation(filePath, FileName, Bmp);
+                    Information = ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
                 }
 
                 FileContext.FilePath = filePath;
-                FileName = Path.GetFileName(filePath);
+                FileContext.FileName = Path.GetFileName(filePath);
             }
             catch (Exception ex)
             {

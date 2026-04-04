@@ -24,6 +24,11 @@ namespace SlimViews.Contexts
         private Dictionary<int, string> _observer;
 
         /// <summary>
+        /// The file name
+        /// </summary>
+        private string? _fileName;
+
+        /// <summary>
         /// Gets or sets the count.
         /// </summary>
         /// <value>
@@ -43,8 +48,6 @@ namespace SlimViews.Contexts
             set
             {
                 _observer = value;
-                // This is the "Dinner Bell" for WPF. 
-                // Without this, the XAML binding won't refresh.
                 OnPropertyChanged(nameof(Observer));
             }
         }
@@ -56,7 +59,16 @@ namespace SlimViews.Contexts
         /// <value>
         /// The name of the file.
         /// </value>
-        internal string FileName { get; set; }
+        public string FileName
+        {
+            get => _fileName;
+            set
+            {
+                _fileName = value;
+                OnPropertyChanged(nameof(FileName));
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the files.

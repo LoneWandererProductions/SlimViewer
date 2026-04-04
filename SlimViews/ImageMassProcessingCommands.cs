@@ -8,6 +8,7 @@
 
 using SlimControls;
 using SlimViews.Interfaces;
+using SlimViews.Tooling;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -55,7 +56,7 @@ namespace SlimViews
             owner.Image.Bitmap = ImageProcessor.BitmapScaling(owner.Image.Bitmap, SlimViewerRegister.Scaling);
             owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, SlimViewerRegister.Degree);
             owner.Image.Bitmap = ImageProcessor.CropImage(owner.Image.Bitmap);
-            owner.Bmp = owner.Image.BitmapSource;
+            owner.Image.BitmapImage = owner.Image.BitmapSource;
         }
 
         /// <summary>

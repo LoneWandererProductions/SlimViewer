@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        Compare.xaml.cs
  * PURPOSE:     Basic Compare Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using Common.Images;
 using System.Windows;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

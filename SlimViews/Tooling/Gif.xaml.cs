@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        Gif.xaml.cs
  * PURPOSE:     Gif Editor Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -11,10 +11,9 @@
 using Common.Images;
 using SlimViews.Interfaces;
 using System;
-using System.ComponentModel;
 using System.Windows;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

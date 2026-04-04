@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        TextureConfigView.cs
  * PURPOSE:     The view for Texture Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -16,13 +16,13 @@ using Imaging;
 using Imaging.Enums;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc />
     /// <summary>
     ///     Main View for texture Configuration
     /// </summary>
-    /// <seealso cref="ViewModel.ViewModelBase" />
+    /// <seealso cref="ViewModelBase" />
     public sealed class TextureConfigView : ViewModelBase
     {
         /// <summary>

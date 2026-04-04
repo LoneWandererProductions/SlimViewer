@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        Rename.xaml.cs
  * PURPOSE:     Code-behind for Rename Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

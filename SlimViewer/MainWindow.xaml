@@ -174,7 +174,7 @@
                     <Separator />
                     <MenuItem Header="Compress Cif" 
                   IsCheckable="True" 
-                  IsChecked="{Binding Path=CompressCif}" 
+                  IsChecked="{Binding Path=Image.CompressCif}" 
                   ToolTip="Enable compression for CIF files" />
                 </MenuItem>
 
@@ -225,7 +225,7 @@
                     ToolTip="Previous Image (Left Arrow)" />
 
             <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" IsTabStop="True"
-                              ItemsSource="{Binding Bmp}" ImageGifPath="{Binding Image.GifPath}"
+                              ItemsSource="{Binding Image.BitmapImage}" ImageGifPath="{Binding Image.GifPath}"
                               SelectionTool="{Binding ImageZoomTool}"
                               SelectedFrameCommand="{Binding Commands.SelectedFrame}"
                               SelectedPointCommand="{Binding Commands.SelectedPoint}" />
@@ -273,7 +273,7 @@
                     ToolTip="Rename current image" />
 
             <TextBox Grid.Row="2" Grid.Column="2"
-                     Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Path=FileContext.FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      TextWrapping="Wrap" ToolTip="File Name (Press Enter to rename)">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding Commands.Rename}" Key="Enter" />

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        TextureConfig.xaml.cs
  * PURPOSE:     The main Xaml for Texture Configuration
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -9,7 +9,7 @@
 using System.Windows;
 using Imaging.Enums;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

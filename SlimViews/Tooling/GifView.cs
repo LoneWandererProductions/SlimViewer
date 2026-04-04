@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        GifView.cs
  * PURPOSE:     View Model for the Gif Window (Refactored for Async/Thread Safety)
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -23,7 +23,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="ViewModelBase" />
     /// <summary>
@@ -567,7 +567,7 @@ namespace SlimViews
                             {
                                 Image = bmp,
                                 DelayTime = delayMs / 1000.0, // Convert ms (int) to seconds (double)
-                                Description = System.IO.Path.GetFileName(file)
+                                Description = Path.GetFileName(file)
                             });
                         }
 

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        DetailCompareView.cs
  * PURPOSE:     View Model for the Detail Viewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -24,13 +24,13 @@ using ImageCompare;
 using Imaging;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc />
     /// <summary>
     ///     View for Detail Window
     /// </summary>
-    /// <seealso cref="ViewModel.ViewModelBase" />
+    /// <seealso cref="ViewModelBase" />
     internal sealed class DetailCompareView : ViewModelBase
     {
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        Converter.xaml.cs
  * PURPOSE:     Basic Converter Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 using System.Windows;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <summary>
     ///     Window for converting all Files

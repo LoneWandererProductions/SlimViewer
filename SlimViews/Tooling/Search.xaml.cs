@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        Search.xaml.cs
  * PURPOSE:     Search Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -11,7 +11,7 @@
 using Imaging;
 using System.Windows;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="Window" />
     /// <summary>

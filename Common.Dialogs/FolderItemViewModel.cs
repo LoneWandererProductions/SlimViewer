@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -118,16 +119,38 @@ namespace Common.Dialogs
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>If folder has child</returns>
+        /// <summary>
+        /// Safely checks if a folder has children without throwing exceptions for files.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>True if the folder has children; otherwise, false.</returns>
         private static bool SafeHasChildren(string path)
         {
             try
             {
+                // PREVENT the IOException by checking if it's actually a directory first.
+                // If it's a file (or doesn't exist/access denied), Directory.Exists cleanly returns false.
+                if (!Directory.Exists(path))
+                {
+                    return false;
+                }
+
                 using var enumerator = Directory.EnumerateFileSystemEntries(path).GetEnumerator();
                 return enumerator.MoveNext();
             }
+            catch (UnauthorizedAccessException)
+            {
+                // Handle permission errors silently
+                return false;
+            }
+            catch (IOException)
+            {
+                // Handle locked system files, device errors, or edge-case invalid paths silently
+                return false;
+            }
             catch
             {
-                // Handles UnauthorizedAccess, PathTooLong, or DirectoryNotFound
+                // Fallback for PathTooLongException, DirectoryNotFoundException, etc.
                 return false;
             }
         }

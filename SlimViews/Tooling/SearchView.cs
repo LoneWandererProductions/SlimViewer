@@ -1,6 +1,6 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        SearchView.cs
  * PURPOSE:     View Model for Search
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -19,14 +19,14 @@ using ImageCompare;
 using Imaging;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc />
     /// <summary>
     ///     Search View Model responsible for handling search operations
     ///     including text-based and color-based image searches.
     /// </summary>
-    /// <seealso cref="ViewModel.ViewModelBase" />
+    /// <seealso cref="ViewModelBase" />
     internal sealed class SearchView : ViewModelBase
     {
         /// <summary>

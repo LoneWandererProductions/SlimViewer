@@ -103,7 +103,7 @@ namespace SlimViews
             clone.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
             owner.Image.Bitmap = clone;
-            owner.Bmp = clone.ToBitmapImage();
+            owner.Image.BitmapImage = clone.ToBitmapImage();
         }
 
 

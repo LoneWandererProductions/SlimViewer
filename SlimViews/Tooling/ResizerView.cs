@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        ResizerView.cs
  * PURPOSE:     View Model for Resizer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -24,7 +24,7 @@ using System.Windows;
 using System.Windows.Input;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc />
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        ConverterView.cs
  * PURPOSE:     View Model for the Converter
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -15,13 +15,13 @@ using System.Windows.Input;
 using Imaging;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc />
     /// <summary>
     ///     Converter View Model
     /// </summary>
-    /// <seealso cref="ViewModel.ViewModelBase" />
+    /// <seealso cref="ViewModelBase" />
     internal sealed class ConverterView : ViewModelBase
     {
         /// <summary>

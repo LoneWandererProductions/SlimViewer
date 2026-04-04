@@ -37,6 +37,21 @@ namespace Common.Dialogs
         private FolderItemViewModel? _selectedFolder;
 
         /// <summary>
+        /// The paths
+        /// </summary>
+        private string? _paths;
+
+        /// <summary>
+        /// The look up
+        /// </summary>
+        private string _lookUp = string.Empty;
+
+        /// <summary>
+        /// The show files
+        /// </summary>
+        private bool _showFiles;
+
+        /// <summary>
         /// Gets or sets the selected folder.
         /// </summary>
         /// <value>
@@ -58,32 +73,21 @@ namespace Common.Dialogs
         }
 
         /// <summary>
-        /// Gets the selected path.
-        /// </summary>
-        /// <value>
-        /// The selected path.
-        /// </value>
-        public string? SelectedPath => SelectedFolder?.Path;
-
-        /// <summary>
-        /// The paths
-        /// </summary>
-        private string? _paths;
-
-        /// <summary>
         /// Currently selected folder path.
         /// Updates whenever navigation occurs or user selects a folder.
         /// </summary>
-        public string? Paths
+        public string Paths
         {
             get => _paths;
-            set => SetProperty(ref _paths, value); // ViewModelBase provides INotifyPropertyChanged
-        }
+            set
+            {
+                if (_paths == value) return;
+                _paths = value;
+                OnPropertyChanged(nameof(Paths));
 
-        /// <summary>
-        /// The look up
-        /// </summary>
-        private string _lookUp = string.Empty;
+                LookUp = value;
+            }
+        }
 
         /// <summary>
         /// User input for navigating to a specific folder.
@@ -92,13 +96,13 @@ namespace Common.Dialogs
         public string LookUp
         {
             get => _lookUp;
-            set => SetProperty(ref _lookUp, value);
+            set
+            {
+                if (_lookUp == value) return;
+                _lookUp = value;
+                OnPropertyChanged(nameof(LookUp));
+            }
         }
-
-        /// <summary>
-        /// The show files
-        /// </summary>
-        private bool _showFiles;
 
         /// <summary>
         /// Determines whether files should be displayed in addition to folders.

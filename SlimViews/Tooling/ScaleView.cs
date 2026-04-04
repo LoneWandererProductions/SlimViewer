@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        ScaleView.cs
  * PURPOSE:     View Model for Scale
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -13,7 +13,7 @@ using System.Windows;
 using System.Windows.Input;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <summary>
     ///     View model for scaling operations.

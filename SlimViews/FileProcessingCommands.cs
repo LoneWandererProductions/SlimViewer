@@ -70,7 +70,7 @@ namespace SlimViews
 
             try
             {
-                if (owner.CompressCif)
+                if (owner.Image.CompressCif)
                     owner.Image.CustomImageFormat.GenerateCifCompressedFromBitmap(owner.Image.Bitmap, pathObj.FilePath);
                 else
                     owner.Image.CustomImageFormat.GenerateBitmapToCifFile(owner.Image.Bitmap, pathObj.FilePath);
@@ -151,7 +151,7 @@ namespace SlimViews
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
         internal void Move(ImageView owner, object obj)
         {
-            if (owner == null || (!File.Exists(owner.FileName) && owner.UiState.IsSelectionEmpty))
+            if (owner == null || (!File.Exists(owner.FileContext.FileName) && owner.UiState.IsSelectionEmpty))
                 return;
 
             if (string.IsNullOrEmpty(owner.FileContext.CurrentPath))
@@ -266,7 +266,7 @@ namespace SlimViews
             if (string.IsNullOrEmpty(folder))
                 return;
 
-            var newFilePath = Path.Combine(folder, owner.FileName);
+            var newFilePath = Path.Combine(folder, owner.FileContext.FileName);
 
             if (File.Exists(newFilePath))
             {
@@ -304,10 +304,10 @@ namespace SlimViews
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
         internal void Save(ImageView owner, object obj)
         {
-            if (owner?.Bmp == null)
+            if (owner?.Image.BitmapImage == null)
                 return;
 
-            var bitmap = owner.Bmp.ToBitmap();
+            var bitmap = owner.Image.BitmapImage.ToBitmap();
             var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpen, owner.FileContext.CurrentPath);
             if (pathObj == null)
                 return;

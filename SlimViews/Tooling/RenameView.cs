@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        RenameView.cs
  * PURPOSE:     View Model for Rename
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -21,7 +21,7 @@ using FileHandler;
 using SlimViews.DataObjects;
 using ViewModel;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc />
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     SlimViewer
+ * PROJECT:     SlimViews.Tooling
  * FILE:        DetailCompare.xaml.cs
  * PURPOSE:     DetailCompare Window
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@
 
 using System.Windows;
 
-namespace SlimViews
+namespace SlimViews.Tooling
 {
     /// <inheritdoc cref="Window" />
     /// <summary>
