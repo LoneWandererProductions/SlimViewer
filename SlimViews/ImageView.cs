@@ -648,9 +648,6 @@ namespace SlimViews
             Trace.WriteLine($"Caller: {caller}"); // Slightly cleaner using string interpolation
                                                   // 1. Reset state via FileContext (triggers OnPropertyChanged for Observer)
             FileContext.Clear();
-            FileContext.Files = new List<string?>();
-            FileContext.CurrentId = -1;
-            FileContext.FilePath = string.Empty;
 
             // 2. Reset local UI-only state
             if (Image != null) Image.Clear();

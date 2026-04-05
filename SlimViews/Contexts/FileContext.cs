@@ -42,7 +42,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The observer.
         /// </value>
-        public Dictionary<int, string> Observer
+        public Dictionary<int, string>? Observer
         {
             get => _observer;
             set
@@ -76,7 +76,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The files.
         /// </value>
-        internal List<string?> Files { get; set; } =  [];
+        internal List<string?>? Files { get; set; } =  [];
 
         /// <summary>
         /// Gets or sets the current identifier.
@@ -125,7 +125,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The file path.
         /// </value>
-        internal string FilePath { get; set; }
+        internal string? FilePath { get; set; }
 
         /// <summary>
         /// Currents the identifier get identifier by file path.
@@ -141,6 +141,8 @@ namespace SlimViews.Contexts
         {
             Count = 0;
             Observer = null;
+            Files = null;
+            FilePath = null;
         }
     }
 }

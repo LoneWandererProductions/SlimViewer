@@ -132,6 +132,11 @@ namespace SlimViews.Tooling
         private ICommand? _saveImagesCommand;
 
         /// <summary>
+        /// The save current frame command
+        /// </summary>
+        private ICommand? _saveCurrentFrameCommand;
+
+        /// <summary>
         ///     Path where individual frames are extracted to.
         /// </summary>
         private string ImageExportPath => Path.Combine(OutputPath, ViewResources.ImagesPath);
@@ -336,6 +341,14 @@ namespace SlimViews.Tooling
         /// The set all delay command.
         /// </value>
         public ICommand SetAllDelayCommand => GetCommand(ref _setAllDelayCommand, _ => SetAllDelayAction());
+
+        /// <summary>
+        /// Gets the save current frame command.
+        /// </summary>
+        /// <value>
+        /// The save current frame command.
+        /// </value>
+        public ICommand SaveCurrentFrameCommand => GetCommand(ref _saveCurrentFrameCommand, async _ => await SaveCurrentFrameActionAsync());
 
         /// <summary>
         ///     Updates the main preview image when a thumbnail is clicked.
@@ -609,7 +622,10 @@ namespace SlimViews.Tooling
                 .Select(k => _observer[k])
                 .ToList();
 
-            if (selectedFiles.Count == 0) return;
+            if (selectedFiles.Count == 0)
+            {
+                selectedFiles = _observer.Values.ToList();
+            }
 
             IsWorking = true;
             try
@@ -727,6 +743,45 @@ namespace SlimViews.Tooling
                 _delays[key] = CurrentDelay;
             }
             Information = $"All frames set to {CurrentDelay}ms.";
+        }
+
+        /// <summary>
+        /// Exports only the currently selected frame to a user-defined location.
+        /// </summary>
+        private async Task SaveCurrentFrameActionAsync()
+        {
+            if (string.IsNullOrEmpty(FilePath) || !File.Exists(FilePath))
+            {
+                Information = "No frame selected to save.";
+                return;
+            }
+
+            // Reuse your existing HandleFileSave logic
+            // We suggest a filename based on the current frame's source name
+            var defaultName = Path.GetFileName(FilePath);
+            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenGif, OutputPath);
+
+            if (pathObj == null) return;
+
+            IsWorking = true;
+            try
+            {
+                await Task.Run(() =>
+                {
+                    // Simple File.Copy is the most efficient way since the frame already exists in TempGif
+                    File.Copy(FilePath, pathObj.FilePath, true);
+                });
+
+                Information = $"Frame saved to: {Path.GetFileName(pathObj.FilePath)}";
+            }
+            catch (Exception ex)
+            {
+                Information = $"Failed to save frame: {ex.Message}";
+            }
+            finally
+            {
+                IsWorking = false;
+            }
         }
 
         /// <summary>
