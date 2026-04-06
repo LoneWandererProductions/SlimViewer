@@ -915,10 +915,17 @@ namespace SlimViews
             {
                 // If we didn't get an explicit list of files, check if the folder changed
                 var folder = Path.GetDirectoryName(targetPath);
+
                 if (folder != null && folder != FileContext.CurrentPath)
                 {
-                    // Note: I assume LoadThumbs updates FileContext.Files internally
-                    LoadThumbs(folder, targetPath);
+                    // If you are in "SubFolder" mode, don't reload if the new folder 
+                    // is just a child of the current path.
+                    bool isSubfolder = folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
+
+                    if (!UiState.UseSubFolders || !isSubfolder)
+                    {
+                        LoadThumbs(folder, targetPath);
+                    }
                 }
             }
 

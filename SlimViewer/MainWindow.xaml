@@ -62,6 +62,10 @@
                 <MenuItem Header="Menu">
                     <MenuItem Header="Open" Command="{Binding Commands.Open}" InputGestureText="Ctrl+O" ToolTip="Open an image file" />
                     <MenuItem Header="Open Folder" Command="{Binding Commands.Folder}" ToolTip="Open all images in a folder" />
+                    <MenuItem Header="Include Subfolders" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding UseSubFolders}" 
+                          ToolTip="When opening a folder, include images from all subdirectories" />
                     <MenuItem Header="Open CBZ" Command="{Binding Commands.OpenCbz}" ToolTip="Open a comic book archive (CBZ)" />
                     <Separator />
                     <MenuItem Header="Search" Command="{Binding Commands.FolderSearch}" InputGestureText="Ctrl+F" ToolTip="Search for files by name or color" />
