@@ -243,7 +243,7 @@ namespace SlimViews
             var gifWindow = new Gif
             {
                 Owner = owner.UiState.Main,
-                Topmost = true,
+                Topmost = false,
                 InitialFilePath = filePath // SET THIS BEFORE SHOWING
             };
 

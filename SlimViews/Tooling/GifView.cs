@@ -485,7 +485,7 @@ namespace SlimViews.Tooling
                 }
 
                 // Guard against massive folders freezing the logic
-                if (fileList.Count >= 200)
+                if (fileList.Count >= 800)
                 {
                     MessageBox.Show(ViewResources.MessageFiles, ViewResources.MessageInformation);
                     return;
@@ -500,18 +500,18 @@ namespace SlimViews.Tooling
                 // 4. Create Preview GIF (CPU Bound)
                 // Use Facade: CreateGif(sourceFolder, targetFile)
                 // We pass the DIRECTORY (GifExportPath) because the backend appends the filename.
-                var tempGifPath = Path.Combine(GifExportPath, "temp_preview.gif");
+                string fullTargetFile = Path.Combine(GifExportPath, ViewResources.NewGif);
 
                 // Note: If your backend strictly requires a FOLDER path and appends a default name, pass GifExportPath.
-                // If it accepts a full file path (as implied by some overloads), pass tempGifPath.
+                // If it accepts a full file path (as implied by some overloads), pass fullTargetFile.
                 // Based on your snippet 'ConvertToGifAction(string folder, string gifPath)' combining paths internally:
-                await Task.Run(() => ImagingFacade.CreateGif(path, GifExportPath), token);
+                await Task.Run(() => ImagingFacade.CreateGif(path, fullTargetFile), token);
 
                 // The backend likely created "GifExportPath/NewGif.gif" (check ViewResources.NewGif value)
                 // Adjust this line if your resource name differs.
-                GifPath = Path.Combine(GifExportPath, ViewResources.NewGif);
+                GifPath = fullTargetFile;
                 FilePath = GifPath;
-                IsActive = true;
+                IsActive = File.Exists(GifPath);
             }
             catch (Exception ex)
             {
@@ -759,7 +759,7 @@ namespace SlimViews.Tooling
             // Reuse your existing HandleFileSave logic
             // We suggest a filename based on the current frame's source name
             var defaultName = Path.GetFileName(FilePath);
-            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenGif, OutputPath);
+            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileGifPng, OutputPath);
 
             if (pathObj == null) return;
 

@@ -32,6 +32,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using ViewModel;
 
 namespace SlimViews
@@ -404,6 +405,7 @@ namespace SlimViews
                 // Modified keys for file operations
                 { Tuple.Create(ModifierKeys.Control, Key.O), Commands.Open },
                 { Tuple.Create(ModifierKeys.Control, Key.S), Commands.Save },
+                { Tuple.Create(ModifierKeys.Control, Key.C), Commands.Clipboard},
 
                 // Single keys for fast viewer navigation (ModifierKeys.None)
                 { Tuple.Create(ModifierKeys.None, Key.Delete), Commands.Delete },
@@ -772,6 +774,29 @@ namespace SlimViews
         /// </summary>
         /// <param name="obj">The object.</param>
         internal void ExportStringAction(object obj) => ImageProcessor.ExportString(Image.Bitmap);
+
+
+        /// <summary>
+        /// Exports the clipboard action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        internal void ExportClipboardAction(object? obj)
+        {
+            // 1. Ensure we have an image to copy
+            if (Image?.BitmapImage is BitmapSource bitmap)
+            {
+                try
+                {
+                    // 2. Place it on the Windows Clipboard
+                   Clipboard.SetImage(bitmap);
+                }
+                catch (Exception ex)
+                {
+                    // Clipboard access can occasionally fail if another app locks it
+                    Trace.WriteLine($"Clipboard error: {ex.Message}");
+                }
+            }
+        }
 
         // -------------------------------------------------------------------
         // 6. HELPER METHODS (Loading & Thumbnails)

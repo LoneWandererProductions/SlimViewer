@@ -137,6 +137,8 @@
                     <Separator />
                     <MenuItem Header="Scale Image" Command="{Binding Commands.Scale}" IsEnabled="{Binding Path=Image.IsImageActive}" />
                     <MenuItem Header="Export to String" Command="{Binding Commands.ExportString}" IsEnabled="{Binding Path=Image.IsImageActive}"/>
+                    <MenuItem Header="Export to Clipboard" Command="{Binding Commands.Clipboard}" IsEnabled="{Binding Path=Image.IsImageActive}"/>
+                    
                 </MenuItem>
 
                 <MenuItem Header="Tools">

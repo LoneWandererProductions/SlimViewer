@@ -61,8 +61,29 @@ namespace SlimViews
         /// </value>
         public ICommand OpenCbz { get; }
 
+        /// <summary>
+        /// Gets the open.
+        /// </summary>
+        /// <value>
+        /// The open.
+        /// </value>
         public ICommand Open { get; }
+
+        /// <summary>
+        /// Gets the save.
+        /// </summary>
+        /// <value>
+        /// The save.
+        /// </value>
         public ICommand Save { get; }
+
+        /// <summary>
+        /// Gets the clipboard.
+        /// </summary>
+        /// <value>
+        /// The clipboard.
+        /// </value>
+        public ICommand Clipboard { get; }
 
         /// <summary>
         /// Gets the delete.
@@ -132,6 +153,12 @@ namespace SlimViews
 
         public ICommand ShowHelp { get; }
 
+        /// <summary>
+        /// Gets the show about.
+        /// </summary>
+        /// <value>
+        /// The show about.
+        /// </value>
         public ICommand ShowAbout { get; }
 
         #endregion
@@ -187,6 +214,7 @@ namespace SlimViews
             Previous = new DelegateCommand<object>(owner.PreviousAction, CanRun);
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
+            Clipboard = new DelegateCommand<object>(owner.ExportClipboardAction, CanRun);
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);

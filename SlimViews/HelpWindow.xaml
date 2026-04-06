@@ -41,6 +41,7 @@
                         <RowDefinition Height="25" />
                         <RowDefinition Height="25" />
                         <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Left Arrow" FontWeight="Bold" />
@@ -64,8 +65,11 @@
                     <TextBlock Grid.Row="6" Grid.Column="0" Text="Ctrl + Z" FontWeight="Bold" />
                     <TextBlock Grid.Row="6" Grid.Column="1" Text="Undo last edit" />
 
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Ctrl + Y" FontWeight="Bold" />
-                    <TextBlock Grid.Row="7" Grid.Column="1" Text="Redo last edit" />
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Ctrl + C" FontWeight="Bold" />
+                    <TextBlock Grid.Row="7" Grid.Column="1" Text="Copy Current Image to Clipboard" />
+
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Ctrl + Y" FontWeight="Bold" />
+                    <TextBlock Grid.Row="8" Grid.Column="1" Text="Redo last edit" />
                 </Grid>
 
             </StackPanel>

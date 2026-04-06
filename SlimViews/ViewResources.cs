@@ -49,6 +49,12 @@ namespace SlimViews
             "Gif File (*.gif)|*.gif";
 
         /// <summary>
+        /// The file save from gif to  Png(const). Value:  "Png File (*.Png)|*.Png".
+        /// </summary>
+        internal const string FileGifPng =
+            "Png File (*.Png)|*.Png";
+
+        /// <summary>
         ///     The file open cif (const). Value: "Custom image File (*.cif)|*.cif".
         /// </summary>
         internal const string FileOpenCif =
@@ -242,7 +248,7 @@ namespace SlimViews
         /// <summary>
         ///     The Message for the 200 Image limit (const). Value: " Right now we set a limit of 200 Images."
         /// </summary>
-        internal const string MessageFiles = "Right now we set a limit of 200 Images.";
+        internal const string MessageFiles = "Right now we set a limit of 800 Images.";
 
         /// <summary>
         ///     The Image Name (const). Value: "Name: "

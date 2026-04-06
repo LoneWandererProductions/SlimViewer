@@ -1,4 +1,4 @@
-﻿<Window x:Class="SlimViews.Tooling.Gif"
+﻿<Window xmlns:Gifs="clr-namespace:Imaging.Gifs;assembly=Imaging"  x:Class="SlimViews.Tooling.Gif"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -64,7 +64,10 @@
 
                 <Border Grid.Row="0" Background="#333">
                     <ScrollViewer>
-                        <ContentControl Content="{Binding ActiveFrameView}" />
+                        <Images:ImageZoom                
+                            ItemsSource="{Binding Bmp}" 
+                            ImageGifPath="{Binding GifPath}"/>
+
                     </ScrollViewer>
                 </Border>
 
