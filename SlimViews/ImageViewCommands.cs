@@ -92,9 +92,37 @@ namespace SlimViews
         /// The delete.
         /// </value>
         public ICommand Delete { get; }
+
+        /// <summary>
+        /// Gets the refresh.
+        /// </summary>
+        /// <value>
+        /// The refresh.
+        /// </value>
         public ICommand Refresh { get; }
+
+        /// <summary>
+        /// Gets the pixelate.
+        /// </summary>
+        /// <value>
+        /// The pixelate.
+        /// </value>
         public ICommand Pixelate { get; }
+
+        /// <summary>
+        /// Gets the similar.
+        /// </summary>
+        /// <value>
+        /// The similar.
+        /// </value>
         public ICommand Similar { get; }
+
+        /// <summary>
+        /// Gets the duplicate.
+        /// </summary>
+        /// <value>
+        /// The duplicate.
+        /// </value>
         public ICommand Duplicate { get; }
 
         /// <summary>
@@ -119,6 +147,13 @@ namespace SlimViews
         public ICommand Scale { get; }
         public ICommand FolderRename { get; }
         public ICommand FolderConvert { get; }
+
+        /// <summary>
+        /// Gets the clear.
+        /// </summary>
+        /// <value>
+        /// The clear.
+        /// </value>
         public ICommand Clear { get; }
         public ICommand CleanTempFolder { get; }
         public ICommand FolderSearch { get; }

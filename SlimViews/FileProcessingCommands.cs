@@ -136,9 +136,6 @@ namespace SlimViews
             else
             {
                 owner.Image.Clear();
-
-                owner.UiState.Thumb.RemoveSingleItem(owner.FileContext.CurrentId);
-                owner.NextAction(this);
             }
 
             owner.RefreshActionAsync(nameof(FileProcessingCommands));
