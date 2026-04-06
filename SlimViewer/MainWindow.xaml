@@ -220,12 +220,15 @@
                     VerticalAlignment="Center" Height="50" Opacity="0.5"
                     ToolTip="Previous Image (Left Arrow)" />
 
-            <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" IsTabStop="True"
-                              ItemsSource="{Binding Image.BitmapImage}" 
-                              ImageGifPath="{Binding Image.GifPath}"
-                              SelectionTool="{Binding ImageZoomTool}"
-                              SelectedFrameCommand="{Binding Commands.SelectedFrame}"
-                              SelectedPointCommand="{Binding Commands.SelectedPoint}" />
+            <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" 
+                  IsTabStop="True"
+                  HorizontalAlignment="Left" 
+                  VerticalAlignment="Top"
+                  ItemsSource="{Binding Image.BitmapImage}" 
+                  ImageGifPath="{Binding Image.GifPath}"
+                  SelectionTool="{Binding ImageZoomTool}"
+                  SelectedFrameCommand="{Binding Commands.SelectedFrame}"
+                  SelectedPointCommand="{Binding Commands.SelectedPoint}" />
 
             <Button Grid.Column="2" Content="→" 
                     Command="{Binding Commands.Next}"
@@ -270,11 +273,19 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Open file location in Windows Explorer" />
 
-            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" 
-                     Text="{Binding Path=Image.Information}"
-                     TextWrapping="NoWrap" Focusable="True" 
-                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                     IsReadOnly="True" ToolTip="Image Information" />
+            <ScrollViewer Grid.Row="0" 
+              Grid.Column="2" 
+              Grid.ColumnSpan="4"
+              HorizontalScrollBarVisibility="Auto" 
+              VerticalScrollBarVisibility="Disabled">
+                <TextBox Text="{Binding Path=Image.Information, Mode=OneWay}"
+             TextWrapping="NoWrap" 
+             IsReadOnly="True" 
+             Focusable="True"
+             BorderThickness="0"
+             Background="Transparent"
+             ToolTip="Image Information" />
+            </ScrollViewer>
 
             <Button Content="Refresh" Grid.Row="0" Grid.Column="5" 
                     Height="25"
