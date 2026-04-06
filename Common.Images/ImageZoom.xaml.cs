@@ -669,19 +669,21 @@ namespace Common.Images
             {
                 case ImageZoomTools.Move:
                     {
-                        // 1. Get current mouse position relative to the STATIONARY Canvas
                         var currentCanvasPos = e.GetPosition(MainCanvas);
-
-                        // 2. Access the current Matrix
                         var transform = (MatrixTransform)BtmImage.RenderTransform;
                         var matrix = transform.Matrix;
 
-                        // 3. Apply the delta correctly
-                        // Origin (where it was) + (Current Mouse - Start Mouse)
-                        matrix.OffsetX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
-                        matrix.OffsetY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
+                        // 1. Calculate the raw intended offsets
+                        double newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
+                        double newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
 
-                        // 4. Update
+                        // 2. Constraint: Keep image in Top-Left
+                        // Math.Min(newX, 0) ensures that if the user tries to drag the image 
+                        // to the right (positive X), it stops at exactly 0.
+                        matrix.OffsetX = Math.Min(newX, 0);
+                        matrix.OffsetY = Math.Min(newY, 0);
+
+                        // 3. Update the UI
                         BtmImage.RenderTransform = new MatrixTransform(matrix);
                         SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
                         break;
@@ -724,32 +726,27 @@ namespace Common.Images
         {
             lock (_lock)
             {
-                // 1. Get the current Matrix from the RenderTransform
-                // We cast to MatrixTransform to access the underlying Matrix
                 var transform = (MatrixTransform)BtmImage.RenderTransform;
                 Matrix matrix = transform.Matrix;
 
-                // 2. Calculate the zoom multiplier
-                // 1.1 zooms in 10%, 1/1.1 (~0.9) zooms out
                 double zoomFactor = e.Delta > 0 ? 1.1 : 1 / 1.1;
-
-                // 3. Get the mouse position relative to the image
-                // This acts as the "anchor" for the zoom
                 Point mousePos = e.GetPosition(BtmImage);
 
-                // 4. Apply the zoom centered on the mouse
-                // This handles both the scaling AND the Offset shift automatically
+                // 1. Perform the scale
                 matrix.ScaleAt(zoomFactor, zoomFactor, mousePos.X, mousePos.Y);
 
-                // 5. Apply the updated matrix back to the image
+                // 2. Constraint: Ensure we haven't scrolled the image into "positive" space
+                // This keeps the image flush against the top and left edges.
+                matrix.OffsetX = Math.Min(matrix.OffsetX, 0);
+                matrix.OffsetY = Math.Min(matrix.OffsetY, 0);
+
+                // 3. Apply updates
                 BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-                // 6. Sync the Canvas size so ScrollBars stay accurate
-                // M11 represents the current horizontal scale (e.g., 1.5 for 150%)
+                // Sync Canvas size (using the now-constrained matrix)
                 MainCanvas.Width = BtmImage.ActualWidth * matrix.M11;
                 MainCanvas.Height = BtmImage.ActualHeight * matrix.M22;
 
-                // 7. Update Adorner and prevent ScrollViewer from highjacking the scroll
                 SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
                 e.Handled = true;
             }
@@ -802,21 +799,21 @@ namespace Common.Images
         /// <param name="zoomScale">The new zoom scale.</param>
         private void UpdateZoomScale(double zoomScale)
         {
-            // 1. Get the current matrix from the Image
             var matrix = ((MatrixTransform)BtmImage.RenderTransform).Matrix;
 
-            // 2. Set the ABSOLUTE scale (M11 is X, M22 is Y)
             matrix.M11 = zoomScale;
             matrix.M22 = zoomScale;
 
-            // 3. Apply it back to the image
+            // After a hard scale update, the offsets might need re-clamping 
+            // to ensure the image didn't jump away from the corner.
+            matrix.OffsetX = Math.Min(matrix.OffsetX, 0);
+            matrix.OffsetY = Math.Min(matrix.OffsetY, 0);
+
             BtmImage.RenderTransform = new MatrixTransform(matrix);
 
-            // 4. Update the Canvas size so ScrollBars know the image grew/shrank
             MainCanvas.Width = BtmImage.ActualWidth * zoomScale;
             MainCanvas.Height = BtmImage.ActualHeight * zoomScale;
 
-            // 5. Sync the Adorner
             SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
         }
 
