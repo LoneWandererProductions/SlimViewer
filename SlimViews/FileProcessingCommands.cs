@@ -133,10 +133,7 @@ namespace SlimViews
                 _ = MessageBox.Show($"{ViewResources.MessageCount}{deletedCount}",
                     ViewResources.MessageSuccess, MessageBoxButton.OK);
             }
-            else
-            {
-                owner.Image.Clear();
-            }
+            owner.Image.Clear();
 
             owner.RefreshActionAsync(nameof(FileProcessingCommands));
         }
