@@ -142,7 +142,7 @@
                     <MenuItem Header="Scale Image" Command="{Binding Commands.Scale}" IsEnabled="{Binding Path=Image.IsImageActive}" />
                     <MenuItem Header="Export to String" Command="{Binding Commands.ExportString}" IsEnabled="{Binding Path=Image.IsImageActive}"/>
                     <MenuItem Header="Export to Clipboard" Command="{Binding Commands.Clipboard}" IsEnabled="{Binding Path=Image.IsImageActive}"/>
-                    
+
                 </MenuItem>
 
                 <MenuItem Header="Tools">
@@ -192,11 +192,20 @@
                                         ToolTip="Select background color" />
             </StackPanel>
 
-            <Slider Grid.Column="6" Minimum="0.1" Maximum="5.0"
-                    Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}" 
-                    VerticalAlignment="Center"
-                    IsEnabled="{Binding Path=Image.IsImageActive}" 
-                    ToolTip="Adjust zoom level" />
+            <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
+
+                <Slider Width="120"
+            Minimum="0.1"
+            Maximum="5.0"
+            Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"
+            IsEnabled="{Binding Path=Image.IsImageActive}"
+            ToolTip="Adjust zoom level" />
+
+                <TextBlock Margin="8,0,0,0"
+               VerticalAlignment="Center"
+               FontWeight="Bold"
+               Text="{Binding ZoomScale, ElementName=ImageControl, StringFormat={}{0:P0}}" />
+            </StackPanel>
         </Grid>
 
         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
@@ -211,7 +220,7 @@
         <GridSplitter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" 
                       Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray" />
 
-        <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,4,82,0">
+        <Grid Grid.Row="2" Grid.ColumnSpan="3"  Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -221,7 +230,9 @@
             <Button Grid.Column="0" Content="←" 
                     Command="{Binding Commands.Previous}"
                     Visibility="{Binding LeftButtonVisibility}" 
-                    VerticalAlignment="Center" Height="50" Opacity="0.5"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Left"
+                    Height="50" Opacity="0.5"
                     ToolTip="Previous Image (Left Arrow)" />
 
             <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" 
@@ -237,7 +248,9 @@
             <Button Grid.Column="2" Content="→" 
                     Command="{Binding Commands.Next}"
                     Visibility="{Binding RightButtonVisibility}" 
-                    VerticalAlignment="Center" Height="50" Opacity="0.5"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Height="50" Opacity="0.5"
                     ToolTip="Next Image (Right Arrow)" />
         </Grid>
 
