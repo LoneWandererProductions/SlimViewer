@@ -6,84 +6,66 @@
         xmlns:images="clr-namespace:Common.Images;assembly=Common.Images"
         mc:Ignorable="d"
         Title="Compare Images" Height="800" Width="320" x:ClassModifier="internal"
+        x:Name="RootWindow"
         WindowStartupLocation="CenterOwner">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="80" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="3">
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#2D2D2D" Padding="12" CornerRadius="4" Margin="5,5,5,5">
+            <StackPanel>
+                <TextBlock Text="IMAGE DETAILS" Foreground="#888" FontSize="10" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBlock Text="{Binding CurrentSelectedImageInfo}" 
+                   Foreground="White"
+                   TextWrapping="Wrap" 
+                   FontFamily="Segoe UI Semibold" 
+                   FontSize="13" />
+            </StackPanel>
+        </Border>
 
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
-                                   ItemsSource="{Binding Observers[0]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="0" />
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Grid.RowSpan="2">
+            <ItemsControl ItemsSource="{Binding DuplicateGroups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5,15">
+                            <Button Content="Delete Entire Group" Command="{Binding DeleteAllCommand}" Width="150" HorizontalAlignment="Left"/>
 
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"
-                                   ItemsSource="{Binding Observers[1]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="1" />
+                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                                <TextBlock Text="New Name:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                            </StackPanel>
 
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2"
-                                   ItemsSource="{Binding Observers[2]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="2" />
+                            <images:Thumbnails x:Name="ThumbControl" 
+                                           ItemsSource="{Binding Images}" 
+                                           ThumbCellSize="140" ThumbHeight="1"
+                                           Selection="{Binding Selection, Mode=OneWay}"
+                                           SenderTag="{Binding GroupId}"
+                                           SelectBox="True"
+                                           ImageClickedCommand="{Binding DataContext.ThumbImageClicked, ElementName=RootWindow}" />
 
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"
-                                   ItemsSource="{Binding Observers[3]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="3" />
+                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                                <Button Content="Delete Selected" Margin="0,0,5,0"
+                                    Command="{Binding DeleteSelectedCommand}" 
+                                    CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}" />
 
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4"
-                                   ItemsSource="{Binding Observers[4]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="4" />
-
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="5"
-                                   ItemsSource="{Binding Observers[5]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="5" />
-
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="6"
-                                   ItemsSource="{Binding Observers[6]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="6" />
-
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="7"
-                                   ItemsSource="{Binding Observers[7]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="7" />
-
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="8"
-                                   ItemsSource="{Binding Observers[8]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="8" />
-
-                <images:Thumbnails HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="9"
-                                   ItemsSource="{Binding Observers[9]}" ImageClicked="OnImageClicked"
-                                   ThumbCellSize="100" ThumbHeight="1" Tag="9" />
-            </Grid>
+                                <Button Content="Rename Selected" 
+                                    Command="{Binding RenameSelectedCommand}" 
+                                    CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}" />
+                            </StackPanel>
+                            <Separator Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
 
-        <Button Content="Previous" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0"
-                Command="{Binding PreviousCommand}" ToolTip="Go to previous page" />
-
-        <Label Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-               Content="{Binding Path=Status}" FontWeight="SemiBold" Foreground="#333333" />
-
-        <Button Content="Next" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2"
-                Command="{Binding NextCommand}" ToolTip="Go to next page" />
+        <Border Grid.Row="2" Background="#2D2D2D" Padding="12" CornerRadius="4" Margin="5,5,5,5">
+            <TextBlock Text="{Binding Status}" Foreground="White" FontSize="12"/>
+        </Border>
     </Grid>
 
     <Window.Resources>

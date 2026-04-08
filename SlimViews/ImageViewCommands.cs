@@ -182,10 +182,38 @@ namespace SlimViews
         public ICommand ImageLoaded { get; }
         public ICommand SelectedPoint { get; }
         public ICommand SelectedFrame { get; }
+
+        /// <summary>
+        /// Gets the color changed.
+        /// </summary>
+        /// <value>
+        /// The color changed.
+        /// </value>
         public ICommand ColorChanged { get; }
+
+        /// <summary>
+        /// Gets the next.
+        /// </summary>
+        /// <value>
+        /// The next.
+        /// </value>
         public ICommand Next { get; }
+
+
+        /// <summary>
+        /// Gets the previous.
+        /// </summary>
+        /// <value>
+        /// The previous.
+        /// </value>
         public ICommand Previous { get; }
 
+        /// <summary>
+        /// Gets the show help.
+        /// </summary>
+        /// <value>
+        /// The show help.
+        /// </value>
         public ICommand ShowHelp { get; }
 
         /// <summary>

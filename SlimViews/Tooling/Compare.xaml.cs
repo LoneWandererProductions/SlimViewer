@@ -43,20 +43,7 @@ namespace SlimViews.Tooling
             _viewModel = new CompareView();
             DataContext = _viewModel;
 
-            _ = _viewModel.AsyncInitiate(subFolders, currentFolder, imageView, similarity);
-        }
-
-        /// <summary>
-        /// Called when [image clicked].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="ImageEventArgs"/> instance containing the event data.</param>
-        private void OnImageClicked(object sender, ImageEventArgs e)
-        {
-            if (sender is FrameworkElement element && int.TryParse(element.Tag.ToString(), out var observerIndex))
-            {
-                _viewModel.ChangeImage(e.Id, observerIndex);
-            }
+            _ = _viewModel.AsyncInitiate(subFolders, currentFolder, similarity);
         }
     }
 }

@@ -310,6 +310,39 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Builds formatted image information string with each attribute on a new line.
+        /// </summary>
+        /// <param name="path">The full file path.</param>
+        /// <param name="name">The name of the image file.</param>
+        /// <param name="imageSource">Can be an ImageGifInfo or BitmapImage object.</param>
+        /// <returns>A multiline string containing image metadata.</returns>
+        internal static string BuildUnifiedImageInfo(string path, string name, object imageSource)
+        {
+            // Handle GIF-specific logic
+            if (imageSource is ImageGifInfo gifInfo)
+            {
+                return $"{path}{Environment.NewLine}" +
+                       $"{ImageName}{gifInfo.Name}{Environment.NewLine}" +
+                       $"{ImageHeight}{gifInfo.Height}{Environment.NewLine}" +
+                       $"{ImageWidth}{gifInfo.Width}{Environment.NewLine}" +
+                       $"{ImageSize}{gifInfo.Size}{Environment.NewLine}" +
+                       $"Frames: {gifInfo.Frames.Count}";
+            }
+
+            // Handle standard Bitmap logic
+            if (imageSource is BitmapImage bmp)
+            {
+                return $"{ImagePath}{path}{Environment.NewLine}" +
+                       $"{ImageName}{name}{Environment.NewLine}" +
+                       $"{ImageHeight}{bmp.Height}{Environment.NewLine}" +
+                       $"{ImageWidth}{bmp.Width}{Environment.NewLine}" +
+                       $"{ImageSize}{bmp.Height * bmp.Width}";
+            }
+
+            return "Unknown Image Format";
+        }
+
+        /// <summary>
         ///     Builds the image information with line breaks.
         /// </summary>
         /// <param name="filePath">The file path.</param>

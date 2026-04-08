@@ -235,7 +235,7 @@
                     Height="50" Opacity="0.5"
                     ToolTip="Previous Image (Left Arrow)" />
 
-            <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" 
+            <Images:ImageZoom Grid.Column="1" x:Name="ImageControl"  Padding="5"
                   IsTabStop="True"
                   HorizontalAlignment="Left" 
                   VerticalAlignment="Top"

@@ -8,13 +8,22 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
+
+using FileHandler;
 using ImageCompare;
 using Imaging;
+using Imaging.Gifs;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -35,11 +44,6 @@ namespace SlimViews.Tooling
         ///     Image comparer utility for finding duplicates or similar images.
         /// </summary>
         private readonly ImageComparer _compare = new();
-
-        /// <summary>
-        ///     Reference to the parent ImageView for callbacks.
-        /// </summary>
-        private ImageView _imageView;
 
         /// <summary>
         ///     Current page index (0-based).
@@ -63,17 +67,85 @@ namespace SlimViews.Tooling
         private List<List<string>> _duplicates;
 
         /// <summary>
-        ///     Observable collection of observer dictionaries for UI binding.
-        ///     Each dictionary maps an item index to its file path.
+        /// The current selected image information
         /// </summary>
+        private string _currentSelectedImageInfo;
+
+        /// <summary>
+        /// The thumb image clicked
+        /// </summary>
+        private DelegateCommand<object> _thumbImageClicked;
+
+        /// <summary>
+        /// The page identifier to path
+        /// </summary>
+        private readonly Dictionary<int, string> _pageIdToPath = new();
+
+        /// <summary>
+        /// Observable collection of observer dictionaries for UI binding.
+        /// Each dictionary maps an item index to its file path.
+        /// </summary>
+        /// <value>
+        /// The observers.
+        /// </value>
         public ObservableCollection<Dictionary<int, string>> Observers { get; } =
             new ObservableCollection<Dictionary<int, string>>(
                 Enumerable.Repeat<Dictionary<int, string>>(null, 10).ToList()
             );
 
         /// <summary>
-        ///     Command to navigate to the previous page of images.
+        /// Gets or sets the current selected image information.
         /// </summary>
+        /// <value>
+        /// The current selected image information.
+        /// </value>
+        public string CurrentSelectedImageInfo
+        {
+            get => _currentSelectedImageInfo;
+            set => SetProperty(ref _currentSelectedImageInfo, value, nameof(CurrentSelectedImageInfo));
+        }
+
+        /// <summary>
+        /// Gets the thumb image clicked.
+        /// This handles the metadata display when an image is clicked
+        /// </summary>
+        /// <value>
+        /// The thumb image clicked.
+        /// </value>
+        public ICommand ThumbImageClicked => _thumbImageClicked ??= new DelegateCommand<object>(param =>
+        {
+            if (param is Common.Images.ImageEventArgs args)
+            {
+                var group = DuplicateGroups.FirstOrDefault(g => g.GroupId == args.SenderTag);
+
+                if (group != null && group.Images.TryGetValue(args.Id, out string path))
+                {
+                    if (File.Exists(path))
+                    {
+                        // ---> NEW: Update the TextBox to reflect the clicked image <---
+                        group.NewName = Path.GetFileNameWithoutExtension(path);
+
+                        UpdateImageMetadata(path);
+                        CurrentImageId = args.Id;
+                    }
+                }
+            }
+        });
+
+        /// <summary>
+        /// Gets the duplicate groups.
+        /// </summary>
+        /// <value>
+        /// The duplicate groups.
+        /// </value>
+        public ObservableCollection<DuplicateGroupModel> DuplicateGroups { get; } = new();
+
+        /// <summary>
+        /// Command to navigate to the previous page of images.
+        /// </summary>
+        /// <value>
+        /// The previous command.
+        /// </value>
         public ICommand PreviousCommand =>
             _previousCommand ??= new DelegateCommand<object>(PreviousAction, _ => _index > 0);
 
@@ -102,19 +174,18 @@ namespace SlimViews.Tooling
             set => SetProperty(ref _status, value, nameof(Status));
         }
 
+
+        public int CurrentImageId { get; private set; }
+
         /// <summary>
         ///     Initiates the comparison asynchronously.
         ///     Retrieves duplicates or similar images and populates observer groups.
         /// </summary>
         /// <param name="subFolders">Include subfolders if true.</param>
         /// <param name="currentFolder">The folder to scan.</param>
-        /// <param name="imageView">Parent ImageView for callbacks.</param>
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
-        internal async Task AsyncInitiate(bool subFolders, string currentFolder,
-            ImageView imageView, int similarity = 0)
+        internal async Task AsyncInitiate(bool subFolders, string currentFolder, int similarity = 0)
         {
-            _imageView = imageView;
-
             // UI Feedback: Let the user know exactly what kind of search is running
             Status = similarity == 0
                 ? "Scanning for exact duplicates..."
@@ -141,8 +212,11 @@ namespace SlimViews.Tooling
             _index = 0;
 
             // Trigger the UI thread update
-            GenerateView();
-            Status = $"Found {_duplicates.Count} groups of matches.";
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                GenerateView();
+                Status = $"Found {_duplicates.Count} groups of matches.";
+            });
         }
 
         /// <summary>
@@ -172,38 +246,40 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Generates the observer groups for the current page.
-        ///     Updates each dictionary in-place to preserve WPF bindings.
-        /// </summary>
-        /// <summary>
-        ///     Generates the observer groups for the current page.
-        ///     Replaces dictionaries to trigger ObservableCollection updates.
+        /// Generates the observer groups for the current page.
+        /// Updates each dictionary in-place to preserve WPF bindings.
         /// </summary>
         private void GenerateView()
         {
-            if (_duplicates == null || _duplicates.Count == 0)
-                return;
+            if (_duplicates == null || _duplicates.Count == 0) return;
+            DuplicateGroups.Clear();
 
             int baseIndex = _index * 10;
 
             for (int i = 0; i < 10; i++)
             {
-                var group = _duplicates.ElementAtOrDefault(baseIndex + i);
+                var groupPaths = _duplicates.ElementAtOrDefault(baseIndex + i);
+                if (groupPaths == null || !groupPaths.Any()) continue;
 
-                // Create a fresh dictionary so ObservableCollection fires a "Replace" event
-                var newDict = new Dictionary<int, string>();
+                var groupModel = new DuplicateGroupModel();
 
-                if (group != null)
+                groupModel.GroupId = $"Group_{i}";
+                groupModel.NewName = Path.GetFileNameWithoutExtension(groupPaths.First());
+
+                // ---> ADD THESE BACK: Bind the UI buttons to the ViewModel logic <---
+                groupModel.DeleteAllCommand = new DelegateCommand<object>(_ => DeleteGroupAsync(groupModel));
+                groupModel.DeleteSelectedCommand = new DelegateCommand<object>(async (param) => await DeleteSelectedAsync(groupModel, param));
+                groupModel.RenameSelectedCommand = new DelegateCommand<object>(async (param) => await RenameSelectedAsync(groupModel, param));
+
+                var imageDict = new Dictionary<int, string>();
+                int localId = 0;
+                foreach (var path in groupPaths)
                 {
-                    int idx = 0;
-                    foreach (var path in group)
-                    {
-                        newDict[idx++] = path;
-                    }
+                    imageDict.Add(localId++, path);
                 }
 
-                // This indexer assignment physically forces the UI to update!
-                Observers[i] = newDict;
+                groupModel.Images = imageDict;
+                DuplicateGroups.Add(groupModel);
             }
         }
 
@@ -228,6 +304,156 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
+        /// Deletes the group asynchronous.
+        /// </summary>
+        /// <param name="group">The group.</param>
+        private async Task DeleteGroupAsync(DuplicateGroupModel group)
+        {
+            // Track failures using the dictionary structure (Key: int, Value: path)
+            var failedDeletions = new Dictionary<int, string>();
+
+            // Use .ToList() to create a snapshot of the KeyValuePairs so we can iterate safely
+            foreach (var kvp in group.Images.ToList())
+            {
+                try
+                {
+                    // kvp.Value is the file path string
+                    await FileHandleSafeDelete.DeleteFile(kvp.Value);
+                }
+                catch (Exception ex)
+                {
+                    // Log the error and add it to our failed list so it remains in the UI
+                    Trace.WriteLine(ex);
+                    failedDeletions.Add(kvp.Key, kvp.Value);
+                }
+            }
+
+            // Now, update the UI based on what actually happened
+            if (failedDeletions.Count == 0)
+            {
+                // Success! Remove the entire group from the view.
+                DuplicateGroups.Remove(group);
+                Status = "Group deleted successfully.";
+            }
+            else
+            {
+                // Partial failure. Assigning a new dictionary triggers INotifyPropertyChanged
+                // so the Thumbnails control knows to redraw the remaining items.
+                group.Images = failedDeletions;
+                Status = $"Warning: {failedDeletions.Count} files could not be deleted (they might be in use).";
+            }
+        }
+
+        /// <summary>
+        /// Deletes the image asynchronous.
+        /// </summary>
+        /// <param name="group">The group.</param>
+        /// <param name="parameter">The parameter.</param>
+        private async Task DeleteSelectedAsync(DuplicateGroupModel group, object parameter)
+        {
+            // 1. Validate and extract selection
+            if (parameter is not ConcurrentDictionary<int, bool> selection)
+            {
+                Trace.WriteLine("DeleteSelectedAsync: Invalid parameter type.");
+                return;
+            }
+
+            // 2. Handle empty selection (Default to current image)
+            if (selection.IsEmpty)
+            {
+                selection.AddOrUpdate(CurrentImageId, true, (key, oldValue) => true);
+            }
+
+            // 3. Identify IDs to delete
+            var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+
+            // Safety check: ensure we have something to delete
+            if (selectedKeys.Count == 0)
+            {
+                selectedKeys.Add(CurrentImageId);
+            }
+
+            // 4. Perform Deletion
+            var updatedImages = new Dictionary<int, string>(group.Images);
+
+            foreach (var key in selectedKeys)
+            {
+                if (group.Images.TryGetValue(key, out string path))
+                {
+                    try
+                    {
+                        await FileHandleSafeDelete.DeleteFile(path);
+                        updatedImages.Remove(key);
+                        group.Images.Remove(key); // Remove from the group immediately to update the UI
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"Failed to delete {path}: {ex.Message}");
+                    }
+                }
+            }
+
+            // 5. Update UI State
+            group.Images = updatedImages;
+            selection.Clear();
+
+            if (group.Images.Count <= 1)
+            {
+                DuplicateGroups.Remove(group);
+            }
+        }
+
+        /// <summary>
+        /// Renames the selected asynchronous.
+        /// </summary>
+        /// <param name="group">The group.</param>
+        /// <param name="parameter">The parameter.</param>
+        private async Task RenameSelectedAsync(DuplicateGroupModel group, object parameter)
+        {
+            if (parameter is not ConcurrentDictionary<int, bool> selection || string.IsNullOrWhiteSpace(group.NewName))
+                return;
+
+            var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+            if (selectedKeys.Count == 0)
+            {
+                selectedKeys.Add(CurrentImageId); // Fallback to current image if no selection (shouldn't happen, but just in case)
+            }
+            var updatedImages = new Dictionary<int, string>(group.Images);
+            bool anySuccess = false;
+
+            foreach (var key in selectedKeys)
+            {
+                if (group.Images.TryGetValue(key, out string sourcePath))
+                {
+                    var extension = Path.GetExtension(sourcePath);
+                    var directory = Path.GetDirectoryName(sourcePath);
+                    var currentFileName = Path.GetFileNameWithoutExtension(sourcePath);
+
+                    // Skip if the name hasn't actually changed for this specific file
+                    if (currentFileName == group.NewName) continue;
+
+                    var targetPath = Path.Combine(directory, group.NewName + extension);
+
+
+                    //TODO This still fails.
+                    bool success = await FileHandleRename.RenameFile(sourcePath, targetPath);
+
+                    if (success)
+                    {
+                        updatedImages[key] = targetPath;
+                        anySuccess = true;
+                    }
+                }
+            }
+
+            if (anySuccess)
+            {
+                group.Images = updatedImages;
+                Status = "Rename complete.";
+            }
+        }
+
+        /// <summary>
         ///     Loads image details and updates the ImageView.
         /// </summary>
         /// <param name="path">Path of the selected image.</param>
@@ -240,7 +466,62 @@ namespace SlimViews.Tooling
                 return;
 
             var details = cache[itemId];
-            _imageView.ChangeImage(files, path, details.GetDetails());
+        }
+
+        /// <summary>
+        /// Updates the image metadata.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        private void UpdateImageMetadata(string path)
+        {
+            try
+            {
+                var fileName = Path.GetFileName(path);
+                string infoBody;
+
+                // Check if the file is a GIF
+                if (Path.GetExtension(path).Equals(".gif", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Assuming you have a way to load or retrieve the ImageGifInfo for the path
+                    var gifData = ImageGifHandler.GetImageInfo(path);
+                    infoBody = ViewResources.BuildUnifiedImageInfo(path, fileName, gifData);
+                }
+                else
+                {
+                    var bitmap = new BitmapImage(new Uri(path));
+                    infoBody = ViewResources.BuildUnifiedImageInfo(path, fileName, bitmap);
+                }
+
+                int score = GetScoreForPath(path);
+
+                // Combine the multiline body with the similarity score
+                CurrentSelectedImageInfo = $"{infoBody}{Environment.NewLine}Similarity: {score}%";
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Metadata Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Gets the score for path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Information about images.</returns>
+        private int GetScoreForPath(string path)
+        {
+            // Look through all groups to find which one contains this image
+            var group = DuplicateGroups.FirstOrDefault(g => g.Images.Values.Contains(path));
+            if (group != null)
+            {
+                // Find the key (ID) for this path to get the matching score
+                var key = group.Images.FirstOrDefault(x => x.Value == path).Key;
+                if (group.SimilarityScores.TryGetValue(key, out int score))
+                {
+                    return score;
+                }
+            }
+            return 100; // Default for the "original" or if not found
         }
     }
 }
