@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews.Contexts
  * FILE:        ImageContext.cs
@@ -57,10 +57,14 @@ namespace SlimViews.Contexts
             get => _bitmap;
             set
             {
-                if (SetProperty(ref _bitmap, value))
+                if (!ReferenceEquals(_bitmap, value))
                 {
-                    // Manually tell the UI that IsImageActive also changed
-                    OnPropertyChanged(nameof(IsImageActive));
+                    _bitmap?.Dispose();
+
+                    if (SetProperty(ref _bitmap, value))
+                    {
+                        OnPropertyChanged(nameof(IsImageActive));
+                    }
                 }
             }
         }

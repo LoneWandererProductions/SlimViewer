@@ -294,7 +294,7 @@ namespace SlimViews
                 newWpfImage.Freeze();
             }
 
-            Image.BitmapImage = newWpfImage;
+            ReplaceBitmap(newGdiBitmap);
         }
 
         /// <summary>
@@ -305,12 +305,8 @@ namespace SlimViews
             if (!History.CanUndo || Image?.Bitmap == null) return;
 
             // Pass the current state, and get the old state back
-            Bitmap previousBitmap = History.Undo(Image.Bitmap);
-
-            // We don't call CommitImageChange here because we don't want to trigger a NEW save state,
-            // we just want to forcefully sync the properties backwards.
-            Image.Bitmap = previousBitmap;
-            Image.BitmapImage = previousBitmap.ToBitmapImage();
+            var previousBitmap = History.Undo(Image.Bitmap);
+            ReplaceBitmap(previousBitmap);
         }
 
         /// <summary>
@@ -320,9 +316,8 @@ namespace SlimViews
         {
             if (!History.CanRedo || Image?.Bitmap == null) return;
 
-            Bitmap nextBitmap = History.Redo(Image.Bitmap);
-            Image.Bitmap = nextBitmap;
-            Image.BitmapImage = nextBitmap.ToBitmapImage();
+var nextBitmap = History.Redo(Image.Bitmap);
+ReplaceBitmap(nextBitmap);
         }
 
         /// <summary>
@@ -1148,6 +1143,19 @@ namespace SlimViews
 
             ThumbnailVisibility = UiState.ThumbnailState();
         }
+
+        /// <summary>
+        /// Replaces the bitmap.
+        /// </summary>
+        /// <param name="newBitmap">The new bitmap.</param>
+        private void ReplaceBitmap(Bitmap newBitmap)
+        {
+            var old = Image.Bitmap;
+            Image.Bitmap = newBitmap;
+
+            old?.Dispose(); // 🔴 THIS is what you're missing
+        }
+
 
         /// <summary>
         /// Images the loaded command action.
