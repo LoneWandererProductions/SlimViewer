@@ -659,6 +659,8 @@ namespace SlimViews.Tooling
         {
             return Task.Run(() =>
             {
+                if (Directory.Exists(ImageExportPath)) Directory.Delete(ImageExportPath, true);
+
                 // Recreate them
                 Directory.CreateDirectory(ImageExportPath);
                 Directory.CreateDirectory(GifExportPath);
