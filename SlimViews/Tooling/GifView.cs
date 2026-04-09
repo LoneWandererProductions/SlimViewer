@@ -40,11 +40,6 @@ namespace SlimViews.Tooling
         private bool _autoClear;
 
         /// <summary>
-        ///     The currently displayed image frame.
-        /// </summary>
-        private BitmapImage? _bmp;
-
-        /// <summary>
         ///     Full path to the currently loaded GIF file.
         /// </summary>
         private string _gifPath = string.Empty;
@@ -209,17 +204,6 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        /// Gets or sets the BMP.
-        /// </summary>
-        /// <value>
-        /// The BMP.
-        /// </value>
-        public BitmapImage? Bmp
-        {
-            get => _bmp;
-            set => SetProperty(ref _bmp, value);
-        }
-        /// <summary>
         /// Gets a value indicating whether this instance is working.
         /// </summary>
         /// <value>
@@ -373,9 +357,9 @@ namespace SlimViews.Tooling
             }
 
             var bmpWrapper = ImageProcessor.LoadImage(filePath);
-            Bmp = bmpWrapper.ToBitmapImage();
+            var bmp = bmpWrapper.ToBitmapImage();
             FilePath = filePath;
-            Information = ViewResources.BuildImageInformation(filePath, Path.GetFileName(filePath), Bmp);
+            Information = ViewResources.BuildImageInformation(filePath, Path.GetFileName(filePath), bmp);
         }
 
         /// <summary>
@@ -657,7 +641,6 @@ namespace SlimViews.Tooling
 
                 // Clear UI State
                 Observer = new Dictionary<int, string>();
-                Bmp = null;
                 GifPath = string.Empty;
                 IsActive = false;
                 Information = "Temporary files cleared.";
@@ -676,12 +659,6 @@ namespace SlimViews.Tooling
         {
             return Task.Run(() =>
             {
-                if (!Directory.Exists(OutputPath)) Directory.CreateDirectory(OutputPath);
-
-                // Delete subfolders to ensure clean state
-                if (Directory.Exists(ImageExportPath)) Directory.Delete(ImageExportPath, true);
-                if (Directory.Exists(GifExportPath)) Directory.Delete(GifExportPath, true);
-
                 // Recreate them
                 Directory.CreateDirectory(ImageExportPath);
                 Directory.CreateDirectory(GifExportPath);
