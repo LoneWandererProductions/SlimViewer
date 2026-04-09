@@ -23,7 +23,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -343,7 +342,10 @@ namespace SlimViews.Tooling
                 try
                 {
                     // kvp.Value is the file path string
-                    await FileHandleSafeDelete.DeleteFile(kvp.Value);
+                    bool success = await Task.Run(async () =>
+                    {
+                        return await FileHandleSafeDelete.DeleteFile(kvp.Value);
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -407,7 +409,12 @@ namespace SlimViews.Tooling
                 {
                     try
                     {
-                        await FileHandleSafeDelete.DeleteFile(path);
+
+                        bool success = await Task.Run(async () =>
+                        {
+                            return await FileHandleSafeDelete.DeleteFile(path);
+                        });
+
                         updatedImages.Remove(key);
                         group.Images.Remove(key); // Remove from the group immediately to update the UI
                     }
@@ -461,7 +468,11 @@ namespace SlimViews.Tooling
 
 
                     //TODO This still fails.
-                    bool success = await FileHandleRename.RenameFile(sourcePath, targetPath);
+
+                    bool success = await Task.Run(async () =>
+                    {
+                        return await FileHandleRename.RenameFile(sourcePath, targetPath);
+                    });
 
                     if (success)
                     {
@@ -513,7 +524,7 @@ namespace SlimViews.Tooling
                 }
                 else
                 {
-                    var bitmap = new BitmapImage(new Uri(path));
+                    var bitmap = new System.Windows.Media.Imaging.BitmapImage(new Uri(path));
                     infoBody = ViewResources.BuildUnifiedImageInfo(path, fileName, bitmap);
                 }
 
