@@ -248,7 +248,7 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Gets or sets AutoClear. 
+        ///     Gets or sets AutoClear.
         ///     Updates the Global Register immediately when changed in UI.
         /// </summary>
         public bool AutoClear

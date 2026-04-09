@@ -14,6 +14,7 @@ namespace SlimControls
         Pencil,
         Eraser,
         Shape,
-        ColorPicker
+        ColorPicker,
+        Move
     }
 }

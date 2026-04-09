@@ -454,7 +454,11 @@ namespace SlimViews
                     }
 
                     break;
-
+                case DrawTool.None:
+                    break;
+                case DrawTool.Move:
+                    ImageZoomTool = ImageZoomTools.Move;
+                    break;
                 default:
                     // Default to Pan/Move if no tool is active
                     ImageZoomTool = ImageZoomTools.Move;
@@ -1013,6 +1017,7 @@ namespace SlimViews
                 }
                 else
                 {
+                    //TODO rework since Imagegif can do both
                     Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update
                     Image.GifPath = null;

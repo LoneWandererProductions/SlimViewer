@@ -42,8 +42,11 @@
                                      ToolTip="Erase parts of the image"
                                      IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Eraser}" />
 
-                        <RadioButton Content="Picker" GroupName="ToolGroup" ToolTip="Pick a color from the image"
+                        <RadioButton Content="Picker" GroupName="ToolGroup" Margin="0,0,0,4"
+                                     ToolTip="Pick a color from the image"
                                      IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=ColorPicker}" />
+                        <RadioButton Content="Move" GroupName="ToolGroup" ToolTip="Move or pan the canvas"
+                                     IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Move}" />
                     </StackPanel>
 
                     <Images:ColorSelection

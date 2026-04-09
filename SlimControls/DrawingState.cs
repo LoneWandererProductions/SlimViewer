@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 namespace SlimControls
 {
     /// <summary>
-    /// Manages the state of the drawing tools and modes. This class is responsible for tracking the active tool, area mode, selected shape, and related settings. 
+    /// Manages the state of the drawing tools and modes. This class is responsible for tracking the active tool, area mode, selected shape, and related settings.
     /// It implements INotifyPropertyChanged to allow the UI to react to changes in the state.
     /// </summary>
     /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
@@ -33,7 +33,7 @@ namespace SlimControls
         /// The selected shape
         /// Backing field for Shape
         /// </summary>
-        private ShapeType _selectedShape; 
+        private ShapeType _selectedShape;
 
         /// <summary>
         /// Occurs when [tool or mode changed].
@@ -236,7 +236,9 @@ namespace SlimControls
         private void UpdateSubStates()
         {
             // 1. Check if the Active Tool is "Simple"
-            bool isSimpleTool = ActiveTool == DrawTool.Pencil || ActiveTool == DrawTool.Eraser ||
+            bool isSimpleTool = ActiveTool == DrawTool.Pencil ||
+                                ActiveTool == DrawTool.Eraser ||
+                                ActiveTool == DrawTool.Move ||
                                 ActiveTool == DrawTool.ColorPicker;
 
             // 2. Main Switch: Enable/Disable the entire Mode group
