@@ -431,8 +431,8 @@ namespace SlimViews
                 case DrawTool.Pencil:
                 case DrawTool.Eraser:
                 case DrawTool.ColorPicker:
-                    // Pencil/Eraser behave like FreeForm drawing
-                    ImageZoomTool = ImageZoomTools.FreeForm;
+                    // Pencil/Eraser behave like Dot
+                    ImageZoomTool = ImageZoomTools.Dot;
                     break;
 
                 case DrawTool.Shape:

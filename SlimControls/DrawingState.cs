@@ -6,8 +6,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace SlimControls
@@ -195,7 +198,25 @@ namespace SlimControls
             }
         }
 
+        /// <summary>
+        /// Gets the collection of available textures for the UI dropdown.
+        /// </summary>
+        /// <value>
+        /// The textures.
+        /// </value>
+        public IEnumerable<TextureType> Textures => Enum.GetValues(typeof(TextureType)).Cast<TextureType>();
+
+        /// <summary>
+        /// Gets the collection of available filters for the UI dropdown.
+        /// </summary>
+        /// <value>
+        /// The filters.
+        /// </value>
+        public IEnumerable<FiltersType> Filters => Enum.GetValues(typeof(FiltersType)).Cast<FiltersType>();
+
+
         // Sub-states (These hold the data for the specific modes)
+
         /// <summary>
         /// Gets the fill.
         /// </summary>
