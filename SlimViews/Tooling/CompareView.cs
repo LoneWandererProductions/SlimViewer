@@ -58,23 +58,28 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Status text displayed in the UI.
         /// </summary>
-        private string _status;
+        private string? _status;
+
+        /// <summary>
+        /// The selected image path
+        /// </summary>
+        private string? _selectedImagePath;
 
         /// <summary>
         ///     Holds the raw duplicate or similar image paths.
         ///     Each inner list represents a single observer group.
         /// </summary>
-        private List<List<string>> _duplicates;
+        private List<List<string>>? _duplicates;
 
         /// <summary>
         /// The current selected image information
         /// </summary>
-        private string _currentSelectedImageInfo;
+        private string? _currentSelectedImageInfo;
 
         /// <summary>
         /// The thumb image clicked
         /// </summary>
-        private DelegateCommand<object> _thumbImageClicked;
+        private DelegateCommand<object>? _thumbImageClicked;
 
         /// <summary>
         /// The page identifier to path
@@ -106,6 +111,46 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
+        /// Gets or sets the path of the currently selected image for the preview panel.
+        /// </summary>
+        /// <value>
+        /// The selected image path.
+        /// </value>
+        public string SelectedImagePath
+        {
+            get => _selectedImagePath;
+            set => SetProperty(ref _selectedImagePath, value, nameof(SelectedImagePath));
+        }
+
+        /// <summary>
+        /// Gets or sets the status text.
+        /// </summary>
+        /// <value>
+        /// The status.
+        /// </value>
+        public string Status
+        {
+            get => _status;
+            set => SetProperty(ref _status, value, nameof(Status));
+        }
+
+        /// <summary>
+        /// Gets the current image identifier.
+        /// </summary>
+        /// <value>
+        /// The current image identifier.
+        /// </value>
+        public int CurrentImageId { get; private set; }
+
+        /// <summary>
+        /// Gets the duplicate groups.
+        /// </summary>
+        /// <value>
+        /// The duplicate groups.
+        /// </value>
+        public ObservableCollection<DuplicateGroupModel> DuplicateGroups { get; } = new();
+
+        /// <summary>
         /// Gets the thumb image clicked.
         /// This handles the metadata display when an image is clicked
         /// </summary>
@@ -122,23 +167,15 @@ namespace SlimViews.Tooling
                 {
                     if (File.Exists(path))
                     {
-                        // ---> NEW: Update the TextBox to reflect the clicked image <---
                         group.NewName = Path.GetFileNameWithoutExtension(path);
-
                         UpdateImageMetadata(path);
                         CurrentImageId = args.Id;
+
+                        SelectedImagePath = path;
                     }
                 }
             }
         });
-
-        /// <summary>
-        /// Gets the duplicate groups.
-        /// </summary>
-        /// <value>
-        /// The duplicate groups.
-        /// </value>
-        public ObservableCollection<DuplicateGroupModel> DuplicateGroups { get; } = new();
 
         /// <summary>
         /// Command to navigate to the previous page of images.
@@ -158,24 +195,12 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The previous command
         /// </summary>
-        private ICommand _previousCommand;
+        private ICommand? _previousCommand;
 
         /// <summary>
         /// The next command
         /// </summary>
-        private ICommand _nextCommand;
-
-        /// <summary>
-        ///     Gets or sets the status text.
-        /// </summary>
-        public string Status
-        {
-            get => _status;
-            set => SetProperty(ref _status, value, nameof(Status));
-        }
-
-
-        public int CurrentImageId { get; private set; }
+        private ICommand? _nextCommand;
 
         /// <summary>
         ///     Initiates the comparison asynchronously.

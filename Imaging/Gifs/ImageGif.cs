@@ -135,6 +135,22 @@ namespace Imaging.Gifs
 
             try
             {
+
+                // Fast path for non-GIFs: just load as BitmapImage and skip all the decoding/metadata overhead
+                if (!path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+                {
+                    //var bitmap = new BitmapImage();
+                    //bitmap.BeginInit();
+                    //bitmap.UriSource = new Uri(path);
+                    //bitmap.CacheOption = BitmapCacheOption.OnLoad; // Frees up the file lock
+                    //bitmap.EndInit();
+                    //bitmap.Freeze();
+
+                    Source = ImageStreamMedia.GetBitmapImage(path);
+                    ImageLoaded?.Invoke(this, EventArgs.Empty);
+                    return;
+                }
+
                 // 1. Load metadata (so delays actually work)
                 _metadata = ImageGifMetadataExtractor.ExtractGifMetadata(path);
 

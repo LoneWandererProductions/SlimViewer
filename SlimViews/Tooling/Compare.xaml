@@ -4,82 +4,97 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:images="clr-namespace:Common.Images;assembly=Common.Images"
+        xmlns:gifs="clr-namespace:Imaging.Gifs;assembly=Imaging"
         mc:Ignorable="d"
-        Title="Compare Images" Height="800" Width="450" x:ClassModifier="internal"
+        Title="Compare Images" Height="800" Width="1000" x:ClassModifier="internal"
         x:Name="RootWindow"
         WindowStartupLocation="CenterOwner">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="450" />
+        </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Background="#2D2D2D" Padding="12" CornerRadius="4" Margin="5,5,5,5">
-            <StackPanel>
-                <TextBlock Text="IMAGE DETAILS" Foreground="#888" FontSize="10" FontWeight="Bold" Margin="0,0,0,5"/>
-                <TextBlock Text="{Binding CurrentSelectedImageInfo}" 
-                   Foreground="White"
-                   TextWrapping="Wrap" 
-                   FontFamily="Segoe UI Semibold" 
-                   FontSize="13" />
-            </StackPanel>
+        <Border Grid.Column="0" Background="#1E1E1E" Margin="5,5,0,5" CornerRadius="4">
+            <gifs:ImageGif GifSource="{Binding SelectedImagePath}" 
+                           AutoStart="True" 
+                           Stretch="Uniform" 
+                           Margin="10"/>
         </Border>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Grid.RowSpan="1">
-            <ItemsControl ItemsSource="{Binding DuplicateGroups}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="5,15">
-                            <Button Content="Delete Entire Group" Command="{Binding DeleteAllCommand}" Width="150" HorizontalAlignment="Left"/>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,5">
-                                <TextBlock Text="New Name:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
-                            </StackPanel>
-
-                            <images:Thumbnails x:Name="ThumbControl" 
-                                           ItemsSource="{Binding Images}" 
-                                           ThumbCellSize="300" 
-                                           ThumbHeight="1"
-                                           Selection="{Binding Selection, Mode=OneWay}"
-                                           SenderTag="{Binding GroupId}"
-                                           SelectBox="True"
-                                           ImageClickedCommand="{Binding DataContext.ThumbImageClicked, ElementName=RootWindow}" />
-
-                            <StackPanel Orientation="Horizontal" Margin="0,5">
-                                <Button Content="Delete Selected" Margin="0,0,5,0"
-                                    Command="{Binding DeleteSelectedCommand}" 
-                                    CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}" />
-
-                                <Button Content="Rename Selected" 
-                                    Command="{Binding RenameSelectedCommand}" 
-                                    CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}" />
-                            </StackPanel>
-                            <Separator Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-
-        <Grid Grid.Row="2" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <Border Grid.Column="0" Background="#2D2D2D" Padding="12" CornerRadius="4" Margin="0,0,5,0">
-                <TextBlock Text="{Binding Status}" Foreground="White" FontSize="12" VerticalAlignment="Center"/>
-            </Border>
-
-            <Border Grid.Column="1" Background="#2D2D2D" Padding="12" CornerRadius="4">
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="&lt; Prev" Command="{Binding PreviousCommand}" Width="60" Margin="0,0,10,0"/>
-                    <Button Content="Next &gt;" Command="{Binding NextCommand}" Width="60"/>
+            <Border Grid.Row="0" Background="#2D2D2D" Padding="12" CornerRadius="4" Margin="5,5,5,5">
+                <StackPanel>
+                    <TextBlock Text="IMAGE DETAILS" Foreground="#888" FontSize="10" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBlock Text="{Binding CurrentSelectedImageInfo}" 
+                       Foreground="White"
+                       TextWrapping="Wrap" 
+                       FontFamily="Segoe UI Semibold" 
+                       FontSize="13" />
                 </StackPanel>
             </Border>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Grid.RowSpan="1">
+                <ItemsControl ItemsSource="{Binding DuplicateGroups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5,15">
+                                <Button Content="Delete Entire Group" Command="{Binding DeleteAllCommand}" Width="150" HorizontalAlignment="Left"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,5">
+                                    <TextBlock Text="New Name:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                                </StackPanel>
+
+                                <images:Thumbnails x:Name="ThumbControl" 
+                                                   ItemsSource="{Binding Images}" 
+                                                   ThumbCellSize="300" 
+                                                   ThumbHeight="1"
+                                                   Selection="{Binding Selection, Mode=OneWay}"
+                                                   SenderTag="{Binding GroupId}"
+                                                   SelectBox="True"
+                                                   ImageClickedCommand="{Binding DataContext.ThumbImageClicked, ElementName=RootWindow}" />
+
+                                <StackPanel Orientation="Horizontal" Margin="0,5">
+                                    <Button Content="Delete Selected" Margin="0,0,5,0"
+                                        Command="{Binding DeleteSelectedCommand}" 
+                                        CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}" />
+
+                                    <Button Content="Rename Selected" 
+                                        Command="{Binding RenameSelectedCommand}" 
+                                        CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}" />
+                                </StackPanel>
+                                <Separator Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Grid Grid.Row="2" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="#2D2D2D" Padding="12" CornerRadius="4" Margin="0,0,5,0">
+                    <TextBlock Text="{Binding Status}" Foreground="White" FontSize="12" VerticalAlignment="Center"/>
+                </Border>
+
+                <Border Grid.Column="1" Background="#2D2D2D" Padding="12" CornerRadius="4">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="&lt; Prev" Command="{Binding PreviousCommand}" Width="60" Margin="0,0,10,0"/>
+                        <Button Content="Next &gt;" Command="{Binding NextCommand}" Width="60"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 
