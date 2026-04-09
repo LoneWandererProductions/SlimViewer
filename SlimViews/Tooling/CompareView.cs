@@ -266,7 +266,7 @@ namespace SlimViews.Tooling
                 groupModel.GroupId = $"Group_{i}";
                 groupModel.NewName = Path.GetFileNameWithoutExtension(groupPaths.First());
 
-                // ---> ADD THESE BACK: Bind the UI buttons to the ViewModel logic <---
+                // ---> Bind the UI buttons to the ViewModel logic <---
                 groupModel.DeleteAllCommand = new DelegateCommand<object>(_ => DeleteGroupAsync(groupModel));
                 groupModel.DeleteSelectedCommand = new DelegateCommand<object>(async (param) => await DeleteSelectedAsync(groupModel, param));
                 groupModel.RenameSelectedCommand = new DelegateCommand<object>(async (param) => await RenameSelectedAsync(groupModel, param));
