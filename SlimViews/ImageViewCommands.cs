@@ -41,7 +41,7 @@ namespace SlimViews
         /// <summary>
         /// The file service
         /// </summary>
-        private readonly FileProcessingCommands _fileService = new();
+        internal FileProcessingCommands FileService { get; } = new();
 
         #region Commands
 
@@ -310,19 +310,19 @@ namespace SlimViews
             Pixelate = Make_ObjParamCmd(_imageService.Pixelate);
 
             // ---- File operations (service methods generally accept ImageView + param) ----
-            Delete = Make_AsyncObjCmd(obj => _fileService.DeleteAsync(owner, obj));
-            Move = Make_ObjParamCmd(_fileService.Move);
-            MoveAll = Make_ObjParamCmd(_fileService.MoveAll);
+            Delete = Make_AsyncObjCmd(obj => FileService.DeleteAsync(owner));
+            Move = Make_ObjParamCmd(FileService.Move);
+            MoveAll = Make_ObjParamCmd(FileService.MoveAll);
 
             // Rename is asynchronous in your original; pass the owner in the lambda to call the service method
-            Rename = Make_AsyncObjCmd(obj => _fileService.Rename(owner, obj));
+            Rename = Make_AsyncObjCmd(obj => FileService.Rename(owner));
 
-            ConvertCif = Make_ObjParamCmd(_fileService.ConvertCif);
+            ConvertCif = Make_ObjParamCmd(FileService.ConvertCif);
 
             // CleanTempFolder expects bool? (original: CleanTempAction(bool? obj) => _fileService.CleanTempFolder(obj))
-            CleanTempFolder = Make_BoolParamCmd(_fileService.CleanTempFolder);
+            CleanTempFolder = Make_BoolParamCmd(FileService.CleanTempFolder);
 
-            Save = Make_ObjParamCmd(_fileService.Save);
+            Save = Make_ObjParamCmd(FileService.Save);
         }
     }
 }

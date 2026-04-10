@@ -23,6 +23,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -121,6 +122,8 @@ namespace SlimViews.Tooling
             set => SetProperty(ref _selectedImagePath, value, nameof(SelectedImagePath));
         }
 
+        private ImageView _imageView;
+
         /// <summary>
         /// Gets or sets the status text.
         /// </summary>
@@ -208,8 +211,10 @@ namespace SlimViews.Tooling
         /// <param name="subFolders">Include subfolders if true.</param>
         /// <param name="currentFolder">The folder to scan.</param>
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
-        internal async Task AsyncInitiate(bool subFolders, string currentFolder, int similarity = 0)
+        internal async Task AsyncInitiate(bool subFolders, string currentFolder, int similarity = 0, ImageView imageView = null)
         {
+            _imageView = imageView;
+
             // UI Feedback: Let the user know exactly what kind of search is running
             Status = similarity == 0
                 ? "Scanning for exact duplicates..."
@@ -333,41 +338,15 @@ namespace SlimViews.Tooling
         /// <param name="group">The group.</param>
         private async Task DeleteGroupAsync(DuplicateGroupModel group)
         {
-            // Track failures using the dictionary structure (Key: int, Value: path)
-            var failedDeletions = new Dictionary<int, string>();
-
-            // Use .ToList() to create a snapshot of the KeyValuePairs so we can iterate safely
-            foreach (var kvp in group.Images.ToList())
+            try
             {
-                try
-                {
-                    // kvp.Value is the file path string
-                    bool success = await Task.Run(async () =>
-                    {
-                        return await FileHandleSafeDelete.DeleteFile(kvp.Value);
-                    });
-                }
-                catch (Exception ex)
-                {
-                    // Log the error and add it to our failed list so it remains in the UI
-                    Trace.WriteLine(ex);
-                    failedDeletions.Add(kvp.Key, kvp.Value);
-                }
+                // kvp.Value is the file path string
+                await _imageView.Commands.FileService.DeleteAsync(_imageView, group.Images.Values.ToList(), false);
             }
-
-            // Now, update the UI based on what actually happened
-            if (failedDeletions.Count == 0)
+            catch (Exception ex)
             {
-                // Success! Remove the entire group from the view.
-                DuplicateGroups.Remove(group);
-                Status = "Group deleted successfully.";
-            }
-            else
-            {
-                // Partial failure. Assigning a new dictionary triggers INotifyPropertyChanged
-                // so the Thumbnails control knows to redraw the remaining items.
-                group.Images = failedDeletions;
-                Status = $"Warning: {failedDeletions.Count} files could not be deleted (they might be in use).";
+                // Log the error and add it to our failed list so it remains in the UI
+                Trace.WriteLine(ex);
             }
         }
 
@@ -410,10 +389,7 @@ namespace SlimViews.Tooling
                     try
                     {
 
-                        bool success = await Task.Run(async () =>
-                        {
-                            return await FileHandleSafeDelete.DeleteFile(path);
-                        });
+                        await _imageView.Commands.FileService.DeleteAsync(_imageView, new List<string> { path }, false);
 
                         updatedImages.Remove(key);
                         group.Images.Remove(key); // Remove from the group immediately to update the UI

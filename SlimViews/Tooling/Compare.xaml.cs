@@ -43,7 +43,7 @@ namespace SlimViews.Tooling
             _viewModel = new CompareView();
             DataContext = _viewModel;
 
-            _ = _viewModel.AsyncInitiate(subFolders, currentFolder, similarity);
+            _ = _viewModel.AsyncInitiate(subFolders, currentFolder, similarity, imageView);
         }
     }
 }

@@ -10,6 +10,7 @@ using Common.Dialogs;
 using FileHandler;
 using Imaging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -84,58 +85,91 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Deletes one or more images depending on the current selection.
+        /// Deletes the asynchronous.
         /// </summary>
-        /// <param name="owner">The image view owner.</param>
-        /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
-        internal async Task DeleteAsync(ImageView owner, object obj)
+        /// <param name="owner">The owner.</param>
+        /// <param name="paths">The paths.</param>
+        /// <param name="isSilent">if set to <c>true</c> [is silent].</param>
+        internal async Task DeleteAsync(ImageView owner, List<string> paths, bool isSilent)
         {
-            if (owner == null || owner.UiState == null)
-                return;
+            if (owner == null || paths.Count == 0) return;
 
-            // nothing to do if no current item and no selection
-            if (!owner.FileContext.Observer.ContainsKey(owner.FileContext.CurrentId) && owner.UiState.IsSelectionEmpty)
-                return;
+            // 1. SCHRITT: Dem Mother Window befehlen, das Bild loszulassen.
+            // Wir leeren die Anzeige, damit WPF den File-Handle freigibt.
+            owner.Image?.Clear();
 
-            var idsToDelete = owner.UiState.IsSelectionEmpty
-                ? new[] { owner.FileContext.CurrentId }
-                : owner.UiState.Thumb.Selection.Keys.ToArray();
+            // Kleiner Trick: Wir geben WPF einen Moment Zeit, das UI-Binding zu lösen
+            await Task.Yield();
 
-            var deletedCount = 0;
+            int deletedCount = 0;
 
-            foreach (var id in idsToDelete)
+            foreach (var path in paths)
             {
                 try
                 {
-                    if (!owner.FileContext.Observer.TryGetValue(id, out var filePath))
-                        continue;
-
-                    var deleted = await FileHandleSafeDelete.DeleteFile(filePath);
-                    if (deleted)
+                    // 2. SCHRITT: Jetzt ist die Datei (hoffentlich) frei zum Löschen
+                    if (await FileHandleSafeDelete.DeleteFile(path))
                     {
                         deletedCount++;
-                        if (owner.Count > 0)
-                            owner.Count--;
+                        if (owner.Count > 0) owner.Count--;
                     }
                 }
-                catch (FileHandlerException ex)
+                catch (Exception ex)
                 {
-                    Trace.WriteLine(ex);
-                    _ = MessageBox.Show(ex.ToString(),
-                        $"{ViewResources.ErrorMessage}{nameof(DeleteAsync)}");
+                    // Falls es immer noch lockt, sehen wir es hier im Trace
+                    Trace.WriteLine($"CRITICAL: Lock still active on {path}: {ex.Message}");
                 }
             }
 
-            // Refresh or clear view depending on context
-            if (!owner.UiState.IsSelectionEmpty)
+            // 3. SCHRITT: UI aufräumen
+            if (deletedCount > 0)
             {
+                // Die Liste im Hauptfenster aktualisieren (das entfernt die Thumbnails)
                 owner.LoadThumbs(owner.FileContext.CurrentPath);
-                _ = MessageBox.Show($"{ViewResources.MessageCount}{deletedCount}",
-                    ViewResources.MessageSuccess, MessageBoxButton.OK);
-            }
-            owner.Image.Clear();
+                owner.RefreshActionAsync(nameof(FileProcessingCommands));
 
-            owner.RefreshActionAsync(nameof(FileProcessingCommands));
+                if (!isSilent)
+                {
+                    MessageBox.Show($"{ViewResources.MessageCount}{deletedCount}",
+                                    ViewResources.MessageSuccess);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The "Selection" method: Gathers paths from the Mother Window state 
+        /// and delegates to the path-based DeleteAsync.
+        /// </summary>
+        internal async Task DeleteAsync(ImageView owner)
+        {
+            if (owner?.UiState == null || owner.FileContext?.Observer == null)
+                return;
+
+            var pathsToDelete = new List<string>();
+
+            // Gather paths based on current selection or current item
+            if (owner.UiState.IsSelectionEmpty)
+            {
+                if (owner.FileContext.Observer.TryGetValue(owner.FileContext.CurrentId, out var path))
+                {
+                    pathsToDelete.Add(path);
+                }
+            }
+            else
+            {
+                // Snapshot the keys to avoid "Collection Modified" errors
+                var selectedIds = owner.UiState.Thumb.Selection.Keys.ToArray();
+                foreach (var id in selectedIds)
+                {
+                    if (owner.FileContext.Observer.TryGetValue(id, out var path))
+                    {
+                        pathsToDelete.Add(path);
+                    }
+                }
+            }
+
+            // Delegate the actual work to the robust path-based method
+            await DeleteAsync(owner, pathsToDelete, isSilent: false);
         }
 
         /// <summary>
@@ -250,8 +284,7 @@ namespace SlimViews
         ///     Renames the current image file.
         /// </summary>
         /// <param name="owner">The image view owner.</param>
-        /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
-        internal async Task Rename(ImageView owner, object obj)
+        internal async Task Rename(ImageView owner)
         {
             if (!owner.FileContext.Observer.TryGetValue(owner.FileContext.CurrentId, out string? file) || !File.Exists(file))
                 return;
