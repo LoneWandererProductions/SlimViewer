@@ -284,44 +284,78 @@ namespace SlimViews
         ///     Renames the current image file.
         /// </summary>
         /// <param name="owner">The image view owner.</param>
-        internal async Task Rename(ImageView owner)
+        internal async Task RenameCurrentAsync(ImageView owner)
         {
-            if (!owner.FileContext.Observer.TryGetValue(owner.FileContext.CurrentId, out string? file) || !File.Exists(file))
+            if (!owner.FileContext.Observer.TryGetValue(owner.FileContext.CurrentId, out string? oldPath))
                 return;
 
-            var folder = Path.GetDirectoryName(file);
-            if (string.IsNullOrEmpty(folder))
-                return;
+            var folder = Path.GetDirectoryName(oldPath);
+            if (string.IsNullOrEmpty(folder)) return;
 
-            var newFilePath = Path.Combine(folder, owner.FileContext.FileName);
+            var newPath = Path.Combine(folder, owner.FileContext.FileName);
 
-            if (File.Exists(newFilePath))
+            if (File.Exists(newPath) && oldPath != newPath)
             {
-                var dialogResult = MessageBox.Show(
-                    ViewResources.MessageFileAlreadyExists,
-                    ViewResources.CaptionFileAlreadyExists,
-                    MessageBoxButton.YesNo);
-
-                if (dialogResult == MessageBoxResult.No)
-                    return;
+                var result = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
+                                             ViewResources.CaptionFileAlreadyExists,
+                                             MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.No) return;
             }
+
+            string? resultPath = await RenameAsync(owner, oldPath, newPath, isSilent: false);
+
+            if (resultPath != null)
+            {
+                // Reload the view with the new name
+                owner.GenerateView(resultPath);
+            }
+        }
+
+        /// <summary>
+        /// Core rename logic: Handles the Lock by clearing the owner view first.
+        /// </summary>
+        internal async Task<string?> RenameAsync(ImageView owner, string sourcePath, string targetPath, bool isSilent)
+        {
+            if (owner == null || string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(targetPath))
+                return null;
+
+            if (sourcePath == targetPath) return sourcePath;
+
+            // 1. LOCK PREVENTION: Clear the image viewer
+            // If the owner is currently displaying the file we are about to rename, WPF will lock it.
+            owner.Image?.Clear();
+            await Task.Yield();
 
             try
             {
-                var check = await FileHandleRename.RenameFile(file, newFilePath);
-                if (!check)
-                    return;
+                bool success = await FileHandleRename.RenameFile(sourcePath, targetPath);
+
+                if (success)
+                {
+                    // Update the Observer in the Mother Window so the ID now points to the new path
+                    var match = owner.FileContext.Observer.FirstOrDefault(x => x.Value == sourcePath);
+                    if (match.Value != null)
+                    {
+                        owner.FileContext.Observer[match.Key] = targetPath;
+                    }
+
+                    // 2. REFRESH UI
+                    owner.LoadThumbs(owner.FileContext.CurrentPath);
+                    owner.RefreshActionAsync(nameof(FileProcessingCommands));
+
+                    return targetPath;
+                }
             }
-            catch (FileHandlerException ex)
+            catch (Exception ex)
             {
-                Trace.WriteLine(ex);
-                _ = MessageBox.Show(ex.ToString(),
-                    $"{ViewResources.ErrorMessage}{nameof(Rename)}");
-                return;
+                Trace.WriteLine($"Rename failed: {ex.Message}");
+                if (!isSilent)
+                {
+                    MessageBox.Show($"{ViewResources.ErrorMessage}: {ex.Message}");
+                }
             }
 
-            owner.FileContext.Observer[owner.FileContext.CurrentId] = newFilePath;
-            owner.GenerateView(newFilePath);
+            return null;
         }
 
         /// <summary>

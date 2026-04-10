@@ -23,7 +23,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -422,10 +421,8 @@ namespace SlimViews.Tooling
                 return;
 
             var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
-            if (selectedKeys.Count == 0)
-            {
-                selectedKeys.Add(CurrentImageId); // Fallback to current image if no selection (shouldn't happen, but just in case)
-            }
+            if (selectedKeys.Count == 0) selectedKeys.Add(CurrentImageId);
+
             var updatedImages = new Dictionary<int, string>(group.Images);
             bool anySuccess = false;
 
@@ -435,24 +432,14 @@ namespace SlimViews.Tooling
                 {
                     var extension = Path.GetExtension(sourcePath);
                     var directory = Path.GetDirectoryName(sourcePath);
-                    var currentFileName = Path.GetFileNameWithoutExtension(sourcePath);
-
-                    // Skip if the name hasn't actually changed for this specific file
-                    if (currentFileName == group.NewName) continue;
-
                     var targetPath = Path.Combine(directory, group.NewName + extension);
 
+                    // Use the Owner's FileService to ensure the viewer is cleared
+                    string? newPath = await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath, isSilent: true);
 
-                    //TODO This still fails.
-
-                    bool success = await Task.Run(async () =>
+                    if (newPath != null)
                     {
-                        return await FileHandleRename.RenameFile(sourcePath, targetPath);
-                    });
-
-                    if (success)
-                    {
-                        updatedImages[key] = targetPath;
+                        updatedImages[key] = newPath;
                         anySuccess = true;
                     }
                 }
