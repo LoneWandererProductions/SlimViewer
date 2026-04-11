@@ -27,12 +27,12 @@
             <GroupBox Header="Draw" Margin="0,0,5,0" Padding="5">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
-                        <TextBlock 
-                        Text="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat=Opacity: {0:P0}}" 
-                        HorizontalAlignment="Center" FontSize="10" />
-                                        <Slider Minimum="0.1" Maximum="1.0" TickFrequency="0.1" IsSnapToTickEnabled="True"
-                            Value="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                            ToolTip="Adjust brush transparency" />
+                        <TextBlock
+                            Text="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat=Opacity: {0:P0}}"
+                            HorizontalAlignment="Center" FontSize="10" />
+                        <Slider Minimum="0.1" Maximum="1.0" TickFrequency="0.1" IsSnapToTickEnabled="True"
+                                Value="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                ToolTip="Adjust brush transparency" />
 
                         <RadioButton Content="Pencil" GroupName="ToolGroup" Margin="0,0,0,4"
                                      ToolTip="Draw freehand lines"

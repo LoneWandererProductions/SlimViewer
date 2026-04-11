@@ -131,7 +131,7 @@ namespace SlimViews
                 if (!isSilent)
                 {
                     MessageBox.Show($"{ViewResources.MessageCount}{deletedCount}",
-                                    ViewResources.MessageSuccess);
+                        ViewResources.MessageSuccess);
                 }
             }
         }
@@ -297,8 +297,8 @@ namespace SlimViews
             if (File.Exists(newPath) && oldPath != newPath)
             {
                 var result = MessageBox.Show(ViewResources.MessageFileAlreadyExists,
-                                             ViewResources.CaptionFileAlreadyExists,
-                                             MessageBoxButton.YesNo);
+                    ViewResources.CaptionFileAlreadyExists,
+                    MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.No) return;
             }
 

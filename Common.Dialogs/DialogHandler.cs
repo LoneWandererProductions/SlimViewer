@@ -151,8 +151,8 @@ namespace Common.Dialogs
 
             // Convert the array of selected paths into a List of PathObjects
             return openFile.FileNames
-                           .Select(path => new PathObject { FilePath = path })
-                           .ToList();
+                .Select(path => new PathObject { FilePath = path })
+                .ToList();
         }
 
         /// <summary>

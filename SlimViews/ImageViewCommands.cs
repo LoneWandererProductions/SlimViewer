@@ -140,6 +140,7 @@ namespace SlimViews
         /// The folder.
         /// </value>
         public ICommand Folder { get; }
+
         public ICommand Mirror { get; }
         public ICommand RotateForward { get; }
         public ICommand RotateBackward { get; }
@@ -155,12 +156,14 @@ namespace SlimViews
         /// The clear.
         /// </value>
         public ICommand Clear { get; }
+
         public ICommand CleanTempFolder { get; }
         public ICommand FolderSearch { get; }
         public ICommand Move { get; }
         public ICommand MoveAll { get; }
         public ICommand OpenCif { get; }
         public ICommand ConvertCif { get; }
+
         /// <summary>
         /// Gets the GIF window.
         /// </summary>
@@ -168,6 +171,7 @@ namespace SlimViews
         /// The GIF window.
         /// </value>
         public ICommand GifWindow { get; }
+
         public ICommand AnalyzerWindow { get; }
         public ICommand ExportString { get; }
         public ICommand ResizerWindow { get; }

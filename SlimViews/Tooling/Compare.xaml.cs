@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using Common.Images;
 using System.Windows;
 
 namespace SlimViews.Tooling

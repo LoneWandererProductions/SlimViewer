@@ -668,31 +668,31 @@ namespace Common.Images
             switch (SelectionTool)
             {
                 case ImageZoomTools.Move:
-                    {
-                        var currentCanvasPos = e.GetPosition(MainCanvas);
-                        var transform = (MatrixTransform)BtmImage.RenderTransform;
-                        Matrix matrix = transform.Matrix;
+                {
+                    var currentCanvasPos = e.GetPosition(MainCanvas);
+                    var transform = (MatrixTransform)BtmImage.RenderTransform;
+                    Matrix matrix = transform.Matrix;
 
-                        // 1. Calculate intended new offsets
-                        double newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
-                        double newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
+                    // 1. Calculate intended new offsets
+                    double newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
+                    double newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
 
-                        // 2. Boundary Checks
-                        double viewWidth = ScrollView.ActualWidth;
-                        double viewHeight = ScrollView.ActualHeight;
-                        double tWidth = BtmImage.ActualWidth * matrix.M11;
-                        double tHeight = BtmImage.ActualHeight * matrix.M22;
+                    // 2. Boundary Checks
+                    double viewWidth = ScrollView.ActualWidth;
+                    double viewHeight = ScrollView.ActualHeight;
+                    double tWidth = BtmImage.ActualWidth * matrix.M11;
+                    double tHeight = BtmImage.ActualHeight * matrix.M22;
 
-                        // 3. Clamp panning only if image is larger than view
-                        if (tWidth > viewWidth)
-                            matrix.OffsetX = Math.Max(Math.Min(newX, 0), viewWidth - tWidth);
-                        if (tHeight > viewHeight)
-                            matrix.OffsetY = Math.Max(Math.Min(newY, 0), viewHeight - tHeight);
+                    // 3. Clamp panning only if image is larger than view
+                    if (tWidth > viewWidth)
+                        matrix.OffsetX = Math.Max(Math.Min(newX, 0), viewWidth - tWidth);
+                    if (tHeight > viewHeight)
+                        matrix.OffsetY = Math.Max(Math.Min(newY, 0), viewHeight - tHeight);
 
-                        BtmImage.RenderTransform = new MatrixTransform(matrix);
-                        SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                        break;
-                    }
+                    BtmImage.RenderTransform = new MatrixTransform(matrix);
+                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+                    break;
+                }
 
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:

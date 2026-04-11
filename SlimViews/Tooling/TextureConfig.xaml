@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images" 
+        xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
         xmlns:converters="clr-namespace:Common.Converter;assembly=Common.Converter"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -66,7 +66,7 @@
                           SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}"
                           ToolTip="Select the pattern algorithm to configure" />
 
-                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" FontWeight="Bold" Text="General Settings" Margin="0,15,0,5" />
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="General Settings" Margin="0,15,0,5" />
 
                 <Label Content="Min Value" Grid.Row="2" Grid.Column="0" />
                 <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"
@@ -91,9 +91,9 @@
                          IsEnabled="{Binding IsTurbulencePowerActive}" />
 
                 <Label Content="Base Color" Grid.Row="8" Grid.Column="0" />
-                <Images:ColorSelection Grid.Row="8" Grid.Column="1" 
-                         StartColor="{Binding BaseColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                         IsEnabled="{Binding IsBaseColorActive}"/>
+                <Images:ColorSelection Grid.Row="8" Grid.Column="1"
+                                       StartColor="{Binding BaseColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                       IsEnabled="{Binding IsBaseColorActive}" />
 
                 <Label Content="Is Monochrome" Grid.Row="10" Grid.Column="0" />
                 <CheckBox Grid.Row="10" Grid.Column="1" IsChecked="{Binding IsMonochrome}"
@@ -103,26 +103,32 @@
                 <CheckBox Grid.Row="13" Grid.Column="1" IsChecked="{Binding UseTurbulence}"
                           IsEnabled="{Binding IsUseTurbulenceActive}" VerticalAlignment="Center" />
 
-                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" FontWeight="Bold" Text="Crosshatch Settings" Margin="0,15,0,5" />
+                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="Crosshatch Settings"
+                           Margin="0,15,0,5" />
 
                 <Label Content="Line Spacing" Grid.Row="16" Grid.Column="0" />
-                <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding LineSpacing}" IsEnabled="{Binding IsLineSpacingActive}" />
+                <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding LineSpacing}"
+                         IsEnabled="{Binding IsLineSpacingActive}" />
 
                 <Label Content="Line Color" Grid.Row="17" Grid.Column="0" />
-                <Images:ColorSelection Grid.Row="17" Grid.Column="1" 
-                         StartColor="{Binding LineColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                         IsEnabled="{Binding IsLineColorActive}"/>
+                <Images:ColorSelection Grid.Row="17" Grid.Column="1"
+                                       StartColor="{Binding LineColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                       IsEnabled="{Binding IsLineColorActive}" />
 
                 <Label Content="Line Thickness" Grid.Row="18" Grid.Column="0" />
-                <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding LineThickness}" IsEnabled="{Binding IsLineThicknessActive}" />
+                <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding LineThickness}"
+                         IsEnabled="{Binding IsLineThicknessActive}" />
 
-                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" FontWeight="Bold" Text="Advanced Texture Settings" Margin="0,15,0,5" />
+                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="Advanced Texture Settings"
+                           Margin="0,15,0,5" />
 
                 <Label Content="Wave Frequency" Grid.Row="22" Grid.Column="0" />
-                <TextBox Grid.Row="22" Grid.Column="1" Text="{Binding WaveFrequency}" IsEnabled="{Binding IsWaveFrequencyActive}" />
+                <TextBox Grid.Row="22" Grid.Column="1" Text="{Binding WaveFrequency}"
+                         IsEnabled="{Binding IsWaveFrequencyActive}" />
 
                 <Label Content="Randomization" Grid.Row="24" Grid.Column="0" />
-                <TextBox Grid.Row="24" Grid.Column="1" Text="{Binding RandomizationFactor}" IsEnabled="{Binding IsRandomizationFactorActive}" />
+                <TextBox Grid.Row="24" Grid.Column="1" Text="{Binding RandomizationFactor}"
+                         IsEnabled="{Binding IsRandomizationFactorActive}" />
             </Grid>
         </ScrollViewer>
 

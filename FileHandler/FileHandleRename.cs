@@ -60,12 +60,15 @@ namespace FileHandler
         }
 
         /// <summary>
-        ///     Rename a file.
-        ///     It also overwrites the File if the target already exists, but only if the source file is not locked by another process.
+        /// Rename a file.
+        /// It also overwrites the File if the target already exists, but only if the source file is not locked by another process.
         /// </summary>
         /// <param name="source">Full qualified location File Name</param>
         /// <param name="target">Full qualified target File Name</param>
-        /// <returns>The <see cref="bool" />Was the File Renamed.</returns>
+        /// <param name="maxRetries">The maximum retries.</param>
+        /// <returns>
+        /// The <see cref="bool" />Was the File Renamed.
+        /// </returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
         public static async Task<bool> RenameFile(string source, string target, int maxRetries = 5)
         {
@@ -92,7 +95,8 @@ namespace FileHandler
                     // If we've exhausted retries, log it and give up
                     if (i == maxRetries - 1)
                     {
-                        FileHandlerRegister.AddError(nameof(RenameFile), source, new Exception("File remained locked after multiple attempts.", ex));
+                        FileHandlerRegister.AddError(nameof(RenameFile), source,
+                            new Exception("File remained locked after multiple attempts.", ex));
                         return false;
                     }
 

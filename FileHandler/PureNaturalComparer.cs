@@ -43,9 +43,11 @@ namespace FileHandler
                 {
                     int r = x[ix].CompareTo(y[iy]);
                     if (r != 0) return r;
-                    ix++; iy++;
+                    ix++;
+                    iy++;
                 }
             }
+
             return lx - ly;
         }
     }

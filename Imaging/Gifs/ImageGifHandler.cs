@@ -14,16 +14,12 @@
 
 using ExtendedSystemObjects;
 using Imaging.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -63,16 +59,13 @@ namespace Imaging.Gifs
         }
 
         /// <summary>
-        ///     Splits the GIF.
+        /// Splits the GIF.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>List of Images from gif</returns>
-        /// <summary>
-        ///     Splits the GIF into individual frames while filling transparency holes with Gray
-        ///     and accumulating frame data to prevent incomplete images.
-        /// </summary>
-        /// <param name="path">The path to the GIF file.</param>
-        /// <returns>List of composed Bitmaps.</returns>
+        /// <returns>
+        /// List of Images from gif
+        /// </returns>
+        /// <exception cref="System.IO.IOException">File not found: {path}</exception>
         internal static async Task<List<Bitmap>> SplitGifAsync(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
@@ -149,7 +142,8 @@ namespace Imaging.Gifs
                 var result = new List<ImageSource>();
 
                 using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                var decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat,
+                    BitmapCacheOption.OnLoad);
 
                 int width = decoder.Frames[0].PixelWidth;
                 int height = decoder.Frames[0].PixelHeight;
@@ -187,6 +181,7 @@ namespace Imaging.Gifs
                             {
                                 ImageGifHelper.CopyBitmap(previousFrameBackup, composed);
                             }
+
                             break;
                     }
 
@@ -372,7 +367,8 @@ namespace Imaging.Gifs
             var fileBytes = ms.ToArray();
 
             // NETSCAPE2.0 Application Extension (loops forever)
-            var applicationExtension = new byte[] { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+            var applicationExtension = new byte[]
+                { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
 
             // GIF Header (6) + Logical Screen Descriptor (7) = 13 bytes
             int insertionIndex = 13;

@@ -99,6 +99,4 @@ public sealed class AsyncDelegateCommand<T> : ICommand
         add => CommandManager.RequerySuggested += value;
         remove => CommandManager.RequerySuggested -= value;
     }
-
-
 }

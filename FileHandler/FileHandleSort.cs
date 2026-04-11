@@ -33,7 +33,7 @@ namespace FileHandler
         ///     A sorted list. If the input is <c>null</c> or has 0–1 elements,
         ///     the original list is returned unchanged.
         /// </returns>
-        public static List<T>? PathSort<T>(this IEnumerable<T> values, Func<T, string> pathSelector)
+        public static List<T> PathSort<T>(this IEnumerable<T> values, Func<T, string> pathSelector)
         {
             if (values is null)
                 return new List<T>();

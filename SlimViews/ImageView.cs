@@ -316,8 +316,8 @@ namespace SlimViews
         {
             if (!History.CanRedo || Image?.Bitmap == null) return;
 
-var nextBitmap = History.Redo(Image.Bitmap);
-ReplaceBitmap(nextBitmap);
+            var nextBitmap = History.Redo(Image.Bitmap);
+            ReplaceBitmap(nextBitmap);
         }
 
         /// <summary>
@@ -400,7 +400,7 @@ ReplaceBitmap(nextBitmap);
                 // Modified keys for file operations
                 { Tuple.Create(ModifierKeys.Control, Key.O), Commands.Open },
                 { Tuple.Create(ModifierKeys.Control, Key.S), Commands.Save },
-                { Tuple.Create(ModifierKeys.Control, Key.C), Commands.Clipboard},
+                { Tuple.Create(ModifierKeys.Control, Key.C), Commands.Clipboard },
 
                 // Single keys for fast viewer navigation (ModifierKeys.None)
                 { Tuple.Create(ModifierKeys.None, Key.Delete), Commands.Delete },
@@ -640,14 +640,10 @@ ReplaceBitmap(nextBitmap);
         /// Refreshes the action.
         /// </summary>
         /// <param name="caller">The caller.</param>
-        /// <summary>
-        /// Refreshes the action and thoroughly resets the view state.
-        /// </summary>
-        /// <param name="caller">The caller.</param>
         internal async Task RefreshActionAsync(string caller)
         {
             Trace.WriteLine($"Caller: {caller}"); // Slightly cleaner using string interpolation
-                                                  // 1. Reset state via FileContext (triggers OnPropertyChanged for Observer)
+            // 1. Reset state via FileContext (triggers OnPropertyChanged for Observer)
             FileContext.Clear();
 
             // 2. Reset local UI-only state
@@ -710,7 +706,6 @@ ReplaceBitmap(nextBitmap);
             GenerateView(pathObj.FilePath);
 
             LoadThumbs(pathObj.Folder, pathObj.FilePath);
-
         }
 
         /// <summary>
@@ -739,7 +734,8 @@ ReplaceBitmap(nextBitmap);
 
             Image.BitmapImage = Image.BitmapSource;
             FileContext.FileName = Path.GetFileName(FileContext.FilePath);
-            Image.Information = ViewResources.BuildImageInformation(FileContext.FilePath, FileContext.FileName, Image.BitmapImage);
+            Image.Information =
+                ViewResources.BuildImageInformation(FileContext.FilePath, FileContext.FileName, Image.BitmapImage);
         }
 
         /// <summary>
@@ -787,7 +783,7 @@ ReplaceBitmap(nextBitmap);
                 try
                 {
                     // 2. Place it on the Windows Clipboard
-                   Clipboard.SetImage(bitmap);
+                    Clipboard.SetImage(bitmap);
                 }
                 catch (Exception ex)
                 {
@@ -885,7 +881,8 @@ ReplaceBitmap(nextBitmap);
         /// <param name="targetId">The target identifier.</param>
         /// <param name="newFiles">The new files.</param>
         /// <param name="customInfo">The custom information.</param>
-        private void UpdateImageState(string? targetPath = null, int? targetId = null, IEnumerable<string>? newFiles = null, string? customInfo = null)
+        private void UpdateImageState(string? targetPath = null, int? targetId = null,
+            IEnumerable<string>? newFiles = null, string? customInfo = null)
         {
             // ==========================================
             // PHASE 1: Update File Context & Thumbnails
@@ -965,6 +962,7 @@ ReplaceBitmap(nextBitmap);
         /// </returns>
         private bool CanLoadFile(string? path) => !string.IsNullOrEmpty(path) && File.Exists(path) &&
                                                   ImagingResources.Appendix.Any(path.EndsWith);
+
         /// <summary>
         /// Generates the view.
         /// </summary>
@@ -1016,7 +1014,8 @@ ReplaceBitmap(nextBitmap);
                     Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update
                     Image.GifPath = null;
-                    Image.Information = ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
+                    Image.Information =
+                        ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
                 }
 
                 FileContext.FilePath = filePath;

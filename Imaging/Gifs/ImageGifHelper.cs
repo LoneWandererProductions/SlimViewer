@@ -13,7 +13,6 @@ namespace Imaging.Gifs
 {
     internal static class ImageGifHelper
     {
-
         /// <summary>
         /// Gets the short.
         /// </summary>

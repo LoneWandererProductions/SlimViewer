@@ -50,6 +50,7 @@ namespace Imaging.Gifs
         /// The frames
         /// </summary>
         private List<BitmapSource>? _frames;
+
         private ImageGifInfo? _metadata;
 
         /// <summary>
@@ -135,7 +136,6 @@ namespace Imaging.Gifs
 
             try
             {
-
                 // Fast path for non-GIFs: just load as BitmapImage and skip all the decoding/metadata overhead
                 if (!path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
                 {

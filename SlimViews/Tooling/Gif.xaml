@@ -1,4 +1,4 @@
-﻿<Window xmlns:Gifs="clr-namespace:Imaging.Gifs;assembly=Imaging"  x:Class="SlimViews.Tooling.Gif"
+﻿<Window xmlns:Gifs="clr-namespace:Imaging.Gifs;assembly=Imaging" x:Class="SlimViews.Tooling.Gif"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,28 +17,28 @@
             <ToolBar>
                 <Button Command="{Binding OpenCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📂 "/>
-                        <TextBlock Text="Open GIF"/>
+                        <TextBlock Text="📂 " />
+                        <TextBlock Text="Open GIF" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding OpenFolderCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📁 "/>
-                        <TextBlock Text="Open Folder"/>
+                        <TextBlock Text="📁 " />
+                        <TextBlock Text="Open Folder" />
                     </StackPanel>
                 </Button>
                 <Separator />
                 <Button Command="{Binding SaveImagesCommand}" IsEnabled="{Binding IsActive}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="🖼️ "/>
-                        <TextBlock Text="Export Frames"/>
+                        <TextBlock Text="🖼️ " />
+                        <TextBlock Text="Export Frames" />
                     </StackPanel>
                 </Button>
                 <Separator />
                 <Button Command="{Binding SaveGifCommand}" IsEnabled="{Binding IsActive}" FontWeight="Bold">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="💾 "/>
-                        <TextBlock Text="Save GIF"/>
+                        <TextBlock Text="💾 " />
+                        <TextBlock Text="Save GIF" />
                     </StackPanel>
                 </Button>
                 <Separator />
@@ -64,9 +64,9 @@
 
                 <Border Grid.Row="0" Background="#333">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <Gifs:ImageGif 
-                            GifSource="{Binding GifPath}" 
-                            AutoStart="True" 
+                        <Gifs:ImageGif
+                            GifSource="{Binding GifPath}"
+                            AutoStart="True"
                             Stretch="Uniform" />
                     </ScrollViewer>
                 </Border>
@@ -76,11 +76,11 @@
                 <Border Grid.Row="2" Background="#EEE" BorderBrush="#CCC" BorderThickness="0,1,0,0">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                         <Images:Thumbnails Name="Thumb"
-                                       ItemsSource="{Binding Observer}"
-                                       ThumbCellSize="100"
-                                       ThumbHeight="1"
-                                       SelectBox="True"
-                                       ImageClicked="Thumb_ImageClicked" />
+                                           ItemsSource="{Binding Observer}"
+                                           ThumbCellSize="100"
+                                           ThumbHeight="1"
+                                           SelectBox="True"
+                                           ImageClicked="Thumb_ImageClicked" />
                     </ScrollViewer>
                 </Border>
             </Grid>
@@ -92,18 +92,19 @@
                     <GroupBox Header="Frame Timing">
                         <StackPanel Margin="5">
                             <DockPanel>
-                                <TextBlock Text="Delay (ms):" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding CurrentDelay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                                <TextBlock Text="Delay (ms):" VerticalAlignment="Center" />
+                                <TextBox Text="{Binding CurrentDelay, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="10,0,0,0" />
                             </DockPanel>
 
-                            <Button Content="Save Current Frame" 
-                                Command="{Binding SaveCurrentFrameCommand}" 
-                                IsEnabled="{Binding IsActive}" 
-                                Margin="0,10,0,0"/>
+                            <Button Content="Save Current Frame"
+                                    Command="{Binding SaveCurrentFrameCommand}"
+                                    IsEnabled="{Binding IsActive}"
+                                    Margin="0,10,0,0" />
 
-                            <Button Content="Apply to All" 
-                                Command="{Binding SetAllDelayCommand}" 
-                                Margin="0,5,0,0"/>
+                            <Button Content="Apply to All"
+                                    Command="{Binding SetAllDelayCommand}"
+                                    Margin="0,5,0,0" />
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

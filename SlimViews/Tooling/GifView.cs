@@ -20,7 +20,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -147,9 +146,10 @@ namespace SlimViews.Tooling
         internal Thumbnails Thumbnail { private get; set; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GifView"/> class.
+        /// Initializes a new instance of the <see cref="GifView" /> class.
         /// </summary>
         /// <param name="thumb">The thumbnail control reference.</param>
+        /// <param name="initialFilePath">The initial file path.</param>
         public GifView(Thumbnails thumb, string? initialFilePath)
         {
             Thumbnail = thumb;
@@ -167,6 +167,7 @@ namespace SlimViews.Tooling
         {
             CancelBackgroundWork();
         }
+
         /// <summary>
         /// Gets or sets the information.
         /// </summary>
@@ -284,7 +285,8 @@ namespace SlimViews.Tooling
         /// <value>
         /// The open folder command.
         /// </value>
-        public ICommand OpenFolderCommand => GetCommand(ref _openFolderCommand, async _ => await OpenFolderActionAsync());
+        public ICommand OpenFolderCommand =>
+            GetCommand(ref _openFolderCommand, async _ => await OpenFolderActionAsync());
 
         /// <summary>
         /// Gets the clear command.
@@ -308,7 +310,8 @@ namespace SlimViews.Tooling
         /// <value>
         /// The save images command.
         /// </value>
-        public ICommand SaveImagesCommand => GetCommand(ref _saveImagesCommand, async _ => await SaveImagesActionAsync());
+        public ICommand SaveImagesCommand =>
+            GetCommand(ref _saveImagesCommand, async _ => await SaveImagesActionAsync());
 
         /// <summary>
         /// Gets the set delay command.
@@ -332,7 +335,8 @@ namespace SlimViews.Tooling
         /// <value>
         /// The save current frame command.
         /// </value>
-        public ICommand SaveCurrentFrameCommand => GetCommand(ref _saveCurrentFrameCommand, async _ => await SaveCurrentFrameActionAsync());
+        public ICommand SaveCurrentFrameCommand =>
+            GetCommand(ref _saveCurrentFrameCommand, async _ => await SaveCurrentFrameActionAsync());
 
         /// <summary>
         ///     Updates the main preview image when a thumbnail is clicked.
@@ -416,7 +420,8 @@ namespace SlimViews.Tooling
                 // 4. Scan for Resulting Frames (IO Bound)
                 // We scan the folder to verify generation and populate the list
                 var fileList = await Task.Run(() =>
-                    FileHandleSearch.GetFilesByExtensionFullPath(ImageExportPath, ImagingResources.JpgExt, false), token);
+                        FileHandleSearch.GetFilesByExtensionFullPath(ImageExportPath, ImagingResources.JpgExt, false),
+                    token);
 
                 if (fileList == null || fileList.Count == 0)
                 {
@@ -721,6 +726,7 @@ namespace SlimViews.Tooling
             {
                 _delays[key] = CurrentDelay;
             }
+
             Information = $"All frames set to {CurrentDelay}ms.";
         }
 

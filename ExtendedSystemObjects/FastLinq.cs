@@ -59,9 +59,9 @@ namespace ExtendedSystemObjects
         /// <param name="selector">A transform function to apply to each element.</param>
         /// <exception cref="ArgumentException">Thrown if the destination span is smaller than the source span.</exception>
         public static void SelectFast<TSource, TResult>(
-                this ReadOnlySpan<TSource> span,
-                Span<TResult> destination,
-                Func<TSource, TResult> selector)
+            this ReadOnlySpan<TSource> span,
+            Span<TResult> destination,
+            Func<TSource, TResult> selector)
         {
             var len = span.Length;
             if (destination.Length < len)

@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 
-using FileHandler;
 using ImageCompare;
 using Imaging;
 using Imaging.Gifs;
@@ -204,13 +203,15 @@ namespace SlimViews.Tooling
         private ICommand? _nextCommand;
 
         /// <summary>
-        ///     Initiates the comparison asynchronously.
-        ///     Retrieves duplicates or similar images and populates observer groups.
+        /// Initiates the comparison asynchronously.
+        /// Retrieves duplicates or similar images and populates observer groups.
         /// </summary>
         /// <param name="subFolders">Include subfolders if true.</param>
         /// <param name="currentFolder">The folder to scan.</param>
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
-        internal async Task AsyncInitiate(bool subFolders, string currentFolder, int similarity = 0, ImageView imageView = null)
+        /// <param name="imageView">The image view.</param>
+        internal async Task AsyncInitiate(bool subFolders, string currentFolder, int similarity = 0,
+            ImageView imageView = null)
         {
             _imageView = imageView;
 
@@ -296,8 +297,10 @@ namespace SlimViews.Tooling
 
                 // ---> Bind the UI buttons to the ViewModel logic <---
                 groupModel.DeleteAllCommand = new DelegateCommand<object>(_ => DeleteGroupAsync(groupModel));
-                groupModel.DeleteSelectedCommand = new DelegateCommand<object>(async (param) => await DeleteSelectedAsync(groupModel, param));
-                groupModel.RenameSelectedCommand = new DelegateCommand<object>(async (param) => await RenameSelectedAsync(groupModel, param));
+                groupModel.DeleteSelectedCommand =
+                    new DelegateCommand<object>(async (param) => await DeleteSelectedAsync(groupModel, param));
+                groupModel.RenameSelectedCommand =
+                    new DelegateCommand<object>(async (param) => await RenameSelectedAsync(groupModel, param));
 
                 var imageDict = new Dictionary<int, string>();
                 int localId = 0;
@@ -387,7 +390,6 @@ namespace SlimViews.Tooling
                 {
                     try
                     {
-
                         await _imageView.Commands.FileService.DeleteAsync(_imageView, new List<string> { path }, false);
 
                         updatedImages.Remove(key);
@@ -435,7 +437,9 @@ namespace SlimViews.Tooling
                     var targetPath = Path.Combine(directory, group.NewName + extension);
 
                     // Use the Owner's FileService to ensure the viewer is cleared
-                    string? newPath = await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath, isSilent: true);
+                    string? newPath =
+                        await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath,
+                            isSilent: true);
 
                     if (newPath != null)
                     {
@@ -520,6 +524,7 @@ namespace SlimViews.Tooling
                     return score;
                 }
             }
+
             return 100; // Default for the "original" or if not found
         }
     }

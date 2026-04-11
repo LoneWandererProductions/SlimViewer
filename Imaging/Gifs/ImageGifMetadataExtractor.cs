@@ -24,7 +24,7 @@ namespace Imaging.Gifs
         /// <returns>Metadata of the gif in question.</returns>
         /// <exception cref="FileNotFoundException">File not found.</exception>
         /// <exception cref="InvalidDataException">Not a valid GIF file.</exception>
-        internal static ImageGifInfo? ExtractGifMetadata(string filePath)
+        internal static ImageGifInfo ExtractGifMetadata(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -85,7 +85,8 @@ namespace Imaging.Gifs
 
                                 if (appBlockSize >= 11)
                                 {
-                                    var appIdentifier = new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
+                                    var appIdentifier =
+                                        new string(reader.ReadChars(ImagingResources.AppIdentifierLength));
                                     reader.BaseStream.Seek(ImagingResources.AppAuthCodeLength, SeekOrigin.Current);
 
                                     // If block size > 11, skip the anomalous padding
@@ -100,7 +101,7 @@ namespace Imaging.Gifs
                                         if (subBlockSize == 3)
                                         {
                                             reader.ReadByte(); // Loop flag
-                                                               // Use ReadUInt16 to prevent integer overflow on large delays/loops
+                                            // Use ReadUInt16 to prevent integer overflow on large delays/loops
                                             metadata.LoopCount = reader.ReadUInt16();
                                         }
                                         else
@@ -148,6 +149,7 @@ namespace Imaging.Gifs
                                 SkipExtensionBlocks(reader);
                                 break;
                         }
+
                         break;
 
                     case ImagingResources.ImageDescriptorId:
