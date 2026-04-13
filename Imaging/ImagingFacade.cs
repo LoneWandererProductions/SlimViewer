@@ -118,11 +118,20 @@ namespace Imaging
         #region Load / Save
 
         /// <summary>
+        /// Loads the bitmap image.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>A <see cref="BitmapImage"/> representing the loaded image.</returns>
+        public static BitmapImage LoadBitmapImage(string path)
+            => new ImageRender().GetBitmapImageFileStream(path);
+
+
+        /// <summary>
         ///     Loads a bitmap from the specified file path.
         /// </summary>
         /// <param name="path">The file path to the image.</param>
         /// <returns>A <see cref="Bitmap"/> representing the loaded image.</returns>
-        public static Bitmap Load(string path)
+        public static Bitmap LoadBitmap(string path)
             => new ImageRender().GetOriginalBitmap(path);
 
         /// <summary>
@@ -131,7 +140,7 @@ namespace Imaging
         /// <param name="bitmap">The bitmap to save.</param>
         /// <param name="path">The target file path.</param>
         /// <param name="format">The <see cref="ImageFormat"/> to save as.</param>
-        public static void Save(Bitmap bitmap, string path, ImageFormat format)
+        public static void SaveBitmap(Bitmap bitmap, string path, ImageFormat format)
             => new ImageRender().SaveBitmap(bitmap, path, format);
 
         #endregion

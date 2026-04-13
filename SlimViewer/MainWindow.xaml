@@ -340,14 +340,14 @@
                     ToolTip="Previous Image (Left Arrow)" />
 
             <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" Padding="5"
-                              IsTabStop="True"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemsSource="{Binding Image.BitmapImage}"
-                              ImageGifPath="{Binding Image.GifPath}"
-                              SelectionTool="{Binding ImageZoomTool}"
-                              SelectedFrameCommand="{Binding Commands.SelectedFrame}"
-                              SelectedPointCommand="{Binding Commands.SelectedPoint}" />
+                      IsTabStop="True"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      ImageSource="{Binding Image.BitmapImage}" 
+                      ImagePath="{Binding Image.GifPath}"
+                      SelectionTool="{Binding ImageZoomTool}"
+                      SelectedFrameCommand="{Binding Commands.SelectedFrame}"
+                      SelectedPointCommand="{Binding Commands.SelectedPoint}" />
 
             <Button Grid.Column="2" Content="→"
                     Command="{Binding Commands.Next}"

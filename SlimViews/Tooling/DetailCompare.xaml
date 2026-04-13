@@ -30,7 +30,7 @@
                 <RowDefinition />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-            <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding BmpOne }" />
+            <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ImageSource="{Binding BmpOne}" />
             <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenOneCommand}"
                     ToolTip="Load Image 1" />
 
@@ -54,7 +54,7 @@
                 <RowDefinition />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-            <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding BmpTwo}" />
+            <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ImageSource="{Binding BmpTwo}" />
             <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenTwoCommand}"
                     ToolTip="Load Image 2" />
 

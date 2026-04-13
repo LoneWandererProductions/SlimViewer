@@ -82,10 +82,9 @@ namespace SlimViews
             }
 
             // 2. Open the Window
-            var rename = new Rename(dct)
+            var rename = new Rename(owner, dct)
             {
                 // Note: Topmost = true keeps this above EVERY app in Windows (like your web browser).
-                // Setting Owner is usually enough to keep it above your main app safely.
                 Topmost = true,
                 Owner = owner.UiState.Main
             };

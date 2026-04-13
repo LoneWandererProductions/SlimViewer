@@ -1001,21 +1001,21 @@ namespace SlimViews
                 {
                     if (Image.GifPath?.Equals(filePath, StringComparison.OrdinalIgnoreCase) == true) return;
 
-                    //important for the undo/redo logic that we clear the history when loading a new image, otherwise the old image states would be mixed with the new ones and cause bugs.
+                    // important for the undo/redo logic
                     ClearHistory();
 
+                    Image.BitmapImage = null; // <--- ADD THIS: Clear any residual static image
                     Image.GifPath = filePath;
                     var info = ImageGifHandler.GetImageInfo(filePath);
                     Image.Information = ViewResources.BuildGifInformation(filePath, info);
                 }
                 else
                 {
-                    //TODO rework since Imagegif can do both
+                    // Load static image
                     Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
-                    Image.BitmapImage = Image.BitmapSource; // Trigger UI update
+                    Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
                     Image.GifPath = null;
-                    Image.Information =
-                        ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
+                    Image.Information = ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
                 }
 
                 FileContext.FilePath = filePath;
@@ -1027,7 +1027,6 @@ namespace SlimViews
                 _ = MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
             }
         }
-
         /// <summary>
         /// Loads the thumbs.
         /// </summary>

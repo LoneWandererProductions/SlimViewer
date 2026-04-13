@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews.Tooling
  * FILE:        CompareView.cs
@@ -342,12 +342,18 @@ namespace SlimViews.Tooling
         {
             try
             {
+                // Release the UI lock if the currently previewed image is in this group
+                if (group.Images.Values.Contains(SelectedImagePath))
+                {
+                    SelectedImagePath = null;
+                    await Task.Yield(); // Give WPF a tick to let go
+                }
+
                 // kvp.Value is the file path string
                 await _imageView.Commands.FileService.DeleteAsync(_imageView, group.Images.Values.ToList(), false);
             }
             catch (Exception ex)
             {
-                // Log the error and add it to our failed list so it remains in the UI
                 Trace.WriteLine(ex);
             }
         }
@@ -372,16 +378,19 @@ namespace SlimViews.Tooling
                 selection.AddOrUpdate(CurrentImageId, true, (key, oldValue) => true);
             }
 
-            // 3. Identify IDs to delete
             var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
-
-            // Safety check: ensure we have something to delete
             if (selectedKeys.Count == 0)
             {
                 selectedKeys.Add(CurrentImageId);
             }
 
-            // 4. Perform Deletion
+            // Release the UI lock if the image we are previewing is about to be deleted
+            if (selectedKeys.Any(k => group.Images.TryGetValue(k, out string p) && p == SelectedImagePath))
+            {
+                SelectedImagePath = null;
+                await Task.Yield(); // Give WPF's binding engine a tick to release the image control
+            }
+
             var updatedImages = new Dictionary<int, string>(group.Images);
 
             foreach (var key in selectedKeys)
@@ -428,6 +437,9 @@ namespace SlimViews.Tooling
             var updatedImages = new Dictionary<int, string>(group.Images);
             bool anySuccess = false;
 
+            // Track if we are renaming the currently previewed image
+            bool isPreviewingRenamedImage = false;
+
             foreach (var key in selectedKeys)
             {
                 if (group.Images.TryGetValue(key, out string sourcePath))
@@ -436,7 +448,15 @@ namespace SlimViews.Tooling
                     var directory = Path.GetDirectoryName(sourcePath);
                     var targetPath = Path.Combine(directory, group.NewName + extension);
 
-                    // Use the Owner's FileService to ensure the viewer is cleared
+                    // Drop the CompareView lock if this is the active preview image
+                    if (sourcePath == SelectedImagePath)
+                    {
+                        SelectedImagePath = null;
+                        isPreviewingRenamedImage = true;
+                        await Task.Yield(); // Give WPF a tick to release the file handle
+                    }
+
+                    // Use the Owner's FileService to ensure the main viewer is cleared
                     string? newPath =
                         await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath,
                             isSilent: true);
@@ -445,6 +465,19 @@ namespace SlimViews.Tooling
                     {
                         updatedImages[key] = newPath;
                         anySuccess = true;
+
+                        //  Restore the preview using the new file path!
+                        if (isPreviewingRenamedImage)
+                        {
+                            SelectedImagePath = newPath;
+                            isPreviewingRenamedImage = false; // Reset flag
+                        }
+                    }
+                    else if (isPreviewingRenamedImage)
+                    {
+                        // If rename failed for some reason, put the old preview back
+                        SelectedImagePath = sourcePath;
+                        isPreviewingRenamedImage = false;
                     }
                 }
             }
@@ -491,7 +524,7 @@ namespace SlimViews.Tooling
                 }
                 else
                 {
-                    var bitmap = new System.Windows.Media.Imaging.BitmapImage(new Uri(path));
+                    var bitmap = ImagingFacade.LoadBitmapImage(path);
                     infoBody = ViewResources.BuildUnifiedImageInfo(path, fileName, bitmap);
                 }
 

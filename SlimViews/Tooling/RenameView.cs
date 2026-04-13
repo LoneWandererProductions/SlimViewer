@@ -9,16 +9,17 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable EventNeverSubscribedTo.Global
 
+using FileHandler;
+using SlimViews.DataObjects;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using FileHandler;
-using SlimViews.DataObjects;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -89,6 +90,11 @@ namespace SlimViews.Tooling
         ///     The internal dictionary keeping track of all files.
         /// </summary>
         private ConcurrentDictionary<int, string>? _observer;
+
+        /// <summary>
+        /// The image view
+        /// </summary>
+        private ImageView _imageView;
 
         /// <summary>
         ///     Gets the collection of items bound to the Preview DataGrid in the UI.
@@ -258,6 +264,22 @@ namespace SlimViews.Tooling
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenameView"/> class.
+        /// </summary>
+        public RenameView()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenameView"/> class.
+        /// </summary>
+        /// <param name="imageView">The image view.</param>
+        public RenameView(ImageView imageView)
+        {
+            _imageView = imageView;
+        }
+
         // ------------------------------------------------------------------
         // PREVIEW GENERATION LOGIC (Synchronous, Memory Only)
         // ------------------------------------------------------------------
@@ -378,9 +400,13 @@ namespace SlimViews.Tooling
                 var updatedObserver = new ConcurrentDictionary<int, string>(Observer);
                 bool changesMade = false;
 
+                // 1. DROP THE LOCK ONCE FOR THE ENTIRE BATCH
+                // This ensures if the main window is viewing a file we are about to rename, it lets go.
+                _imageView.Image?.Clear();
+                await Task.Yield();
+
                 foreach (var item in PreviewItems)
                 {
-                    // Only process files where the name actually changed and hasn't already succeeded
                     if (!string.Equals(item.OriginalName, item.NewName, StringComparison.OrdinalIgnoreCase) &&
                         item.Status != "Success")
                     {
@@ -389,13 +415,15 @@ namespace SlimViews.Tooling
 
                         var target = Path.Combine(directory, item.NewName);
 
+                        // 2. USE LOW-LEVEL RENAME DIRECTLY
+                        // Avoids triggering the heavy UI refresh inside the loop
                         var success = await FileHandleRename.RenameFile(item.OriginalPath, target);
 
                         if (success)
                         {
                             item.Status = "Success";
-                            item.OriginalPath = target; // Update path so it can be renamed again if needed
-                            item.OriginalName = item.NewName; // Sync original so we don't rename twice
+                            item.OriginalPath = target;
+                            item.OriginalName = item.NewName;
                             updatedObserver[item.Id] = target;
                             changesMade = true;
                         }
@@ -410,6 +438,12 @@ namespace SlimViews.Tooling
                 {
                     SlimViewerRegister.Changed = true;
                     Observer = updatedObserver;
+
+                    // 3. REFRESH THE MOTHER UI EXACTLY ONCE AT THE END
+                    // Push the updated dictionary back to the main window and trigger one clean reload
+                    _imageView.FileContext.Observer = new Dictionary<int, string>(updatedObserver);
+                    await _imageView.LoadThumbs(_imageView.FileContext.CurrentPath);
+                    await _imageView.RefreshActionAsync(nameof(RenameView));
                 }
             }
             catch (Exception ex)
