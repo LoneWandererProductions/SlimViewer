@@ -591,29 +591,40 @@ namespace Common.Images
 
             if (SelectionAdorner == null) return;
 
-            // 1. Identify "Immediate Action" tools (Drawing tools)
+            // 🔴 1. NEW: Handle Point-based tools (Pencil, Color Picker) explicitly
+            if (SelectionTool == ImageZoomTools.Dot)
+            {
+                SelectionAdorner.CaptureAndClear(); // Clear any phantom adorner visuals
+
+                // Fire the Point Command using the starting click position!
+                SafeExecuteCommand(SelectedPointCommand, _startPoint);
+                SelectedPoint?.Invoke(_startPoint);
+
+                return; // Exit early so it doesn't process as a Frame
+            }
+
+            // 2. Identify "Immediate Action" tools (Shapes, Frames)
+            // 🔴 REMOVED 'ImageZoomTools.Dot' from this list
             var isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
                                 SelectionTool == ImageZoomTools.Ellipse ||
                                 SelectionTool == ImageZoomTools.FreeForm ||
-                                SelectionTool == ImageZoomTools.Trace ||
-                                SelectionTool == ImageZoomTools.Dot;
+                                SelectionTool == ImageZoomTools.Trace;
 
             if (isDrawingTool)
             {
-                // 2. Capture the data AND Clear the visuals immediately
-                // This prevents the "Ghost Frame" from sticking around
+                // 3. Capture the data AND Clear the visuals immediately
                 var frame = SelectionAdorner.CaptureAndClear();
 
-                // 3. Validation: Ensure we actually drew something substantial
+                // 4. Validation: Ensure we actually drew something substantial
                 var isValid = (frame.Width > 0 && frame.Height > 0) ||
                               frame.Points is { Count: > 0 };
 
                 if (isValid)
                 {
-                    // 4. Fire the Command to the ViewModel (Update the Bitmap)
+                    // 5. Fire the Command to the ViewModel (Update the Bitmap)
                     SafeExecuteCommand(SelectedFrameCommand, frame);
 
-                    // 5. Fire the Event (if anything else is listening)
+                    // 6. Fire the Event (if anything else is listening)
                     SelectedFrame?.Invoke(frame);
                 }
             }
