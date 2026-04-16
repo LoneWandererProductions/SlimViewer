@@ -277,24 +277,46 @@ namespace SlimViews
         public UndoManager<Bitmap> History { get; } = new UndoManager<Bitmap>(5);
 
         /// <summary>
-        /// Commits the image change.
+        /// Commits the image change from tools or filters.
         /// </summary>
         /// <param name="newGdiBitmap">The new image.</param>
         internal void CommitImageChange(Bitmap newGdiBitmap)
         {
             if (newGdiBitmap == null) return;
 
-            // Sync the background logic
-            Image.Bitmap = newGdiBitmap;
+            // Just pass it straight to our centralized replacement logic
+            ReplaceBitmap(newGdiBitmap);
+        }
 
-            // Sync the UI
-            var newWpfImage = newGdiBitmap.ToBitmapImage();
-            if (newWpfImage.CanFreeze && !newWpfImage.IsFrozen)
+        /// <summary>
+        /// Safely replaces the current bitmap, handles memory disposal, and forces the UI to update.
+        /// Used by Undo, Redo, and CommitImageChange.
+        /// </summary>
+        /// <param name="newBitmap">The new bitmap.</param>
+        private async void ReplaceBitmap(Bitmap newBitmap)
+        {
+            if (newBitmap == null) return;
+
+            if (!ReferenceEquals(Image.Bitmap, newBitmap))
             {
-                newWpfImage.Freeze();
+                var old = Image.Bitmap;
+                Image.Bitmap = newBitmap;
+                old?.Dispose();
             }
 
-            ReplaceBitmap(newGdiBitmap);
+            // Push the heavy encoding/decoding to a background thread!
+            var newWpfImage = await Task.Run(() =>
+            {
+                var wpfImg = newBitmap.ToBitmapImage();
+                if (wpfImg.CanFreeze && !wpfImg.IsFrozen)
+                {
+                    wpfImg.Freeze(); // Crucial: Freezing allows it to be sent back to the UI thread
+                }
+                return wpfImg;
+            });
+
+            // Back on the UI thread, instantly swap the image
+            Image.BitmapImage = newWpfImage;
         }
 
         /// <summary>
@@ -1141,19 +1163,6 @@ namespace SlimViews
 
             ThumbnailVisibility = UiState.ThumbnailState();
         }
-
-        /// <summary>
-        /// Replaces the bitmap.
-        /// </summary>
-        /// <param name="newBitmap">The new bitmap.</param>
-        private void ReplaceBitmap(Bitmap newBitmap)
-        {
-            var old = Image.Bitmap;
-            Image.Bitmap = newBitmap;
-
-            old?.Dispose(); // 🔴 THIS is what you're missing
-        }
-
 
         /// <summary>
         /// Images the loaded command action.

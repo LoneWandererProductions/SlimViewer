@@ -574,6 +574,9 @@ namespace Common.Images
                 case ImageZoomTools.Ellipse:
                 case ImageZoomTools.FreeForm:
                     break;
+                case ImageZoomTools.Dot:
+                    SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
+                    break;
                 default:
                     return;
             }
@@ -594,13 +597,13 @@ namespace Common.Images
             // 🔴 1. NEW: Handle Point-based tools (Pencil, Color Picker) explicitly
             if (SelectionTool == ImageZoomTools.Dot)
             {
-                SelectionAdorner.CaptureAndClear(); // Clear any phantom adorner visuals
+                SelectionAdorner.CaptureAndClear(); // Clear the red dot visual
 
-                // Fire the Point Command using the starting click position!
+                // Fire the Point command to ImageView
                 SafeExecuteCommand(SelectedPointCommand, _startPoint);
                 SelectedPoint?.Invoke(_startPoint);
 
-                return; // Exit early so it doesn't process as a Frame
+                return; // Exit early!
             }
 
             // 2. Identify "Immediate Action" tools (Shapes, Frames)
