@@ -110,6 +110,11 @@ namespace SlimViews
         // -------------------------------------------------------------------
 
         /// <summary>
+        /// The draw lock
+        /// </summary>
+        private readonly object _drawLock = new object();
+
+        /// <summary>
         /// Controls the actual interaction mode of the ImageZoom control (Pan, Rect, FreeForm).
         /// This is updated automatically when MyDrawingState changes.
         /// </summary>
@@ -432,24 +437,37 @@ namespace SlimViews
         /// Action triggered when a point is clicked (Pencil drawing, Color picking).
         /// </summary>
         /// <param name="wPoint">The w point.</param>
-        internal void SelectedPointAction(System.Windows.Point wPoint)
+        internal async Task SelectedPointAction(System.Windows.Point wPoint)
         {
             if (Image?.Bitmap == null) return;
 
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
-            // 1. Pencil Logic
-            if (MyDrawingState.ActiveTool == DrawTool.Pencil)
+            // 1. Pencil & Eraser Logic
+            if (MyDrawingState.ActiveTool == DrawTool.Pencil || MyDrawingState.ActiveTool == DrawTool.Eraser)
             {
-                // CRITICAL: Save before drawing!
-                SaveUndoState();
+                // Grab UI variables before leaving the main thread
+                var isEraser = MyDrawingState.ActiveTool == DrawTool.Eraser;
 
-                var color = ColorTranslator.FromHtml(MyDrawingState.BrushColor);
-                Bitmap updatedBitmap =
-                    ImageProcessor.SetPixel(Image.Bitmap, point, color, (int)MyDrawingState.BrushSize);
+                // If it's the eraser, use Transparent. Otherwise, use the selected BrushColor.
+                var color = isEraser ? Color.Transparent : ColorTranslator.FromHtml(MyDrawingState.BrushColor);
+                var size = (int)MyDrawingState.BrushSize;
 
-                // CRITICAL: Commit after drawing!
-                CommitImageChange(updatedBitmap);
+                // Hop off the UI thread so the app doesn't freeze!
+                await Task.Run(() =>
+                {
+                    lock (_drawLock) // Prevent crashes from rapid clicking
+                    {
+                        // Heavy memory clone happens in the background!
+                        SaveUndoState();
+
+                        // Draw the color (or transparent pixels) onto the bitmap
+                        Bitmap updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, size);
+
+                        // Push the update back to the main UI thread
+                        Application.Current.Dispatcher.Invoke(() => CommitImageChange(updatedBitmap));
+                    }
+                });
             }
             // 2. Color Picker (Eyedropper) Logic
             else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)
@@ -465,56 +483,66 @@ namespace SlimViews
         /// Applies the current Mode (Fill, Texture, Filter) to the area.
         /// </summary>
         /// <param name="frame">The frame.</param>
-        internal void SelectedFrameAction(SelectionFrame frame)
+        internal async Task SelectedFrameAction(SelectionFrame frame)
         {
             if (Image?.Bitmap == null) return;
 
-            //Save state before the shape/filter alters the image
-            SaveUndoState();
+            // Grab UI state variables BEFORE backgrounding to avoid cross-thread exceptions
+            var tool = MyDrawingState.ActiveTool;
+            var mode = MyDrawingState.ActiveAreaMode;
+            var fillColor = MyDrawingState.Fill.Color;
+            var texName = MyDrawingState.Texture.TextureName;
+            var filterName = MyDrawingState.Filter.FilterName;
 
-            Bitmap newBitmap = Image.Bitmap; // Default to current
-
-            // A. Eraser is a global tool override
-            if (MyDrawingState.ActiveTool == DrawTool.Eraser)
+            //Hop off the UI thread
+            await Task.Run(() =>
             {
-                newBitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
-            }
-            // B. Shape Tools - Apply the Active Mode
-            else if (MyDrawingState.ActiveTool == DrawTool.Shape)
-            {
-                switch (MyDrawingState.ActiveAreaMode)
+                lock (_drawLock)
                 {
-                    case AreaMode.Fill:
-                        var color = ColorTranslator.FromHtml(MyDrawingState.Fill.Color);
-                        newBitmap = ImageProcessor.FillArea(Image.Bitmap, frame, color);
-                        break;
+                    // Heavy memory clone in the background
+                    SaveUndoState();
 
-                    case AreaMode.Texture:
-                        if (!string.IsNullOrEmpty(MyDrawingState.Texture.TextureName) &&
-                            Enum.TryParse(MyDrawingState.Texture.TextureName, true, out TextureType texEnum))
-                        {
-                            newBitmap = ImageProcessor.FillTexture(Image.Bitmap, frame, texEnum);
-                        }
+                    Bitmap newBitmap = Image.Bitmap;
 
-                        break;
-
-                    case AreaMode.Filter:
-                        if (!string.IsNullOrEmpty(MyDrawingState.Filter.FilterName) &&
-                            Enum.TryParse(MyDrawingState.Filter.FilterName, true, out FiltersType filterEnum))
-                        {
-                            newBitmap = ImageProcessor.FillFilter(Image.Bitmap, frame, filterEnum);
-                        }
-
-                        break;
-
-                    case AreaMode.Erase:
+                    if (tool == DrawTool.Eraser)
+                    {
                         newBitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
-                        break;
-                }
-            }
+                    }
+                    else if (tool == DrawTool.Shape)
+                    {
+                        switch (mode)
+                        {
+                            case AreaMode.Fill:
+                                var color = ColorTranslator.FromHtml(fillColor);
+                                newBitmap = ImageProcessor.FillArea(Image.Bitmap, frame, color);
+                                break;
 
-            // Route the resulting bitmap through the choke point
-            CommitImageChange(newBitmap);
+                            case AreaMode.Texture:
+                                if (!string.IsNullOrEmpty(texName) &&
+                                    Enum.TryParse(texName, true, out TextureType texEnum))
+                                {
+                                    newBitmap = ImageProcessor.FillTexture(Image.Bitmap, frame, texEnum);
+                                }
+                                break;
+
+                            case AreaMode.Filter:
+                                if (!string.IsNullOrEmpty(filterName) &&
+                                    Enum.TryParse(filterName, true, out FiltersType filterEnum))
+                                {
+                                    newBitmap = ImageProcessor.FillFilter(Image.Bitmap, frame, filterEnum);
+                                }
+                                break;
+
+                            case AreaMode.Erase:
+                                newBitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
+                                break;
+                        }
+                    }
+
+                    // Push back to UI
+                    Application.Current.Dispatcher.Invoke(() => CommitImageChange(newBitmap));
+                }
+            });
         }
 
         /// <summary>

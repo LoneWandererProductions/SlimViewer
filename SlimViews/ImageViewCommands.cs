@@ -290,14 +290,15 @@ namespace SlimViews
             OpenCif = new DelegateCommand<object>(owner.OpenCifAction, CanRun);
             ThumbImageClicked = new DelegateCommand<ImageEventArgs>(owner.ThumbImageClickedAction, CanRun);
             ImageLoaded = new DelegateCommand<object>(owner.ImageLoadedCommandAction, CanRun);
-            SelectedPoint = new DelegateCommand<Point>(owner.SelectedPointAction, CanRun);
-            SelectedFrame = new DelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
             ColorChanged = new DelegateCommand<ColorHsv>(owner.ColorChangedAction, CanRun);
             Next = new DelegateCommand<object>(owner.NextAction, CanRun);
             Previous = new DelegateCommand<object>(owner.PreviousAction, CanRun);
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
             Clipboard = new DelegateCommand<object>(owner.ExportClipboardAction, CanRun);
+
+            SelectedPoint = new AsyncDelegateCommand<Point>(owner.SelectedPointAction, CanRun);
+            SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
 
             // ---- UI / direct owner commands ----
             Undo = new DelegateCommand<object>(_ => owner.Undo(), CanRun);
