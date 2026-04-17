@@ -90,6 +90,14 @@ namespace SlimViews
         public ImageViewCommands Commands { get; }
 
         /// <summary>
+        /// Gets the history manager.
+        /// </summary>
+        /// <value>
+        /// The history manager.
+        /// </value>
+        public ImageHistoryManager HistoryManager { get; }
+
+        /// <summary>
         /// Global Key Bindings.
         /// </summary>
         /// <value>
@@ -268,98 +276,30 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Gets the history.
-        /// Instantiate the manager with a hard limit of 5
-        /// </summary>
-        /// <value>
-        /// The history.
-        /// </value>
-        public UndoManager<Bitmap> History { get; } = new UndoManager<Bitmap>(5);
-
-        /// <summary>
-        /// Commits the image change from tools or filters.
-        /// </summary>
-        /// <param name="newGdiBitmap">The new image.</param>
-        internal void CommitImageChange(Bitmap newGdiBitmap)
-        {
-            if (newGdiBitmap == null) return;
-
-            // Just pass it straight to our centralized replacement logic
-            ReplaceBitmap(newGdiBitmap);
-        }
-
-        /// <summary>
-        /// Safely replaces the current bitmap, handles memory disposal, and forces the UI to update.
-        /// Used by Undo, Redo, and CommitImageChange.
-        /// </summary>
-        /// <param name="newBitmap">The new bitmap.</param>
-        private async void ReplaceBitmap(Bitmap newBitmap)
-        {
-            if (newBitmap == null) return;
-
-            if (!ReferenceEquals(Image.Bitmap, newBitmap))
-            {
-                var old = Image.Bitmap;
-                Image.Bitmap = newBitmap;
-                old?.Dispose();
-            }
-
-            // Push the heavy encoding/decoding to a background thread!
-            var newWpfImage = await Task.Run(() =>
-            {
-                var wpfImg = newBitmap.ToBitmapImage();
-                if (wpfImg.CanFreeze && !wpfImg.IsFrozen)
-                {
-                    wpfImg.Freeze(); // Crucial: Freezing allows it to be sent back to the UI thread
-                }
-                return wpfImg;
-            });
-
-            // Back on the UI thread, instantly swap the image
-            Image.BitmapImage = newWpfImage;
-        }
-
-        /// <summary>
         /// Undoes this instance.
         /// </summary>
-        public void Undo()
-        {
-            if (!History.CanUndo || Image?.Bitmap == null) return;
-
-            // Pass the current state, and get the old state back
-            var previousBitmap = History.Undo(Image.Bitmap);
-            ReplaceBitmap(previousBitmap);
-        }
+        public void Undo() => HistoryManager.Undo();
 
         /// <summary>
         /// Redoes this instance.
         /// </summary>
-        public void Redo()
-        {
-            if (!History.CanRedo || Image?.Bitmap == null) return;
-
-            var nextBitmap = History.Redo(Image.Bitmap);
-            ReplaceBitmap(nextBitmap);
-        }
+        public void Redo() => HistoryManager.Redo();
 
         /// <summary>
         /// Clears the history.
         /// </summary>
-        public void ClearHistory()
-        {
-            History.Clear();
-        }
+        public void ClearHistory() => HistoryManager.ClearHistory();
 
         /// <summary>
         /// Saves the state of the undo.
         /// </summary>
-        internal void SaveUndoState()
-        {
-            if (Image?.Bitmap != null)
-            {
-                History.RecordState((Bitmap)Image.Bitmap.Clone());
-            }
-        }
+        internal void SaveUndoState() => HistoryManager.SaveUndoState();
+
+        /// <summary>
+        /// Commits the image change.
+        /// </summary>
+        /// <param name="newGdiBitmap">The new GDI bitmap.</param>
+        internal void CommitImageChange(Bitmap newGdiBitmap) => HistoryManager.CommitImageChange(newGdiBitmap);
 
         // -------------------------------------------------------------------
         // 3. INITIALIZATION
@@ -370,6 +310,7 @@ namespace SlimViews
         /// </summary>
         public ImageView()
         {
+            HistoryManager = new ImageHistoryManager(Image);
             Commands = new ImageViewCommands(this);
             Initialize();
         }
@@ -423,6 +364,10 @@ namespace SlimViews
                 { Tuple.Create(ModifierKeys.Control, Key.O), Commands.Open },
                 { Tuple.Create(ModifierKeys.Control, Key.S), Commands.Save },
                 { Tuple.Create(ModifierKeys.Control, Key.C), Commands.Clipboard },
+    
+                // Add Undo and Redo hotkeys
+                { Tuple.Create(ModifierKeys.Control, Key.Z), Commands.Undo },
+                { Tuple.Create(ModifierKeys.Control, Key.Y), Commands.Redo },
 
                 // Single keys for fast viewer navigation (ModifierKeys.None)
                 { Tuple.Create(ModifierKeys.None, Key.Delete), Commands.Delete },

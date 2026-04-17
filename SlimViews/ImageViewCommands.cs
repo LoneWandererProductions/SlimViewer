@@ -228,6 +228,22 @@ namespace SlimViews
         /// </value>
         public ICommand ShowAbout { get; }
 
+        /// <summary>
+        /// Gets the undo.
+        /// </summary>
+        /// <value>
+        /// The undo.
+        /// </value>
+        public ICommand Undo { get; }
+
+        /// <summary>
+        /// Gets the redo.
+        /// </summary>
+        /// <value>
+        /// The redo.
+        /// </value>
+        public ICommand Redo { get; }
+
         #endregion
 
         /// <summary>
@@ -283,6 +299,10 @@ namespace SlimViews
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
             Clipboard = new DelegateCommand<object>(owner.ExportClipboardAction, CanRun);
 
+            // ---- UI / direct owner commands ----
+            Undo = new DelegateCommand<object>(_ => owner.Undo(), CanRun);
+            Redo = new DelegateCommand<object>(_ => owner.Redo(), CanRun);
+
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);
             FolderConvert = Make_NoParamCmd(_imageMassService.FolderConvertWindow);
@@ -317,6 +337,8 @@ namespace SlimViews
             Delete = Make_AsyncObjCmd(obj => FileService.DeleteAsync(owner));
             Move = Make_ObjParamCmd(FileService.Move);
             MoveAll = Make_ObjParamCmd(FileService.MoveAll);
+
+
 
             // Rename is asynchronous in your original; pass the owner in the lambda to call the service method
             Rename = Make_AsyncObjCmd(obj => FileService.RenameCurrentAsync(owner));

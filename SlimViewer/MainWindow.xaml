@@ -88,6 +88,9 @@
                 </MenuItem>
 
                 <MenuItem Header="Edit">
+                    <MenuItem Header="Undo" Command="{Binding Commands.Undo}" InputGestureText="Ctrl+Z" ToolTip="Undo the last image edit" />
+                    <MenuItem Header="Redo" Command="{Binding Commands.Redo}" InputGestureText="Ctrl+Y" ToolTip="Redo the last undone image edit" />
+                    <Separator />
                     <MenuItem Header="Filter">
                         <MenuItem Header="Configure Filter" Command="{Binding Commands.FilterConfig}"
                                   ToolTip="Open filter configuration settings" />
