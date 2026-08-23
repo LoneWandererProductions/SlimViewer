@@ -48,7 +48,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The cancel command
         /// </summary>
-        private ICommand _cancelCommand;
+        private ICommand? _cancelCommand;
 
         /// <summary>
         ///     The edge jaggedness limit
@@ -103,12 +103,12 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The reset command
         /// </summary>
-        private ICommand _resetCommand;
+        private ICommand? _resetCommand;
 
         /// <summary>
         ///     The save command
         /// </summary>
-        private ICommand _saveCommand;
+        private ICommand? _saveCommand;
 
         /// <summary>
         ///     The selected texture
@@ -191,7 +191,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The filter options.
         /// </value>
-        public IEnumerable<TextureType> TextureOptions =>
+        public IEnumerable<TextureType>? TextureOptions =>
             Enum.GetValues(typeof(TextureType)) as IEnumerable<TextureType>;
 
         /// <summary>
@@ -205,14 +205,13 @@ namespace SlimViews.Tooling
             get => _selectedTexture;
             set
             {
-                if (SetProperty(ref _selectedTexture, value, nameof(SelectedTexture)))
-                {
-                    // Sync values from Facade for the new selection
-                    var config = ImagingFacade.GetTextureSettings(value);
-                    if (config != null) LoadFromConfig(config);
+                if (!SetProperty(ref _selectedTexture, value, nameof(SelectedTexture))) return;
 
-                    UpdateActiveProperties();
-                }
+                // Sync values from Facade for the new selection
+                var config = ImagingFacade.GetTextureSettings(value);
+                if (config != null) LoadFromConfig(config);
+
+                UpdateActiveProperties();
             }
         }
 
@@ -492,111 +491,215 @@ namespace SlimViews.Tooling
             set => SetProperty(ref _jaggednessThreshold, value, nameof(JaggednessThreshold));
         }
 
-        // Active properties
+        // --- Active properties ---
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is minimum value active.
+        /// The is minimum value active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is minimum value active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMinValueActive { get; set; }
+        private bool _isMinValueActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is maximum value active.
+        /// Gets or sets a value indicating whether this instance is minimum value active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is maximum value active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is minimum value active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsMaxValueActive { get; set; }
+        public bool IsMinValueActive
+        {
+            get => _isMinValueActive;
+            set => SetProperty(ref _isMinValueActive, value, nameof(IsMinValueActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is alpha active.
+        /// The is maximum value active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is alpha active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAlphaActive { get; set; }
+        private bool _isMaxValueActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is x period active.
+        /// Gets or sets a value indicating whether this instance is maximum value active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is x period active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is maximum value active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsXPeriodActive { get; set; }
+        public bool IsMaxValueActive
+        {
+            get => _isMaxValueActive;
+            set => SetProperty(ref _isMaxValueActive, value, nameof(IsMaxValueActive));
+        }
+
+        private bool _isAlphaActive;
+
+        public bool IsAlphaActive
+        {
+            get => _isAlphaActive;
+            set => SetProperty(ref _isAlphaActive, value, nameof(IsAlphaActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is y period active.
+        /// The is x period active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is y period active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsYPeriodActive { get; set; }
+        private bool _isXPeriodActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is turbulence power active.
+        /// Gets or sets a value indicating whether this instance is x period active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is turbulence power active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is x period active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsTurbulencePowerActive { get; set; }
+        public bool IsXPeriodActive
+        {
+            get => _isXPeriodActive;
+            set => SetProperty(ref _isXPeriodActive, value, nameof(IsXPeriodActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is turbulence size active.
+        /// The is y period active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is turbulence size active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsTurbulenceSizeActive { get; set; }
+        private bool _isYPeriodActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is base color active.
+        /// Gets or sets a value indicating whether this instance is y period active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is base color active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is y period active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsBaseColorActive { get; set; }
+        public bool IsYPeriodActive
+        {
+            get => _isYPeriodActive;
+            set => SetProperty(ref _isYPeriodActive, value, nameof(IsYPeriodActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is monochrome active.
+        /// The is turbulence power active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is monochrome active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMonochromeActive { get; set; }
+        private bool _isTurbulencePowerActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is tiled active.
+        /// Gets or sets a value indicating whether this instance is turbulence power active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is tiled active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is turbulence power active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsTiledActive { get; set; }
+        public bool IsTurbulencePowerActive
+        {
+            get => _isTurbulencePowerActive;
+            set => SetProperty(ref _isTurbulencePowerActive, value, nameof(IsTurbulencePowerActive));
+        }
+
+        private bool _isTurbulenceSizeActive;
+
+        public bool IsTurbulenceSizeActive
+        {
+            get => _isTurbulenceSizeActive;
+            set => SetProperty(ref _isTurbulenceSizeActive, value, nameof(IsTurbulenceSizeActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is use smooth noise active.
+        /// The is base color active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is use smooth noise active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsUseSmoothNoiseActive { get; set; }
+        private bool _isBaseColorActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is use turbulence active.
+        /// Gets or sets a value indicating whether this instance is base color active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is use turbulence active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is base color active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsUseTurbulenceActive { get; set; }
+        public bool IsBaseColorActive
+        {
+            get => _isBaseColorActive;
+            set => SetProperty(ref _isBaseColorActive, value, nameof(IsBaseColorActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is xy period active.
+        /// The is monochrome active
+        /// </summary>
+        private bool _isMonochromeActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is monochrome active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is xy period active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is monochrome active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsXyPeriodActive { get; set; }
+        public bool IsMonochromeActive
+        {
+            get => _isMonochromeActive;
+            set => SetProperty(ref _isMonochromeActive, value, nameof(IsMonochromeActive));
+        }
+
+        /// <summary>
+        /// The is tiled active
+        /// </summary>
+        private bool _isTiledActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is tiled active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is tiled active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsTiledActive
+        {
+            get => _isTiledActive;
+            set => SetProperty(ref _isTiledActive, value, nameof(IsTiledActive));
+        }
+
+        /// <summary>
+        /// The is use smooth noise active
+        /// </summary>
+        private bool _isUseSmoothNoiseActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is use smooth noise active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is use smooth noise active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsUseSmoothNoiseActive
+        {
+            get => _isUseSmoothNoiseActive;
+            set => SetProperty(ref _isUseSmoothNoiseActive, value, nameof(IsUseSmoothNoiseActive));
+        }
+
+        /// <summary>
+        /// The is use turbulence active
+        /// </summary>
+        private bool _isUseTurbulenceActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is use turbulence active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is use turbulence active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsUseTurbulenceActive
+        {
+            get => _isUseTurbulenceActive;
+            set => SetProperty(ref _isUseTurbulenceActive, value, nameof(IsUseTurbulenceActive));
+        }
+
+        /// <summary>
+        /// The is xy period active
+        /// </summary>
+        private bool _isXyPeriodActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is xy period active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is xy period active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsXyPeriodActive
+        {
+            get => _isXyPeriodActive;
+            set => SetProperty(ref _isXyPeriodActive, value, nameof(IsXyPeriodActive));
+        }
+
+        /// <summary>
+        /// The is randomization factor active
+        /// </summary>
+        private bool _isRandomizationFactorActive;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is randomization factor active.
@@ -604,7 +707,16 @@ namespace SlimViews.Tooling
         /// <value>
         ///   <c>true</c> if this instance is randomization factor active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsRandomizationFactorActive { get; set; }
+        public bool IsRandomizationFactorActive
+        {
+            get => _isRandomizationFactorActive;
+            set => SetProperty(ref _isRandomizationFactorActive, value, nameof(IsRandomizationFactorActive));
+        }
+
+        /// <summary>
+        /// The is edge jaggedness limit active
+        /// </summary>
+        private bool _isEdgeJaggednessLimitActive;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is edge jaggedness limit active.
@@ -612,7 +724,16 @@ namespace SlimViews.Tooling
         /// <value>
         ///   <c>true</c> if this instance is edge jaggedness limit active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsEdgeJaggednessLimitActive { get; set; }
+        public bool IsEdgeJaggednessLimitActive
+        {
+            get => _isEdgeJaggednessLimitActive;
+            set => SetProperty(ref _isEdgeJaggednessLimitActive, value, nameof(IsEdgeJaggednessLimitActive));
+        }
+
+        /// <summary>
+        /// The is jaggedness threshold active
+        /// </summary>
+        private bool _isJaggednessThresholdActive;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is jaggedness threshold active.
@@ -620,7 +741,16 @@ namespace SlimViews.Tooling
         /// <value>
         ///   <c>true</c> if this instance is jaggedness threshold active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsJaggednessThresholdActive { get; set; }
+        public bool IsJaggednessThresholdActive
+        {
+            get => _isJaggednessThresholdActive;
+            set => SetProperty(ref _isJaggednessThresholdActive, value, nameof(IsJaggednessThresholdActive));
+        }
+
+        /// <summary>
+        /// The is wave frequency active
+        /// </summary>
+        private bool _isWaveFrequencyActive;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is wave frequency active.
@@ -628,7 +758,16 @@ namespace SlimViews.Tooling
         /// <value>
         ///   <c>true</c> if this instance is wave frequency active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsWaveFrequencyActive { get; set; }
+        public bool IsWaveFrequencyActive
+        {
+            get => _isWaveFrequencyActive;
+            set => SetProperty(ref _isWaveFrequencyActive, value, nameof(IsWaveFrequencyActive));
+        }
+
+        /// <summary>
+        /// The is wave amplitude active
+        /// </summary>
+        private bool _isWaveAmplitudeActive;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is wave amplitude active.
@@ -636,87 +775,98 @@ namespace SlimViews.Tooling
         /// <value>
         ///   <c>true</c> if this instance is wave amplitude active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsWaveAmplitudeActive { get; set; }
+        public bool IsWaveAmplitudeActive
+        {
+            get => _isWaveAmplitudeActive;
+            set => SetProperty(ref _isWaveAmplitudeActive, value, nameof(IsWaveAmplitudeActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is line spacing active.
+        /// The is line spacing active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is line spacing active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsLineSpacingActive { get; set; }
+        private bool _isLineSpacingActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is line color active.
+        /// Gets or sets a value indicating whether this instance is line spacing active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is line color active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is line spacing active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsLineColorActive { get; set; }
+        public bool IsLineSpacingActive
+        {
+            get => _isLineSpacingActive;
+            set => SetProperty(ref _isLineSpacingActive, value, nameof(IsLineSpacingActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is line thickness active.
+        /// The is line color active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is line thickness active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsLineThicknessActive { get; set; }
+        private bool _isLineColorActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is angle1 active.
+        /// Gets or sets a value indicating whether this instance is line color active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is angle1 active; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is line color active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsAnglePrimaryActive { get; set; }
+        public bool IsLineColorActive
+        {
+            get => _isLineColorActive;
+            set => SetProperty(ref _isLineColorActive, value, nameof(IsLineColorActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is angle2 active.
+        /// The is line thickness active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is angle2 active; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAngleSecondaryActive { get; set; }
+        private bool _isLineThicknessActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is jaggedness threshold.
+        /// Gets or sets a value indicating whether this instance is line thickness active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is jaggedness threshold; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is line thickness active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsJaggednessThreshold { get; set; }
+        public bool IsLineThicknessActive
+        {
+            get => _isLineThicknessActive;
+            set => SetProperty(ref _isLineThicknessActive, value, nameof(IsLineThicknessActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is edge jaggedness limit.
+        /// The is angle primary active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is edge jaggedness limit; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsEdgeJaggednessLimit { get; set; }
+        private bool _isAnglePrimaryActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is randomization factor.
+        /// Gets or sets a value indicating whether this instance is angle primary active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is randomization factor; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is angle primary active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsRandomizationFactor { get; set; }
+        public bool IsAnglePrimaryActive
+        {
+            get => _isAnglePrimaryActive;
+            set => SetProperty(ref _isAnglePrimaryActive, value, nameof(IsAnglePrimaryActive));
+        }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is wave amplitude.
+        /// The is angle secondary active
         /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is wave amplitude; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsWaveAmplitude { get; set; }
+        private bool _isAngleSecondaryActive;
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is wave frequency.
+        /// Gets or sets a value indicating whether this instance is angle secondary active.
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is wave frequency; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is angle secondary active; otherwise, <c>false</c>.
         /// </value>
-        public bool IsWaveFrequency { get; set; }
+        public bool IsAngleSecondaryActive
+        {
+            get => _isAngleSecondaryActive;
+            set => SetProperty(ref _isAngleSecondaryActive, value, nameof(IsAngleSecondaryActive));
+        }
+
+        // --- Command area ---
 
         /// <summary>
         ///     Gets the save command.
@@ -748,7 +898,7 @@ namespace SlimViews.Tooling
         /// <param name="command">The command.</param>
         /// <param name="execute">The execute.</param>
         /// <returns>The selected Command</returns>
-        private ICommand GetCommand(ref ICommand command, Action<object> execute)
+        private ICommand GetCommand(ref ICommand? command, Action<object> execute)
         {
             return command ??= new DelegateCommand<object>(execute, CanExecute);
         }
@@ -820,38 +970,6 @@ namespace SlimViews.Tooling
             IsAngleSecondaryActive = usedProperties.Contains(nameof(AngleSecondary));
 
             var savedSettings = ImageProcessor.Render.ImageSettings.GetSettings(SelectedTexture);
-
-            RaiseAllActivePropertiesChanged();
-        }
-
-        /// <summary>
-        /// Raises all active properties changed.
-        /// </summary>
-        private void RaiseAllActivePropertiesChanged()
-        {
-            OnPropertyChanged(nameof(IsMinValueActive));
-            OnPropertyChanged(nameof(IsMaxValueActive));
-            OnPropertyChanged(nameof(IsAlphaActive));
-            OnPropertyChanged(nameof(IsXPeriodActive));
-            OnPropertyChanged(nameof(IsYPeriodActive));
-            OnPropertyChanged(nameof(IsTurbulencePowerActive));
-            OnPropertyChanged(nameof(IsTurbulenceSizeActive));
-            OnPropertyChanged(nameof(IsBaseColorActive));
-            OnPropertyChanged(nameof(IsMonochromeActive));
-            OnPropertyChanged(nameof(IsTiledActive));
-            OnPropertyChanged(nameof(IsUseSmoothNoiseActive));
-            OnPropertyChanged(nameof(IsUseTurbulenceActive));
-            OnPropertyChanged(nameof(IsXyPeriodActive));
-            OnPropertyChanged(nameof(IsRandomizationFactorActive));
-            OnPropertyChanged(nameof(IsEdgeJaggednessLimitActive));
-            OnPropertyChanged(nameof(IsJaggednessThresholdActive));
-            OnPropertyChanged(nameof(IsWaveFrequencyActive));
-            OnPropertyChanged(nameof(IsWaveAmplitudeActive));
-            OnPropertyChanged(nameof(IsLineSpacingActive));
-            OnPropertyChanged(nameof(IsLineColorActive));
-            OnPropertyChanged(nameof(IsLineThicknessActive));
-            OnPropertyChanged(nameof(IsAnglePrimaryActive));
-            OnPropertyChanged(nameof(IsAngleSecondaryActive));
         }
 
         /// <summary>
@@ -901,7 +1019,7 @@ namespace SlimViews.Tooling
         /// Maps a configuration object's values to the ViewModel properties.
         /// </summary>
         /// <param name="config">The configuration to load.</param>
-        private void LoadFromConfig(TextureConfiguration config)
+        private void LoadFromConfig(TextureConfiguration? config)
         {
             if (config == null) return;
 

@@ -62,6 +62,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" FontWeight="Bold" Text="Texture Type" Margin="0,5" />
+                <!-- ReSharper disable once Xaml.BindingWithoutContextNotResolved -->
                 <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding TextureOptions}"
                           SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}"
                           ToolTip="Select the pattern algorithm to configure" />

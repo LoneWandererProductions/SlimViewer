@@ -498,7 +498,7 @@ namespace Imaging
         /// <summary>
         ///     The texture setting
         /// </summary>
-        public static ConcurrentDictionary<TextureType, TextureConfiguration> TextureSetting { get; set; } = new();
+        public static ConcurrentDictionary<TextureType, TextureConfiguration?> TextureSetting { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the count of retries.
@@ -553,7 +553,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>Get the Setting based on Filter</returns>
-        public TextureConfiguration GetSettings(TextureType filter)
+        public TextureConfiguration? GetSettings(TextureType filter)
         {
             return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfiguration();
         }
@@ -563,7 +563,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The configuration.</param>
-        public void SetSettings(TextureType filter, TextureConfiguration config)
+        public void SetSettings(TextureType filter, TextureConfiguration? config)
         {
             TextureSetting[filter] = config;
         }

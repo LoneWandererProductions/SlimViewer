@@ -17,6 +17,9 @@ namespace SlimViews.Tooling
     /// </summary>
     public sealed partial class TextureConfig
     {
+        /// <summary>
+        /// The view model
+        /// </summary>
         private readonly TextureConfigView _viewModel;
 
         /// <inheritdoc />
