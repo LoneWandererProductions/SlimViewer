@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        ExtendedSystemObjects.Helper/SharedResources.cs
  * PURPOSE:     Generic System Functions for ListsCollection of Strings and constants.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace ExtendedSystemObjects.Helper
@@ -47,29 +47,5 @@ namespace ExtendedSystemObjects.Helper
         ///     Separator(const). Value: " , ".
         /// </summary>
         internal const string Separator = " , ";
-
-        /// <summary>
-        ///     The empty flag.
-        /// </summary>
-        internal const byte Empty = 0;
-
-        /// <summary>
-        ///     The occupied flag.
-        /// </summary>
-        internal const byte Occupied = 1;
-
-        /// <summary>
-        ///     The tombstone flag.
-        /// </summary>
-        internal const byte Tombstone = 2;
-
-        /// <summary>
-        ///     The small primes collection, is used in fast ImmutableLookupMap and ImmutableLookupMapUnmanaged.
-        /// </summary>
-        internal static readonly int[] SmallPrimes =
-        {
-            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
-            103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199
-        };
     }
 }

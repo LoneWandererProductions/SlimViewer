@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        FiltersStream.cs
  * PURPOSE:     Separate out all Filter Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global
@@ -56,7 +56,7 @@ namespace Imaging.Helpers
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException"></exception>
-        internal static Bitmap? FilterImage(Bitmap image, FiltersType filter, ImageRegister imageSettings = null)
+        internal static Bitmap? FilterImage(Bitmap? image, FiltersType filter, ImageRegister? imageSettings = null)
         {
             ImageHelper.ValidateImage(nameof(FilterImage), image);
 
@@ -111,28 +111,28 @@ namespace Imaging.Helpers
                     break;
                 // New convolution-based filters
                 case FiltersType.Sharpen:
-                    settings = _imageSettings?.GetSettings(FiltersType.Sharpen);
+                    settings = _imageSettings.GetSettings(FiltersType.Sharpen);
                     return ApplyFilter(image, _imageSettings?.SharpenFilter, settings.Factor, settings.Bias);
                 case FiltersType.GaussianBlur:
-                    settings = _imageSettings?.GetSettings(FiltersType.GaussianBlur);
+                    settings = _imageSettings.GetSettings(FiltersType.GaussianBlur);
                     return ApplyFilter(image, _imageSettings?.GaussianBlur, settings.Factor, settings.Bias);
                 case FiltersType.Emboss:
-                    settings = _imageSettings?.GetSettings(FiltersType.Emboss);
+                    settings = _imageSettings.GetSettings(FiltersType.Emboss);
                     return ApplyFilter(image, _imageSettings?.EmbossFilter, settings.Factor, settings.Bias);
                 case FiltersType.BoxBlur:
-                    settings = _imageSettings?.GetSettings(FiltersType.BoxBlur);
+                    settings = _imageSettings.GetSettings(FiltersType.BoxBlur);
                     return ApplyFilter(image, _imageSettings?.BoxBlur, settings.Factor, settings.Bias);
                 case FiltersType.Laplacian:
-                    settings = _imageSettings?.GetSettings(FiltersType.Laplacian);
+                    settings = _imageSettings.GetSettings(FiltersType.Laplacian);
                     return ApplyFilter(image, _imageSettings?.LaplacianFilter, settings.Factor, settings.Bias);
                 case FiltersType.EdgeEnhance:
-                    settings = _imageSettings?.GetSettings(FiltersType.EdgeEnhance);
+                    settings = _imageSettings.GetSettings(FiltersType.EdgeEnhance);
                     return ApplyFilter(image, _imageSettings?.EdgeEnhance, settings.Factor, settings.Bias);
                 case FiltersType.MotionBlur:
-                    settings = _imageSettings?.GetSettings(FiltersType.MotionBlur);
+                    settings = _imageSettings.GetSettings(FiltersType.MotionBlur);
                     return ApplyFilter(image, _imageSettings?.MotionBlur, settings.Factor, settings.Bias);
                 case FiltersType.UnsharpMask:
-                    settings = _imageSettings?.GetSettings(FiltersType.UnsharpMask);
+                    settings = _imageSettings.GetSettings(FiltersType.UnsharpMask);
                     return ApplyFilter(image, _imageSettings?.UnsharpMask, settings.Factor, settings.Bias);
                 // custom Filter
                 case FiltersType.DifferenceOfGaussians:
@@ -206,7 +206,7 @@ namespace Imaging.Helpers
         ///     Optional bias added to filtered value (default 0.0).
         /// </param>
         /// <returns>A new Bitmap containing the filtered image.</returns>
-        private static Bitmap ApplyFilter(Image sourceBitmap, double[,] filterMatrix, double factor = 1.0,
+        private static Bitmap? ApplyFilter(Image? sourceBitmap, double[,]? filterMatrix, double factor = 1.0,
             double bias = 0.0)
         {
             // Convert source to unmanaged buffer for fast pixel access
@@ -268,7 +268,7 @@ namespace Imaging.Helpers
         /// <param name="image">The input image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Image image, int stepWidth)
+        internal static Bitmap Pixelate(Image? image, int stepWidth)
         {
             if (image == null)
             {
@@ -311,7 +311,7 @@ namespace Imaging.Helpers
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Contour of an Image</returns>
-        private static Bitmap ApplySobel(Bitmap originalImage)
+        private static Bitmap? ApplySobel(Bitmap? originalImage)
         {
             var greyscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
 
@@ -364,7 +364,7 @@ namespace Imaging.Helpers
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyDifferenceOfGaussians(Image image)
+        private static Bitmap ApplyDifferenceOfGaussians(Image? image)
         {
             // Gaussian blur with small sigma
             var gaussianBlurSmall = ImageHelper.GenerateGaussianKernel(1.0, 5);
@@ -385,7 +385,7 @@ namespace Imaging.Helpers
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyCrosshatch(Image image)
+        private static Bitmap ApplyCrosshatch(Image? image)
         {
             // Apply the 45-degree and 135-degree filters
             var hatch45 = ApplyFilter(image, _imageSettings.Kernel45Degrees);
@@ -401,7 +401,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="baseWindowSize">Size of the base window.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap? ApplyAnisotropicKuwahara(Bitmap image, int baseWindowSize = 5)
+        private static Bitmap? ApplyAnisotropicKuwahara(Bitmap? image, int baseWindowSize = 5)
         {
             var dbmBase = new DirectBitmap(image);
             var dbm = new DirectBitmap(image.Width, image.Height);
@@ -449,7 +449,7 @@ namespace Imaging.Helpers
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyFloydSteinbergDithering(Bitmap image)
+        private static Bitmap? ApplyFloydSteinbergDithering(Bitmap? image)
         {
             var dbmBase = new DirectBitmap(image);
             var dbm = new DirectBitmap(image.Width, image.Height);
@@ -492,7 +492,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="scale">The scale.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplySupersamplingAntialiasing(Bitmap image, int scale = 1)
+        private static Bitmap? ApplySupersamplingAntialiasing(Bitmap? image, int scale = 1)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(scale);
 
@@ -558,7 +558,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="sigma">The sigma.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyPostProcessingAntialiasing(Bitmap image, double sigma = 1.0)
+        private static Bitmap? ApplyPostProcessingAntialiasing(Bitmap? image, double sigma = 1.0)
         {
             // Convert the image to DirectBitmap
             var dbmBase = new DirectBitmap(image);
@@ -575,7 +575,7 @@ namespace Imaging.Helpers
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Filtered Image</returns>
-        public static Bitmap PencilSketchEffect(Bitmap originalImage)
+        public static Bitmap PencilSketchEffect(Bitmap? originalImage)
         {
             // Step 1: Convert to Grayscale
             var grayscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
@@ -904,7 +904,7 @@ namespace Imaging.Helpers
         /// <param name="imgOne">The img1.</param>
         /// <param name="imgTwo">The img2.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap? SubtractImages(Image imgOne, Image imgTwo)
+        private static Bitmap? SubtractImages(Image? imgOne, Image? imgTwo)
         {
             var dbm = new DirectBitmap(imgOne.Width, imgOne.Height);
             // Prepare a list to store the pixels to set in bulk using SIMD

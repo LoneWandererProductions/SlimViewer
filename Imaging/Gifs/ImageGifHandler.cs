@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Gifs
  * FILE:        ImageGifHandler.cs
  * PURPOSE:     Some processing stuff for Gif Images, not perfect, the files are slightly bigger though.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
  *              https://debugandrelease.blogspot.com/2018/12/creating-gifs-in-c.html
  *              http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
@@ -12,7 +12,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using ExtendedSystemObjects;
 using Imaging.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -101,7 +100,7 @@ namespace Imaging.Gifs
                     // The disposal method is usually the 4th byte of the property data
                     var disposalMethod = disposalProperty.Value[i * 4 + 3];
 
-                    // If Disposal Method is 2 (Restore to Background), 
+                    // If Disposal Method is 2 (Restore to Background),
                     // we have to clear the canvas back to Gray before drawing this frame
                     if (disposalMethod == 2)
                     {
@@ -114,8 +113,8 @@ namespace Imaging.Gifs
                     // Snapshot the result
                     frames.Add(new Bitmap(masterCanvas));
 
-                    // If the disposal method was 3 (Restore to Previous), 
-                    // technically we should undo the last draw, but Method 2 is the 
+                    // If the disposal method was 3 (Restore to Previous),
+                    // technically we should undo the last draw, but Method 2 is the
                     // one that usually causes the "white hole" issue.
                 }
 
@@ -145,8 +144,8 @@ namespace Imaging.Gifs
                 var decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat,
                     BitmapCacheOption.OnLoad);
 
-                int width = decoder.Frames[0].PixelWidth;
-                int height = decoder.Frames[0].PixelHeight;
+                var width = decoder.Frames[0].PixelWidth;
+                var height = decoder.Frames[0].PixelHeight;
 
                 var composed = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
 
@@ -156,18 +155,18 @@ namespace Imaging.Gifs
                 WriteableBitmap? previousFrameBackup = null;
 
                 int prevLeft = 0, prevTop = 0, prevWidth = 0, prevHeight = 0;
-                int prevDisposal = 0;
+                var prevDisposal = 0;
 
                 foreach (var frame in decoder.Frames)
                 {
                     var metadata = frame.Metadata as BitmapMetadata;
 
-                    int left = ImageGifHelper.GetShort(metadata, "/imgdesc/Left");
-                    int top = ImageGifHelper.GetShort(metadata, "/imgdesc/Top");
-                    int disposal = ImageGifHelper.GetShort(metadata, "/grctlext/Disposal");
+                    var left = ImageGifHelper.GetShort(metadata, "/imgdesc/Left");
+                    var top = ImageGifHelper.GetShort(metadata, "/imgdesc/Top");
+                    var disposal = ImageGifHelper.GetShort(metadata, "/grctlext/Disposal");
 
-                    int frameWidth = frame.PixelWidth;
-                    int frameHeight = frame.PixelHeight;
+                    var frameWidth = frame.PixelWidth;
+                    var frameHeight = frame.PixelHeight;
 
                     // 🔁 1. Apply previous disposal
                     switch (prevDisposal)
@@ -239,7 +238,7 @@ namespace Imaging.Gifs
             //collect and convert all images
             var btm = lst.ConvertAll(ImageStream.GetOriginalBitmap);
 
-            if (btm.IsNullOrEmpty())
+            if (btm == null || btm.Count == 0)
             {
                 return;
             }
@@ -258,7 +257,7 @@ namespace Imaging.Gifs
             //collect and convert all images
             var btm = path.ConvertAll(ImageStream.GetOriginalBitmap);
 
-            if (btm.IsNullOrEmpty())
+            if (btm == null || btm.Count == 0)
             {
                 return;
             }
@@ -368,21 +367,23 @@ namespace Imaging.Gifs
 
             // NETSCAPE2.0 Application Extension (loops forever)
             var applicationExtension = new byte[]
-                { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+            {
+                33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0
+            };
 
             // GIF Header (6) + Logical Screen Descriptor (7) = 13 bytes
-            int insertionIndex = 13;
+            var insertionIndex = 13;
 
-            // Byte 10 contains the packed fields. 
+            // Byte 10 contains the packed fields.
             // Bit 7 (0x80) indicates if a Global Color Table (GCT) is present.
-            bool hasGlobalColorTable = (fileBytes[10] & 0x80) != 0;
+            var hasGlobalColorTable = (fileBytes[10] & 0x80) != 0;
 
             if (hasGlobalColorTable)
             {
                 // The size of the GCT is determined by the lower 3 bits of byte 10.
                 // Size = 3 * 2^(value + 1)
-                int gctSizeValue = fileBytes[10] & 0x07;
-                int gctSize = 3 * (1 << (gctSizeValue + 1));
+                var gctSizeValue = fileBytes[10] & 0x07;
+                var gctSize = 3 * (1 << (gctSizeValue + 1));
 
                 // Push the insertion index past the Global Color Table
                 insertionIndex += gctSize;

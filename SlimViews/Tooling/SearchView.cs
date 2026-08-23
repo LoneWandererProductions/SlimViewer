@@ -13,10 +13,11 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Extended.Extensions;
 using ExtendedSystemObjects;
 using FileHandler;
-using ImageCompare;
 using Imaging;
+using Imaging.Compare;
 using ViewModel;
 
 namespace SlimViews.Tooling

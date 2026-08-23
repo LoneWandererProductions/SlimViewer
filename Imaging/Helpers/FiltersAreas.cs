@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        FilterType.cs
  * PURPOSE:     Provide filters for certain areas
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
@@ -36,12 +36,12 @@ namespace Imaging.Helpers
         ///     or
         ///     shape - null
         /// </exception>
-        internal static Bitmap? GenerateFilter(Bitmap image,
+        internal static Bitmap? GenerateFilter(Bitmap? image,
             int? width,
             int? height,
             FiltersType filter,
             MaskShape shape,
-            ImageRegister imageSettings,
+            ImageRegister? imageSettings,
             object? shapeParams = null,
             Point? startPoint = null)
         {

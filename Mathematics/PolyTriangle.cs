@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        PolyTriangle.cs
  * PURPOSE:     Helper Object to handle the description of the 3d object. It also supports more than 3 Vectors, in case we want to go full polygon.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;
@@ -168,7 +168,7 @@ namespace Mathematics
         /// </returns>
         public override int GetHashCode()
         {
-            // Safely combine the hashes of up to the first 3 vertices 
+            // Safely combine the hashes of up to the first 3 vertices
             // to drastically reduce hash collisions for connected geometry.
             if (VertexCount >= 3)
                 return HashCode.Combine(Vertices[0], Vertices[1], Vertices[2]);

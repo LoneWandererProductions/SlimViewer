@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Gifs
  * FILE:        ImageGifHelper.cs
  * PURPOSE:     Some Helpers for ImageGif.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows;
@@ -11,6 +11,9 @@ using System.Windows.Media.Imaging;
 
 namespace Imaging.Gifs
 {
+    /// <summary>
+    /// Shared methods for gif handling.
+    /// </summary>
     internal static class ImageGifHelper
     {
         /// <summary>
@@ -37,8 +40,8 @@ namespace Imaging.Gifs
         /// <param name="bmp">The BMP.</param>
         internal static void ClearBitmap(WriteableBitmap bmp)
         {
-            int stride = bmp.PixelWidth * 4;
-            byte[] clear = new byte[stride * bmp.PixelHeight];
+            var stride = bmp.PixelWidth * 4;
+            var clear = new byte[stride * bmp.PixelHeight];
 
             bmp.WritePixels(
                 new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight),
@@ -57,8 +60,8 @@ namespace Imaging.Gifs
         /// <param name="h">The h.</param>
         internal static void ClearRegion(WriteableBitmap bmp, int x, int y, int w, int h)
         {
-            int stride = w * 4;
-            byte[] clear = new byte[stride * h];
+            var stride = w * 4;
+            var clear = new byte[stride * h];
 
             bmp.WritePixels(
                 new Int32Rect(x, y, w, h),
@@ -74,8 +77,8 @@ namespace Imaging.Gifs
         /// <param name="dst">The DST.</param>
         internal static void CopyBitmap(WriteableBitmap src, WriteableBitmap dst)
         {
-            int stride = src.PixelWidth * 4;
-            byte[] buffer = new byte[stride * src.PixelHeight];
+            var stride = src.PixelWidth * 4;
+            var buffer = new byte[stride * src.PixelHeight];
 
             src.CopyPixels(buffer, stride, 0);
 
@@ -95,14 +98,14 @@ namespace Imaging.Gifs
         /// <param name="offsetY">The offset y.</param>
         internal static void BlendFrame(WriteableBitmap target, BitmapSource frame, int offsetX, int offsetY)
         {
-            int w = frame.PixelWidth;
-            int h = frame.PixelHeight;
+            var w = frame.PixelWidth;
+            var h = frame.PixelHeight;
 
-            int stride = w * 4;
-            byte[] srcPixels = new byte[stride * h];
+            var stride = w * 4;
+            var srcPixels = new byte[stride * h];
             frame.CopyPixels(srcPixels, stride, 0);
 
-            byte[] dstPixels = new byte[stride * h];
+            var dstPixels = new byte[stride * h];
 
             target.CopyPixels(
                 new Int32Rect(offsetX, offsetY, w, h),
@@ -110,9 +113,9 @@ namespace Imaging.Gifs
                 stride,
                 0);
 
-            for (int i = 0; i < srcPixels.Length; i += 4)
+            for (var i = 0; i < srcPixels.Length; i += 4)
             {
-                byte a = srcPixels[i + 3];
+                var a = srcPixels[i + 3];
 
                 if (a == 255)
                 {
@@ -125,7 +128,7 @@ namespace Imaging.Gifs
                 else if (a > 0)
                 {
                     // alpha blend
-                    float alpha = a / 255f;
+                    var alpha = a / 255f;
 
                     dstPixels[i + 0] = (byte)(srcPixels[i + 0] * alpha + dstPixels[i + 0] * (1 - alpha));
                     dstPixels[i + 1] = (byte)(srcPixels[i + 1] * alpha + dstPixels[i + 1] * (1 - alpha));

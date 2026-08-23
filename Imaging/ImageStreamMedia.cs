@@ -1,9 +1,9 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageStreamMedia.cs
+ * FILE:        ImageStreamMedia.cs
  * PURPOSE:     Does all the leg work for the Image operations, in this case the newer Media.Imaging
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
  */
 
@@ -42,7 +42,7 @@ namespace Imaging
             try
             {
                 // 1. Read all bytes into memory immediately
-                byte[] buffer = File.ReadAllBytes(path);
+                var buffer = File.ReadAllBytes(path);
 
                 using var ms = new MemoryStream(buffer);
                 var bmp = new BitmapImage();
@@ -121,7 +121,7 @@ namespace Imaging
         /// <param name="image">Source image.</param>
         /// <returns>A <see cref="Bitmap"/>.</returns>
         /// <exception cref="ArgumentNullException">If image is null.</exception>
-        internal static Bitmap BitmapImageToBitmap(BitmapImage image)
+        internal static Bitmap? BitmapImageToBitmap(BitmapImage image)
         {
             ImageHelper.ValidateImage(nameof(BitmapImageToBitmap), image);
 
@@ -142,14 +142,14 @@ namespace Imaging
         /// <param name="bitmap">The source bitmap.</param>
         /// <returns>A <see cref="BitmapImage"/>.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
+        internal static BitmapImage BitmapToBitmapImage(Bitmap? bitmap)
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 
             var width = bitmap.Width;
             var height = bitmap.Height;
 
-            // 1. Memory Copy to WriteableBitmap (Your efficient logic)
+            // 1. Direct Memory Copy to WriteableBitmap (Your efficient pointer logic)
             var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var rect = new Rectangle(0, 0, width, height);
             var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
@@ -169,20 +169,21 @@ namespace Imaging
             var bitmapImage = new BitmapImage();
             using (var stream = new MemoryStream())
             {
-                // BMP Encoder is leaner and faster than PNG for internal memory swaps
-                var encoder = new BmpBitmapEncoder();
+                // THE GRIP: Changed from BmpBitmapEncoder to PngBitmapEncoder.
+                // PNG natively handles Bgra32 transparency channels without dropping pixel arrays.
+                var encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(wbmp));
                 encoder.Save(stream);
                 stream.Position = 0;
 
                 bitmapImage.BeginInit();
                 bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // Forces synchronous load before stream closure
                 bitmapImage.StreamSource = stream;
                 bitmapImage.EndInit();
             }
 
-            bitmapImage.Freeze();
+            bitmapImage.Freeze(); // Detach thread affinity for safe UI thread rendering
             return bitmapImage;
         }
 

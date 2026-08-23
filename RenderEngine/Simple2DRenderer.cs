@@ -8,17 +8,22 @@
  *              - Origin Top-left
  *              - flipY = true → OpenGL default (bottom-left origin)
  *              - flipY = false → software-like top-left origin
- * TODO:        - Add dynamic resizing support
  *              - Consider batching multiple quads/lines for performance
  *              - Add optional Y-flip mode for top-left origin
  *              - Add text rendering
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 using OpenTK.Graphics.OpenGL4;
 using System;
+using System.Diagnostics;
+
 
 namespace RenderEngine
 {
+    ///<inheritdoc/>
     /// <summary>
     /// Simple GPU-accelerated 2D renderer for colored lines, solid quads, and textured quads.
     /// </summary>
@@ -30,7 +35,7 @@ namespace RenderEngine
         /// <value>
         /// The width.
         /// </value>
-        public int Width { get; }
+        public int Width { get; private set; }
 
         /// <summary>
         /// The height of the viewport.
@@ -38,26 +43,107 @@ namespace RenderEngine
         /// <value>
         /// The height.
         /// </value>
-        public int Height { get; }
+        public int Height { get; private set; }
 
+        /// <summary>
+        /// The resources
+        /// </summary>
         private readonly GlResourceManager _resources;
 
-        // Solid VAO/VBO
+        // --- Solid VAO/VBO ---
+
+        /// <summary>
+        /// The vao solid
+        /// </summary>
         private int _vaoSolid;
+
+        /// <summary>
+        /// The vbo solid
+        /// </summary>
         private int _vboSolid;
 
-        // Textured VAO/VBO
+        // --- Textured VAO/VBO ---
+
+        /// <summary>
+        /// The vao tex
+        /// </summary>
         private int _vaoTex;
+
+        /// <summary>
+        /// The vbo tex
+        /// </summary>
         private int _vboTex;
 
+        /// <summary>
+        /// The ui2 d color shader
+        /// </summary>
         private int _ui2DColorShader;
+
+        /// <summary>
+        /// The ui2 d texture shader
+        /// </summary>
         private int _ui2DTextureShader;
 
+        /// <summary>
+        /// The initialized
+        /// </summary>
         private bool _initialized;
 
-        private int _vboSolidCapacity = 4096; // Start with a more reasonable size
+        /// <summary>
+        /// The vbo solid capacity
+        /// </summary>
+        private int _vboSolidCapacity = 4096;
+
+        /// <summary>
+        /// The vbo tex capacity
+        /// </summary>
         private int _vboTexCapacity = 4096;
-        private int _fallbackTextureId = -1; // Caches the checkerboard texture
+
+        /// <summary>
+        /// The fallback texture identifier
+        ///  Caches the checkerboard texture
+        /// </summary>
+        private int _fallbackTextureId = -1;
+
+        // --- 2D TEXT ATLAS REGISTRIES ---
+
+        /// <summary>
+        /// The font texture identifier
+        /// </summary>
+        private int _fontTextureId = -1;
+
+        /// <summary>
+        /// The font cell width
+        /// High-legibility cell metrics
+        /// </summary>
+        private const int FontCellWidth = 12;
+
+        /// <summary>
+        /// The font cell height
+        /// High-legibility cell metrics
+        /// </summary>
+        private const int FontCellHeight = 24;
+
+        /// <summary>
+        /// The font atlas w
+        /// </summary>
+        private float _fontAtlasW;
+
+        /// <summary>
+        /// The font atlas h
+        /// </summary>
+        private float _fontAtlasH;
+
+        /// <summary>
+        /// Dynamically updates the 2D resolution parameters when the host screen or canvas transforms.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        public void Resize(int width, int height)
+        {
+            Width = width;
+            Height = height;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Simple2DRenderer"/> class.
@@ -86,7 +172,7 @@ namespace RenderEngine
             GL.BindVertexArray(_vaoSolid);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
 
-            //Buffer 
+            //Buffer
             // For Solid VBO
             GL.BufferData(BufferTarget.ArrayBuffer, _vboSolidCapacity * sizeof(float), IntPtr.Zero,
                 BufferUsageHint.DynamicDraw);
@@ -122,12 +208,24 @@ namespace RenderEngine
             _initialized = true;
         }
 
+        /// <summary>
+        /// Flushes the specified batch.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
         public void Flush(RenderBatch batch)
         {
             EnsureInitialized();
             FlushBatch(batch);
         }
 
+        /// <summary>
+        /// Draws the line.
+        /// </summary>
+        /// <param name="x0">The x0.</param>
+        /// <param name="y0">The y0.</param>
+        /// <param name="x1">The x1.</param>
+        /// <param name="y1">The y1.</param>
+        /// <param name="color">The color.</param>
         public void DrawLine(
             float x0, float y0,
             float x1, float y1,
@@ -139,6 +237,14 @@ namespace RenderEngine
             });
         }
 
+        /// <summary>
+        /// Draws the rect outline.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="w">The w.</param>
+        /// <param name="h">The h.</param>
+        /// <param name="color">The color.</param>
         public void DrawRectOutline(
             float x, float y,
             float w, float h,
@@ -150,6 +256,11 @@ namespace RenderEngine
             DrawColoredLines(data);
         }
 
+        /// <summary>
+        /// Draws the polyline.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <param name="color">The color.</param>
         public void DrawPolyline(
             ReadOnlySpan<(float x, float y)> points,
             (int r, int g, int b, int a) color)
@@ -244,8 +355,7 @@ namespace RenderEngine
             (int x, int y) p2,
             int textureId)
         {
-            if (textureId < 0)
-                textureId = GetOrCreateCheckerboardTexture();
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             BindShaderAndViewport(_ui2DTextureShader);
@@ -268,7 +378,6 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
-
         /// <summary>
         /// Draws a textured quad using 4 points.
         /// </summary>
@@ -280,8 +389,7 @@ namespace RenderEngine
         public void DrawTexturedQuad((int x, int y) p0, (int x, int y) p1, (int x, int y) p2, (int x, int y) p3,
             int textureId)
         {
-            if (textureId < 0)
-                textureId = GetOrCreateCheckerboardTexture();
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             BindShaderAndViewport(_ui2DTextureShader);
@@ -303,6 +411,14 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Draws the circle outline.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="color">The color.</param>
         public void DrawCircleOutline(
             float cx, float cy,
             float radius,
@@ -315,6 +431,14 @@ namespace RenderEngine
             DrawColoredLines(data);
         }
 
+        /// <summary>
+        /// Draws the solid circle.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="fill">The fill.</param>
         public void DrawSolidCircle(
             float cx, float cy,
             float radius,
@@ -324,6 +448,14 @@ namespace RenderEngine
             DrawSolidEllipse(cx, cy, radius, radius, segments, fill);
         }
 
+        /// <summary>
+        /// Draws the textured circle.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="textureId">The texture identifier.</param>
         public void DrawTexturedCircle(
             float cx, float cy,
             float radius,
@@ -333,6 +465,15 @@ namespace RenderEngine
             DrawTexturedEllipse(cx, cy, radius, radius, segments, textureId);
         }
 
+        /// <summary>
+        /// Draws the solid ellipse.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radiusX">The radius x.</param>
+        /// <param name="radiusY">The radius y.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="fill">The fill.</param>
         public void DrawSolidEllipse(
             float cx, float cy,
             float radiusX, float radiusY,
@@ -398,14 +539,160 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Draws a text string overlay on screen-space coordinates.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="color">The color.</param>
+        /// <param name="fontSize">Size of the font.</param>
+        public void DrawText(string text, float x, float y, (int r, int g, int b, int a) color, int fontSize = 13)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+
+            EnsureInitialized();
+            EnsureFontInitialized();
+
+            BindShaderAndViewport(_ui2DTextureShader);
+            GL.BindVertexArray(_vaoTex);
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, _fontTextureId);
+            GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
+
+            // --- NEW: Apply the color parameter via uniform ---
+            // Make sure "uColor" matches the uniform name in your fragment shader
+            var colorLoc = GL.GetUniformLocation(_ui2DTextureShader, "uColor");
+            if (colorLoc >= 0)
+            {
+                GL.Uniform4(colorLoc, color.r / 255f, color.g / 255f, color.b / 255f, color.a / 255f);
+            }
+
+            //config variables
+            const float charSpacing = 1.0f; // Increase this to spread letters apart
+            const float verticalOffset = 0.0f; // Adjust this if the font is floating too high/low
+            const float inset = 0.25f; // Prevents texture bleeding by shrinking the UV map by half a texel
+
+            var vertexData = new float[text.Length * 24];
+            var idx = 0;
+
+            var scale = (float)fontSize / FontCellHeight;
+            var currentX = x;
+            var currentY = y;
+
+            foreach (var ch in text)
+            {
+                var ascii = (int)ch;
+                if (ascii < 32 || ascii > 126) ascii = 63; // Fallback to '?'
+
+                // Handle newlines
+                if (ch == '\n')
+                {
+                    currentX = x; // Reset to start of line
+                    currentY += (FontCellHeight * scale); // Move down one full line height
+                    continue;
+                }
+
+
+                var charIdx = ascii - 32;
+                var col = charIdx % 16;
+                var row = charIdx / 16;
+
+                // Calculate pixel coordinates for the sub-rectangle
+                var pixelLeft = (col * FontCellWidth) + inset;
+                var pixelRight = ((col + 1) * FontCellWidth) - inset;
+                var pixelTop = (row * FontCellHeight) + inset;
+                var pixelBottom = ((row + 1) * FontCellHeight) - inset;
+
+                // Map to UV space
+                // Compute exact horizontal texture boundaries using TRUE atlas bounds
+                var u0 = pixelLeft / _fontAtlasW;
+                var u1 = pixelRight / _fontAtlasW;
+
+                // Invert V coordinates (1.0f - ...) to flip the texture right-side up!
+                var v0 = 1.0f - (pixelTop / _fontAtlasH);
+                var v1 = 1.0f - (pixelBottom / _fontAtlasH);
+
+                // Physical geometry - Ensure y1 covers the full height
+                var x0 = currentX;
+                var y0 = currentY + verticalOffset;
+                var x1 = currentX + (FontCellWidth * scale);
+                var y1 = currentY + (FontCellHeight * scale) + verticalOffset;
+
+                // --- Triangle 1 (CCW) ---
+                vertexData[idx++] = x0;
+                vertexData[idx++] = y0;
+                vertexData[idx++] = u0;
+                vertexData[idx++] = v0; // Top-Left
+                vertexData[idx++] = x0;
+                vertexData[idx++] = y1;
+                vertexData[idx++] = u0;
+                vertexData[idx++] = v1; // Bottom-Left
+                vertexData[idx++] = x1;
+                vertexData[idx++] = y1;
+                vertexData[idx++] = u1;
+                vertexData[idx++] = v1; // Bottom-Right
+
+                // --- Triangle 2 (CCW) ---
+                vertexData[idx++] = x0;
+                vertexData[idx++] = y0;
+                vertexData[idx++] = u0;
+                vertexData[idx++] = v0; // Top-Left
+                vertexData[idx++] = x1;
+                vertexData[idx++] = y1;
+                vertexData[idx++] = u1;
+                vertexData[idx++] = v1; // Bottom-Right
+                vertexData[idx++] = x1;
+                vertexData[idx++] = y0;
+                vertexData[idx++] = u1;
+                vertexData[idx++] = v0; // Top-Right
+
+                //adjust spacing
+                currentX += (FontCellWidth * scale) + charSpacing;
+            }
+
+            // --- 1. SAVE & ISOLATE STATES FOR 2D OVERLAY ---
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+            // Ensure your buffer capacity and bind your structures as normal
+            EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, vertexData.Length);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, vertexData.Length * sizeof(float), vertexData);
+
+            // --- 2. EXECUTE DRAW ---
+            GL.DrawArrays(PrimitiveType.Triangles, 0, text.Length * 6);
+
+            // --- 3. CLEAN UP & RESTORE STATES FOR 3D ENGINE ---
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+            GL.Disable(EnableCap.Blend);
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            GL.BindVertexArray(0);
+            GL.UseProgram(0);
+        }
+
+        /// <summary>
+        /// Draws the textured ellipse.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radiusX">The radius x.</param>
+        /// <param name="radiusY">The radius y.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="textureId">The texture identifier.</param>
         public void DrawTexturedEllipse(
             float cx, float cy,
             float radiusX, float radiusY,
             int segments,
             int textureId)
         {
-            if (textureId < 0)
-                textureId = GetOrCreateCheckerboardTexture();
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             BindShaderAndViewport(_ui2DTextureShader);
@@ -450,7 +737,6 @@ namespace RenderEngine
                 data[idx++] = v1;
             }
 
-            // FIXED: Using correct texture VBO and capacity
             EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, idx);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -496,6 +782,10 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Flushes the batch.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
         private unsafe void FlushBatch(RenderBatch batch)
         {
             EnsureInitialized();
@@ -563,11 +853,12 @@ namespace RenderEngine
                     var data = dataList.ToArray();
                     EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
 
-                    // Bind the specific texture for this batch
                     GL.ActiveTexture(TextureUnit.Texture0);
 
-                    // Use checkerboard if the texture ID is invalid (< 0)
-                    GL.BindTexture(TextureTarget.Texture2D, texId < 0 ? GetOrCreateCheckerboardTexture() : texId);
+                    // Route 2D batch keys safely through the unified manager
+                    var texToBind = _resources.ResolveTextureId(texId);
+                    GL.BindTexture(TextureTarget.Texture2D, texToBind);
+
                     GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
 
                     // Upload and draw
@@ -583,10 +874,10 @@ namespace RenderEngine
 
         /// <summary>
         /// Reads the current framebuffer into an <see cref="UnmanagedImageBuffer" />.
-        /// This performs a GPU → CPU readback of the active framebuffer.
+        /// This performs a GPU → CPU read back of the active framebuffer.
         /// Result is top-left origin (software style).
         /// </summary>
-        /// <returns></returns>
+        /// <returns>My UnmanagedBuffer Image implementation</returns>
         public UnmanagedImageBuffer CaptureFrame()
         {
             EnsureInitialized();
@@ -671,6 +962,12 @@ namespace RenderEngine
             return texId;
         }
 
+        /// <summary>
+        /// Ensures the buffer capacity.
+        /// </summary>
+        /// <param name="vbo">The vbo.</param>
+        /// <param name="currentCapacity">The current capacity.</param>
+        /// <param name="requiredFloats">The required floats.</param>
         private void EnsureBufferCapacity(int vbo, ref int currentCapacity, int requiredFloats)
         {
             if (requiredFloats <= currentCapacity) return;
@@ -686,27 +983,6 @@ namespace RenderEngine
                 BufferUsageHint.DynamicDraw);
         }
 
-        // FIX 5: Create once and cache
-        public int GetOrCreateCheckerboardTexture()
-        {
-            EnsureInitialized();
-            if (_fallbackTextureId >= 0) return _fallbackTextureId;
-
-            var pixels = new byte[] { 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 255 };
-
-            _fallbackTextureId = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, _fallbackTextureId);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 2, 2, 0,
-                PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
-                (int)TextureMinFilter.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
-                (int)TextureMagFilter.Nearest);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-
-            return _fallbackTextureId;
-        }
-
         /// <summary>
         /// Binds the shader and viewport.
         /// </summary>
@@ -714,7 +990,68 @@ namespace RenderEngine
         private void BindShaderAndViewport(int shaderId)
         {
             GL.UseProgram(shaderId);
-            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), (float)Width, (float)Height);
+            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), Width, (float)Height);
+        }
+
+        /// <summary>
+        /// Generates a static ASCII character texture sheet mapping glyph indices 32 through 126.
+        /// Formatted natively to match your BGRA/RGBA hardware layout.
+        /// </summary>
+        private void EnsureFontInitialized()
+        {
+            if (_fontTextureId > 0) return;
+
+            const int atlasW = FontCellWidth * 16;
+            const int atlasH = FontCellHeight * 6;
+
+            using var bitmap =
+                new System.Drawing.Bitmap(atlasW, atlasH, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = System.Drawing.Graphics.FromImage(bitmap))
+            {
+                g.Clear(System.Drawing.Color.Transparent);
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+
+                // Scaled down to 11f to ensure characters sit perfectly inside the 12x24 pixel limits
+                using var font = new System.Drawing.Font("Consolas", 16f, System.Drawing.FontStyle.Regular,
+                    System.Drawing.GraphicsUnit.Pixel);
+                using var brush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
+
+                //Strips out layout margins so characters align strictly to grid squares
+                var strictFormat = System.Drawing.StringFormat.GenericTypographic;
+
+                var charIdx = 32;
+                for (var row = 0; row < 6; row++)
+                {
+                    for (var col = 0; col < 16; col++)
+                    {
+                        if (charIdx > 126) break;
+
+                        var symbol = ((char)charIdx).ToString();
+                        g.DrawString(symbol, font, brush, col * FontCellWidth, row * FontCellHeight, strictFormat);
+                        charIdx++;
+                    }
+                }
+            }
+
+            var imgBuffer = new UnmanagedImageBuffer(atlasW, atlasH);
+            var rect = new System.Drawing.Rectangle(0, 0, atlasW, atlasH);
+            var bmpData = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            unsafe
+            {
+                var srcSpan = new ReadOnlySpan<byte>((void*)bmpData.Scan0, atlasW * atlasH * 4);
+                srcSpan.CopyTo(imgBuffer.BufferSpan);
+            }
+
+            //Debug: Save the font atlas to a PNG file for verification
+            //bitmap.Save(@"font_atlas_diagnostic.png", System.Drawing.Imaging.ImageFormat.Png);
+            bitmap.UnlockBits(bmpData);
+
+            _fontTextureId = UploadImage(imgBuffer, linearFilter: false);
+            Trace.WriteLine($"Font Texture ID allocated as: {_fontTextureId}");
+            _fontAtlasW = atlasW;
+            _fontAtlasH = atlasH;
         }
 
         /// <summary>

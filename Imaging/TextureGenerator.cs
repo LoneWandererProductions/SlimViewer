@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        TextureGenerator.cs
  * PURPOSE:     Generate some textures
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global
@@ -36,7 +36,7 @@ namespace Imaging
         /// <value>
         ///     The image settings.
         /// </value>
-        private ImageRegister ImageSettings { get; }
+        private ImageRegister? ImageSettings { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -49,7 +49,7 @@ namespace Imaging
         /// <param name="startPoint">The Start point.</param>
         /// <param name="shapeParams">The shape parameters.</param>
         /// <returns>Texture Bitmap</returns>
-        public Bitmap GenerateTexture(int width, int height, TextureType filter, MaskShape shape,
+        public Bitmap? GenerateTexture(int width, int height, TextureType filter, MaskShape shape,
             Point? startPoint = null,
             object? shapeParams = null)
         {
@@ -81,7 +81,7 @@ namespace Imaging
         ///     or
         ///     shape - null
         /// </exception>
-        public Bitmap GenerateTextureOverlay(Bitmap image, int width, int height, TextureType filter, MaskShape shape,
+        public Bitmap? GenerateTextureOverlay(Bitmap image, int width, int height, TextureType filter, MaskShape shape,
             Point? startPoint = null,
             object? shapeParams = null)
         {

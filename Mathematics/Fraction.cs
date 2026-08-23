@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Fraction.cs
  * PURPOSE:     Helper class that helps with some basic Fraction Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://dotnet-snippets.de/snippet/klasse-bruchrechnung-class-fraction/12049
  */
 
@@ -75,7 +75,7 @@ namespace Mathematics
             }
 
             // REDUCTION:
-            // Find the Greatest Common Divisor (GCD). We use Math.Abs on the numerator 
+            // Find the Greatest Common Divisor (GCD). We use Math.Abs on the numerator
             // so the negative sign doesn't break the Euclidean algorithm.
             var gcd = GetGcf(Math.Abs(numerator), denominator);
 

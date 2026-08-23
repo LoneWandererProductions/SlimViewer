@@ -1,14 +1,16 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageRegister.cs
+ * FILE:        ImageRegister.cs
  * PURPOSE:     Register for Image Operations, and some helpful extensions
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
  *              https://archive.ph/hzR2W
  *              https://www.codeproject.com/Articles/3772/ColorMatrix-Basics-Simple-Image-Color-Adjustment
  */
 
+using Imaging.Enums;
+using Imaging.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,7 +18,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text.Json;
-using Imaging.Enums;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
@@ -30,7 +31,7 @@ namespace Imaging
     public sealed class ImageRegister
     {
         // Private static instance of the singleton
-        private static readonly Lazy<ImageRegister> Settings = new(() => new ImageRegister());
+        private static readonly Lazy<ImageRegister?> Settings = new(() => new ImageRegister());
 
         /// <summary>
         ///     The filter property map
@@ -192,7 +193,7 @@ namespace Imaging
         /// <summary>
         ///     The box blur
         /// </summary>
-        internal readonly double[,] BoxBlur = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+        internal readonly double[,]? BoxBlur = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
 
         /// <summary>
         ///     The brightness Filter
@@ -227,17 +228,17 @@ namespace Imaging
         /// <summary>
         ///     The edge enhance
         /// </summary>
-        internal readonly double[,] EdgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
+        internal readonly double[,]? EdgeEnhance = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
 
         /// <summary>
         ///     The emboss filter
         /// </summary>
-        internal readonly double[,] EmbossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+        internal readonly double[,]? EmbossFilter = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
 
         /// <summary>
         ///     The gaussian blur
         /// </summary>
-        internal readonly double[,] GaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
+        internal readonly double[,]? GaussianBlur = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 
         /// <summary>
         ///     the color matrix needed to GrayScale an image
@@ -286,23 +287,23 @@ namespace Imaging
         ///     The kernel 135 degrees
         ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal readonly double[,] Kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
+        internal readonly double[,]? Kernel135Degrees = { { 2, -1, -1 }, { -1, 2, -1 }, { -1, -1, 2 } };
 
         /// <summary>
         ///     The kernel 45 degrees
         ///     Defines directional edge detection kernel for crosshatching
         /// </summary>
-        internal readonly double[,] Kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
+        internal readonly double[,]? Kernel45Degrees = { { -1, -1, 2 }, { -1, 2, -1 }, { 2, -1, -1 } };
 
         /// <summary>
         ///     The laplacian filter
         /// </summary>
-        internal readonly double[,] LaplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
+        internal readonly double[,]? LaplacianFilter = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
 
         /// <summary>
         ///     The motion blur
         /// </summary>
-        internal readonly double[,] MotionBlur =
+        internal readonly double[,]? MotionBlur =
         {
             { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 }
         };
@@ -333,7 +334,7 @@ namespace Imaging
         /// <summary>
         ///     The sharpen filter
         /// </summary>
-        internal readonly double[,] SharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
+        internal readonly double[,]? SharpenFilter = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
 
 
         /// <summary>
@@ -349,7 +350,7 @@ namespace Imaging
         /// <summary>
         ///     The unsharp mask
         /// </summary>
-        internal readonly double[,] UnsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
+        internal readonly double[,]? UnsharpMask = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
 
         /// <summary>
         ///     The vintage Filter
@@ -385,6 +386,7 @@ namespace Imaging
             FilterSettings[FiltersType.PostProcessingAntialiasing] = new FilterConfiguration { Sigma = 1.0 };
             FilterSettings[FiltersType.PencilSketchEffect] = new FilterConfiguration { Sigma = 1.0 };
             // Add more default settings as needed
+
 
             // Initialize default Texture settings
             TextureSetting[TextureType.Noise] = new TextureConfiguration
@@ -457,6 +459,9 @@ namespace Imaging
                 JaggednessThreshold = 10
             };
 
+            //custom Texture presets
+            TexturePresets.RegisterAllPresets();
+
             // Add more default settings as needed
         }
 
@@ -483,7 +488,7 @@ namespace Imaging
         public string? LastError => ErrorLog.Count > 0 ? ErrorLog.Values.Last() : null;
 
         // Public static property to get the instance
-        internal static ImageRegister Instance => Settings.Value;
+        internal static ImageRegister? Instance => Settings.Value;
 
         /// <summary>
         ///     The settings for our Filter

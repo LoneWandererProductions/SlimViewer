@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        Thumbnails.xaml.cs
  * PURPOSE:     Custom Thumbnail Control
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -601,7 +601,7 @@ namespace Common.Images
                 var semaphore = new SemaphoreSlim(4);
                 var tasks = pics.Select(async kv =>
                 {
-                    await semaphore.WaitAsync();
+                    await semaphore.WaitAsync(token);
                     if (token.IsCancellationRequested)
                     {
                         semaphore.Release();
@@ -745,7 +745,7 @@ namespace Common.Images
             {
                 try
                 {
-                    byte[] imageBytes = File.ReadAllBytes(filePath);
+                    var imageBytes = File.ReadAllBytes(filePath);
 
                     var bitmapImage = new BitmapImage();
 

@@ -8,7 +8,7 @@
 
 using Common.Dialogs;
 using Common.Images;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 using FileHandler;
 using Imaging;
 using Imaging.Gifs;

@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Projection3DConstants.cs
  * PURPOSE:     Holds the basic 3D Matrices
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms
  *              https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
  *              https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/BiggerProjects/Engine3D/OneLoneCoder_olcEngine3D_Part3.cpp
@@ -54,7 +54,7 @@ namespace Mathematics
         /// </returns>
         internal static BaseMatrix LookAt(Transform transform, Vector3D target)
         {
-            // 1. UNWRAP THE NULLABLE SAFELY! 
+            // 1. UNWRAP THE NULLABLE SAFELY!
             // If Position is null, default to 0,0,0 so the math doesn't crash.
             var pos = transform.Position ?? Vector3D.ZeroVector;
 

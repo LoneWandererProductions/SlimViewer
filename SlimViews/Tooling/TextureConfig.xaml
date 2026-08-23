@@ -66,7 +66,8 @@
                           SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}"
                           ToolTip="Select the pattern algorithm to configure" />
 
-                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="General Settings" Margin="0,15,0,5" />
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="General Settings"
+                           Margin="0,15,0,5" />
 
                 <Label Content="Min Value" Grid.Row="2" Grid.Column="0" />
                 <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"
@@ -103,7 +104,8 @@
                 <CheckBox Grid.Row="13" Grid.Column="1" IsChecked="{Binding UseTurbulence}"
                           IsEnabled="{Binding IsUseTurbulenceActive}" VerticalAlignment="Center" />
 
-                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="Crosshatch Settings"
+                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"
+                           Text="Crosshatch Settings"
                            Margin="0,15,0,5" />
 
                 <Label Content="Line Spacing" Grid.Row="16" Grid.Column="0" />
@@ -119,7 +121,8 @@
                 <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding LineThickness}"
                          IsEnabled="{Binding IsLineThicknessActive}" />
 
-                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="Advanced Texture Settings"
+                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"
+                           Text="Advanced Texture Settings"
                            Margin="0,15,0,5" />
 
                 <Label Content="Wave Frequency" Grid.Row="22" Grid.Column="0" />

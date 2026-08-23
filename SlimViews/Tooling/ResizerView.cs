@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Extended.Extensions;
 using ViewModel;
 
 namespace SlimViews.Tooling

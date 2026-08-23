@@ -3,15 +3,17 @@
  * PROJECT:     Imaging
  * FILE:        ImageExtension.cs
  * PURPOSE:     Image Extensions, I think that are helpful and should be there from the beginning
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
+using Imaging.Texture;
 using Color = System.Windows.Media.Color;
 
 namespace Imaging
@@ -22,15 +24,40 @@ namespace Imaging
     public static class ImageExtension
     {
         /// <summary>
+        /// Instantiates a standard GDI+ UI container directly from raw mathematical results.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns>A managed Bitmap instance.</returns>
+        public static unsafe Bitmap? ToManagedBitmap(this RawTextureBuffer? source)
+        {
+            var bitmap = new Bitmap(source.Width, source.Height, PixelFormat.Format32bppArgb);
+            var rect = new Rectangle(0, 0, source.Width, source.Height);
+            var data = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+            try
+            {
+                fixed (byte* pSource = source.PixelData)
+                {
+                    System.Buffer.MemoryCopy(pSource, (void*)data.Scan0, source.Length, source.Length);
+                }
+            }
+            finally
+            {
+                bitmap.UnlockBits(data);
+            }
+
+            return bitmap;
+        }
+
+        /// <summary>
         /// Extension Method
         /// Converts Bitmap to BitmapImage.
         /// </summary>
         /// <param name="bmp">The Bitmap.</param>
-        /// <param name="lossless">if set to <c>true</c> [lossless].</param>
         /// <returns>
         /// A BitmapImage
         /// </returns>
-        public static BitmapImage ToBitmapImage(this Bitmap bmp, bool lossless = false)
+        public static BitmapImage ToBitmapImage(this Bitmap? bmp)
         {
             return ImageStreamMedia.BitmapToBitmapImage(bmp);
         }
@@ -39,9 +66,8 @@ namespace Imaging
         /// Bitmaps to source.
         /// </summary>
         /// <param name="bmp">The BMP.</param>
-        /// <param name="lossless">if set to <c>true</c> [lossless].</param>
-        /// <returns></returns>
-        public static BitmapSource BitmapToSource(this Bitmap bmp, bool lossless = false)
+        /// <returns>The BitmapSource from Bitmap.</returns>
+        public static BitmapSource BitmapToSource(this Bitmap bmp)
         {
             return ImageStreamMedia.BitmapToSource(bmp);
         }
@@ -55,7 +81,7 @@ namespace Imaging
         /// <returns>
         ///     A BitmapImage
         /// </returns>
-        public static Bitmap ToBitmap(this BitmapImage bmp)
+        public static Bitmap? ToBitmap(this BitmapImage bmp)
         {
             return ImageStreamMedia.BitmapImageToBitmap(bmp);
         }

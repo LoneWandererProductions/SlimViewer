@@ -1,9 +1,9 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      ExtendedSystemObjects
- * FILE:         CategorizedDictionary.cs
- * PURPOSE:      Extended Dictionary with a Category.
- * PROGRAMER:    Peter Geinitz (Wayfarer)
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        CategorizedDictionary.cs
+ * PURPOSE:     Extended Dictionary with a Category.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMethodReturnValue.Global
@@ -18,15 +18,17 @@ using System.Threading;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
     /// A thread-safe dictionary that associates each key with a category.
     /// Provides fast lookups by key or by category.
     /// </summary>
     /// <typeparam name="TK">Type of dictionary keys.</typeparam>
     /// <typeparam name="TV">Type of dictionary values.</typeparam>
-    /// <seealso cref="System.Collections.Generic.IEnumerable&lt;(TK Key, System.String Category, TV Value)&gt;" />
+    /// <seealso cref="!:System.Collections.Generic.IEnumerable&lt;(TK Key, System.String Category, TV Value)&gt;" />
     [Serializable]
     public sealed class CategorizedDictionary<TK, TV> : IEnumerable<(TK Key, string Category, TV Value)>
+        where TK : notnull
     {
         /// <summary>
         /// Internal storage mapping keys to (Category, Value) pairs.
@@ -43,7 +45,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="category">The category.</param>
         /// <returns>string Empty if category was empty.</returns>
-        private static string NormalizeCategory(string category) => category ?? string.Empty;
+        private static string NormalizeCategory(string? category) => category ?? string.Empty;
 
         /// <summary>
         /// Lock for thread-safety.
@@ -260,7 +262,7 @@ namespace ExtendedSystemObjects
         /// <param name="key">The key.</param>
         /// <param name="category">The category.</param>
         /// <returns>Checks if category exists and returns if it does.</returns>
-        public bool TryGetCategory(TK key, out string category)
+        public bool TryGetCategory(TK key, out string? category)
         {
             _lock.EnterReadLock();
             try
@@ -311,7 +313,7 @@ namespace ExtendedSystemObjects
         /// <returns>True if success.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            // Fix: Normalize input category to ensure consistency with Add()
+            // Normalize input category to ensure consistency with Add()
             newCategory = NormalizeCategory(newCategory);
 
             _lock.EnterWriteLock();
@@ -358,7 +360,7 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                // Fix: Must snapshot keys inside the lock to allow safe iteration outside
+                // Must snapshot keys inside the lock to allow safe iteration outside
                 return new List<string>(_categories.Keys);
             }
             finally
@@ -380,7 +382,7 @@ namespace ExtendedSystemObjects
             {
                 if (_categories.TryGetValue(category, out var set))
                 {
-                    // Fix: Must snapshot the HashSet to allow safe iteration outside
+                    // Must snapshot the HashSet to allow safe iteration outside
                     return new List<TK>(set);
                 }
 
@@ -403,7 +405,7 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                // Fix: Must snapshot keys inside the lock
+                // Must snapshot keys inside the lock
                 return new List<TK>(_data.Keys);
             }
             finally

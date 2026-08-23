@@ -3,8 +3,12 @@
  * PROJECT:     Imaging.Interfaces
  * FILE:        IImageRender.cs
  * PURPOSE:     Image Interface for most Image Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -18,9 +22,6 @@ using System.Windows.Media.Imaging;
 using Imaging.Enums;
 using Imaging.Gifs;
 using Color = System.Drawing.Color;
-
-// ReSharper disable UnusedMemberInSuper.Global
-// ReSharper disable UnusedMember.Global
 
 namespace Imaging.Interfaces
 {
@@ -37,7 +38,7 @@ namespace Imaging.Interfaces
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException"></exception>
-        Bitmap GetBitmapFile(string path);
+        Bitmap? GetBitmapFile(string path);
 
         /// <summary>
         ///     Gets the original bitmap file.
@@ -64,7 +65,7 @@ namespace Imaging.Interfaces
         /// <exception cref="ArgumentException">
         /// </exception>
         /// <exception cref="InsufficientMemoryException"></exception>
-        Bitmap BitmapScaling(Bitmap image, int width, int height);
+        Bitmap? BitmapScaling(Bitmap? image, int width, int height);
 
         /// <summary>
         ///     Bitmaps the scaling.
@@ -75,7 +76,7 @@ namespace Imaging.Interfaces
         ///     A resized version of the original image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
-        Bitmap BitmapScaling(Bitmap image, float scaling);
+        Bitmap BitmapScaling(Bitmap? image, float scaling);
 
         /// <summary>
         ///     Converts an image to greyscale
@@ -89,7 +90,7 @@ namespace Imaging.Interfaces
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
-        Bitmap? FilterImage(Bitmap image, FiltersType filter);
+        Bitmap? FilterImage(Bitmap? image, FiltersType filter);
 
         /// <summary>
         ///     Filters the image area.
@@ -109,12 +110,12 @@ namespace Imaging.Interfaces
         ///     or
         ///     shape - null
         /// </exception>
-        Bitmap FilterImageArea(Bitmap image,
+        Bitmap? FilterImageArea(Bitmap? image,
             int? width,
             int? height,
             FiltersType filter,
             MaskShape shape,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null);
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace Imaging.Interfaces
         /// <param name="y">The y position.</param>
         /// <returns>Combined Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y);
+        Bitmap? CombineBitmap(Bitmap? original, Bitmap? overlay, int x, int y);
 
         /// <summary>
         ///     Cuts a piece out of a bitmap.
@@ -153,7 +154,7 @@ namespace Imaging.Interfaces
         /// <param name="width">The width.</param>
         /// <returns>The cut Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        Bitmap CutBitmap(Bitmap image, int x, int y, int height, int width);
+        Bitmap? CutBitmap(Bitmap? image, int x, int y, int height, int width);
 
         /// <summary>
         ///     Cuts the bitmap.
@@ -168,7 +169,7 @@ namespace Imaging.Interfaces
         ///     The cut Image, based on the shape
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object shapeParams = null,
+        Bitmap? CutBitmap(Bitmap? image, int width, int height, MaskShape shape, object? shapeParams = null,
             Point? startPoint = null);
 
         /// <summary>
@@ -181,7 +182,7 @@ namespace Imaging.Interfaces
         /// <param name="width">The width.</param>
         /// <returns>List of cut Images</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        List<Bitmap> CutBitmaps(Bitmap image, int x, int y, int height, int width);
+        List<Bitmap?> CutBitmaps(Bitmap? image, int x, int y, int height, int width);
 
         /// <summary>
         ///     Erases the rectangle from an Image.
@@ -193,7 +194,7 @@ namespace Imaging.Interfaces
         /// <param name="width">The width.</param>
         /// <returns>Original Image with the erased area</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width);
+        Bitmap? EraseRectangle(Bitmap? image, int x, int y, int height, int width);
 
         /// <summary>
         ///     Loads File one Time
@@ -234,7 +235,7 @@ namespace Imaging.Interfaces
         /// <exception cref="IOException">Error while we try to access the File</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        BitmapImage GetBitmapImageFileStream(string path);
+        BitmapImage? GetBitmapImageFileStream(string path);
 
         /// <summary>
         ///     Loads File in a Stream
@@ -251,7 +252,7 @@ namespace Imaging.Interfaces
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Error while we try to access the File</exception>
-        BitmapImage GetBitmapImageFileStream(string path, int width, int height);
+        BitmapImage? GetBitmapImageFileStream(string path, int width, int height);
 
         /// <summary>
         /// Bitmaps to bitmap image.
@@ -261,7 +262,7 @@ namespace Imaging.Interfaces
         /// The Image as <see cref="BitmapImage" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        BitmapImage BitmapToBitmapImage(Bitmap image);
+        BitmapImage? BitmapToBitmapImage(Bitmap? image);
 
         /// <summary>
         /// Bitmaps the image  bitmap.
@@ -271,7 +272,7 @@ namespace Imaging.Interfaces
         /// The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        Bitmap BitmapImageToBitmap(BitmapImage image);
+        Bitmap? BitmapImageToBitmap(BitmapImage image);
 
         /// <summary>
         ///     Rotates the image.
@@ -283,7 +284,7 @@ namespace Imaging.Interfaces
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OverflowException">Degrees have a certain allowed radius</exception>
-        Bitmap RotateImage(Bitmap image, int degree);
+        Bitmap? RotateImage(Bitmap? image, int degree);
 
         /// <summary>
         ///     Crops the image.
@@ -303,7 +304,7 @@ namespace Imaging.Interfaces
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         /// <exception cref="IOException">File already exists</exception>
         /// <exception cref="ExternalException">Errors with the Path</exception>
-        void SaveBitmap(Bitmap image, string path, ImageFormat format);
+        void SaveBitmap(Bitmap? image, string path, ImageFormat format);
 
         /// <summary>
         ///     Converts White to Transparent.
@@ -312,7 +313,7 @@ namespace Imaging.Interfaces
         /// <param name="threshold">The threshold when the color is still white.</param>
         /// <returns>The Transparent Image</returns>
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
-        Bitmap ConvertWhiteToTransparent(Bitmap image, int threshold);
+        Bitmap? ConvertWhiteToTransparent(Bitmap? image, int threshold);
 
         /// <summary>
         ///     Pixelate the specified image.
@@ -320,7 +321,7 @@ namespace Imaging.Interfaces
         /// <param name="image">The image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        Bitmap Pixelate(Bitmap image, int stepWidth = 2);
+        Bitmap Pixelate(Bitmap? image, int stepWidth = 2);
 
         /// <summary>
         ///     Gets the pixel.
@@ -331,7 +332,7 @@ namespace Imaging.Interfaces
         ///     The Color at the point
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        Color GetPixel(Bitmap image, Point point);
+        Color GetPixel(Bitmap? image, Point point);
 
         /// <summary>
         ///     Gets the pixel.
@@ -345,7 +346,7 @@ namespace Imaging.Interfaces
         ///     or
         ///     nameof(image)
         /// </exception>
-        Color GetPixel(Bitmap image, Point point, int radius);
+        Color GetPixel(Bitmap? image, Point point, int radius);
 
         /// <summary>
         ///     Sets the pixel.
@@ -357,7 +358,7 @@ namespace Imaging.Interfaces
         ///     The changed image as Bitmap
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        Bitmap SetPixel(Bitmap image, Point point, Color color);
+        Bitmap? SetPixel(Bitmap? image, Point point, Color color);
 
         /// <summary>
         ///     Sets the pixel.
@@ -370,7 +371,7 @@ namespace Imaging.Interfaces
         ///     The Changed Image
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        Bitmap SetPixel(Bitmap image, Point point, Color color, int radius);
+        Bitmap? SetPixel(Bitmap? image, Point point, Color color, int radius);
 
         /// <summary>
         ///     Fills the area with color.
@@ -396,7 +397,7 @@ namespace Imaging.Interfaces
             int? height,
             Color color,
             MaskShape shape,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null);
 
         /// <summary>
@@ -407,7 +408,7 @@ namespace Imaging.Interfaces
         /// <param name="y">The y.</param>
         /// <param name="newColor">The new color.</param>
         /// <returns>Bitmap with filled area</returns>
-        Bitmap FloodFillScanLineStack(Bitmap image, int x, int y, Color newColor);
+        Bitmap? FloodFillScanLineStack(Bitmap? image, int x, int y, Color newColor);
 
         /// <summary>
         ///     Adjusts the brightness.
@@ -417,7 +418,7 @@ namespace Imaging.Interfaces
         /// <returns>
         ///     The changed image as Bitmap
         /// </returns>
-        Bitmap AdjustBrightness(Bitmap image, float brightnessFactor);
+        Bitmap? AdjustBrightness(Bitmap? image, float brightnessFactor);
 
         /// <summary>
         ///     Combines two images by averaging their pixel values.
@@ -425,7 +426,7 @@ namespace Imaging.Interfaces
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the average of the two images, or null if an error occurs.</returns>
-        Bitmap AverageImages(Image imgOne, Image imgTwo);
+        Bitmap AverageImages(Image? imgOne, Image? imgTwo);
 
         /// <summary>
         ///     Combines two images by adding their pixel values.
@@ -433,7 +434,7 @@ namespace Imaging.Interfaces
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the addition of the two images, or null if an error occurs.</returns>
-        Bitmap AddImages(Image imgOne, Image imgTwo);
+        Bitmap AddImages(Image? imgOne, Image? imgTwo);
 
         /// <summary>
         ///     Combines two images by subtracting the pixel values of the first image from the second image.
@@ -441,7 +442,7 @@ namespace Imaging.Interfaces
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the subtraction of the two images, or null if an error occurs.</returns>
-        Bitmap SubtractImages(Image imgOne, Image imgTwo);
+        Bitmap SubtractImages(Image? imgOne, Image? imgTwo);
 
         /// <summary>
         ///     Combines two images by multiplying their pixel values.
@@ -449,7 +450,7 @@ namespace Imaging.Interfaces
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the multiplication of the two images, or null if an error occurs.</returns>
-        Bitmap MultiplyImages(Image imgOne, Image imgTwo);
+        Bitmap MultiplyImages(Image? imgOne, Image? imgTwo);
 
         /// <summary>
         ///     Cross-fades between two images based on the given factor.
@@ -458,7 +459,7 @@ namespace Imaging.Interfaces
         /// <param name="imgTwo">The second image.</param>
         /// <param name="factor">The blending factor (0.0 to 1.0).</param>
         /// <returns>A bitmap resulting from the cross-fading of the two images, or null if an error occurs.</returns>
-        Bitmap CrossFadeImages(Image imgOne, Image imgTwo, float factor);
+        Bitmap CrossFadeImages(Image? imgOne, Image? imgTwo, float factor);
 
         /// <summary>
         ///     Finds the minimum color values from two images.
@@ -466,7 +467,7 @@ namespace Imaging.Interfaces
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the minimum values of the two images, or null if an error occurs.</returns>
-        Bitmap MinImages(Image imgOne, Image imgTwo);
+        Bitmap MinImages(Image? imgOne, Image? imgTwo);
 
         /// <summary>
         ///     Finds the maximum color values from two images.
@@ -474,7 +475,7 @@ namespace Imaging.Interfaces
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the maximum values of the two images, or null if an error occurs.</returns>
-        Bitmap MaxImages(Image imgOne, Image imgTwo);
+        Bitmap MaxImages(Image? imgOne, Image? imgTwo);
 
         /// <summary>
         ///     Calculates the amplitude of the pixel values between two images.
@@ -482,7 +483,7 @@ namespace Imaging.Interfaces
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the amplitude of the two images, or null if an error occurs.</returns>
-        Bitmap AmplitudeImages(Image imgOne, Image imgTwo);
+        Bitmap AmplitudeImages(Image? imgOne, Image? imgTwo);
 
         /// <summary>
         ///     Adjusts the hue.
@@ -490,7 +491,7 @@ namespace Imaging.Interfaces
         /// <param name="image">The image.</param>
         /// <param name="hueShift">The hue shift.</param>
         /// <returns>Bitmap with adjusted Hue.</returns>
-        Bitmap AdjustHue(Bitmap image, double hueShift);
+        Bitmap? AdjustHue(Bitmap? image, double hueShift);
 
         /// <summary>
         ///     Adjusts the saturation.
@@ -498,7 +499,7 @@ namespace Imaging.Interfaces
         /// <param name="image">The image.</param>
         /// <param name="saturationFactor">The saturation factor.</param>
         /// <returns>Bitmap with adjusted Saturation.</returns>
-        Bitmap AdjustSaturation(Bitmap image, double saturationFactor);
+        Bitmap? AdjustSaturation(Bitmap? image, double saturationFactor);
 
         /// <summary>
         ///     Adjusts the brightness.
@@ -506,7 +507,7 @@ namespace Imaging.Interfaces
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>
         /// <returns>Bitmap with adjusted brightness.</returns>
-        Bitmap AdjustBrightness(Bitmap image, double brightnessFactor);
+        Bitmap? AdjustBrightness(Bitmap? image, double brightnessFactor);
 
         /// <summary>
         ///     Applies the gamma correction.
@@ -514,7 +515,7 @@ namespace Imaging.Interfaces
         /// <param name="image">The image.</param>
         /// <param name="gamma">The gamma.</param>
         /// <returns>Bitmap with adjusted Gamma.</returns>
-        Bitmap ApplyGammaCorrection(Bitmap image, double gamma);
+        Bitmap? ApplyGammaCorrection(Bitmap? image, double gamma);
 
         /// <summary>
         ///     Adjusts the color.

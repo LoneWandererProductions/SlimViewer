@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        DataListView.cs
  * PURPOSE:     Basic View for ListView
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Extended.Extensions;
 using ExtendedSystemObjects;
 using ViewModel;
 

@@ -67,14 +67,14 @@ namespace Common.Dialogs
                 OnPropertyChanged(nameof(IsSelected));
 
                 if (_isSelected)
-                    _parentVm.SelectedFolder = this; // ← direct, safe
+                    _parentVm.SelectedFolder = this;
             }
         }
 
         /// <summary>
         /// Raised when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// The parent vm

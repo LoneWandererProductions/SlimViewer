@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ImmutableLookupMap.cs
  * PURPOSE:     A high-performance, immutable lookup map that uses an array-based internal structure for fast key-value lookups.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global
@@ -179,11 +179,13 @@ namespace ExtendedSystemObjects
 
                 if (!_keyPresence[index]) break; // Hit an empty slot; key doesn't exist
 
-                if (_keys[index].Equals(key))
+                if (!_keys[index].Equals(key))
                 {
-                    value = _values[index];
-                    return true;
+                    continue;
                 }
+
+                value = _values[index];
+                return true;
             }
 
             value = default;

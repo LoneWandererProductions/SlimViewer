@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImagingResources.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -200,16 +200,6 @@ namespace Imaging
         internal const string Spacing = " : ";
 
         /// <summary>
-        ///     The Separator (const). Value:  ','.
-        /// </summary>
-        internal const char Separator = ',';
-
-        /// <summary>
-        ///     The Interval Splitter (const). Value: "-".
-        /// </summary>
-        internal const string IntervalSplitter = "-";
-
-        /// <summary>
         ///     Separator (const). Value: " , ".
         /// </summary>
         internal const string Indexer = " , ";
@@ -218,21 +208,6 @@ namespace Imaging
         ///     Color string (const). Value: "Color: ".
         /// </summary>
         internal const string Color = "Color: ";
-
-        /// <summary>
-        ///     The flag that indicates that image is not compressed (const). Value:  "0".
-        /// </summary>
-        internal const string CifUnCompressed = "0";
-
-        /// <summary>
-        ///     The flag that indicates if image is compressed (const). Value:  "1".
-        /// </summary>
-        internal const string CifCompressed = "1";
-
-        /// <summary>
-        ///     The cif Separator used for compression (const). Value:  "-".
-        /// </summary>
-        internal const string CifSeparator = "-";
 
         /// <summary>
         ///     The jpg Extension (const). Value: ".jpg"

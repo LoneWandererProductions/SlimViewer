@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects
  * FILE:        VaultMetadata.cs
  * PURPOSE:     Metadata for all saved Infos about the stored items.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -60,7 +60,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///     The description.
         /// </value>
-        public string Description { get; init; }
+        public string? Description { get; init; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance has expire time.

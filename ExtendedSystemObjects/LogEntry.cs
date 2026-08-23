@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects
  * FILE:        LogEntry.cs
  * PURPOSE:     Basic Transaction Log Object that holds all Infos
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -21,7 +21,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///     The data.
         /// </value>
-        public object Data { get; init; }
+        public object? Data { get; init; }
 
         /// <summary>
         ///     Gets or sets the state.

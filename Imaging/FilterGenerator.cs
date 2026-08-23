@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        FilterGenerator.cs
  * PURPOSE:     Central filter generator
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;
@@ -34,7 +34,7 @@ namespace Imaging
         /// <value>
         ///     The image settings.
         /// </value>
-        private ImageRegister ImageSettings { get; }
+        private ImageRegister? ImageSettings { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -79,7 +79,7 @@ namespace Imaging
         ///     or
         ///     shape - null
         /// </exception>
-        public Bitmap? GenerateFilterOverlay(Bitmap image, int width, int height, FiltersType filter, MaskShape shape,
+        public Bitmap? GenerateFilterOverlay(Bitmap? image, int width, int height, FiltersType filter, MaskShape shape,
             Point? startPoint = null,
             object? shapeParams = null)
         {

@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        BaseMatrix.cs
  * PURPOSE:     Matrix Object with some basic Operators
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix
  */
 
@@ -12,7 +12,7 @@
 
 using System;
 using System.Collections.Generic;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 
 namespace Mathematics
 {

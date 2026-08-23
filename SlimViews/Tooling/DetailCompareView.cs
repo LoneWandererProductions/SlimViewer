@@ -20,8 +20,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Common.Dialogs;
-using ImageCompare;
 using Imaging;
+using Imaging.Compare;
 using ViewModel;
 
 namespace SlimViews.Tooling

@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        DialogHandler.cs
  * PURPOSE:     Extension for Dialogs, some smaller extras and Extensions like a Folder View
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global
@@ -26,7 +26,7 @@ namespace Common.Dialogs
         /// </summary>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>Selected Path</returns>
-        public static string? ShowFolder(string folder = "")
+        public static string? ShowFolder(string? folder = "")
         {
             if (!Directory.Exists(folder))
             {
@@ -139,9 +139,7 @@ namespace Common.Dialogs
 
             var openFile = new OpenFileDialog
             {
-                Filter = appendage,
-                InitialDirectory = folder,
-                Multiselect = true // This enables multi-selection
+                Filter = appendage, InitialDirectory = folder, Multiselect = true // This enables multi-selection
             };
 
             if (openFile.ShowDialog() != true)

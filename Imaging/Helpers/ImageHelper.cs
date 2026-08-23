@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        ImageHelper.cs
  * PURPOSE:     Here I try to minimize the footprint of my class and pool all shared methods
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
  */
 
@@ -59,7 +59,7 @@ namespace Imaging.Helpers
         /// <param name="size">The size of the kernel (must be odd).</param>
         /// <returns>A 2D array representing the Gaussian kernel.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static double[,] GenerateGaussianKernel(double sigma, int size)
+        internal static double[,]? GenerateGaussianKernel(double sigma, int size)
         {
             var kernel = new double[size, size];
             var mean = size / 2.0;
@@ -208,7 +208,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <exception cref="ArgumentNullException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ValidateImage(string method, Bitmap image)
+        internal static void ValidateImage(string method, Bitmap? image)
         {
             if (image != null)
             {
@@ -275,21 +275,6 @@ namespace Imaging.Helpers
             Color? meanColor = Color.FromArgb(averageRed, averageGreen, averageBlue);
 
             return (pixels, meanColor);
-        }
-
-        /// <summary>
-        ///     Interpolates the specified a.
-        /// </summary>
-        /// <param name="a">a.</param>
-        /// <param name="b">The b.</param>
-        /// <param name="t">The t.</param>
-        /// <returns>Interpolation</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static double Interpolate(double a, double b, double t)
-        {
-            var ft = t * Math.PI;
-            var f = (1 - Math.Cos(ft)) * 0.5;
-            return a * (1 - f) + b * f;
         }
 
         /// <summary>

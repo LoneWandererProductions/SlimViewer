@@ -3,18 +3,22 @@
  * PROJECT:     Imaging.Interfaces
  * FILE:        IPixelSurface.cs
  * PURPOSE:     Simple interface for a pixel surface, which can be used for rendering and manipulation of pixel data.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;
 
 namespace Imaging.Interfaces
 {
+    /// <inheritdoc />
     /// <summary>
     /// Pixel manipulation surface interface, which can be used for rendering and manipulation of pixel data.
     /// </summary>
-    /// <seealso cref="IDisposable" />
+    /// <seealso cref="T:System.IDisposable" />
     public interface IPixelSurface : IDisposable
     {
         /// <summary>
