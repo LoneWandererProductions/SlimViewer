@@ -18,7 +18,9 @@ namespace SlimViews.Tooling
     /// </summary>
     internal sealed partial class Rename
     {
-        // 1. Create a strongly-typed reference to your ViewModel
+        /// <summary>
+        /// The view model
+        /// </summary>
         private readonly RenameView _viewModel;
 
         /// <inheritdoc />
@@ -39,12 +41,12 @@ namespace SlimViews.Tooling
         ///     Initializes a new instance of the <see cref="T:SlimViews.Rename" /> class.
         /// </summary>
         /// <param name="observer">The Dictionary of files.</param>
-        public Rename(Dictionary<int, string> observer)
+        public Rename(ImageView owner, Dictionary<int, string> observer)
         {
             InitializeComponent();
 
-            // 2. Instantiate, inject the data, and assign the DataContext
-            _viewModel = new RenameView
+            // Pass the owner into the ViewModel
+            _viewModel = new RenameView(owner)
             {
                 Observer = new ConcurrentDictionary<int, string>(observer)
             };

@@ -19,9 +19,9 @@ namespace ExtendedSystemObjects
 {
     /// <inheritdoc />
     /// <summary>
-    /// BiMap is a bi-directional map implementation that allows for efficient lookups in both directions.
-    /// It maintains two internal dictionaries to store the forward and reverse mappings, ensuring that each key-value pair is unique across both sides.
-    /// The class is thread-safe, allowing for concurrent access and modifications without risking data corruption.
+    /// BiMap is a bi-directional map implementation that allows for efficient lookups in both directions. 
+    /// It maintains two internal dictionaries to store the forward and reverse mappings, ensuring that each key-value pair is unique across both sides. 
+    /// The class is thread-safe, allowing for concurrent access and modifications without risking data corruption. 
     /// It implements IReadOnlyCollection to provide enumeration capabilities over the key-value pairs.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the BiMap.</typeparam>

@@ -228,6 +228,22 @@ namespace SlimViews
         /// </value>
         public ICommand ShowAbout { get; }
 
+        /// <summary>
+        /// Gets the undo.
+        /// </summary>
+        /// <value>
+        /// The undo.
+        /// </value>
+        public ICommand Undo { get; }
+
+        /// <summary>
+        /// Gets the redo.
+        /// </summary>
+        /// <value>
+        /// The redo.
+        /// </value>
+        public ICommand Redo { get; }
+
         #endregion
 
         /// <summary>
@@ -274,14 +290,19 @@ namespace SlimViews
             OpenCif = new DelegateCommand<object>(owner.OpenCifAction, CanRun);
             ThumbImageClicked = new DelegateCommand<ImageEventArgs>(owner.ThumbImageClickedAction, CanRun);
             ImageLoaded = new DelegateCommand<object>(owner.ImageLoadedCommandAction, CanRun);
-            SelectedPoint = new DelegateCommand<Point>(owner.SelectedPointAction, CanRun);
-            SelectedFrame = new DelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
             ColorChanged = new DelegateCommand<ColorHsv>(owner.ColorChangedAction, CanRun);
             Next = new DelegateCommand<object>(owner.NextAction, CanRun);
             Previous = new DelegateCommand<object>(owner.PreviousAction, CanRun);
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
             Clipboard = new DelegateCommand<object>(owner.ExportClipboardAction, CanRun);
+
+            SelectedPoint = new AsyncDelegateCommand<Point>(owner.SelectedPointAction, CanRun);
+            SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
+
+            // ---- UI / direct owner commands ----
+            Undo = new DelegateCommand<object>(_ => owner.Undo(), CanRun);
+            Redo = new DelegateCommand<object>(_ => owner.Redo(), CanRun);
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);
@@ -317,6 +338,8 @@ namespace SlimViews
             Delete = Make_AsyncObjCmd(obj => FileService.DeleteAsync(owner));
             Move = Make_ObjParamCmd(FileService.Move);
             MoveAll = Make_ObjParamCmd(FileService.MoveAll);
+
+
 
             // Rename is asynchronous in your original; pass the owner in the lambda to call the service method
             Rename = Make_AsyncObjCmd(obj => FileService.RenameCurrentAsync(owner));

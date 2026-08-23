@@ -82,7 +82,7 @@ namespace FileHandler
             if (!File.Exists(source)) return false;
 
             // 2. Retry Logic Loop
-            for (int i = 0; i < maxRetries; i++)
+            for (var i = 0; i < maxRetries; i++)
             {
                 try
                 {
@@ -101,7 +101,7 @@ namespace FileHandler
                     }
 
                     // Exponential backoff: Wait 100ms, then 200ms, 400ms...
-                    int delay = (int)Math.Pow(2, i) * 100;
+                    var delay = (int)Math.Pow(2, i) * 100;
                     await Task.Delay(delay);
                 }
                 catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or NotSupportedException)
@@ -124,7 +124,7 @@ namespace FileHandler
         /// </returns>
         private static bool IsFileLocked(IOException exception)
         {
-            int errorCode = exception.HResult & 0xFFFF;
+            var errorCode = exception.HResult & 0xFFFF;
             return errorCode == 32 || errorCode == 33; // 32: Sharing violation, 33: Lock violation
         }
     }
