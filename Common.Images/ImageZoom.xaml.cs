@@ -255,7 +255,6 @@ namespace Common.Images
         }
 
 
-
         /// <summary>
         ///     The image clicked command property
         /// </summary>

@@ -69,6 +69,7 @@ namespace SlimViews
                 {
                     wpfImg.Freeze(); // Crucial: Freezing allows it to be sent back to the UI thread
                 }
+
                 return wpfImg;
             });
 

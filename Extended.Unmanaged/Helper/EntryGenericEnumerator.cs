@@ -97,6 +97,8 @@ namespace Extended.Unmanaged.Helper
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public readonly void Dispose() { }
+        public readonly void Dispose()
+        {
+        }
     }
 }

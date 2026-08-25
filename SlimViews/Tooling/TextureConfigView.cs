@@ -9,7 +9,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Imaging;
@@ -49,6 +51,34 @@ namespace SlimViews.Tooling
         ///     The cancel command
         /// </summary>
         private ICommand? _cancelCommand;
+
+        /// <summary>
+        ///     The size of the cell (Cellular texture).
+        /// </summary>
+        private int _cellSize;
+
+        /// <summary>
+        ///     The center color (Cellular texture).
+        /// </summary>
+        private Color _centerColor;
+
+        /// <summary>
+        ///     The parsed color ramp (ColorMapped texture) that round-trips to
+        ///     <see cref="TextureConfiguration.ColorRamp" />. The editable surface is
+        ///     <see cref="_colorRampText" />; this is kept in sync with it.
+        /// </summary>
+        private Color[]? _colorRamp;
+
+        /// <summary>
+        ///     The text form of <see cref="_colorRamp" /> shown in the window; see
+        ///     <see cref="ColorRampText" />.
+        /// </summary>
+        private string? _colorRampText;
+
+        /// <summary>
+        ///     The edge color (Cellular texture).
+        /// </summary>
+        private Color _edgeColor;
 
         /// <summary>
         ///     The edge jaggedness limit
@@ -109,6 +139,12 @@ namespace SlimViews.Tooling
         ///     The save command
         /// </summary>
         private ICommand? _saveCommand;
+
+        /// <summary>
+        ///     The secondary color (currently unused by generation — see remarks on
+        ///     <see cref="SecondaryColor" />).
+        /// </summary>
+        private Color _secondaryColor;
 
         /// <summary>
         ///     The selected texture
@@ -491,6 +527,126 @@ namespace SlimViews.Tooling
             set => SetProperty(ref _jaggednessThreshold, value, nameof(JaggednessThreshold));
         }
 
+        /// <summary>
+        ///     Gets or sets the size of the cell. Used by the Cellular texture.
+        /// </summary>
+        /// <value>
+        ///     The size of the cell.
+        /// </value>
+        public int CellSize
+        {
+            get => _cellSize;
+            set => SetProperty(ref _cellSize, value, nameof(CellSize));
+        }
+
+        /// <summary>
+        ///     Gets or sets the color of the center. Used by the Cellular texture.
+        /// </summary>
+        /// <value>
+        ///     The color of the center.
+        /// </value>
+        public Color CenterColor
+        {
+            get => _centerColor;
+            set => SetProperty(ref _centerColor, value, nameof(CenterColor));
+        }
+
+        /// <summary>
+        ///     Gets or sets the color of the edge. Used by the Cellular texture.
+        /// </summary>
+        /// <value>
+        ///     The color of the edge.
+        /// </value>
+        public Color EdgeColor
+        {
+            get => _edgeColor;
+            set => SetProperty(ref _edgeColor, value, nameof(EdgeColor));
+        }
+
+        /// <summary>
+        ///     Gets or sets the color ramp as a comma-separated list of #AARRGGBB tokens (e.g.
+        ///     "#FFFF4400, #FFFFCC00"). Used by the ColorMapped texture. A plain array doesn't bind
+        ///     cleanly to a single text field, so this is the editable surface; <see cref="_colorRamp" />
+        ///     holds the parsed <see cref="Color" /> array that actually round-trips through
+        ///     <see cref="TextureConfiguration.ColorRamp" />.
+        /// </summary>
+        /// <value>
+        ///     The color ramp, as text.
+        /// </value>
+        public string ColorRampText
+        {
+            get => _colorRampText ?? string.Empty;
+            set
+            {
+                if (!SetProperty(ref _colorRampText, value, nameof(ColorRampText))) return;
+                _colorRamp = ParseColorRamp(value);
+            }
+        }
+
+        /// <summary>
+        ///     Formats a <see cref="Color" /> array as the comma-separated #AARRGGBB text
+        ///     <see cref="ColorRampText" /> expects. Inverse of <see cref="ParseColorRamp" />.
+        /// </summary>
+        /// <param name="ramp">The colors to format.</param>
+        /// <returns>The formatted text, or an empty string if <paramref name="ramp" /> is <c>null</c>.</returns>
+        private static string FormatColorRamp(Color[]? ramp) =>
+            ramp == null
+                ? string.Empty
+                : string.Join(", ", ramp.Select(c => $"#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}"));
+
+        /// <summary>
+        ///     Gets or sets the secondary color.
+        /// </summary>
+        /// <remarks>
+        ///     Currently has no effect: <c>TextureAreas.GenerateTexture</c> only reads it (as
+        ///     <c>BaseColor</c>/<c>SecondaryColor</c>) inside <c>TexturePresets.GenerateCobblestone</c>/
+        ///     <c>GenerateDragonScales</c>, and those are invoked as parameterless preset calls that never
+        ///     receive the settings object this window edits. Exposed here for completeness and so it
+        ///     round-trips through save/load without being silently dropped; wire it up on the generation
+        ///     side if you want it to actually influence output.
+        /// </remarks>
+        /// <value>
+        ///     The color of the secondary.
+        /// </value>
+        public Color SecondaryColor
+        {
+            get => _secondaryColor;
+            set => SetProperty(ref _secondaryColor, value, nameof(SecondaryColor));
+        }
+
+        /// <summary>
+        ///     Parses a comma-separated list of #AARRGGBB tokens back into a <see cref="Color" /> array.
+        ///     Invalid or empty input yields <c>null</c> rather than throwing, so a bad paste can't crash
+        ///     the window.
+        /// </summary>
+        /// <param name="text">The text to parse.</param>
+        /// <returns>The parsed colors, or <c>null</c> if <paramref name="text" /> was empty or invalid.</returns>
+        private static Color[]? ParseColorRamp(string? text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return null;
+
+            try
+            {
+                var tokens = text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                if (tokens.Length == 0) return null;
+
+                var colors = new Color[tokens.Length];
+                for (var i = 0; i < tokens.Length; i++)
+                {
+                    var token = tokens[i].TrimStart('#');
+                    var argb = int.Parse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    colors[i] = Color.FromArgb(argb);
+                }
+
+                return colors;
+            }
+            catch (Exception ex) when (ex is FormatException or OverflowException)
+            {
+                // Leave the ramp unchanged rather than propagating a parse error into the UI thread.
+                return null;
+            }
+        }
+
         // --- Active properties ---
 
         /// <summary>
@@ -866,6 +1022,91 @@ namespace SlimViews.Tooling
             set => SetProperty(ref _isAngleSecondaryActive, value, nameof(IsAngleSecondaryActive));
         }
 
+        /// <summary>
+        /// The is cell size active
+        /// </summary>
+        private bool _isCellSizeActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is cell size active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is cell size active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCellSizeActive
+        {
+            get => _isCellSizeActive;
+            set => SetProperty(ref _isCellSizeActive, value, nameof(IsCellSizeActive));
+        }
+
+        /// <summary>
+        /// The is center color active
+        /// </summary>
+        private bool _isCenterColorActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is center color active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is center color active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCenterColorActive
+        {
+            get => _isCenterColorActive;
+            set => SetProperty(ref _isCenterColorActive, value, nameof(IsCenterColorActive));
+        }
+
+        /// <summary>
+        /// The is edge color active
+        /// </summary>
+        private bool _isEdgeColorActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is edge color active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is edge color active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsEdgeColorActive
+        {
+            get => _isEdgeColorActive;
+            set => SetProperty(ref _isEdgeColorActive, value, nameof(IsEdgeColorActive));
+        }
+
+        /// <summary>
+        /// The is color ramp active
+        /// </summary>
+        private bool _isColorRampActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is color ramp active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is color ramp active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsColorRampActive
+        {
+            get => _isColorRampActive;
+            set => SetProperty(ref _isColorRampActive, value, nameof(IsColorRampActive));
+        }
+
+        /// <summary>
+        /// The is secondary color active
+        /// </summary>
+        private bool _isSecondaryColorActive;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is secondary color active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is secondary color active; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSecondaryColorActive
+        {
+            get => _isSecondaryColorActive;
+            set => SetProperty(ref _isSecondaryColorActive, value, nameof(IsSecondaryColorActive));
+        }
+
         // --- Command area ---
 
         /// <summary>
@@ -968,8 +1209,11 @@ namespace SlimViews.Tooling
             IsLineThicknessActive = usedProperties.Contains(nameof(LineThickness));
             IsAnglePrimaryActive = usedProperties.Contains(nameof(AnglePrimary));
             IsAngleSecondaryActive = usedProperties.Contains(nameof(AngleSecondary));
-
-            var savedSettings = ImageProcessor.Render.ImageSettings.GetSettings(SelectedTexture);
+            IsCellSizeActive = usedProperties.Contains(nameof(CellSize));
+            IsCenterColorActive = usedProperties.Contains(nameof(CenterColor));
+            IsEdgeColorActive = usedProperties.Contains(nameof(EdgeColor));
+            IsColorRampActive = usedProperties.Contains(nameof(TextureConfiguration.ColorRamp));
+            IsSecondaryColorActive = usedProperties.Contains(nameof(SecondaryColor));
         }
 
         /// <summary>
@@ -1002,7 +1246,12 @@ namespace SlimViews.Tooling
                 WaveAmplitude = WaveAmplitude,
                 RandomizationFactor = RandomizationFactor,
                 EdgeJaggednessLimit = EdgeJaggednessLimit,
-                JaggednessThreshold = JaggednessThreshold
+                JaggednessThreshold = JaggednessThreshold,
+                CellSize = CellSize,
+                CenterColor = CenterColor,
+                EdgeColor = EdgeColor,
+                ColorRamp = _colorRamp,
+                SecondaryColor = SecondaryColor
             };
 
             // Update the settings in the backend registry
@@ -1032,14 +1281,12 @@ namespace SlimViews.Tooling
             YPeriod = config.YPeriod;
             TurbulencePower = config.TurbulencePower;
             TurbulenceSize = config.TurbulenceSize;
-            BaseColor = config.BaseColor;
             IsMonochrome = config.IsMonochrome;
             IsTiled = config.IsTiled;
             UseSmoothNoise = config.UseSmoothNoise;
             UseTurbulence = config.UseTurbulence;
             XyPeriod = config.XyPeriod;
             LineSpacing = config.LineSpacing;
-            LineColor = config.LineColor;
             LineThickness = config.LineThickness;
             AnglePrimary = config.AnglePrimary;
             AngleSecondary = config.AngleSecondary;
@@ -1048,6 +1295,11 @@ namespace SlimViews.Tooling
             RandomizationFactor = config.RandomizationFactor;
             EdgeJaggednessLimit = config.EdgeJaggednessLimit;
             JaggednessThreshold = config.JaggednessThreshold;
+            CellSize = config.CellSize;
+            CenterColor = config.CenterColor;
+            EdgeColor = config.EdgeColor;
+            ColorRampText = FormatColorRamp(config.ColorRamp);
+            SecondaryColor = config.SecondaryColor;
         }
 
         /// <summary>

@@ -174,7 +174,34 @@ namespace Imaging
                     nameof(TextureConfiguration.LineColor),
                     nameof(TextureConfiguration.LineThickness)
                 }
+            },
+            {
+                // Matches exactly what TextureAreas.GenerateTexture reads for TextureType.Cellular.
+                TextureType.Cellular,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.CellSize),
+                    nameof(TextureConfiguration.Alpha),
+                    nameof(TextureConfiguration.CenterColor),
+                    nameof(TextureConfiguration.EdgeColor)
+                }
+            },
+            {
+                // Matches exactly what TextureAreas.GenerateTexture reads for TextureType.ColorMapped.
+                TextureType.ColorMapped,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.ColorRamp),
+                    nameof(TextureConfiguration.TurbulenceSize),
+                    nameof(TextureConfiguration.Alpha)
+                }
             }
+
+            // MagicalEther, Cobblestone, DragonScales, and LavaPool are deliberately absent here.
+            // TextureAreas.GenerateTexture calls TexturePresets.GenerateXxx(width, height) for those
+            // four with no settings object at all ("Preset textures, no settings can be provided"),
+            // so nothing on TextureConfiguration currently affects their output - registering any
+            // property as active for them would tell the UI to enable fields that do nothing.
 
             // Add other textures as necessary
         };
@@ -498,7 +525,7 @@ namespace Imaging
         /// <summary>
         ///     The texture setting
         /// </summary>
-        public static ConcurrentDictionary<TextureType, TextureConfiguration?> TextureSetting { get; set; } = new();
+        public static ConcurrentDictionary<TextureType, TextureConfiguration> TextureSetting { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the count of retries.
@@ -553,7 +580,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns>Get the Setting based on Filter</returns>
-        public TextureConfiguration? GetSettings(TextureType filter)
+        public TextureConfiguration GetSettings(TextureType filter)
         {
             return TextureSetting.TryGetValue(filter, out var config) ? config : new TextureConfiguration();
         }
@@ -563,7 +590,7 @@ namespace Imaging
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The configuration.</param>
-        public void SetSettings(TextureType filter, TextureConfiguration? config)
+        public void SetSettings(TextureType filter, TextureConfiguration config)
         {
             TextureSetting[filter] = config;
         }

@@ -370,7 +370,7 @@ namespace SlimViews
                 { Tuple.Create(ModifierKeys.Control, Key.O), Commands.Open },
                 { Tuple.Create(ModifierKeys.Control, Key.S), Commands.Save },
                 { Tuple.Create(ModifierKeys.Control, Key.C), Commands.Clipboard },
-    
+
                 // Add Undo and Redo hotkeys
                 { Tuple.Create(ModifierKeys.Control, Key.Z), Commands.Undo },
                 { Tuple.Create(ModifierKeys.Control, Key.Y), Commands.Redo },
@@ -524,6 +524,7 @@ namespace SlimViews
                                 {
                                     newBitmap = ImageProcessor.FillTexture(Image.Bitmap, frame, texEnum);
                                 }
+
                                 break;
 
                             case AreaMode.Filter:
@@ -532,6 +533,7 @@ namespace SlimViews
                                 {
                                     newBitmap = ImageProcessor.FillFilter(Image.Bitmap, frame, filterEnum);
                                 }
+
                                 break;
 
                             case AreaMode.Erase:
@@ -1011,7 +1013,8 @@ namespace SlimViews
                     Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
                     Image.GifPath = null;
-                    Image.Information = ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
+                    Image.Information =
+                        ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
                 }
 
                 FileContext.FilePath = filePath;
@@ -1023,6 +1026,7 @@ namespace SlimViews
                 _ = MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
             }
         }
+
         /// <summary>
         /// Loads the thumbs.
         /// </summary>

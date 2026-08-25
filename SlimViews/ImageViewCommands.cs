@@ -340,7 +340,6 @@ namespace SlimViews
             MoveAll = Make_ObjParamCmd(FileService.MoveAll);
 
 
-
             // Rename is asynchronous in your original; pass the owner in the lambda to call the service method
             Rename = Make_AsyncObjCmd(obj => FileService.RenameCurrentAsync(owner));
 
