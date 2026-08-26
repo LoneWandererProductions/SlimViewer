@@ -17,10 +17,4 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Mathematics">
-      <HintPath>bin\Debug\net9.0-windows\Mathematics.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
