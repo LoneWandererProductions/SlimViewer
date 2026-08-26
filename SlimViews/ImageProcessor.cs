@@ -77,7 +77,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="path">The path to search.</param>
         /// <returns>The path of the first image found, or null if none found.</returns>
-        internal static string UnpackFile(string path)
+        internal static string? UnpackFile(string path)
         {
             var files = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
             return files.IsNullOrEmpty() ? null : files[0];

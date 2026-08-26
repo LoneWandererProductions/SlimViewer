@@ -690,7 +690,7 @@ namespace SlimViews
 
             if (string.Equals(pathObj.Extension, ViewResources.CbzExt, StringComparison.OrdinalIgnoreCase))
             {
-                GenerateCbrView(pathObj);
+                GenerateCbrViewAsync(pathObj);
                 return;
             }
 
@@ -715,7 +715,7 @@ namespace SlimViews
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, FileContext.CurrentPath);
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            GenerateCbrView(pathObj);
+            GenerateCbrViewAsync(pathObj);
         }
 
         /// <summary>
@@ -1060,7 +1060,7 @@ namespace SlimViews
                 ImagingResources.Appendix,
                 UiState.UseSubFolders);
 
-            if (files == null || files.Count == 0)
+            if (files.IsNullOrEmpty())
             {
                 Count = 0;
                 FileContext.Observer = null;
@@ -1086,7 +1086,7 @@ namespace SlimViews
         /// <summary>
         /// Generates the dictionary and updates the UI source.
         /// </summary>
-        private async Task GenerateThumbView(IReadOnlyCollection<string?> lst)
+        private async Task GenerateThumbView(IReadOnlyCollection<string?>? lst)
         {
             if (!IsThumbsVisible || lst == null) return;
 
@@ -1110,7 +1110,7 @@ namespace SlimViews
         /// Generates the CBR view.
         /// </summary>
         /// <param name="pathObj">The path object.</param>
-        private void GenerateCbrView(PathObject pathObj)
+        private async Task GenerateCbrViewAsync(PathObject? pathObj)
         {
             if (pathObj == null) return;
 
@@ -1121,11 +1121,11 @@ namespace SlimViews
             if (file == null) return;
 
             GenerateView(file);
-            LoadThumbs(folder, file);
+            await LoadThumbs(folder, file);
         }
 
         /// <summary>
-        /// Navigations the logic.
+        /// Navigation logic.
         /// </summary>
         private void NavigationLogic()
         {

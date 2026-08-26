@@ -1,35 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="System\green.png" />
-    <None Remove="System\red.png" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="System\green.png" />
+        <None Remove="System\red.png" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="System\green.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="System\red.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="System\green.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Include="System\red.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
-    <ProjectReference Include="..\Imaging\Imaging.csproj" />
-    <ProjectReference Include="..\SlimControls\SlimControls.csproj" />
-    <ProjectReference Include="..\SlimViews\SlimViews.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
+        <ProjectReference Include="..\Imaging\Imaging.csproj" />
+        <ProjectReference Include="..\SlimControls\SlimControls.csproj" />
+        <ProjectReference Include="..\SlimViews\SlimViews.csproj" />
+    </ItemGroup>
 
 </Project>
