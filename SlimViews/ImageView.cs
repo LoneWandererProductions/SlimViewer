@@ -284,12 +284,12 @@ namespace SlimViews
         /// <summary>
         /// Undoes this instance.
         /// </summary>
-        public void Undo() => HistoryManager.Undo();
+        public void Undo() => HistoryManager.UndoAsync();
 
         /// <summary>
         /// Redoes this instance.
         /// </summary>
-        public void Redo() => HistoryManager.Redo();
+        public void Redo() => HistoryManager.RedoAsync();
 
         /// <summary>
         /// Clears the history.
