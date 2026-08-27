@@ -301,8 +301,8 @@ namespace SlimViews
             SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
 
             // ---- UI / direct owner commands ----
-            Undo = new DelegateCommand<object>(_ => owner.Undo(), CanRun);
-            Redo = new DelegateCommand<object>(_ => owner.Redo(), CanRun);
+            Undo = new DelegateCommand<object>(_ => owner.UndoAsync(), CanRun);
+            Redo = new DelegateCommand<object>(_ => owner.RedoAsync(), CanRun);
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);

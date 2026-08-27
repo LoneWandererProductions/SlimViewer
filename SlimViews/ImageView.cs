@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -114,6 +115,14 @@ namespace SlimViews
         /// The draw lock
         /// </summary>
         private readonly object _drawLock = new object();
+
+        /// <summary>
+        /// Incremented every time a new image load starts (thumbnail click, Open,
+        /// navigation, ...). Lets a load that's still decoding when a newer one
+        /// starts recognise it's stale and drop its result instead of overwriting
+        /// whatever the user actually clicked on last. See <see cref="GenerateImageAsync"/>.
+        /// </summary>
+        private long _imageLoadGeneration;
 
         /// <summary>
         /// Controls the actual interaction mode of the ImageZoom control (Pan, Rect, FreeForm).
@@ -284,12 +293,12 @@ namespace SlimViews
         /// <summary>
         /// Undoes this instance.
         /// </summary>
-        public void Undo() => HistoryManager.UndoAsync();
+        public Task UndoAsync() => HistoryManager.UndoAsync();
 
         /// <summary>
         /// Redoes this instance.
         /// </summary>
-        public void Redo() => HistoryManager.RedoAsync();
+        public Task RedoAsync() => HistoryManager.RedoAsync();
 
         /// <summary>
         /// Clears the history.
@@ -992,6 +1001,12 @@ namespace SlimViews
                 return;
             }
 
+            // Tag this call so a slower, older click can't clobber a newer one, and
+            // so the busy indicator only clears once the *latest* click is actually
+            // done - see the two checks against _imageLoadGeneration below.
+            var myGeneration = Interlocked.Increment(ref _imageLoadGeneration);
+            UiState.StatusImage = UiState.RedIconPath;
+
             try
             {
                 var ext = Path.GetExtension(filePath);
@@ -1010,7 +1025,18 @@ namespace SlimViews
                 else
                 {
                     // Load static image
-                    Image.Bitmap = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
+                    var bmp = await Task.Run(() => ImageProcessor.Render.GetOriginalBitmap(filePath));
+
+                    // Another thumbnail was clicked while this one was still decoding.
+                    // That newer call already owns the display now - drop this result
+                    // (and the bitmap it decoded) instead of overwriting it.
+                    if (myGeneration != Interlocked.Read(ref _imageLoadGeneration))
+                    {
+                        bmp?.Dispose();
+                        return;
+                    }
+
+                    Image.Bitmap = bmp;
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
                     Image.GifPath = null;
                     Image.Information =
@@ -1024,6 +1050,16 @@ namespace SlimViews
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
+            }
+            finally
+            {
+                // Only the most recent click gets to declare "done". If an older,
+                // slower call is finishing late, a newer one may already be back in
+                // flight - clearing the indicator here would hide that it's still working.
+                if (myGeneration == Interlocked.Read(ref _imageLoadGeneration))
+                {
+                    UiState.StatusImage = UiState.GreenIconPath;
+                }
             }
         }
 
