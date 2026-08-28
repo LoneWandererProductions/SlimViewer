@@ -57,7 +57,7 @@ namespace SlimViews
         /// <param name="path">The zip file path.</param>
         /// <param name="fileNameWithoutExt">The folder name without extension.</param>
         /// <returns>The path to the target folder.</returns>
-        internal static string UnpackFolder(string path, string fileNameWithoutExt)
+        internal static string? UnpackFolder(string? path, string? fileNameWithoutExt)
         {
             var tempFolder = Path.Combine(Directory.GetCurrentDirectory(), ViewResources.TempFolder);
             Directory.CreateDirectory(tempFolder);
@@ -77,7 +77,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="path">The path to search.</param>
         /// <returns>The path of the first image found, or null if none found.</returns>
-        internal static string? UnpackFile(string path)
+        internal static string? UnpackFile(string? path)
         {
             var files = FileHandleSearch.GetFilesByExtensionFullPath(path, ImagingResources.Appendix, true);
             return files.IsNullOrEmpty() ? null : files[0];
@@ -303,7 +303,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="path">The path to the image.</param>
         /// <returns>The loaded bitmap, or null if loading fails.</returns>
-        internal static Bitmap LoadImage(string path)
+        internal static Bitmap LoadImage(string? path)
         {
             try
             {
@@ -323,7 +323,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>The generated bitmap, or null if generation fails.</returns>
-        internal static Bitmap GenerateImage(string filePath)
+        internal static Bitmap GenerateImage(string? filePath)
         {
             try
             {

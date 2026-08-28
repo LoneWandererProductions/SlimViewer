@@ -58,7 +58,8 @@
                             <Setter TargetName="border" Property="Background" Value="{StaticResource GreenHoverBrush}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource GreenPressedBrush}" />
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{StaticResource GreenPressedBrush}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="border" Property="Background" Value="#E5E7EB" />
@@ -143,7 +144,8 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.08" />
                                     </Border.Effect>
                                     <ScrollViewer Margin="2" SnapsToDevicePixels="True">
-                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained" />
                                     </ScrollViewer>
                                 </Border>
                             </Grid>
@@ -151,11 +153,13 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource GreenPrimaryBrush}" />
+                            <Setter TargetName="Border" Property="BorderBrush"
+                                    Value="{StaticResource GreenPrimaryBrush}" />
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource GreenSubtleBrush}" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource GreenPrimaryBrush}" />
+                            <Setter TargetName="Border" Property="BorderBrush"
+                                    Value="{StaticResource GreenPrimaryBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -184,10 +188,12 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource GreenPrimaryBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{StaticResource GreenPrimaryBrush}" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource GreenPrimaryBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{StaticResource GreenPrimaryBrush}" />
                             <Setter TargetName="border" Property="Background" Value="{StaticResource GreenSubtleBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>

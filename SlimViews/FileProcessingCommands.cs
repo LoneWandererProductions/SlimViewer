@@ -90,7 +90,7 @@ namespace SlimViews
         /// <param name="owner">The owner.</param>
         /// <param name="paths">The paths.</param>
         /// <param name="isSilent">if set to <c>true</c> [is silent].</param>
-        internal async Task DeleteAsync(ImageView owner, List<string> paths, bool isSilent)
+        internal async Task DeleteAsync(ImageView owner, List<string?> paths, bool isSilent)
         {
             if (owner == null || paths.Count == 0) return;
 
@@ -145,7 +145,7 @@ namespace SlimViews
             if (owner?.UiState == null || owner.FileContext?.Observer == null)
                 return;
 
-            var pathsToDelete = new List<string>();
+            var pathsToDelete = new List<string?>();
 
             // Gather paths based on current selection or current item
             if (owner.UiState.IsSelectionEmpty)
@@ -258,7 +258,7 @@ namespace SlimViews
             if (string.IsNullOrEmpty(targetDir) || !Directory.Exists(targetDir))
                 return;
 
-            var targetFiles = FileHandleSearch.GetFilesByExtensionFullPath(
+            IEnumerable<string?> targetFiles = FileHandleSearch.GetFilesByExtensionFullPath(
                 targetDir, ImagingResources.Appendix, owner.UiState.UseSubFolders
             ) ?? Enumerable.Empty<string>();
 
@@ -314,7 +314,7 @@ namespace SlimViews
         /// <summary>
         /// Core rename logic: Handles the Lock by clearing the owner view first.
         /// </summary>
-        internal async Task<string?> RenameAsync(ImageView owner, string sourcePath, string targetPath, bool isSilent)
+        internal async Task<string?> RenameAsync(ImageView owner, string? sourcePath, string? targetPath, bool isSilent)
         {
             if (owner == null || string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(targetPath))
                 return null;

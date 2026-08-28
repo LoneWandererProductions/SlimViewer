@@ -85,8 +85,14 @@ namespace Core.MemoryLog
         /// <returns>Safe formatted message</returns>
         private static string SafeFormat(string? template, object[] args)
         {
-            try { return template != null ? string.Format(template, args) : string.Empty; }
-            catch { return template ?? string.Empty; }
+            try
+            {
+                return template != null ? string.Format(template, args) : string.Empty;
+            }
+            catch
+            {
+                return template ?? string.Empty;
+            }
         }
     }
 }

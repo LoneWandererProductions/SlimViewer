@@ -122,7 +122,7 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>A <see cref="BitmapImage"/> representing the loaded image.</returns>
-        public static BitmapImage LoadBitmapImage(string path)
+        public static BitmapImage LoadBitmapImage(string? path)
             => new ImageRender().GetBitmapImageFileStream(path);
 
 
@@ -131,7 +131,7 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The file path to the image.</param>
         /// <returns>A <see cref="Bitmap"/> representing the loaded image.</returns>
-        public static Bitmap LoadBitmap(string path)
+        public static Bitmap LoadBitmap(string? path)
             => new ImageRender().GetOriginalBitmap(path);
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Information about the gif</returns>
-        public static ImageGifInfo? GetGifInfo(string path)
+        public static ImageGifInfo? GetGifInfo(string? path)
         {
             // Delegates to internal handler
             return ImageGifHandler.GetImageInfo(path);

@@ -8,9 +8,11 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Core.MemoryLog;
 
 //System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Warning | System.Diagnostics.SourceLevels.Error;
 
@@ -22,6 +24,11 @@ namespace SlimViewer
     /// </summary>
     internal sealed partial class App
     {
+        /// <summary>
+        /// The library name
+        /// </summary>
+        private const string LibraryName = "SlimViewer.App";
+
         /// <inheritdoc />
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -36,7 +43,7 @@ namespace SlimViewer
             // Exceptions on any OTHER thread (raw Task.Run work, timers, etc) that
             // would otherwise crash the process outright. By the time this fires the
             // runtime has already decided to terminate - that can't be stopped from
-            // here - but the exception can be logged before it goes down.
+            // here - but the exception can still be logged before it goes down.
             AppDomain.CurrentDomain.UnhandledException += OnAppDomainUnhandledException;
 
             // Exceptions from "fire and forget" Tasks nobody awaited (e.g. a call like
@@ -45,9 +52,15 @@ namespace SlimViewer
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         }
 
+        /// <summary>
+        /// Called when [dispatcher unhandled exception].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DispatcherUnhandledExceptionEventArgs"/> instance containing the event data.</param>
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            LogFatal("UI thread", e.Exception);
+            InMemoryLogger.Instance.Log(LogLevel.Error, "Unhandled UI-thread exception",
+                libraryName: LibraryName, exception: e.Exception);
 
             MessageBox.Show(
                 "Something went wrong and the last action couldn't be completed. Details were logged.",
@@ -63,24 +76,56 @@ namespace SlimViewer
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Called when [application domain unhandled exception].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
         private void OnAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            LogFatal("Non-UI thread (fatal)", e.ExceptionObject as Exception);
-            // The process is already terminating; nothing here can stop that.
+            var ex = e.ExceptionObject as Exception;
+            InMemoryLogger.Instance.Log(LogLevel.Critical, "Unhandled fatal exception - process is terminating",
+                libraryName: LibraryName, exception: ex);
+
+            // The process is going down. InMemoryLogger is, as the name says, only
+            // in memory - that queue dies with the process unless it's flushed to
+            // disk right now, synchronously, before this handler returns.
+            FlushLogToDiskBestEffort();
         }
 
+        /// <summary>
+        /// Called when [unobserved task exception].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="UnobservedTaskExceptionEventArgs"/> instance containing the event data.</param>
         private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            LogFatal("Unobserved task", e.Exception);
+            InMemoryLogger.Instance.Log(LogLevel.Error, "Unobserved task exception",
+                libraryName: LibraryName, exception: e.Exception);
             e.SetObserved();
         }
 
-        private static void LogFatal(string source, Exception? ex)
+        /// <summary>
+        /// Flushes the log to disk best effort.
+        /// </summary>
+        private static void FlushLogToDiskBestEffort()
         {
-            // TODO: this is the one wire you said you haven't connected yet - swap
-            // Trace.WriteLine for your actual logger. Everything above stays the same
-            // regardless of what's on the other end of this call.
-            Trace.WriteLine($"[FATAL:{source}] {ex}");
+            try
+            {
+                var dir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "SlimViewer");
+                Directory.CreateDirectory(dir);
+
+                InMemoryLogger.Instance.DumpToFile(
+                    Path.Combine(dir, "crash.log"),
+                    append: true,
+                    minimumLevel: LogLevel.Warning);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
         }
     }
 }

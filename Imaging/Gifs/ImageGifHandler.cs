@@ -35,7 +35,7 @@ namespace Imaging.Gifs
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>gif Infos</returns>
-        public static ImageGifInfo? GetImageInfo(string path)
+        public static ImageGifInfo? GetImageInfo(string? path)
         {
             ImageGifInfo? info = null;
 

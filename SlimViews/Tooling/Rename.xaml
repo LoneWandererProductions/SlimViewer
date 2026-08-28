@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="Batch Rename" 
+        Title="Batch Rename"
         Height="580" Width="520"
         MinHeight="480" MinWidth="450"
-        WindowStartupLocation="CenterOwner" 
+        WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip"
         Background="#FAFAFA">
 
@@ -35,11 +35,13 @@
         <!-- Header Title -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
             <TextBlock Text="🏷️" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBlock Text="Batch File Rename" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+            <TextBlock Text="Batch File Rename" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"
+                       Foreground="#333" />
         </StackPanel>
 
         <!-- 1. Text Replacement & Append Options Card -->
-        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="12">
             <StackPanel>
                 <TextBlock Text="✏️ Text Manipulation" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
 
@@ -63,7 +65,8 @@
                              ToolTip="Enter the target text you want to add, remove, or find" />
 
                     <!-- Replacement Value -->
-                    <TextBlock Grid.Row="0" Grid.Column="2" Text="New Replacement Text:" Foreground="#555" FontSize="11" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="New Replacement Text:" Foreground="#555"
+                               FontSize="11" />
                     <TextBox Grid.Row="2" Grid.Column="2" Height="26" VerticalContentAlignment="Center"
                              Text="{Binding Replacer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Enter the new text that will replace the target text" />
@@ -85,20 +88,25 @@
                     <Button Grid.Row="0" Grid.Column="0" Content="➕ Add Appendages" Height="26"
                             Command="{Binding AddCommand}" ToolTip="Appends the target text to the filenames" />
                     <Button Grid.Row="0" Grid.Column="2" Content="✂️ Strip Ends" Height="26"
-                            Command="{Binding RemoveAppendageCommand}" ToolTip="Removes the target text from the beginning or end of filenames" />
+                            Command="{Binding RemoveAppendageCommand}"
+                            ToolTip="Removes the target text from the beginning or end of filenames" />
 
                     <Button Grid.Row="2" Grid.Column="0" Content="🗑️ Remove Text" Height="26"
-                            Command="{Binding RemoveCommand}" ToolTip="Removes all instances of the target text from filenames" />
+                            Command="{Binding RemoveCommand}"
+                            ToolTip="Removes all instances of the target text from filenames" />
                     <Button Grid.Row="2" Grid.Column="2" Content="🔄 Replace Text" Height="26"
-                            Command="{Binding ReplaceCommand}" ToolTip="Replaces target text instances with the new replacement text" />
+                            Command="{Binding ReplaceCommand}"
+                            ToolTip="Replaces target text instances with the new replacement text" />
                 </Grid>
             </StackPanel>
         </Border>
 
         <!-- 2. Positional Trimming & Numbering Card -->
-        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="12">
             <StackPanel>
-                <TextBlock Text="🔢 Position &amp; Numbering Options" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
+                <TextBlock Text="🔢 Position &amp; Numbering Options" FontWeight="SemiBold" Foreground="#444"
+                           Margin="0,0,0,8" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -110,21 +118,25 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Chars to Strip from Start:" VerticalAlignment="Center" Foreground="#555" FontSize="11" />
+                    <TextBlock Grid.Column="0" Text="Chars to Strip from Start:" VerticalAlignment="Center"
+                               Foreground="#555" FontSize="11" />
                     <TextBox Grid.Column="1" Height="26" VerticalContentAlignment="Center" TextAlignment="Center"
                              Text="{Binding Numbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Number of characters to strip from the start of filenames" />
 
                     <Button Grid.Column="3" Content="✂️ Strip N Chars" Height="26"
-                            Command="{Binding AppendagesAtCommand}" ToolTip="Removes the specified number of characters from the start of filenames" />
+                            Command="{Binding AppendagesAtCommand}"
+                            ToolTip="Removes the specified number of characters from the start of filenames" />
                     <Button Grid.Column="5" Content="🔢 Reorder Numbers" Height="26"
-                            Command="{Binding ReorderCommand}" ToolTip="Automatically normalizes and reorders numbers found in filenames" />
+                            Command="{Binding ReorderCommand}"
+                            ToolTip="Automatically normalizes and reorders numbers found in filenames" />
                 </Grid>
             </StackPanel>
         </Border>
 
         <!-- 3. Live Preview DataGrid Card -->
-        <Border Grid.Row="5" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="1">
+        <Border Grid.Row="5" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="1">
             <DataGrid ItemsSource="{Binding PreviewItems}"
                       AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                       HeadersVisibility="Column" GridLinesVisibility="Horizontal"

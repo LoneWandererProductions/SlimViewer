@@ -28,13 +28,13 @@ namespace FileHandler
         /// <param name="appendix">The appendix.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string> GetFilesByExtensionFullPath(string path, IEnumerable<string> appendix,
+        public static List<string?> GetFilesByExtensionFullPath(string? path, IEnumerable<string> appendix,
             bool subdirectories)
         {
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
-                return new List<string>();
+                return new List<string?>();
 
-            var lst = new List<string>();
+            var lst = new List<string?>();
 
             foreach (var app in appendix)
             {
@@ -52,7 +52,7 @@ namespace FileHandler
         /// <param name="appendix">The appendix.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string> GetFilesByExtensionFullPath(string path, string appendix, bool subdirectories)
+        public static List<string> GetFilesByExtensionFullPath(string? path, string appendix, bool subdirectories)
         {
             return FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
         }
@@ -64,7 +64,7 @@ namespace FileHandler
         /// <param name="appendix">The appendix.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string?> GetFileByExtensionWithExtension(string path, string appendix, bool subdirectories)
+        public static List<string?> GetFileByExtensionWithExtension(string? path, string appendix, bool subdirectories)
         {
             var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
             return files.Select(Path.GetFileName).ToList();
@@ -77,7 +77,7 @@ namespace FileHandler
         /// <param name="appendix">The appendix.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string?> GetFileByExtensionWithoutExtension(string path, string appendix,
+        public static List<string?> GetFileByExtensionWithoutExtension(string? path, string appendix,
             bool subdirectories)
         {
             var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
@@ -90,7 +90,7 @@ namespace FileHandler
         /// <param name="path">The path.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string> GetAllFiles(string path, bool subdirectories)
+        public static List<string> GetAllFiles(string? path, bool subdirectories)
         {
             return FileHandlerProcessing.GetFilesByExtension(path, null, subdirectories) ?? new List<string>();
         }
@@ -180,13 +180,13 @@ namespace FileHandler
         /// <param name="subString">The sub string.</param>
         /// <param name="invert">if set to <c>true</c> [invert].</param>
         /// <returns>All files with a specific substring.</returns>
-        public static List<string> GetFilesWithSubString(string path, IEnumerable<string> appendix, bool subdirectories,
+        public static List<string?> GetFilesWithSubString(string? path, IEnumerable<string> appendix, bool subdirectories,
             string subString, bool invert)
         {
             var lst = GetFilesByExtensionFullPath(path, appendix, subdirectories);
 
             if (lst.Count == 0)
-                return new List<string>();
+                return new List<string?>();
 
             return lst.Where(element =>
             {

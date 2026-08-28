@@ -233,7 +233,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The observer.
         /// </value>
-        public ConcurrentDictionary<int, string> Observer
+        public ConcurrentDictionary<int, string?> Observer
         {
             get => _observer;
             set
@@ -397,7 +397,7 @@ namespace SlimViews.Tooling
             IsWorking = true;
             try
             {
-                var updatedObserver = new ConcurrentDictionary<int, string>(Observer);
+                var updatedObserver = new ConcurrentDictionary<int, string?>(Observer);
                 bool changesMade = false;
 
                 // 1. DROP THE LOCK ONCE FOR THE ENTIRE BATCH
@@ -441,7 +441,7 @@ namespace SlimViews.Tooling
 
                     // 3. REFRESH THE MOTHER UI EXACTLY ONCE AT THE END
                     // Push the updated dictionary back to the main window and trigger one clean reload
-                    _imageView.FileContext.Observer = new Dictionary<int, string>(updatedObserver);
+                    _imageView.FileContext.Observer = new Dictionary<int, string?>(updatedObserver);
                     await _imageView.LoadThumbs(_imageView.FileContext.CurrentPath);
                     await _imageView.RefreshActionAsync(nameof(RenameView));
                 }

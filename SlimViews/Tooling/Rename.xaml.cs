@@ -59,6 +59,6 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The observer.
         /// </value>
-        internal Dictionary<int, string> Observer => new(_viewModel.Observer);
+        internal Dictionary<int, string?> Observer => new(_viewModel.Observer);
     }
 }

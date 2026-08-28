@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Filter Configuration" 
+        Title="Filter Configuration"
         Height="460" Width="420"
-        WindowStartupLocation="CenterOwner" 
+        WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#FAFAFA">
 
@@ -30,11 +30,13 @@
         <!-- Header Title -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
             <TextBlock Text="⚙️" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBlock Text="Filter Algorithm Parameters" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+            <TextBlock Text="Filter Algorithm Parameters" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"
+                       Foreground="#333" />
         </StackPanel>
 
         <!-- Top Filter Selection Card -->
-        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,12">
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="10" Margin="0,0,0,12">
             <StackPanel>
                 <TextBlock Text="Selected Filter Type" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,6" />
                 <ComboBox Height="28"
@@ -46,7 +48,8 @@
         </Border>
 
         <!-- Parameters Settings Card -->
-        <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+        <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="12">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -66,35 +69,40 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Factor -->
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Factor" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Factor" VerticalAlignment="Center"
+                               FontWeight="SemiBold" Foreground="#555" />
                     <TextBox Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
                              Text="{Binding Factor, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsFactorActive}"
                              ToolTip="The multiplier applied to the pixel values" />
 
                     <!-- Bias -->
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Bias" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Bias" VerticalAlignment="Center"
+                               FontWeight="SemiBold" Foreground="#555" />
                     <TextBox Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
                              Text="{Binding Bias, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsBiasActive}"
                              ToolTip="The offset added to the pixel values (Brightness shift)" />
 
                     <!-- Sigma -->
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Sigma" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Sigma" VerticalAlignment="Center"
+                               FontWeight="SemiBold" Foreground="#555" />
                     <TextBox Grid.Row="4" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
                              Text="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsSigmaActive}"
                              ToolTip="Standard deviation for blur kernels (Gaussian)" />
 
                     <!-- Base Window Size -->
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Base Window Size" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Base Window Size" VerticalAlignment="Center"
+                               FontWeight="SemiBold" Foreground="#555" />
                     <TextBox Grid.Row="6" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
                              Text="{Binding BaseWindowSize, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsBaseWindowSizeActive}"
                              ToolTip="The area of effect for the filter (Kernel Size)" />
 
                     <!-- Scale -->
-                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Scale" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Scale" VerticalAlignment="Center"
+                               FontWeight="SemiBold" Foreground="#555" />
                     <TextBox Grid.Row="8" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
                              Text="{Binding Scale, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsScaleActive}"
@@ -105,7 +113,8 @@
 
         <!-- Footer Action Buttons -->
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="💾 Save" Height="30" Width="85" Margin="0,0,6,0" FontWeight="SemiBold" Command="{Binding SaveCommand}" />
+            <Button Content="💾 Save" Height="30" Width="85" Margin="0,0,6,0" FontWeight="SemiBold"
+                    Command="{Binding SaveCommand}" />
             <Button Content="🔄 Reset" Height="30" Width="85" Margin="0,0,6,0" Command="{Binding ResetCommand}" />
             <Button Content="❌ Cancel" Height="30" Width="85"
                     Command="{Binding CancelCommand}"

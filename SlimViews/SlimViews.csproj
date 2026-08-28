@@ -9,6 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
         <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
+        <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
         <ProjectReference Include="..\Extended.Extensions\Extended.Extensions.csproj" />
         <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
         <ProjectReference Include="..\Imaging.Cifs\Imaging.Cifs.csproj" />

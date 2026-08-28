@@ -416,7 +416,7 @@ namespace SlimViews
         /// <param name="wPoint">The w point.</param>
         internal async Task SelectedPointAction(System.Windows.Point wPoint)
         {
-            if (Image?.Bitmap == null) return;
+            if (Image.Bitmap == null) return;
 
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
@@ -449,7 +449,7 @@ namespace SlimViews
             // 2. Color Picker (Eyedropper) Logic
             else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)
             {
-                ColorHsv pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, 1);
+                ColorHsv pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, radius: 1);
                 var pickedColor = Color.FromArgb(pickedHsv.A, pickedHsv.R, pickedHsv.G, pickedHsv.B);
                 MyDrawingState.BrushColor = ColorTranslator.ToHtml(pickedColor);
             }
@@ -462,7 +462,7 @@ namespace SlimViews
         /// <param name="frame">The frame.</param>
         internal async Task SelectedFrameAction(SelectionFrame frame)
         {
-            if (Image?.Bitmap == null) return;
+            if (Image.Bitmap == null) return;
 
             // Grab UI state variables BEFORE backgrounding to avoid cross-thread exceptions
             var tool = MyDrawingState.ActiveTool;
@@ -791,7 +791,7 @@ namespace SlimViews
         /// Changes the image.
         /// </summary>
         /// <param name="files">The files.</param>
-        public void ChangeImage(IEnumerable<string> files)
+        public void ChangeImage(IEnumerable<string?> files)
         {
             UpdateImageState(newFiles: files);
         }
@@ -1035,7 +1035,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="folder">The folder.</param>
         /// <param name="filePath">The file path.</param>
-        internal async Task LoadThumbs(string folder, string? filePath = null)
+        internal async Task LoadThumbs(string? folder, string? filePath = null)
         {
             // Await the folder processing so we don't move to selection too early
             await GenerateThumbView(folder).ConfigureAwait(true);
@@ -1052,13 +1052,13 @@ namespace SlimViews
         /// <summary>
         /// Generates the thumb view from a folder path.
         /// </summary>
-        private async Task GenerateThumbView(string folder)
+        private async Task GenerateThumbView(string? folder)
         {
             FileContext.CurrentPath = folder;
             UiState.StatusImage = UiState.RedIconPath;
 
             // 1. Fetch and Sort files
-            var files = FileHandleSearch.GetFilesByExtensionFullPath(
+            List<string?> files = FileHandleSearch.GetFilesByExtensionFullPath(
                 folder,
                 ImagingResources.Appendix,
                 UiState.UseSubFolders);
@@ -1096,7 +1096,7 @@ namespace SlimViews
             UiState.StatusImage = UiState.RedIconPath;
 
             // Create the dictionary in the background
-            var dict = await Task.Run(() => lst.ToDictionary()).ConfigureAwait(false);
+            var dict = await Task.Run(lst.ToDictionary).ConfigureAwait(false);
 
             // Switch back to the UI thread to update the property
             await Application.Current.Dispatcher.InvokeAsync(() =>

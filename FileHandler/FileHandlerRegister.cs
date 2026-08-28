@@ -48,7 +48,7 @@ namespace FileHandler
         /// <summary>
         ///     Send the status
         /// </summary>
-        public static EventHandler<string> SendStatus { get; set; }
+        public static EventHandler<string?> SendStatus { get; set; }
 
         /// <summary>
         ///     Send the overview
@@ -61,7 +61,7 @@ namespace FileHandler
         /// <param name="method">The method.</param>
         /// <param name="path">The path.</param>
         /// <param name="exception">The exception.</param>
-        public static void AddError(string method, string path, Exception exception)
+        public static void AddError(string method, string? path, Exception exception)
         {
             lock (ErrorLogLock)
             {
@@ -103,7 +103,7 @@ namespace FileHandler
         /// <value>
         ///     The Items.
         /// </value>
-        public List<string> Elements { get; init; }
+        public List<string?> Elements { get; init; }
 
         /// <summary>
         ///     Gets or sets the Message.

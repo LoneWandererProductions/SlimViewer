@@ -27,7 +27,7 @@ namespace FileHandler
         /// <param name="target">Full qualified target Path</param>
         /// <returns>The <see cref="bool" />Was the Folder Renamed and all contents moved.</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static async Task<bool> RenameDirectory(string source, string target)
+        public static async Task<bool> RenameDirectory(string? source, string target)
         {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
             {
@@ -70,7 +70,7 @@ namespace FileHandler
         /// The <see cref="bool" />Was the File Renamed.
         /// </returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static async Task<bool> RenameFile(string source, string target, int maxRetries = 5)
+        public static async Task<bool> RenameFile(string? source, string? target, int maxRetries = 5)
         {
             // 1. Guard Clauses
             if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))

@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -43,7 +44,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The current folder
         /// </summary>
-        private string _currentFolder;
+        private string? _currentFolder;
 
         /// <summary>
         /// The green
@@ -177,7 +178,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Initializes the SearchView with the specified parameters.
         /// </summary>
-        public void Initialize(bool includeSubfolders, string currentFolder, ImageView imageView,
+        public void Initialize(bool includeSubfolders, string? currentFolder, ImageView imageView,
             ColorHsv initialColor = null)
         {
             _includeSubfolders = includeSubfolders;

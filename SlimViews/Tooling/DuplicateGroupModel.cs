@@ -22,7 +22,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The images
         /// </summary>
-        private Dictionary<int, string> _images = new();
+        private Dictionary<int, string?> _images = new();
 
         /// <summary>
         /// The similarity scores
@@ -57,7 +57,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The images.
         /// </value>
-        public Dictionary<int, string> Images
+        public Dictionary<int, string?> Images
         {
             get => _images;
             set => SetProperty(ref _images, value, nameof(Images));

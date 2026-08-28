@@ -6,7 +6,7 @@
         xmlns:Gifs="clr-namespace:Imaging.Gifs;assembly=Imaging"
         xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
         mc:Ignorable="d"
-        Title="GIF Frame Editor" 
+        Title="GIF Frame Editor"
         Height="620" Width="980"
         MinHeight="480" MinWidth="800"
         WindowStartupLocation="CenterOwner"
@@ -50,7 +50,8 @@
 
                 <Rectangle Width="1" Height="20" Fill="#D0D0D0" Margin="6,0" VerticalAlignment="Center" />
 
-                <Button Command="{Binding SaveImagesCommand}" IsEnabled="{Binding IsActive}" Height="28" Padding="10,2" Margin="2"
+                <Button Command="{Binding SaveImagesCommand}" IsEnabled="{Binding IsActive}" Height="28" Padding="10,2"
+                        Margin="2"
                         ToolTip="Extract and save all individual frames as separate image files">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="🖼️ " VerticalAlignment="Center" />
@@ -60,7 +61,8 @@
 
                 <Rectangle Width="1" Height="20" Fill="#D0D0D0" Margin="6,0" VerticalAlignment="Center" />
 
-                <Button Command="{Binding SaveGifCommand}" IsEnabled="{Binding IsActive}" Height="28" Padding="12,2" Margin="2"
+                <Button Command="{Binding SaveGifCommand}" IsEnabled="{Binding IsActive}" Height="28" Padding="12,2"
+                        Margin="2"
                         FontWeight="Bold" Background="#2E7D32" Foreground="White"
                         ToolTip="Compile frames and save the animated GIF file to disk">
                     <StackPanel Orientation="Horizontal">
@@ -96,7 +98,8 @@
                     <RowDefinition Height="140" />
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="#1E1E1E" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" ClipToBounds="True">
+                <Border Grid.Row="0" Background="#1E1E1E" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                        ClipToBounds="True">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <Gifs:ImageGif GifSource="{Binding GifPath}"
                                        AutoStart="True"
@@ -105,9 +108,11 @@
                     </ScrollViewer>
                 </Border>
 
-                <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="#E0E0E0" Margin="0,1" ToolTip="Drag to resize thumbnail strip" />
+                <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="#E0E0E0" Margin="0,1"
+                              ToolTip="Drag to resize thumbnail strip" />
 
-                <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="4">
+                <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                        Padding="4">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                         <Images:Thumbnails Name="Thumb"
                                            ItemsSource="{Binding Observer}"
@@ -119,16 +124,19 @@
                 </Border>
             </Grid>
 
-            <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" Background="#E0E0E0" Margin="1,0" ToolTip="Drag to resize controls panel" />
+            <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" Background="#E0E0E0" Margin="1,0"
+                          ToolTip="Drag to resize controls panel" />
 
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel>
 
-                    <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,10">
+                    <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                            Padding="12" Margin="0,0,0,10">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                 <TextBlock Text="⏱️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                                <TextBlock Text="Frame Timing" FontWeight="Bold" FontSize="13" Foreground="#333" VerticalAlignment="Center" />
+                                <TextBlock Text="Frame Timing" FontWeight="Bold" FontSize="13" Foreground="#333"
+                                           VerticalAlignment="Center" />
                             </StackPanel>
 
                             <Grid Margin="0,0,0,12">
@@ -136,8 +144,11 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Delay (ms):" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" Margin="0,0,10,0" ToolTip="Frame display duration in milliseconds" />
-                                <TextBox Grid.Column="1" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
+                                <TextBlock Grid.Column="0" Text="Delay (ms):" VerticalAlignment="Center"
+                                           FontWeight="SemiBold" Foreground="#555" Margin="0,0,10,0"
+                                           ToolTip="Frame display duration in milliseconds" />
+                                <TextBox Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                                         TextAlignment="Center"
                                          Text="{Binding CurrentDelay, UpdateSourceTrigger=PropertyChanged}"
                                          ToolTip="Enter duration in milliseconds for the frame (e.g. 100ms = 10 FPS)" />
                             </Grid>
@@ -154,12 +165,17 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#EBF3FC" BorderBrush="#BCD6F2" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <Border Background="#EBF3FC" BorderBrush="#BCD6F2" BorderThickness="1" CornerRadius="4"
+                            Padding="10">
                         <StackPanel>
-                            <TextBlock Text="💡 Instructions" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,4" />
-                            <TextBlock Text="• Click thumbnails below to select frames." Foreground="#333" FontSize="11" TextWrapping="Wrap" Margin="0,2" />
-                            <TextBlock Text="• Adjust delay (ms) and click Save Frame." Foreground="#333" FontSize="11" TextWrapping="Wrap" Margin="0,2" />
-                            <TextBlock Text="• Use 'Save GIF' in toolbar to compile result." Foreground="#333" FontSize="11" TextWrapping="Wrap" Margin="0,2" />
+                            <TextBlock Text="💡 Instructions" FontWeight="SemiBold" Foreground="#005A9E"
+                                       Margin="0,0,0,4" />
+                            <TextBlock Text="• Click thumbnails below to select frames." Foreground="#333"
+                                       FontSize="11" TextWrapping="Wrap" Margin="0,2" />
+                            <TextBlock Text="• Adjust delay (ms) and click Save Frame." Foreground="#333" FontSize="11"
+                                       TextWrapping="Wrap" Margin="0,2" />
+                            <TextBlock Text="• Use 'Save GIF' in toolbar to compile result." Foreground="#333"
+                                       FontSize="11" TextWrapping="Wrap" Margin="0,2" />
                         </StackPanel>
                     </Border>
 
@@ -170,7 +186,8 @@
         <Border Grid.Row="2" Background="#F0F0F0" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="8,4">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="ℹ️ " FontSize="11" VerticalAlignment="Center" />
-                <TextBlock Text="{Binding Information}" FontSize="11" Foreground="#444" VerticalAlignment="Center" ToolTip="Status and frame count information" />
+                <TextBlock Text="{Binding Information}" FontSize="11" Foreground="#444" VerticalAlignment="Center"
+                           ToolTip="Status and frame count information" />
             </StackPanel>
         </Border>
     </Grid>

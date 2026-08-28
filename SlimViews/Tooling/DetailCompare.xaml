@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
         mc:Ignorable="d" x:ClassModifier="internal"
-        Title="Detailed Image Comparer" 
+        Title="Detailed Image Comparer"
         Height="550" Width="1100"
         MinHeight="480" MinWidth="950"
         WindowStartupLocation="CenterOwner"
@@ -32,7 +32,8 @@
         <!-- ================================================================= -->
         <!-- PANE 1: IMAGE ONE (SOURCE)                                        -->
         <!-- ================================================================= -->
-        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10">
+        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -45,7 +46,8 @@
                 <!-- Pane Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                    <TextBlock Text="Image 1 (Source)" FontWeight="Bold" FontSize="13" Foreground="#333" VerticalAlignment="Center" />
+                    <TextBlock Text="Image 1 (Source)" FontWeight="Bold" FontSize="13" Foreground="#333"
+                               VerticalAlignment="Center" />
                 </StackPanel>
 
                 <!-- File Path Bar -->
@@ -56,8 +58,9 @@
                         <ColumnDefinition Width="36" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                             Text="{Binding Path=PathOne, Mode=OneWay}" IsReadOnly="True" 
+                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap"
+                             HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding Path=PathOne, Mode=OneWay}" IsReadOnly="True"
                              ToolTip="File path for Image 1" />
                     <Button Grid.Column="2" Content="📁" Height="26" Command="{Binding OpenOneCommand}"
                             ToolTip="Load Image 1 from disk" />
@@ -71,12 +74,14 @@
         </Border>
 
         <!-- SPLITTER 1 -->
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#E0E0E0" Margin="1,0" ToolTip="Drag to resize panes" />
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#E0E0E0"
+                      Margin="1,0" ToolTip="Drag to resize panes" />
 
         <!-- ================================================================= -->
         <!-- PANE 2: IMAGE TWO (TARGET)                                        -->
         <!-- ================================================================= -->
-        <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10">
+        <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -89,7 +94,8 @@
                 <!-- Pane Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                    <TextBlock Text="Image 2 (Target)" FontWeight="Bold" FontSize="13" Foreground="#333" VerticalAlignment="Center" />
+                    <TextBlock Text="Image 2 (Target)" FontWeight="Bold" FontSize="13" Foreground="#333"
+                               VerticalAlignment="Center" />
                 </StackPanel>
 
                 <!-- File Path Bar -->
@@ -100,8 +106,9 @@
                         <ColumnDefinition Width="36" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                             Text="{Binding Path=PathTwo, Mode=OneWay}" IsReadOnly="True" 
+                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap"
+                             HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding Path=PathTwo, Mode=OneWay}" IsReadOnly="True"
                              ToolTip="File path for Image 2" />
                     <Button Grid.Column="2" Content="📁" Height="26" Command="{Binding OpenTwoCommand}"
                             ToolTip="Load Image 2 from disk" />
@@ -115,12 +122,14 @@
         </Border>
 
         <!-- SPLITTER 2 -->
-        <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#E0E0E0" Margin="1,0" ToolTip="Drag to resize panes" />
+        <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#E0E0E0"
+                      Margin="1,0" ToolTip="Drag to resize panes" />
 
         <!-- ================================================================= -->
         <!-- PANE 3: ANALYSIS & COMPARISON CONTROLS                            -->
         <!-- ================================================================= -->
-        <Border Grid.Column="4" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10">
+        <Border Grid.Column="4" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -139,14 +148,17 @@
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="🔬" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                        <TextBlock Text="Analysis &amp; Diff" FontWeight="Bold" FontSize="13" Foreground="#333" VerticalAlignment="Center" />
+                        <TextBlock Text="Analysis &amp; Diff" FontWeight="Bold" FontSize="13" Foreground="#333"
+                                   VerticalAlignment="Center" />
                     </StackPanel>
 
-                    <Image Grid.Column="1" Height="20" Width="20" Source="{Binding StatusImage}" ToolTip="Processing status indicator" VerticalAlignment="Center" />
+                    <Image Grid.Column="1" Height="20" Width="20" Source="{Binding StatusImage}"
+                           ToolTip="Processing status indicator" VerticalAlignment="Center" />
                 </Grid>
 
                 <!-- Control Bar Card -->
-                <Border Grid.Row="2" Background="#F8F8F8" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Padding="8">
+                <Border Grid.Row="2" Background="#F8F8F8" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4"
+                        Padding="8">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -177,7 +189,8 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Highlight Color:" VerticalAlignment="Center" Foreground="#555" FontSize="11" Margin="0,0,8,0" ToolTip="Select color to highlight differences" />
+                            <TextBlock Text="Highlight Color:" VerticalAlignment="Center" Foreground="#555"
+                                       FontSize="11" Margin="0,0,8,0" ToolTip="Select color to highlight differences" />
                             <Images:ColorSelection Grid.Column="1" Height="24"
                                                    StartColor="{Binding Colors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                    ToolTip="Select color to highlight differences" />
@@ -188,11 +201,13 @@
                 <!-- Detail Tabs Area -->
                 <TabControl Grid.Row="4" Margin="0">
                     <TabItem Header="📋 Information">
-                        <RichTextBox Name="Information" IsReadOnly="True" BorderThickness="0" Background="#FAFAFA" Padding="4" />
+                        <RichTextBox Name="Information" IsReadOnly="True" BorderThickness="0" Background="#FAFAFA"
+                                     Padding="4" />
                     </TabItem>
                     <TabItem Header="🎨 Color Details">
                         <TextBox Name="ColorInformation" IsReadOnly="True" HorizontalScrollBarVisibility="Auto"
-                                 VerticalScrollBarVisibility="Auto" BorderThickness="0" Background="#FAFAFA" Padding="4" />
+                                 VerticalScrollBarVisibility="Auto" BorderThickness="0" Background="#FAFAFA"
+                                 Padding="4" />
                     </TabItem>
                 </TabControl>
             </Grid>

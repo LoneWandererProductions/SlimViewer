@@ -92,7 +92,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The current path.
         /// </value>
-        internal string CurrentPath { get; set; }
+        internal string? CurrentPath { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is files empty.

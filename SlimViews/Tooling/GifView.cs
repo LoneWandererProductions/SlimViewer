@@ -57,7 +57,7 @@ namespace SlimViews.Tooling
         ///     Base directory for temporary file generation.
         ///     Uses a subfolder to avoid cluttering the app root.
         /// </summary>
-        private string _outputPath = Path.Combine(Directory.GetCurrentDirectory(), "TempGif");
+        private string? _outputPath = Path.Combine(Directory.GetCurrentDirectory(), "TempGif");
 
         /// <summary>
         ///     Indicates if a file is loaded and controls are enabled.
@@ -67,7 +67,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The dictionary of thumbnail images (Index -> FilePath).
         /// </summary>
-        private Dictionary<int, string> _observer = new();
+        private Dictionary<int, string?> _observer = new();
 
         /// <summary>
         ///     Token source for cancelling long-running background tasks (like GIF encoding).
@@ -133,7 +133,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Path where individual frames are extracted to.
         /// </summary>
-        private string ImageExportPath => Path.Combine(OutputPath, ViewResources.ImagesPath);
+        private string? ImageExportPath => Path.Combine(OutputPath, ViewResources.ImagesPath);
 
         /// <summary>
         ///     Path where new GIF previews are generated.
@@ -198,7 +198,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The output path.
         /// </value>
-        public string OutputPath
+        public string? OutputPath
         {
             get => _outputPath;
             set => SetProperty(ref _outputPath, value);
@@ -230,7 +230,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The observer.
         /// </value>
-        public Dictionary<int, string> Observer
+        public Dictionary<int, string?> Observer
         {
             get => _observer;
             set => SetProperty(ref _observer, value);
@@ -419,7 +419,7 @@ namespace SlimViews.Tooling
 
                 // 4. Scan for Resulting Frames (IO Bound)
                 // We scan the folder to verify generation and populate the list
-                var fileList = await Task.Run(() =>
+                List<string?>? fileList = await Task.Run(() =>
                         FileHandleSearch.GetFilesByExtensionFullPath(ImageExportPath, ImagingResources.JpgExt, false),
                     token);
 
@@ -645,7 +645,7 @@ namespace SlimViews.Tooling
                 if (Directory.Exists(GifExportPath)) Directory.Delete(GifExportPath, true);
 
                 // Clear UI State
-                Observer = new Dictionary<int, string>();
+                Observer = new Dictionary<int, string?>();
                 GifPath = string.Empty;
                 IsActive = false;
                 Information = "Temporary files cleared.";
@@ -676,7 +676,7 @@ namespace SlimViews.Tooling
         ///     Converts a list of files to a Dictionary for the Thumbnails control.
         /// </summary>
         // Update GenerateThumbViewAsync
-        private async Task GenerateThumbViewAsync(ICollection<string> files, CancellationToken token)
+        private async Task GenerateThumbViewAsync(ICollection<string?> files, CancellationToken token)
         {
             var dict = await Task.Run(() => files.ToDictionary(), token);
 

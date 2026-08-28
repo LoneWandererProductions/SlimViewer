@@ -7,10 +7,10 @@
  */
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.MemoryLog;
 using Imaging;
 using SlimViews.Contexts;
 
@@ -28,14 +28,33 @@ namespace SlimViews
     /// </remarks>
     public sealed class ImageHistoryManager
     {
+        /// <summary>
+        /// The image context
+        /// </summary>
         private readonly ImageContext _imageContext;
+
+        /// <summary>
+        /// The gate
+        /// </summary>
         private readonly SemaphoreSlim _gate = new(1, 1);
+
+        /// <summary>
+        /// The on error
+        /// </summary>
         private readonly Action<Exception> _onError;
+
+        /// <summary>
+        /// The library name
+        /// </summary>
+        private const string LibraryName = "SlimViewer.ImageHistoryManager";
 
         /// <summary>
         /// Gets the undo history manager.
         /// Instantiated with a hard limit of 5.
         /// </summary>
+        /// <value>
+        /// The history.
+        /// </value>
         public UndoManager<Bitmap> History { get; } = new UndoManager<Bitmap>(5);
 
         /// <summary>
@@ -44,12 +63,14 @@ namespace SlimViews
         /// <param name="imageContext">The image context.</param>
         /// <param name="onError">
         /// Called if a swap fails (bad bitmap, disposed object, etc). Defaults to
-        /// <c>Trace.WriteLine</c> - pass your real logger here once it's wired up.
+        /// <see cref="InMemoryLogger"/> - pass your own handler here if you want swap
+        /// failures routed somewhere else instead.
         /// </param>
         public ImageHistoryManager(ImageContext imageContext, Action<Exception>? onError = null)
         {
             _imageContext = imageContext;
-            _onError = onError ?? (ex => Trace.WriteLine($"[ImageHistoryManager] {ex}"));
+            _onError = onError ?? (ex => InMemoryLogger.Instance.Log(LogLevel.Error, "Bitmap swap failed",
+                libraryName: LibraryName, exception: ex));
         }
 
         /// <summary>
@@ -168,10 +189,6 @@ namespace SlimViews
         /// </summary>
         private async Task ReplaceBitmapCoreAsync(Bitmap newBitmap)
         {
-            // Note: ImageContext.Bitmap's setter already disposes the previous value
-            // internally (see ImageContext.cs) - the original version of this method
-            // disposed it a second time via a local "old" variable, which is harmless
-            // (Bitmap.Dispose tolerates repeat calls) but redundant, so it's gone here.
             if (!ReferenceEquals(_imageContext.Bitmap, newBitmap))
             {
                 _imageContext.Bitmap = newBitmap;

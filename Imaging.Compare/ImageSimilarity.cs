@@ -23,7 +23,7 @@ namespace Imaging.Compare
         /// <summary>
         ///     The Temp path dictionary
         /// </summary>
-        private static Dictionary<int, string>? Translator { get; set; }
+        private static Dictionary<int, string?>? Translator { get; set; }
 
         /// <summary>
         ///     Find all similar images in a folder, and possibly subfolders
@@ -35,7 +35,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        internal static List<List<string>>? GetSimilarImages(string folderPath, bool checkSubfolders,
+        internal static List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions, float threshold)
         {
             var localDate = DateTime.Now;

@@ -43,7 +43,7 @@ namespace SlimViews.Tooling
         /// <param name="currentFolder">The current folder.</param>
         /// <param name="imageView">The image view.</param>
         /// <param name="color">The color.</param>
-        public Search(bool subFolders, string currentFolder, ImageView imageView, ColorHsv color)
+        public Search(bool subFolders, string? currentFolder, ImageView imageView, ColorHsv color)
         {
             InitializeComponent();
             _viewModel = new SearchView();

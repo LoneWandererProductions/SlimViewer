@@ -31,7 +31,7 @@ namespace SlimViews.Contexts
         /// <value>
         ///     The root.
         /// </value>
-        internal readonly string Root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        internal readonly string? Root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
         /// Gets or sets the status image.

@@ -36,7 +36,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Initializes a new instance of the <see cref="Compare" /> class.
         /// </summary>
-        public Compare(bool subFolders, string currentFolder, ImageView imageView, int similarity = 0)
+        public Compare(bool subFolders, string? currentFolder, ImageView imageView, int similarity = 0)
         {
             InitializeComponent();
             _viewModel = new CompareView();

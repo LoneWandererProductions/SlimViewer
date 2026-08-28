@@ -4,10 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Search Images" 
-        Width="620" 
+        Title="Search Images"
+        Width="620"
         SizeToContent="Height"
-        WindowStartupLocation="CenterOwner" 
+        WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#FAFAFA">
 
@@ -30,11 +30,13 @@
         <!-- Header Title -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
             <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBlock Text="Search Images in Library" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+            <TextBlock Text="Search Images in Library" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"
+                       Foreground="#333" />
         </StackPanel>
 
         <!-- 1. Text Search Card -->
-        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="12">
             <StackPanel>
                 <TextBlock Text="📝 Search by File Name" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
 
@@ -50,14 +52,15 @@
                              ToolTip="Find images where the file name contains this exact text" />
 
                     <Button Grid.Column="2" Content="🔍 Search" Height="28" FontWeight="SemiBold"
-                            Command="{Binding SearchByTextCommand}" 
+                            Command="{Binding SearchByTextCommand}"
                             ToolTip="Search images by file name text string" />
                 </Grid>
             </StackPanel>
         </Border>
 
         <!-- 2. Color Search Card -->
-        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                Padding="12">
             <StackPanel>
                 <TextBlock Text="🎨 Search by RGB Color" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
 
@@ -74,7 +77,8 @@
 
                     <!-- Red Channel -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,8,0">
-                        <TextBlock Text="R:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#D32F2F" Margin="0,0,4,0" ToolTip="Red Channel (0-255)" />
+                        <TextBlock Text="R:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#D32F2F"
+                                   Margin="0,0,4,0" ToolTip="Red Channel (0-255)" />
                         <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
                                  Text="{Binding Path=Red, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  ToolTip="Red Value (0-255)" />
@@ -82,7 +86,8 @@
 
                     <!-- Green Channel -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,8,0">
-                        <TextBlock Text="G:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#388E3C" Margin="0,0,4,0" ToolTip="Green Channel (0-255)" />
+                        <TextBlock Text="G:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#388E3C"
+                                   Margin="0,0,4,0" ToolTip="Green Channel (0-255)" />
                         <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
                                  Text="{Binding Path=Green, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  ToolTip="Green Value (0-255)" />
@@ -90,7 +95,8 @@
 
                     <!-- Blue Channel -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,8,0">
-                        <TextBlock Text="B:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#1976D2" Margin="0,0,4,0" ToolTip="Blue Channel (0-255)" />
+                        <TextBlock Text="B:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#1976D2"
+                                   Margin="0,0,4,0" ToolTip="Blue Channel (0-255)" />
                         <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
                                  Text="{Binding Path=Blue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  ToolTip="Blue Value (0-255)" />
@@ -98,7 +104,8 @@
 
                     <!-- Tolerance Range -->
                     <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Foreground="#555" Margin="0,0,4,0" ToolTip="Color matching tolerance range" />
+                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Foreground="#555" Margin="0,0,4,0"
+                                   ToolTip="Color matching tolerance range" />
                         <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
                                  Text="{Binding Path=Range, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  ToolTip="Tolerance for the color search (e.g., 3 means it will match colors slightly lighter or darker)" />
@@ -106,7 +113,7 @@
 
                     <!-- Search Button -->
                     <Button Grid.Column="6" Content="🎨 Search" Height="28" FontWeight="SemiBold"
-                            Command="{Binding SearchByColorCommand}" 
+                            Command="{Binding SearchByColorCommand}"
                             ToolTip="Scan all images in folder for this specific RGB color" />
                 </Grid>
             </StackPanel>

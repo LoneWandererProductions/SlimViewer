@@ -46,7 +46,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The input
         /// </summary>
-        private string _input;
+        private string? _input;
 
         /// <summary>
         ///     The input command
@@ -96,7 +96,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The current path
         /// </summary>
-        private string _currentPath;
+        private string? _currentPath;
 
         /// <summary>
         ///     Indicates whether the view model is currently processing files.
@@ -112,7 +112,7 @@ namespace SlimViews.Tooling
         ///     Initializes a new instance of the <see cref="ResizerView"/> class.
         /// </summary>
         /// <param name="currentPath">The current path.</param>
-        public ResizerView(string currentPath)
+        public ResizerView(string? currentPath)
         {
             _currentPath = currentPath;
             Input = currentPath; // Pre-fill input if they launch from an active folder
@@ -228,7 +228,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The input.
         /// </value>
-        public string Input
+        public string? Input
         {
             get => _input;
             set => SetProperty(ref _input, value, nameof(Input));

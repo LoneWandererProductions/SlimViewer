@@ -22,11 +22,11 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="border" 
+                        <Border x:Name="border"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="3" 
+                                CornerRadius="3"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
@@ -53,7 +53,8 @@
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PanningMode="HorizontalOnly">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"
+                  PanningMode="HorizontalOnly">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,2">
 
             <!-- 1. PRIMARY DRAW TOOLS -->
@@ -79,26 +80,31 @@
 
             <!-- 2. BRUSH ADJUSTMENTS (COLOR, SIZE, OPACITY) -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Images:ColorSelection StartColor="{Binding Path=ToolState.BrushColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                                       Width="26" Height="22" Margin="2,0,6,0" VerticalAlignment="Center"
-                                       ToolTip="Select primary brush color" />
+                <Images:ColorSelection
+                    StartColor="{Binding Path=ToolState.BrushColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    Width="26" Height="22" Margin="2,0,6,0" VerticalAlignment="Center"
+                    ToolTip="Select primary brush color" />
 
                 <!-- Brush Size Slider -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0" ToolTip="Adjust brush size">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0"
+                            ToolTip="Adjust brush size">
                     <TextBlock Text="🖌️" VerticalAlignment="Center" Margin="0,0,2,0" FontSize="11" />
                     <Slider Minimum="1" Maximum="50" Width="70" VerticalAlignment="Center"
                             Value="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
-                    <TextBlock Text="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:F0}px}"
-                               VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="24" Foreground="#555" />
+                    <TextBlock
+                        Text="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:F0}px}"
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="24" Foreground="#555" />
                 </StackPanel>
 
                 <!-- Brush Opacity Slider -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" ToolTip="Adjust brush opacity">
                     <TextBlock Text="💧" VerticalAlignment="Center" Margin="0,0,2,0" FontSize="11" />
-                    <Slider Minimum="0.1" Maximum="1.0" TickFrequency="0.1" IsSnapToTickEnabled="True" Width="60" VerticalAlignment="Center"
+                    <Slider Minimum="0.1" Maximum="1.0" TickFrequency="0.1" IsSnapToTickEnabled="True" Width="60"
+                            VerticalAlignment="Center"
                             Value="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
-                    <TextBlock Text="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:P0}}"
-                               VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="28" Foreground="#555" />
+                    <TextBlock
+                        Text="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:P0}}"
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="28" Foreground="#555" />
                 </StackPanel>
             </StackPanel>
 
@@ -130,11 +136,13 @@
                              ToolTip="Fill shape with solid color"
                              IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Fill}" />
 
-                <RadioButton Content="🧱 Texture" GroupName="AreaModeGroup" Style="{StaticResource ToolRadioButtonStyle}"
+                <RadioButton Content="🧱 Texture" GroupName="AreaModeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Fill shape with pattern or texture"
                              IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Texture}" />
 
-                <RadioButton Content="🪄 Filter" GroupName="AreaModeGroup" Style="{StaticResource ToolRadioButtonStyle}"
+                <RadioButton Content="🪄 Filter" GroupName="AreaModeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Apply image filter to selected shape area"
                              IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Filter}" />
 
@@ -149,27 +157,33 @@
                     <!-- Fill Option -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                 Visibility="{Binding Path=ToolState.Fill.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Color:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11" FontWeight="SemiBold" Foreground="#444" />
-                        <Images:ColorSelection StartColor="{Binding Path=ToolState.Fill.Color, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                                               Width="26" Height="22" VerticalAlignment="Center" ToolTip="Select shape fill color" />
+                        <TextBlock Text="Color:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="#444" />
+                        <Images:ColorSelection
+                            StartColor="{Binding Path=ToolState.Fill.Color, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Width="26" Height="22" VerticalAlignment="Center" ToolTip="Select shape fill color" />
                     </StackPanel>
 
                     <!-- Texture Option -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                 Visibility="{Binding Path=ToolState.Texture.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Pattern:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11" FontWeight="SemiBold" Foreground="#444" />
-                        <ComboBox ItemsSource="{Binding Path=ToolState.Textures, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                  SelectedItem="{Binding Path=ToolState.Texture.TextureName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                                  Width="110" Height="22" ToolTip="Select texture pattern" />
+                        <TextBlock Text="Pattern:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="#444" />
+                        <ComboBox
+                            ItemsSource="{Binding Path=ToolState.Textures, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            SelectedItem="{Binding Path=ToolState.Texture.TextureName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Width="110" Height="22" ToolTip="Select texture pattern" />
                     </StackPanel>
 
                     <!-- Filter Option -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                 Visibility="{Binding Path=ToolState.Filter.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Effect:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11" FontWeight="SemiBold" Foreground="#444" />
-                        <ComboBox ItemsSource="{Binding Path=ToolState.Filters, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                  SelectedItem="{Binding Path=ToolState.Filter.FilterName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                                  Width="110" Height="22" ToolTip="Select image filter to apply" />
+                        <TextBlock Text="Effect:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="#444" />
+                        <ComboBox
+                            ItemsSource="{Binding Path=ToolState.Filters, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            SelectedItem="{Binding Path=ToolState.Filter.FilterName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Width="110" Height="22" ToolTip="Select image filter to apply" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

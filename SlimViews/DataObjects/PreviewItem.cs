@@ -27,7 +27,7 @@ namespace SlimViews.DataObjects
         /// <summary>
         ///     Gets or sets the original full file path.
         /// </summary>
-        public string OriginalPath { get; set; }
+        public string? OriginalPath { get; set; }
 
         /// <summary>
         ///     Gets or sets the original file name (without directory).

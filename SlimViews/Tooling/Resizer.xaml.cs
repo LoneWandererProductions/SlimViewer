@@ -21,7 +21,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Initializes a new instance of the <see cref="Resizer" /> class.
         /// </summary>
-        public Resizer(string currentPath)
+        public Resizer(string? currentPath)
         {
             InitializeComponent();
             DataContext = new ResizerView(currentPath);

@@ -316,7 +316,7 @@ namespace SlimViews
         /// <param name="name">The name of the image file.</param>
         /// <param name="imageSource">Can be an ImageGifInfo or BitmapImage object.</param>
         /// <returns>A multiline string containing image metadata.</returns>
-        internal static string BuildUnifiedImageInfo(string path, string name, object imageSource)
+        internal static string BuildUnifiedImageInfo(string? path, string name, object imageSource)
         {
             // Handle GIF-specific logic
             if (imageSource is ImageGifInfo gifInfo)

@@ -72,7 +72,7 @@ namespace FileHandler
         /// <param name="extension">The file extension to filter by (e.g., "jpg").</param>
         /// <param name="recursive">Indicates whether to include subdirectories.</param>
         /// <returns>A list of matching file paths. Returns an empty list if folder is missing or inaccessible.</returns>
-        internal static List<string> GetFilesByExtension(string path, string? extension, bool recursive)
+        internal static List<string> GetFilesByExtension(string? path, string? extension, bool recursive)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -114,7 +114,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="source">A collection of file or folder paths.</param>
         /// <returns>The shortest path, or null if <paramref name="source"/> is empty.</returns>
-        internal static string? SearchRoot(IReadOnlyCollection<string> source)
+        internal static string? SearchRoot(IReadOnlyCollection<string?> source)
         {
             if (source == null || source.Count == 0)
                 return null;
@@ -128,7 +128,7 @@ namespace FileHandler
         /// <param name="source">The source path.</param>
         /// <param name="target">The target path.</param>
         /// <exception cref="FileHandlerException">Thrown if paths are invalid.</exception>
-        internal static void ValidatePaths(string source, string target)
+        internal static void ValidatePaths(string? source, string? target)
         {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
             {

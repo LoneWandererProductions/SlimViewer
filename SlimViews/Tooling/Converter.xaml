@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="Format Converter" 
-        Width="340" 
+        Title="Format Converter"
+        Width="340"
         SizeToContent="Height"
-        WindowStartupLocation="CenterOwner" 
+        WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#FAFAFA">
 
@@ -33,7 +33,8 @@
         <!-- Header Title -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
             <TextBlock Text="🔄" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
-            <TextBlock Text="Convert Image Formats" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+            <TextBlock Text="Convert Image Formats" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"
+                       Foreground="#333" />
         </StackPanel>
 
         <!-- Source Format Row -->
