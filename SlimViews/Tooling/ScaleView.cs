@@ -8,6 +8,8 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeMadeStatic.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
 
 using System.Windows;
 using System.Windows.Input;
@@ -28,7 +30,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The okay command
         /// </summary>
-        private ICommand _okayCommand;
+        private ICommand? _okayCommand;
 
         /// <summary>
         /// The scaling
