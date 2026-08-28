@@ -301,8 +301,8 @@
                 <RowDefinition Height="130" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="32" />
-                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="45" />
+                <ColumnDefinition Width="45" />
                 <ColumnDefinition />
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="10" />
@@ -311,14 +311,14 @@
             </Grid.ColumnDefinitions>
 
             <Button Content="🗑️" Grid.Row="0" Grid.Column="0"
-                    Height="25"
+                    Height="30"
                     VerticalAlignment="Top"
                     Command="{Binding Commands.Delete}"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Delete file from disk (Del)" />
 
             <Button Content="📂" Grid.Row="0" Grid.Column="1"
-                    Height="25"
+                    Height="30"
                     VerticalAlignment="Top"
                     Command="{Binding Commands.Explorer}"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
@@ -339,7 +339,7 @@
             </ScrollViewer>
 
             <Button Content="🔄 Refresh" Grid.Row="0" Grid.Column="5"
-                    Height="25"
+                    Height="30"
                     VerticalAlignment="Top"
                     Command="{Binding Commands.Refresh}"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
@@ -364,14 +364,14 @@
 
             <Button Content="📦 Move" Grid.Row="2" Grid.Column="3"
                     Command="{Binding Commands.Move}"
-                    Height="25"
+                    Height="30"
                     VerticalAlignment="Top"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Move current image to another folder" />
 
             <Button Content="📦📦 Move All" Grid.Row="2" Grid.Column="5"
                     Command="{Binding Commands.MoveAll}"
-                    Height="25"
+                    Height="30"
                     VerticalAlignment="Top"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Move all loaded images in current list to target folder" />

@@ -5,105 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
         mc:Ignorable="d" x:ClassModifier="internal"
-        Title="Detailed Image Comparer" Height="450" Width="1000"
-        WindowStartupLocation="CenterOwner">
+        Title="Detailed Image Comparer" 
+        Height="550" Width="1100"
+        MinHeight="480" MinWidth="950"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        Background="#FAFAFA">
 
-    <Grid IsEnabled="{Binding IsNotWorking}" Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="5" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5" />
-                <RowDefinition Height="40" />
-                <RowDefinition Height="5" />
-                <RowDefinition />
-                <RowDefinition Height="5" />
-            </Grid.RowDefinitions>
-            <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ImageSource="{Binding BmpOne}" />
-            <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenOneCommand}"
-                    ToolTip="Load Image 1" />
-
-            <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                     Text="{Binding Path=PathOne, Mode=OneWay}" IsReadOnly="True" ToolTip="File path for Image 1" />
-        </Grid>
-
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
-
-        <Grid Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="5" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5" />
-                <RowDefinition Height="40" />
-                <RowDefinition Height="5" />
-                <RowDefinition />
-                <RowDefinition Height="5" />
-            </Grid.RowDefinitions>
-            <Images:ImageZoom Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" ImageSource="{Binding BmpTwo}" />
-            <Button Grid.Column="2" Grid.Row="1" Content="..." Command="{Binding OpenTwoCommand}"
-                    ToolTip="Load Image 2" />
-
-            <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
-                     Text="{Binding Path=PathTwo, Mode=OneWay}" IsReadOnly="True" ToolTip="File path for Image 2" />
-        </Grid>
-
-        <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="5" />
-
-        <Grid Grid.Column="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="5" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5" />
-                <RowDefinition Height="40" />
-                <RowDefinition />
-                <RowDefinition Height="5" />
-            </Grid.RowDefinitions>
-            <Button Content="Diff Image" Grid.Column="1" Grid.Row="1" Command="{Binding DifferenceCommand}"
-                    ToolTip="Generate a visual difference overlay on Image 1" />
-            <Button Content="Export" Grid.Column="5" Grid.Row="1" Command="{Binding ExportCommand}"
-                    ToolTip="Export Information as Text file and diff Image if available." />
-
-            <Image Grid.Row="1" Grid.Column="7" Source="{Binding StatusImage}" ToolTip="Status Indicator" />
-
-            <TabControl Grid.Row="2" Grid.ColumnSpan="7" Grid.Column="1">
-                <TabItem Header="Information">
-                    <RichTextBox Name="Information" IsReadOnly="True" />
-                </TabItem>
-                <TabItem Header="Color Details">
-                    <TextBox Name="ColorInformation" IsReadOnly="True" HorizontalScrollBarVisibility="Auto"
-                             VerticalScrollBarVisibility="Auto" />
-                </TabItem>
-            </TabControl>
-
-            <Images:ColorSelection Grid.Column="3" Grid.Row="1"
-                                   StartColor="{Binding Colors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                   VerticalAlignment="Top" ToolTip="Select color to highlight differences" />
-        </Grid>
-    </Grid>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -111,4 +19,184 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid IsEnabled="{Binding IsNotWorking}" Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="6" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="6" />
+            <ColumnDefinition Width="320" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ================================================================= -->
+        <!-- PANE 1: IMAGE ONE (SOURCE)                                        -->
+        <!-- ================================================================= -->
+        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Pane Header -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <TextBlock Text="Image 1 (Source)" FontWeight="Bold" FontSize="13" Foreground="#333" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!-- File Path Bar -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="6" />
+                        <ColumnDefinition Width="36" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding Path=PathOne, Mode=OneWay}" IsReadOnly="True" 
+                             ToolTip="File path for Image 1" />
+                    <Button Grid.Column="2" Content="📁" Height="26" Command="{Binding OpenOneCommand}"
+                            ToolTip="Load Image 1 from disk" />
+                </Grid>
+
+                <!-- Image Zoom Viewer Container -->
+                <Border Grid.Row="4" Background="#1E1E1E" CornerRadius="3" ClipToBounds="True">
+                    <Images:ImageZoom ImageSource="{Binding BmpOne}" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- SPLITTER 1 -->
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#E0E0E0" Margin="1,0" ToolTip="Drag to resize panes" />
+
+        <!-- ================================================================= -->
+        <!-- PANE 2: IMAGE TWO (TARGET)                                        -->
+        <!-- ================================================================= -->
+        <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Pane Header -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <TextBlock Text="Image 2 (Target)" FontWeight="Bold" FontSize="13" Foreground="#333" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!-- File Path Bar -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="6" />
+                        <ColumnDefinition Width="36" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding Path=PathTwo, Mode=OneWay}" IsReadOnly="True" 
+                             ToolTip="File path for Image 2" />
+                    <Button Grid.Column="2" Content="📁" Height="26" Command="{Binding OpenTwoCommand}"
+                            ToolTip="Load Image 2 from disk" />
+                </Grid>
+
+                <!-- Image Zoom Viewer Container -->
+                <Border Grid.Row="4" Background="#1E1E1E" CornerRadius="3" ClipToBounds="True">
+                    <Images:ImageZoom ImageSource="{Binding BmpTwo}" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- SPLITTER 2 -->
+        <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#E0E0E0" Margin="1,0" ToolTip="Drag to resize panes" />
+
+        <!-- ================================================================= -->
+        <!-- PANE 3: ANALYSIS & COMPARISON CONTROLS                            -->
+        <!-- ================================================================= -->
+        <Border Grid.Column="4" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Header & Status Bar -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="🔬" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBlock Text="Analysis &amp; Diff" FontWeight="Bold" FontSize="13" Foreground="#333" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <Image Grid.Column="1" Height="20" Width="20" Source="{Binding StatusImage}" ToolTip="Processing status indicator" VerticalAlignment="Center" />
+                </Grid>
+
+                <!-- Control Bar Card -->
+                <Border Grid.Row="2" Background="#F8F8F8" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="4" Padding="8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Actions Row -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" Content="⚡ Diff Image" Height="28" FontWeight="SemiBold"
+                                    Command="{Binding DifferenceCommand}"
+                                    ToolTip="Generate a visual difference overlay on Image 1" />
+
+                            <Button Grid.Column="2" Content="💾 Export" Height="28"
+                                    Command="{Binding ExportCommand}"
+                                    ToolTip="Export Information as Text file and diff Image if available" />
+                        </Grid>
+
+                        <!-- Highlight Color Picker -->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Highlight Color:" VerticalAlignment="Center" Foreground="#555" FontSize="11" Margin="0,0,8,0" ToolTip="Select color to highlight differences" />
+                            <Images:ColorSelection Grid.Column="1" Height="24"
+                                                   StartColor="{Binding Colors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                   ToolTip="Select color to highlight differences" />
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Detail Tabs Area -->
+                <TabControl Grid.Row="4" Margin="0">
+                    <TabItem Header="📋 Information">
+                        <RichTextBox Name="Information" IsReadOnly="True" BorderThickness="0" Background="#FAFAFA" Padding="4" />
+                    </TabItem>
+                    <TabItem Header="🎨 Color Details">
+                        <TextBox Name="ColorInformation" IsReadOnly="True" HorizontalScrollBarVisibility="Auto"
+                                 VerticalScrollBarVisibility="Auto" BorderThickness="0" Background="#FAFAFA" Padding="4" />
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Border>
+
+    </Grid>
 </Window>
