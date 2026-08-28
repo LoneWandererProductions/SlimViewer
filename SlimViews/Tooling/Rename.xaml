@@ -5,75 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="Rename" Height="400" Width="400">
-
-    <Grid IsEnabled="{Binding IsNotWorking}" Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="50*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="15" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <Label Content="Replacement String:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom" />
-        <TextBox Grid.Column="0" Grid.Row="1" TextWrapping="Wrap"
-                 Text="{Binding Path=Replacement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Enter the target text you want to add, remove, or find." />
-
-        <Label Content="New String (For Replace):" Grid.Column="2" Grid.Row="0" VerticalAlignment="Bottom" />
-        <TextBox Grid.Column="2" Grid.Row="1" TextWrapping="Wrap"
-                 Text="{Binding Replacer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Enter the new text that will replace the old text." />
-
-        <Button Content="Add Appendages" Grid.Column="0" Grid.Row="2" Margin="0,5,0,0" Height="25"
-                Command="{Binding AddCommand}" ToolTip="Appends the target text to the filenames." />
-        <Button Content="Remove Appendages" Grid.Column="2" Grid.Row="2" Margin="0,5,0,0" Height="25"
-                Command="{Binding RemoveAppendageCommand}" ToolTip="Removes the target text from the beginning or end." />
-
-        <Button Content="Remove Content" Grid.Column="0" Grid.Row="3" Margin="0,5,0,0" Height="25"
-                Command="{Binding RemoveCommand}" ToolTip="Removes all instances of the target text." />
-        <Button Content="Replace String" Grid.Column="2" Grid.Row="3" Margin="0,5,0,0" Height="25"
-                Command="{Binding ReplaceCommand}" ToolTip="Replaces the target text with the new string." />
-
-        <Label Content="Chars to Strip from Start:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Bottom"
-               Margin="0,5,0,0" />
-        <TextBox Grid.Column="0" Grid.Row="5" TextWrapping="Wrap"
-                 Text="{Binding Numbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-        <Button Content="Remove Appendages at" Grid.Column="2" Grid.Row="5" Margin="0,5,0,0" Height="25"
-                Command="{Binding AppendagesAtCommand}" ToolTip="Removes specific number of characters from start." />
-
-        <Button Content="Reorder Numbers" Grid.Column="0" Grid.Row="6" Margin="0,5,0,0" Height="25"
-                Command="{Binding ReorderCommand}" ToolTip="Automatically reorders the numbers found." />
-
-        <DataGrid Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"
-                  ItemsSource="{Binding PreviewItems}"
-                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                  HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderBrush="LightGray">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Original Name" Binding="{Binding OriginalName}" Width="*" />
-                <DataGridTextColumn Header="New Name" Binding="{Binding NewName}" Width="*" />
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80" />
-            </DataGrid.Columns>
-        </DataGrid>
-
-        <Button Content="Apply Changes to Disk" Grid.Row="10" Grid.Column="2" Height="35"
-                FontWeight="Bold" Background="#4CAF50" Foreground="White"
-                Command="{Binding ApplyChangesCommand}"
-                ToolTip="Permanently rename the files on your hard drive." />
-    </Grid>
+        Title="Batch Rename" 
+        Height="580" Width="520"
+        MinHeight="480" MinWidth="450"
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="CanResizeWithGrip"
+        Background="#FAFAFA">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -82,4 +19,129 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid IsEnabled="{Binding IsNotWorking}" Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="🏷️" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Batch File Rename" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+        </StackPanel>
+
+        <!-- 1. Text Replacement & Append Options Card -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <StackPanel>
+                <TextBlock Text="✏️ Text Manipulation" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
+
+                <!-- Text Inputs -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="4" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Replacement Target -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Target / Find Text:" Foreground="#555" FontSize="11" />
+                    <TextBox Grid.Row="2" Grid.Column="0" Height="26" VerticalContentAlignment="Center"
+                             Text="{Binding Path=Replacement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Enter the target text you want to add, remove, or find" />
+
+                    <!-- Replacement Value -->
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="New Replacement Text:" Foreground="#555" FontSize="11" />
+                    <TextBox Grid.Row="2" Grid.Column="2" Height="26" VerticalContentAlignment="Center"
+                             Text="{Binding Replacer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Enter the new text that will replace the target text" />
+                </Grid>
+
+                <!-- Action Buttons Grid -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="6" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Row="0" Grid.Column="0" Content="➕ Add Appendages" Height="26"
+                            Command="{Binding AddCommand}" ToolTip="Appends the target text to the filenames" />
+                    <Button Grid.Row="0" Grid.Column="2" Content="✂️ Strip Ends" Height="26"
+                            Command="{Binding RemoveAppendageCommand}" ToolTip="Removes the target text from the beginning or end of filenames" />
+
+                    <Button Grid.Row="2" Grid.Column="0" Content="🗑️ Remove Text" Height="26"
+                            Command="{Binding RemoveCommand}" ToolTip="Removes all instances of the target text from filenames" />
+                    <Button Grid.Row="2" Grid.Column="2" Content="🔄 Replace Text" Height="26"
+                            Command="{Binding ReplaceCommand}" ToolTip="Replaces target text instances with the new replacement text" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- 2. Positional Trimming & Numbering Card -->
+        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <StackPanel>
+                <TextBlock Text="🔢 Position &amp; Numbering Options" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Chars to Strip from Start:" VerticalAlignment="Center" Foreground="#555" FontSize="11" />
+                    <TextBox Grid.Column="1" Height="26" VerticalContentAlignment="Center" TextAlignment="Center"
+                             Text="{Binding Numbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Number of characters to strip from the start of filenames" />
+
+                    <Button Grid.Column="3" Content="✂️ Strip N Chars" Height="26"
+                            Command="{Binding AppendagesAtCommand}" ToolTip="Removes the specified number of characters from the start of filenames" />
+                    <Button Grid.Column="5" Content="🔢 Reorder Numbers" Height="26"
+                            Command="{Binding ReorderCommand}" ToolTip="Automatically normalizes and reorders numbers found in filenames" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- 3. Live Preview DataGrid Card -->
+        <Border Grid.Row="5" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="1">
+            <DataGrid ItemsSource="{Binding PreviewItems}"
+                      AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                      HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="#F0F0F0" BorderThickness="0" Background="Transparent"
+                      RowHeight="24" ToolTip="Preview of filename changes before applying to disk">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Original Name" Binding="{Binding OriginalName}" Width="*" />
+                    <DataGridTextColumn Header="New Name" Binding="{Binding NewName}" Width="*" />
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- 4. Footer Action Button -->
+        <Button Grid.Row="7" Content="💾 Apply Changes to Disk" Height="34"
+                FontWeight="Bold" Background="#2E7D32" Foreground="White"
+                Command="{Binding ApplyChangesCommand}"
+                ToolTip="Permanently rename the files on your hard drive" />
+    </Grid>
 </Window>

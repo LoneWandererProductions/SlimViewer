@@ -4,60 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Filter Configuration" Height="480" Width="400"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0" Margin="0,0,0,10">
-            <TextBlock Text="Selected Filter Type" FontWeight="Bold" Margin="0,0,0,5" />
-            <ComboBox ItemsSource="{Binding FilterOptions}"
-                      SelectedItem="{Binding SelectedFilter, UpdateSourceTrigger=PropertyChanged}"
-                      ToolTip="Select the filter algorithm to configure" />
-        </StackPanel>
-
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="0,0,10,0">
-                <Label Content="Factor" FontWeight="SemiBold" />
-                <TextBox Text="{Binding Factor, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsFactorActive}" Margin="0,0,0,10"
-                         ToolTip="The multiplier applied to the pixel values" />
-
-                <Label Content="Bias" FontWeight="SemiBold" />
-                <TextBox Text="{Binding Bias, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsBiasActive}" Margin="0,0,0,10"
-                         ToolTip="The offset added to the pixel values (Brightness shift)" />
-
-                <Label Content="Sigma" FontWeight="SemiBold" />
-                <TextBox Text="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsSigmaActive}" Margin="0,0,0,10"
-                         ToolTip="Standard deviation for blur kernels (Gaussian)" />
-
-                <Label Content="Base Window Size" FontWeight="SemiBold" />
-                <TextBox Text="{Binding BaseWindowSize, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsBaseWindowSizeActive}" Margin="0,0,0,10"
-                         ToolTip="The area of effect for the filter (Kernel Size)" />
-
-                <Label Content="Scale" FontWeight="SemiBold" />
-                <TextBox Text="{Binding Scale, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsScaleActive}" Margin="0,0,0,10"
-                         ToolTip="Final normalization factor" />
-            </StackPanel>
-        </ScrollViewer>
-
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="0,10,0,0">
-            <Button Content="Save" Width="80" Margin="5" Command="{Binding SaveCommand}" />
-            <Button Content="Reset" Width="80" Margin="5" Command="{Binding ResetCommand}" />
-            <Button Content="Cancel" Width="80" Margin="5"
-                    Command="{Binding CancelCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
-        </StackPanel>
-    </Grid>
+        Title="Filter Configuration" 
+        Height="460" Width="420"
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize"
+        Background="#FAFAFA">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -66,4 +17,99 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="⚙️" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Filter Algorithm Parameters" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+        </StackPanel>
+
+        <!-- Top Filter Selection Card -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="Selected Filter Type" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,6" />
+                <ComboBox Height="28"
+                          VerticalContentAlignment="Center"
+                          ItemsSource="{Binding FilterOptions}"
+                          SelectedItem="{Binding SelectedFilter, UpdateSourceTrigger=PropertyChanged}"
+                          ToolTip="Select the filter algorithm to configure" />
+            </StackPanel>
+        </Border>
+
+        <!-- Parameters Settings Card -->
+        <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Factor -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Factor" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                             Text="{Binding Factor, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsFactorActive}"
+                             ToolTip="The multiplier applied to the pixel values" />
+
+                    <!-- Bias -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Bias" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                             Text="{Binding Bias, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsBiasActive}"
+                             ToolTip="The offset added to the pixel values (Brightness shift)" />
+
+                    <!-- Sigma -->
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Sigma" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBox Grid.Row="4" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                             Text="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsSigmaActive}"
+                             ToolTip="Standard deviation for blur kernels (Gaussian)" />
+
+                    <!-- Base Window Size -->
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Base Window Size" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBox Grid.Row="6" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                             Text="{Binding BaseWindowSize, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsBaseWindowSizeActive}"
+                             ToolTip="The area of effect for the filter (Kernel Size)" />
+
+                    <!-- Scale -->
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Scale" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+                    <TextBox Grid.Row="8" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                             Text="{Binding Scale, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsScaleActive}"
+                             ToolTip="Final normalization factor" />
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Footer Action Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="💾 Save" Height="30" Width="85" Margin="0,0,6,0" FontWeight="SemiBold" Command="{Binding SaveCommand}" />
+            <Button Content="🔄 Reset" Height="30" Width="85" Margin="0,0,6,0" Command="{Binding ResetCommand}" />
+            <Button Content="❌ Cancel" Height="30" Width="85"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+        </StackPanel>
+    </Grid>
 </Window>

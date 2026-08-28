@@ -5,48 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="Scale and Rotate" Height="220" Width="300"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="10" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
-                 Text="{Binding Path=Degree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Enter a degree between -360 and 360" />
-
-        <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="3" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
-                 Text="{Binding Path=Scaling, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Enter a multiplier (e.g., 2 for double size, 0.5 for half size)" />
-
-        <Button Content="Okay" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="5"
-                VerticalAlignment="Stretch"
-                Command="{Binding OkayCommand}"
-                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                ToolTip="Apply settings and close" />
-
-        <Label Content="Rotation Degree" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1"
-               VerticalAlignment="Center" />
-        <Label Content="Scale Factor" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3"
-               VerticalAlignment="Center" />
-    </Grid>
+        Title="Scale and Rotate" 
+        Width="340" 
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize"
+        Background="#FAFAFA">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -55,4 +19,61 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="📐" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Scale and Rotate Image" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+        </StackPanel>
+
+        <!-- Settings Card -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Rotation Degree -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🔄" Margin="0,0,4,0" VerticalAlignment="Center" />
+                    <TextBlock Text="Rotation Angle:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" ToolTip="Angle in degrees to rotate the image" />
+                </StackPanel>
+                <TextBox Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                         Text="{Binding Path=Degree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Enter rotation degree between -360° and 360° (e.g., 90, 180, -45)" />
+
+                <!-- Scale Factor -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🔍" Margin="0,0,4,0" VerticalAlignment="Center" />
+                    <TextBlock Text="Scale Factor:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" ToolTip="Multiplier for resizing the image dimensions" />
+                </StackPanel>
+                <TextBox Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                         Text="{Binding Path=Scaling, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Enter scale multiplier (e.g., 2.0 for double size, 0.5 for half size)" />
+            </Grid>
+        </Border>
+
+        <!-- Action Button -->
+        <Button Grid.Row="3"
+                Content="✨ Apply Transformations"
+                Height="32"
+                FontWeight="SemiBold"
+                Command="{Binding OkayCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                ToolTip="Apply rotation and scaling adjustments to the current image" />
+    </Grid>
 </Window>

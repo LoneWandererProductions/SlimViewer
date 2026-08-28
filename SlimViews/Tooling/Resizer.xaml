@@ -5,88 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="Batch Resizer" Height="450" Width="800">
-    <Grid IsEnabled="{Binding IsNotWorking}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
-        </Grid.RowDefinitions>
+        Title="Batch Resizer" 
+        Width="680" 
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize"
+        Background="#FAFAFA">
 
-        <RadioButton Grid.Column="1" Content="Percentages" VerticalAlignment="Center" Grid.Row="1"
-                     IsChecked="{Binding IsPercentagesChecked, Mode=TwoWay}"
-                     ToolTip="Scale by a percentage of the original size" />
-        <RadioButton Grid.Column="3" Content="Relative Size" VerticalAlignment="Center" Grid.Row="1"
-                     IsChecked="{Binding IsRelativeSizeChecked, Mode=TwoWay}" ToolTip="Scale to exact pixel dimensions" />
-
-        <Label Grid.Column="5" Content="Filter:" VerticalAlignment="Center" Grid.Row="3" />
-        <ComboBox Grid.Column="7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"
-                  ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilterOption, Mode=TwoWay}"
-                  ToolTip="Select an optional visual filter to apply to all processed images" />
-
-        <Label Grid.Column="5" Content="Extension:" VerticalAlignment="Center" Grid.Row="5" />
-        <ComboBox Grid.Column="7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="5"
-                  ItemsSource="{Binding FileExtensions}" SelectedItem="{Binding SelectedExtension, Mode=TwoWay}"
-                  ToolTip="Leave empty to keep original format, or select a new format to convert all images" />
-
-        <Label Grid.Column="1" Content="Height:" VerticalAlignment="Center" Grid.Row="3" />
-        <Label Grid.Column="1" Content="Width:" VerticalAlignment="Center" Grid.Row="5" />
-        <Label Grid.Column="1" Content="Input Path:" VerticalAlignment="Center" Grid.Row="7" />
-        <Label Grid.Column="1" Content="Output Path:" VerticalAlignment="Center" Grid.Row="9" />
-
-        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch" Text="{Binding Path=Height, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Enter the target height (in pixels or percentage)" />
-        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="5" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch" Text="{Binding Path=Width, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Enter the target width (in pixels or percentage)" />
-
-        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="7" Grid.ColumnSpan="3" TextWrapping="NoWrap"
-                 HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch"
-                 Text="{Binding Path=Input, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="The folder containing the images you want to process" />
-        <TextBox Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="9" Grid.ColumnSpan="3" TextWrapping="NoWrap"
-                 HorizontalScrollBarVisibility="Auto" VerticalAlignment="Stretch"
-                 Text="{Binding Path=Output, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="The folder where the resized images will be saved" />
-
-        <Button Grid.Column="7" Content="..." Grid.Row="7" HorizontalAlignment="Left" Width="30"
-                Command="{Binding InputCommand}" ToolTip="Browse for Input Folder" />
-        <Button Grid.Column="7" Content="..." Grid.Row="9" HorizontalAlignment="Left" Width="30"
-                Command="{Binding OutputCommand}" ToolTip="Browse for Output Folder" />
-
-        <Button Grid.Column="1" Content="Process" Grid.Row="11" Command="{Binding ProcessCommand}"
-                ToolTip="Start batch processing the images" />
-        <Button Grid.Column="3" Content="Cancel" Grid.Row="11" Command="{Binding CancelCommand}"
-                ToolTip="Close this window without making any changes" />
-
-        <TextBlock Grid.Row="13" Grid.Column="1" Grid.ColumnSpan="7"
-                   Text="{Binding StatusMessage}" VerticalAlignment="Center"
-                   FontWeight="SemiBold" Foreground="#005A9E"
-                   ToolTip="Current status of the batch operation" />
-    </Grid>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -94,4 +19,136 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid IsEnabled="{Binding IsNotWorking}" Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="🖼️" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Batch Image Resizer" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+        </StackPanel>
+
+        <!-- 1. Resizing & Filter Options Card -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <StackPanel>
+                <TextBlock Text="📐 Resizing &amp; Filter Options" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,10" />
+
+                <!-- Scaling Mode Selector -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,12">
+                    <TextBlock Text="Mode:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" Margin="0,0,10,0" />
+                    <RadioButton Content="Percentages (%)" VerticalAlignment="Center" Margin="0,0,16,0"
+                                 IsChecked="{Binding IsPercentagesChecked, Mode=TwoWay}"
+                                 ToolTip="Scale by a percentage of the original size" />
+                    <RadioButton Content="Relative Size (px)" VerticalAlignment="Center"
+                                 IsChecked="{Binding IsRelativeSizeChecked, Mode=TwoWay}" 
+                                 ToolTip="Scale to exact pixel dimensions" />
+                </StackPanel>
+
+                <!-- Dimensions & Filter Inputs -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Width -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Width:" VerticalAlignment="Center" Foreground="#555" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                             Text="{Binding Path=Width, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Enter the target width (in pixels or percentage)" />
+
+                    <!-- Height -->
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Height:" VerticalAlignment="Center" Foreground="#555" />
+                    <TextBox Grid.Row="0" Grid.Column="4" Height="28" VerticalContentAlignment="Center"
+                             Text="{Binding Path=Height, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Enter the target height (in pixels or percentage)" />
+
+                    <!-- Filter -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Filter:" VerticalAlignment="Center" Foreground="#555" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                              ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilterOption, Mode=TwoWay}"
+                              ToolTip="Select an optional visual filter to apply to all processed images" />
+
+                    <!-- Extension -->
+                    <TextBlock Grid.Row="2" Grid.Column="3" Text="Extension:" VerticalAlignment="Center" Foreground="#555" />
+                    <ComboBox Grid.Row="2" Grid.Column="4" Height="28" VerticalContentAlignment="Center"
+                              ItemsSource="{Binding FileExtensions}" SelectedItem="{Binding SelectedExtension, Mode=TwoWay}"
+                              ToolTip="Leave empty to keep original format, or select a new format to convert all images" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- 2. Folder Paths Card -->
+        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <StackPanel>
+                <TextBlock Text="📂 Folder Paths" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,10" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Input Path -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Input Path:" VerticalAlignment="Center" Foreground="#555" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                             Text="{Binding Path=Input, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="The folder containing the images you want to process" />
+                    <Button Grid.Row="0" Grid.Column="3" Content="📁" Height="28"
+                            Command="{Binding InputCommand}" ToolTip="Browse for Input Folder" />
+
+                    <!-- Output Path -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Output Path:" VerticalAlignment="Center" Foreground="#555" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                             Text="{Binding Path=Output, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="The folder where the resized images will be saved" />
+                    <Button Grid.Row="2" Grid.Column="3" Content="📁" Height="28"
+                            Command="{Binding OutputCommand}" ToolTip="Browse for Output Folder" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- 3. Status Bar Panel -->
+        <Border Grid.Row="5" Background="#EBF3FC" BorderBrush="#BCD6F2" BorderThickness="1" CornerRadius="4" Padding="10,6">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="ℹ️ " VerticalAlignment="Center" FontSize="12" />
+                <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center"
+                           FontWeight="SemiBold" Foreground="#005A9E"
+                           ToolTip="Current status of the batch operation" />
+            </StackPanel>
+        </Border>
+
+        <!-- 4. Footer Action Buttons -->
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="⚡ Process Batch" Height="32" Width="130" Margin="0,0,8,0" FontWeight="SemiBold"
+                    Command="{Binding ProcessCommand}" ToolTip="Start batch processing the images" />
+            <Button Content="❌ Cancel" Height="32" Width="90"
+                    Command="{Binding CancelCommand}" ToolTip="Close this window without making any changes" />
+        </StackPanel>
+    </Grid>
 </Window>

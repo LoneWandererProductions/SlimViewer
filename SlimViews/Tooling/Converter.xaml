@@ -5,51 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="Format Converter" Height="250" Width="300"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="10" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="25" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <ComboBox ItemsSource="{Binding Path=SelectedSource}"
-                  SelectedItem="{Binding Path=SourceSelect, UpdateSourceTrigger=PropertyChanged}"
-                  Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch"
-                  ToolTip="Select the current format of the images you want to convert" />
-
-        <ComboBox ItemsSource="{Binding Path=ExtensionSource}"
-                  SelectedItem="{Binding Path=ExtensionSelect, UpdateSourceTrigger=PropertyChanged}"
-                  Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Stretch"
-                  ToolTip="Select the new format you want to convert the images into" />
-
-        <Button Content="Okay" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="5"
-                VerticalAlignment="Stretch"
-                Command="{Binding OkayCommand}"
-                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                ToolTip="Apply conversion settings" />
-
-        <Label Content="{Binding Path=Source}" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1"
-               VerticalAlignment="Center"
-               ToolTip="Current Source Extension" />
-
-        <Label Content="{Binding Path=Target}" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="3"
-               VerticalAlignment="Center"
-               ToolTip="Current Target Extension" />
-    </Grid>
+        Title="Format Converter" 
+        Width="340" 
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize"
+        Background="#FAFAFA">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -58,4 +19,81 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="🔄" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Convert Image Formats" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+        </StackPanel>
+
+        <!-- Source Format Row -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="From:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+            <ComboBox Grid.Column="1"
+                      Height="28"
+                      VerticalContentAlignment="Center"
+                      ItemsSource="{Binding Path=SelectedSource}"
+                      SelectedItem="{Binding Path=SourceSelect, UpdateSourceTrigger=PropertyChanged}"
+                      ToolTip="Select the current format of the images you want to convert" />
+            <Label Grid.Column="2"
+                   Content="{Binding Path=Source}"
+                   VerticalAlignment="Center"
+                   Margin="6,0,0,0"
+                   FontWeight="Bold"
+                   Foreground="#777"
+                   ToolTip="Current Source Extension" />
+        </Grid>
+
+        <!-- Directional Flow Indicator -->
+        <TextBlock Grid.Row="2" Text="⬇️" HorizontalAlignment="Center" Margin="0,6" FontSize="12" Opacity="0.7" />
+
+        <!-- Target Format Row -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="To:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+            <ComboBox Grid.Column="1"
+                      Height="28"
+                      VerticalContentAlignment="Center"
+                      ItemsSource="{Binding Path=ExtensionSource}"
+                      SelectedItem="{Binding Path=ExtensionSelect, UpdateSourceTrigger=PropertyChanged}"
+                      ToolTip="Select the new format you want to convert the images into" />
+            <Label Grid.Column="2"
+                   Content="{Binding Path=Target}"
+                   VerticalAlignment="Center"
+                   Margin="6,0,0,0"
+                   FontWeight="Bold"
+                   Foreground="#777"
+                   ToolTip="Current Target Extension" />
+        </Grid>
+
+        <!-- Action Button -->
+        <Button Grid.Row="5"
+                Content="✨ Convert Formats"
+                Height="32"
+                FontWeight="SemiBold"
+                Command="{Binding OkayCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                ToolTip="Apply conversion settings to target files" />
+    </Grid>
 </Window>

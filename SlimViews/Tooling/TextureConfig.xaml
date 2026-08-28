@@ -7,7 +7,10 @@
         xmlns:converters="clr-namespace:Common.Converter;assembly=Common.Converter"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Texture Config" Height="800" Width="450">
+        Title="Texture Configuration" 
+        Height="780" Width="480"
+        ResizeMode="CanResizeWithGrip"
+        Background="#FAFAFA">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -19,201 +22,347 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="10">
+    <Grid Margin="16">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <Grid Margin="0,0,10,0">
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="🧱" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Texture Pattern Generator Settings" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+        </StackPanel>
+
+        <!-- Top Texture Selector Card -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,12">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" /> <!-- 0  Texture Type -->
-                    <RowDefinition Height="Auto" /> <!-- 1  General Settings header -->
-                    <RowDefinition Height="Auto" /> <!-- 2  Min Value -->
-                    <RowDefinition Height="Auto" /> <!-- 3  Max Value -->
-                    <RowDefinition Height="Auto" /> <!-- 4  Alpha -->
-                    <RowDefinition Height="Auto" /> <!-- 5  X Period -->
-                    <RowDefinition Height="Auto" /> <!-- 6  Y Period -->
-                    <RowDefinition Height="Auto" /> <!-- 7  Turbulence Power -->
-                    <RowDefinition Height="Auto" /> <!-- 8  Turbulence Size -->
-                    <RowDefinition Height="Auto" /> <!-- 9  Base Color -->
-                    <RowDefinition Height="Auto" /> <!-- 10 Is Monochrome -->
-                    <RowDefinition Height="Auto" /> <!-- 11 Is Tiled -->
-                    <RowDefinition Height="Auto" /> <!-- 12 Use Smooth Noise -->
-                    <RowDefinition Height="Auto" /> <!-- 13 Use Turbulence -->
-                    <RowDefinition Height="Auto" /> <!-- 14 Xy Period -->
-                    <RowDefinition Height="Auto" /> <!-- 15 Crosshatch Settings header -->
-                    <RowDefinition Height="Auto" /> <!-- 16 Line Spacing -->
-                    <RowDefinition Height="Auto" /> <!-- 17 Line Color -->
-                    <RowDefinition Height="Auto" /> <!-- 18 Line Thickness -->
-                    <RowDefinition Height="Auto" /> <!-- 19 Angle Primary -->
-                    <RowDefinition Height="Auto" /> <!-- 20 Angle Secondary -->
-                    <RowDefinition Height="Auto" /> <!-- 21 Cellular / Color-Mapped header -->
-                    <RowDefinition Height="Auto" /> <!-- 22 Cell Size -->
-                    <RowDefinition Height="Auto" /> <!-- 23 Center Color -->
-                    <RowDefinition Height="Auto" /> <!-- 24 Edge Color -->
-                    <RowDefinition Height="Auto" /> <!-- 25 Color Ramp -->
-                    <RowDefinition Height="Auto" /> <!-- 26 Secondary Color -->
-                    <RowDefinition Height="Auto" /> <!-- 27 Advanced Texture Settings header -->
-                    <RowDefinition Height="Auto" /> <!-- 28 Wave Frequency -->
-                    <RowDefinition Height="Auto" /> <!-- 29 Wave Amplitude -->
-                    <RowDefinition Height="Auto" /> <!-- 30 Randomization -->
-                    <RowDefinition Height="Auto" /> <!-- 31 Edge Jaggedness Limit -->
-                    <RowDefinition Height="Auto" /> <!-- 32 Jaggedness Threshold -->
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" FontWeight="Bold" Text="Texture Type" Margin="0,5" />
-                <!-- ReSharper disable once Xaml.BindingWithoutContextNotResolved -->
-                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding TextureOptions}"
+                <TextBlock Text="Texture Type" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#444" />
+                <ComboBox Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                          ItemsSource="{Binding TextureOptions}"
                           SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}"
                           ToolTip="Select the pattern algorithm to configure" />
-
-                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" Text="General Settings"
-                           Margin="0,15,0,5" />
-
-                <Label Content="Min Value" Grid.Row="2" Grid.Column="0" />
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsMinValueActive}" />
-
-                <Label Content="Max Value" Grid.Row="3" Grid.Column="0" />
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsMaxValueActive}" />
-
-                <Label Content="Alpha" Grid.Row="4" Grid.Column="0" />
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsAlphaActive}" />
-
-                <Label Content="X Period" Grid.Row="5" Grid.Column="0" />
-                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding XPeriod}" IsEnabled="{Binding IsXPeriodActive}" />
-
-                <Label Content="Y Period" Grid.Row="6" Grid.Column="0" />
-                <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding YPeriod}" IsEnabled="{Binding IsYPeriodActive}" />
-
-                <Label Content="Turbulence Power" Grid.Row="7" Grid.Column="0" />
-                <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding TurbulencePower}"
-                         IsEnabled="{Binding IsTurbulencePowerActive}" />
-
-                <Label Content="Turbulence Size" Grid.Row="8" Grid.Column="0" />
-                <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding TurbulenceSize}"
-                         IsEnabled="{Binding IsTurbulenceSizeActive}" />
-
-                <Label Content="Base Color" Grid.Row="9" Grid.Column="0" />
-                <images:ColorSelection Grid.Row="9" Grid.Column="1"
-                                       StartColor="{Binding BaseColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                       IsEnabled="{Binding IsBaseColorActive}" />
-
-                <Label Content="Is Monochrome" Grid.Row="10" Grid.Column="0" />
-                <CheckBox Grid.Row="10" Grid.Column="1" IsChecked="{Binding IsMonochrome}"
-                          IsEnabled="{Binding IsMonochromeActive}" VerticalAlignment="Center" />
-
-                <Label Content="Is Tiled" Grid.Row="11" Grid.Column="0" />
-                <CheckBox Grid.Row="11" Grid.Column="1" IsChecked="{Binding IsTiled}"
-                          IsEnabled="{Binding IsTiledActive}" VerticalAlignment="Center" />
-
-                <Label Content="Use Smooth Noise" Grid.Row="12" Grid.Column="0" />
-                <CheckBox Grid.Row="12" Grid.Column="1" IsChecked="{Binding UseSmoothNoise}"
-                          IsEnabled="{Binding IsUseSmoothNoiseActive}" VerticalAlignment="Center" />
-
-                <Label Content="Use Turbulence" Grid.Row="13" Grid.Column="0" />
-                <CheckBox Grid.Row="13" Grid.Column="1" IsChecked="{Binding UseTurbulence}"
-                          IsEnabled="{Binding IsUseTurbulenceActive}" VerticalAlignment="Center" />
-
-                <Label Content="Xy Period" Grid.Row="14" Grid.Column="0" />
-                <TextBox Grid.Row="14" Grid.Column="1" Text="{Binding XyPeriod}"
-                         IsEnabled="{Binding IsXyPeriodActive}" />
-
-                <TextBlock Grid.Row="15" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"
-                           Text="Crosshatch Settings"
-                           Margin="0,15,0,5" />
-
-                <Label Content="Line Spacing" Grid.Row="16" Grid.Column="0" />
-                <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding LineSpacing}"
-                         IsEnabled="{Binding IsLineSpacingActive}" />
-
-                <Label Content="Line Color" Grid.Row="17" Grid.Column="0" />
-                <images:ColorSelection Grid.Row="17" Grid.Column="1"
-                                       StartColor="{Binding LineColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                       IsEnabled="{Binding IsLineColorActive}" />
-
-                <Label Content="Line Thickness" Grid.Row="18" Grid.Column="0" />
-                <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding LineThickness}"
-                         IsEnabled="{Binding IsLineThicknessActive}" />
-
-                <Label Content="Angle Primary" Grid.Row="19" Grid.Column="0" />
-                <TextBox Grid.Row="19" Grid.Column="1" Text="{Binding AnglePrimary}"
-                         IsEnabled="{Binding IsAnglePrimaryActive}" />
-
-                <Label Content="Angle Secondary" Grid.Row="20" Grid.Column="0" />
-                <TextBox Grid.Row="20" Grid.Column="1" Text="{Binding AngleSecondary}"
-                         IsEnabled="{Binding IsAngleSecondaryActive}" />
-
-                <TextBlock Grid.Row="21" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"
-                           Text="Cellular / Color-Mapped Settings"
-                           Margin="0,15,0,5" />
-
-                <Label Content="Cell Size" Grid.Row="22" Grid.Column="0" />
-                <TextBox Grid.Row="22" Grid.Column="1" Text="{Binding CellSize, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsCellSizeActive}" />
-
-                <Label Content="Center Color" Grid.Row="23" Grid.Column="0" />
-                <images:ColorSelection Grid.Row="23" Grid.Column="1"
-                                       StartColor="{Binding CenterColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                       IsEnabled="{Binding IsCenterColorActive}" />
-
-                <Label Content="Edge Color" Grid.Row="24" Grid.Column="0" />
-                <images:ColorSelection Grid.Row="24" Grid.Column="1"
-                                       StartColor="{Binding EdgeColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                       IsEnabled="{Binding IsEdgeColorActive}" />
-
-                <Label Content="Color Ramp" Grid.Row="25" Grid.Column="0" />
-                <TextBox Grid.Row="25" Grid.Column="1"
-                         Text="{Binding ColorRampText, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding IsColorRampActive}"
-                         ToolTip="Comma-separated #AARRGGBB colors, e.g. #FFFF4400, #FFFFCC00" />
-
-                <Label Content="Secondary Color" Grid.Row="26" Grid.Column="0" />
-                <images:ColorSelection Grid.Row="26" Grid.Column="1"
-                                       StartColor="{Binding SecondaryColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                       IsEnabled="{Binding IsSecondaryColorActive}"
-                                       ToolTip="Not yet read by generation for any texture type - see the property's XML doc remarks" />
-
-                <TextBlock Grid.Row="27" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"
-                           Text="Advanced Texture Settings"
-                           Margin="0,15,0,5" />
-
-                <Label Content="Wave Frequency" Grid.Row="28" Grid.Column="0" />
-                <TextBox Grid.Row="28" Grid.Column="1" Text="{Binding WaveFrequency}"
-                         IsEnabled="{Binding IsWaveFrequencyActive}" />
-
-                <Label Content="Wave Amplitude" Grid.Row="29" Grid.Column="0" />
-                <TextBox Grid.Row="29" Grid.Column="1" Text="{Binding WaveAmplitude}"
-                         IsEnabled="{Binding IsWaveAmplitudeActive}" />
-
-                <Label Content="Randomization" Grid.Row="30" Grid.Column="0" />
-                <TextBox Grid.Row="30" Grid.Column="1" Text="{Binding RandomizationFactor}"
-                         IsEnabled="{Binding IsRandomizationFactorActive}" />
-
-                <Label Content="Edge Jaggedness Limit" Grid.Row="31" Grid.Column="0" />
-                <TextBox Grid.Row="31" Grid.Column="1" Text="{Binding EdgeJaggednessLimit}"
-                         IsEnabled="{Binding IsEdgeJaggednessLimitActive}" />
-
-                <Label Content="Jaggedness Threshold" Grid.Row="32" Grid.Column="0" />
-                <TextBox Grid.Row="32" Grid.Column="1" Text="{Binding JaggednessThreshold}"
-                         IsEnabled="{Binding IsJaggednessThresholdActive}" />
             </Grid>
+        </Border>
+
+        <!-- Scrollable Settings Container -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,6,0">
+
+                <!-- 1. GENERAL SETTINGS CARD -->
+                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="⚙️ General Settings" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Min Value -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Min Value" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"
+                                     IsEnabled="{Binding IsMinValueActive}"
+                                     ToolTip="Minimum intensity or brightness boundary for noise generation" />
+
+                            <!-- Max Value -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Max Value" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"
+                                     IsEnabled="{Binding IsMaxValueActive}"
+                                     ToolTip="Maximum intensity or brightness boundary for noise generation" />
+
+                            <!-- Alpha -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Alpha" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="4" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}"
+                                     IsEnabled="{Binding IsAlphaActive}"
+                                     ToolTip="Overall opacity channel value for the generated texture (0.0 to 1.0)" />
+
+                            <!-- X Period -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="X Period" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="6" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding XPeriod}" IsEnabled="{Binding IsXPeriodActive}"
+                                     ToolTip="Horizontal repetition frequency rate for wave/pattern generation" />
+
+                            <!-- Y Period -->
+                            <TextBlock Grid.Row="8" Grid.Column="0" Text="Y Period" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="8" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding YPeriod}" IsEnabled="{Binding IsYPeriodActive}"
+                                     ToolTip="Vertical repetition frequency rate for wave/pattern generation" />
+
+                            <!-- XY Period -->
+                            <TextBlock Grid.Row="10" Grid.Column="0" Text="XY Period" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="10" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding XyPeriod}" IsEnabled="{Binding IsXyPeriodActive}"
+                                     ToolTip="Combined diagonal repetition period factor" />
+
+                            <!-- Turbulence Power -->
+                            <TextBlock Grid.Row="12" Grid.Column="0" Text="Turbulence Power" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="12" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding TurbulencePower}" IsEnabled="{Binding IsTurbulencePowerActive}"
+                                     ToolTip="Distortion intensity multiplier applied to noise patterns" />
+
+                            <!-- Turbulence Size -->
+                            <TextBlock Grid.Row="14" Grid.Column="0" Text="Turbulence Size" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="14" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding TurbulenceSize}" IsEnabled="{Binding IsTurbulenceSizeActive}"
+                                     ToolTip="Scale factor for noise distortion features" />
+
+                            <!-- Base Color -->
+                            <TextBlock Grid.Row="16" Grid.Column="0" Text="Base Color" VerticalAlignment="Center" Foreground="#555" />
+                            <images:ColorSelection Grid.Row="16" Grid.Column="1" Height="26"
+                                                   StartColor="{Binding BaseColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                   IsEnabled="{Binding IsBaseColorActive}"
+                                                   ToolTip="Primary base background color for texture rendering" />
+
+                            <!-- Is Monochrome -->
+                            <TextBlock Grid.Row="18" Grid.Column="0" Text="Is Monochrome" VerticalAlignment="Center" Foreground="#555" />
+                            <CheckBox Grid.Row="18" Grid.Column="1" VerticalAlignment="Center"
+                                      IsChecked="{Binding IsMonochrome}" IsEnabled="{Binding IsMonochromeActive}"
+                                      ToolTip="Restrict texture output strictly to grayscale shades" />
+
+                            <!-- Is Tiled -->
+                            <TextBlock Grid.Row="20" Grid.Column="0" Text="Is Tiled" VerticalAlignment="Center" Foreground="#555" />
+                            <CheckBox Grid.Row="20" Grid.Column="1" VerticalAlignment="Center"
+                                      IsChecked="{Binding IsTiled}" IsEnabled="{Binding IsTiledActive}"
+                                      ToolTip="Ensure pattern edges wrap seamlessly for seamless tiling" />
+
+                            <!-- Use Smooth Noise -->
+                            <TextBlock Grid.Row="22" Grid.Column="0" Text="Use Smooth Noise" VerticalAlignment="Center" Foreground="#555" />
+                            <CheckBox Grid.Row="22" Grid.Column="1" VerticalAlignment="Center"
+                                      IsChecked="{Binding UseSmoothNoise}" IsEnabled="{Binding IsUseSmoothNoiseActive}"
+                                      ToolTip="Enable smooth linear interpolation for noise gradients" />
+
+                            <!-- Use Turbulence -->
+                            <TextBlock Grid.Row="24" Grid.Column="0" Text="Use Turbulence" VerticalAlignment="Center" Foreground="#555" />
+                            <CheckBox Grid.Row="24" Grid.Column="1" VerticalAlignment="Center"
+                                      IsChecked="{Binding UseTurbulence}" IsEnabled="{Binding IsUseTurbulenceActive}"
+                                      ToolTip="Apply multi-octave fractal turbulence overlay to pattern" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. CROSSHATCH SETTINGS CARD -->
+                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="📐 Crosshatch Settings" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Line Spacing -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Line Spacing" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding LineSpacing}" IsEnabled="{Binding IsLineSpacingActive}"
+                                     ToolTip="Distance in pixels between adjacent hatch lines" />
+
+                            <!-- Line Color -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Line Color" VerticalAlignment="Center" Foreground="#555" />
+                            <images:ColorSelection Grid.Row="2" Grid.Column="1" Height="26"
+                                                   StartColor="{Binding LineColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                   IsEnabled="{Binding IsLineColorActive}"
+                                                   ToolTip="Color used to draw hatch strokes" />
+
+                            <!-- Line Thickness -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Line Thickness" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="4" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding LineThickness}" IsEnabled="{Binding IsLineThicknessActive}"
+                                     ToolTip="Stroke width in pixels for hatch lines" />
+
+                            <!-- Angle Primary -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Angle Primary" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="6" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding AnglePrimary}" IsEnabled="{Binding IsAnglePrimaryActive}"
+                                     ToolTip="Primary directional stroke angle in degrees (e.g. 45°)" />
+
+                            <!-- Angle Secondary -->
+                            <TextBlock Grid.Row="8" Grid.Column="0" Text="Angle Secondary" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="8" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding AngleSecondary}" IsEnabled="{Binding IsAngleSecondaryActive}"
+                                     ToolTip="Secondary cross-directional stroke angle in degrees (e.g. -45°)" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. CELLULAR / COLOR-MAPPED SETTINGS CARD -->
+                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="🧫 Cellular / Color-Mapped Settings" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Cell Size -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cell Size" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding CellSize, UpdateSourceTrigger=PropertyChanged}"
+                                     IsEnabled="{Binding IsCellSizeActive}"
+                                     ToolTip="Average diameter in pixels for Voronoi/Cellular nodes" />
+
+                            <!-- Center Color -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Center Color" VerticalAlignment="Center" Foreground="#555" />
+                            <images:ColorSelection Grid.Row="2" Grid.Column="1" Height="26"
+                                                   StartColor="{Binding CenterColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                   IsEnabled="{Binding IsCenterColorActive}"
+                                                   ToolTip="Color at the focal center point of cellular nodes" />
+
+                            <!-- Edge Color -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Edge Color" VerticalAlignment="Center" Foreground="#555" />
+                            <images:ColorSelection Grid.Row="4" Grid.Column="1" Height="26"
+                                                   StartColor="{Binding EdgeColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                   IsEnabled="{Binding IsEdgeColorActive}"
+                                                   ToolTip="Color along the outer border boundaries of cellular nodes" />
+
+                            <!-- Color Ramp -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Color Ramp" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="6" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding ColorRampText, UpdateSourceTrigger=PropertyChanged}"
+                                     IsEnabled="{Binding IsColorRampActive}"
+                                     ToolTip="Comma-separated hex colors for gradient mapping (e.g. #FFFF4400, #FFFFCC00)" />
+
+                            <!-- Secondary Color -->
+                            <TextBlock Grid.Row="8" Grid.Column="0" Text="Secondary Color" VerticalAlignment="Center" Foreground="#555" />
+                            <images:ColorSelection Grid.Row="8" Grid.Column="1" Height="26"
+                                                   StartColor="{Binding SecondaryColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                   IsEnabled="{Binding IsSecondaryColorActive}"
+                                                   ToolTip="Secondary accent color for color-mapped textures" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. ADVANCED TEXTURE SETTINGS CARD -->
+                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel>
+                        <TextBlock Text="🌊 Advanced Texture Settings" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="6" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Wave Frequency -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Wave Frequency" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding WaveFrequency}" IsEnabled="{Binding IsWaveFrequencyActive}"
+                                     ToolTip="Oscillation frequency rate for sinusoidal wave distortion" />
+
+                            <!-- Wave Amplitude -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Wave Amplitude" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding WaveAmplitude}" IsEnabled="{Binding IsWaveAmplitudeActive}"
+                                     ToolTip="Height displacement amplitude for wave distortion" />
+
+                            <!-- Randomization -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Randomization" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="4" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding RandomizationFactor}" IsEnabled="{Binding IsRandomizationFactorActive}"
+                                     ToolTip="Random seed variation factor for unique texture generations" />
+
+                            <!-- Edge Jaggedness Limit -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Edge Jaggedness Limit" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="6" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding EdgeJaggednessLimit}" IsEnabled="{Binding IsEdgeJaggednessLimitActive}"
+                                     ToolTip="Maximum boundary cap for edge roughness displacement" />
+
+                            <!-- Jaggedness Threshold -->
+                            <TextBlock Grid.Row="8" Grid.Column="0" Text="Jaggedness Threshold" VerticalAlignment="Center" Foreground="#555" />
+                            <TextBox Grid.Row="8" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                                     Text="{Binding JaggednessThreshold}" IsEnabled="{Binding IsJaggednessThresholdActive}"
+                                     ToolTip="Sensitivity cut-off value for applying edge roughening" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="Save" Width="80" Margin="5" Command="{Binding SaveCommand}" />
-            <Button Content="Reset" Width="80" Margin="5" Command="{Binding ResetCommand}" />
-            <Button Content="Cancel" Width="80" Margin="5"
+        <!-- Footer Action Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="💾 Save" Height="30" Width="85" Margin="0,0,6,0" FontWeight="SemiBold"
+                    Command="{Binding SaveCommand}" ToolTip="Save texture configuration changes" />
+            <Button Content="🔄 Reset" Height="30" Width="85" Margin="0,0,6,0"
+                    Command="{Binding ResetCommand}" ToolTip="Reset all fields to default values" />
+            <Button Content="❌ Cancel" Height="30" Width="85"
                     Command="{Binding CancelCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    ToolTip="Close window without saving changes" />
         </StackPanel>
     </Grid>
 </Window>

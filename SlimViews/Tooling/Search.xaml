@@ -4,70 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Search Images" Height="150" Width="650"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-
-    <Grid IsEnabled="{Binding IsNotWorking}" Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="120" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="40" />
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="10" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="10" />
-            <RowDefinition Height="25" />
-            <RowDefinition />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="25" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-        <Label Content="Contains string: " Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1"
-               VerticalAlignment="Stretch" />
-        <TextBox Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Grid.ColumnSpan="8"
-                 Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Find images where the file name contains this exact text" />
-
-        <Button Content="Search" Grid.Column="11" Grid.Row="1" HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Command="{Binding SearchByTextCommand}" ToolTip="Search by file name" />
-
-        <Label Content="Contains RGB Values: " Grid.Column="1" Grid.Row="4" VerticalAlignment="Stretch"
-               HorizontalAlignment="Stretch" />
-
-        <TextBox Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
-                 Text="{Binding Path=Red, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Red Value (0-255)" />
-        <TextBox Grid.Column="4" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
-                 Text="{Binding Path=Green, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Green Value (0-255)" />
-        <TextBox Grid.Column="6" HorizontalAlignment="Stretch" Grid.Row="4" TextWrapping="Wrap"
-                 VerticalAlignment="Stretch"
-                 Text="{Binding Path=Blue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Blue Value (0-255)" />
-
-        <Label Content="Color Range: " Grid.Column="8" Grid.Row="4" VerticalAlignment="Center" />
-        <TextBox Grid.Column="9" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Stretch"
-                 HorizontalAlignment="Stretch"
-                 Text="{Binding Path=Range, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="Tolerance for the color search (e.g., 3 means it will match colors slightly lighter or darker)" />
-
-        <Button Content="Search" Grid.Column="11" HorizontalAlignment="Stretch" Grid.Row="4"
-                VerticalAlignment="Stretch"
-                Command="{Binding SearchByColorCommand}" ToolTip="Scan all images for this specific color" />
-    </Grid>
+        Title="Search Images" 
+        Width="620" 
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize"
+        Background="#FAFAFA">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -76,4 +18,98 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid IsEnabled="{Binding IsNotWorking}" Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Search Images in Library" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="#333" />
+        </StackPanel>
+
+        <!-- 1. Text Search Card -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <StackPanel>
+                <TextBlock Text="📝 Search by File Name" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Height="28" VerticalContentAlignment="Center"
+                             Text="{Binding Path=SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Find images where the file name contains this exact text" />
+
+                    <Button Grid.Column="2" Content="🔍 Search" Height="28" FontWeight="SemiBold"
+                            Command="{Binding SearchByTextCommand}" 
+                            ToolTip="Search images by file name text string" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- 2. Color Search Card -->
+        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+            <StackPanel>
+                <TextBlock Text="🎨 Search by RGB Color" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Red Channel -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,8,0">
+                        <TextBlock Text="R:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#D32F2F" Margin="0,0,4,0" ToolTip="Red Channel (0-255)" />
+                        <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
+                                 Text="{Binding Path=Red, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Red Value (0-255)" />
+                    </StackPanel>
+
+                    <!-- Green Channel -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,8,0">
+                        <TextBlock Text="G:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#388E3C" Margin="0,0,4,0" ToolTip="Green Channel (0-255)" />
+                        <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
+                                 Text="{Binding Path=Green, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Green Value (0-255)" />
+                    </StackPanel>
+
+                    <!-- Blue Channel -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,8,0">
+                        <TextBlock Text="B:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#1976D2" Margin="0,0,4,0" ToolTip="Blue Channel (0-255)" />
+                        <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
+                                 Text="{Binding Path=Blue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Blue Value (0-255)" />
+                    </StackPanel>
+
+                    <!-- Tolerance Range -->
+                    <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Foreground="#555" Margin="0,0,4,0" ToolTip="Color matching tolerance range" />
+                        <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
+                                 Text="{Binding Path=Range, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Tolerance for the color search (e.g., 3 means it will match colors slightly lighter or darker)" />
+                    </StackPanel>
+
+                    <!-- Search Button -->
+                    <Button Grid.Column="6" Content="🎨 Search" Height="28" FontWeight="SemiBold"
+                            Command="{Binding SearchByColorCommand}" 
+                            ToolTip="Scan all images in folder for this specific RGB color" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>
