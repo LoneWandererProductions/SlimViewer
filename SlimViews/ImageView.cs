@@ -45,9 +45,7 @@ namespace SlimViews
     /// <seealso cref="ViewModel.ViewModelBase" />
     public sealed class ImageView : ViewModelBase
     {
-        // -------------------------------------------------------------------
-        // 1. CONTEXTS & STATE (The Data Layer)
-        // -------------------------------------------------------------------
+        // --- 1. CONTEXTS & STATE (The Data Layer) ---
 
         /// <summary>
         /// The Single Source of Truth for Drawing Tools, Colors, and Modes.
@@ -107,14 +105,12 @@ namespace SlimViews
         /// </value>
         public Dictionary<Tuple<ModifierKeys, Key>, ICommand> CommandBindings { get; set; }
 
-        // -------------------------------------------------------------------
-        // 2. UI BINDING PROPERTIES (Proxies to Contexts)
-        // -------------------------------------------------------------------
+        // --- 2. UI BINDING PROPERTIES (Proxies to Contexts) ---
 
         /// <summary>
         /// The draw lock
         /// </summary>
-        private readonly object _drawLock = new object();
+        private readonly object _drawLock = new();
 
         /// <summary>
         /// Incremented every time a new image load starts (thumbnail click, Open,
@@ -139,7 +135,7 @@ namespace SlimViews
         public ImageZoomTools ImageZoomTool
         {
             get => _imageZoomTool;
-            set => SetProperty(ref _imageZoomTool, value, nameof(ImageZoomTool));
+            set => SetProperty(ref _imageZoomTool, value);
         }
 
         // --- File Context Proxies ---
@@ -158,7 +154,7 @@ namespace SlimViews
                 if (FileContext.Count == value) return;
 
                 FileContext.Count = value;
-                OnPropertyChanged(nameof(Count));
+                OnPropertyChanged();
                 NavigationLogic();
             }
         }
@@ -316,9 +312,7 @@ namespace SlimViews
         /// <param name="newGdiBitmap">The new GDI bitmap.</param>
         internal void CommitImageChange(Bitmap newGdiBitmap) => HistoryManager.CommitImageChange(newGdiBitmap);
 
-        // -------------------------------------------------------------------
-        // 3. INITIALIZATION
-        // -------------------------------------------------------------------
+        // --- 3. INITIALIZATION ---
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageView"/> class.
@@ -393,9 +387,7 @@ namespace SlimViews
             };
         }
 
-        // -------------------------------------------------------------------
-        // 4. LOGIC: MAPPING STATE TO BEHAVIOR
-        // -------------------------------------------------------------------
+        // --- 4. LOGIC: MAPPING STATE TO BEHAVIOR ---
 
         /// <summary>
         /// Maps the abstract DrawingState (Pencil, Shape, Mode) to the concrete Tool
@@ -403,44 +395,19 @@ namespace SlimViews
         /// </summary>
         private void MapStateToZoomTool()
         {
-            switch (MyDrawingState.ActiveTool)
+            ImageZoomTool = MyDrawingState.ActiveTool switch
             {
-                case DrawTool.Pencil:
-                case DrawTool.Eraser:
-                case DrawTool.ColorPicker:
-                    // Pencil/Eraser behave like Dot
-                    ImageZoomTool = ImageZoomTools.Dot;
-                    break;
-
-                case DrawTool.Shape:
-                    // Translate the specific ShapeType to the Zoom Control's tool
-                    switch (MyDrawingState.SelectedShape)
-                    {
-                        case ShapeType.Rectangle:
-                            ImageZoomTool = ImageZoomTools.Rectangle;
-                            break;
-                        case ShapeType.Ellipse:
-                            ImageZoomTool = ImageZoomTools.Ellipse;
-                            break;
-                        case ShapeType.Freeform:
-                            ImageZoomTool = ImageZoomTools.FreeForm;
-                            break;
-                        default:
-                            ImageZoomTool = ImageZoomTools.Move;
-                            break;
-                    }
-
-                    break;
-                case DrawTool.None:
-                    break;
-                case DrawTool.Move:
-                    ImageZoomTool = ImageZoomTools.Move;
-                    break;
-                default:
-                    // Default to Pan/Move if no tool is active
-                    ImageZoomTool = ImageZoomTools.Move;
-                    break;
-            }
+                DrawTool.Pencil or DrawTool.Eraser or DrawTool.ColorPicker => ImageZoomTools.Dot,
+                DrawTool.Shape => MyDrawingState.SelectedShape switch
+                {
+                    ShapeType.Rectangle => ImageZoomTools.Rectangle,
+                    ShapeType.Ellipse => ImageZoomTools.Ellipse,
+                    ShapeType.Freeform => ImageZoomTools.FreeForm,
+                    _ => ImageZoomTools.Move
+                },
+                DrawTool.Move => ImageZoomTools.Move,
+                _ => ImageZoomTools.Move
+            };
         }
 
         /// <summary>
@@ -454,7 +421,7 @@ namespace SlimViews
             var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
 
             // 1. Pencil & Eraser Logic
-            if (MyDrawingState.ActiveTool == DrawTool.Pencil || MyDrawingState.ActiveTool == DrawTool.Eraser)
+            if (MyDrawingState.ActiveTool is DrawTool.Pencil or DrawTool.Eraser)
             {
                 // Grab UI variables before leaving the main thread
                 var isEraser = MyDrawingState.ActiveTool == DrawTool.Eraser;
@@ -584,7 +551,7 @@ namespace SlimViews
         /// <returns>
         ///   <c>true</c> if this instance can run the specified argument; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanRun(object? arg) => true;
+        public bool CanRun(object? arg) => CanExecute(arg!);
 
         // Navigation Actions
         /// <summary>
@@ -654,7 +621,7 @@ namespace SlimViews
             FileContext.Clear();
 
             // 2. Reset local UI-only state
-            if (Image != null) Image.Clear();
+            Image?.Clear();
             ClearHistory();
 
             // 3. Reload if directory exists
