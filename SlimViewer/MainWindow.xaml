@@ -37,7 +37,21 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto">
+                <RowDefinition.Style>
+                    <Style TargetType="RowDefinition">
+                        <Style.Triggers>
+                            <!-- Forces the row to 0 height when hidden, overriding the GridSplitter's pixel value -->
+                            <DataTrigger Binding="{Binding ThumbnailVisibility}" Value="Collapsed">
+                                <Setter Property="MaxHeight" Value="0" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ThumbnailVisibility}" Value="Hidden">
+                                <Setter Property="MaxHeight" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -378,34 +392,40 @@
         </Grid>
 
         <!-- ================================================================= -->
-        <!-- RIBBON STRIP TOGGLE HANDLE (STAYS PERMANENTLY VISIBLE)             -->
+        <!-- RIBBON STRIP TOGGLE HANDLE & GRID SPLITTER                        -->
         <!-- ================================================================= -->
-        <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-                Background="#EAEAEA" BorderBrush="#CCCCCC" BorderThickness="0,1,0,1"
-                Height="22" VerticalAlignment="Center">
-            <Grid>
-                <!-- Horizontal divider line running behind the ribbon button -->
-                <Separator VerticalAlignment="Center" Margin="0" Background="#BBBBBB" />
+        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Height="22">
 
-                <!-- Docked Toggle Ribbon Handle -->
-                <ToggleButton HorizontalAlignment="Center" VerticalAlignment="Center"
-                              IsChecked="{Binding IsThumbsVisible, Mode=TwoWay}"
-                              Padding="14,1" Height="20"
-                              Background="#F8F8F8" BorderBrush="#AAAAAA"
-                              Cursor="Hand" ToolTip="Flip thumbnail panel open or closed">
-                    <ToggleButton.Style>
-                        <Style TargetType="ToggleButton">
-                            <Setter Property="Content" Value="📷 Thumbnails 🔽" />
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="False">
-                                    <Setter Property="Content" Value="📷 Thumbnails 🔼" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ToggleButton.Style>
-                </ToggleButton>
-            </Grid>
-        </Border>
+            <!-- 1. The functional GridSplitter to allow dragging -->
+            <GridSplitter HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Background="#EAEAEA"
+                          ResizeBehavior="PreviousAndNext"
+                          ResizeDirection="Rows"
+                          ShowsPreview="True" />
+
+            <!-- 2. Visual styling overlay (IsHitTestVisible="False" ensures clicks pass through to the splitter) -->
+            <Border BorderBrush="#CCCCCC" BorderThickness="0,1,0,1" IsHitTestVisible="False" />
+            <Separator VerticalAlignment="Center" Margin="0" Background="#BBBBBB" IsHitTestVisible="False" />
+
+            <!-- 3. Your original ToggleButton -->
+            <ToggleButton HorizontalAlignment="Center" VerticalAlignment="Center"
+                          IsChecked="{Binding IsThumbsVisible, Mode=TwoWay}"
+                          Padding="14,1" Height="20"
+                          Background="#F8F8F8" BorderBrush="#AAAAAA"
+                          Cursor="Hand" ToolTip="Flip thumbnail panel open or closed">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
+                        <Setter Property="Content" Value="📷 Thumbnails 🔽" />
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Content" Value="📷 Thumbnails 🔼" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+        </Grid>
 
         <!-- ================================================================= -->
         <!-- THUMBNAIL PANEL (COLLAPSES WITH ThumbnailVisibility)              -->
