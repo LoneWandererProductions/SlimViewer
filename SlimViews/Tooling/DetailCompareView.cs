@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -318,6 +319,11 @@ namespace SlimViews.Tooling
                 // Force WPF to enable the diff/export buttons
                 CommandManager.InvalidateRequerySuggested();
             }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
+            }
             finally
             {
                 IsWorking = false;
@@ -373,6 +379,11 @@ namespace SlimViews.Tooling
 
                 // Force WPF to enable the diff/export buttons
                 CommandManager.InvalidateRequerySuggested();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                MessageBox.Show(ex.ToString(), ViewResources.ErrorMessage);
             }
             finally
             {

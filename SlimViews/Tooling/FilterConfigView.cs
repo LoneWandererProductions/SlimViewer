@@ -380,7 +380,7 @@ namespace SlimViews.Tooling
                 }
 
                 // Get JSON from Facade and write to disk
-                string jsonConfig = ImagingFacade.GetSettingsAsJson();
+                var jsonConfig = ImagingFacade.GetSettingsAsJson();
                 File.WriteAllText(_configFilePath, jsonConfig);
             }
             catch (Exception ex)
@@ -399,7 +399,7 @@ namespace SlimViews.Tooling
             {
                 if (File.Exists(_configFilePath))
                 {
-                    string jsonConfig = File.ReadAllText(_configFilePath);
+                    var jsonConfig = File.ReadAllText(_configFilePath);
                     ImagingFacade.LoadSettingsFromJson(jsonConfig);
                 }
             }

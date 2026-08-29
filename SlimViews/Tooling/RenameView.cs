@@ -398,7 +398,7 @@ namespace SlimViews.Tooling
             try
             {
                 var updatedObserver = new ConcurrentDictionary<int, string?>(Observer);
-                bool changesMade = false;
+                var changesMade = false;
 
                 // 1. DROP THE LOCK ONCE FOR THE ENTIRE BATCH
                 // This ensures if the main window is viewing a file we are about to rename, it lets go.

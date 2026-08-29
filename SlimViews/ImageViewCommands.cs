@@ -301,8 +301,12 @@ namespace SlimViews
             SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
 
             // ---- UI / direct owner commands ----
-            Undo = new DelegateCommand<object>(_ => owner.UndoAsync(), CanRun);
-            Redo = new DelegateCommand<object>(_ => owner.RedoAsync(), CanRun);
+            // AsyncDelegateCommand (not DelegateCommand) matters here: it disables
+            // itself while a swap is in flight, so mashing Ctrl+Z can't start a
+            // second Undo before the first one has finished. A plain DelegateCommand
+            // would also silently discard the Task UndoAsync/RedoAsync return.
+            Undo = Make_AsyncObjCmd(_ => owner.UndoAsync());
+            Redo = Make_AsyncObjCmd(_ => owner.RedoAsync());
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);

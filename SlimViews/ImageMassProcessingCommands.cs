@@ -204,7 +204,7 @@ namespace SlimViews
         public void SimilarWindow(ImageView owner, object? parameter)
         {
             // If no parameter is passed, default to 90
-            int similarity = 90;
+            var similarity = 90;
             if (parameter != null && int.TryParse(parameter.ToString(), out var result))
             {
                 similarity = result;

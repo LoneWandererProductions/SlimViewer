@@ -405,7 +405,7 @@ namespace SlimViews.Tooling
                 // We need to save these manually so the Thumbnail viewer can pick them up
                 await Task.Run(() =>
                 {
-                    for (int i = 0; i < frames.Count; i++)
+                    for (var i = 0; i < frames.Count; i++)
                     {
                         token.ThrowIfCancellationRequested();
 
@@ -489,7 +489,7 @@ namespace SlimViews.Tooling
                 // 4. Create Preview GIF (CPU Bound)
                 // Use Facade: CreateGif(sourceFolder, targetFile)
                 // We pass the DIRECTORY (GifExportPath) because the backend appends the filename.
-                string fullTargetFile = Path.Combine(GifExportPath, ViewResources.NewGif);
+                var fullTargetFile = Path.Combine(GifExportPath, ViewResources.NewGif);
 
                 // Note: If your backend strictly requires a FOLDER path and appends a default name, pass GifExportPath.
                 // If it accepts a full file path (as implied by some overloads), pass fullTargetFile.
@@ -550,7 +550,7 @@ namespace SlimViews.Tooling
                             // A. Lookup Delay (same logic as before)
                             // We need the ID to find the delay in the dictionary
                             var kvp = _observer.FirstOrDefault(x => x.Value == file);
-                            int delayMs = 100; // Default
+                            var delayMs = 100; // Default
 
                             if (!kvp.Equals(default(KeyValuePair<int, string>)))
                             {

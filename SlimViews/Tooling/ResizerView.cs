@@ -379,8 +379,8 @@ namespace SlimViews.Tooling
             }
 
             IsWorking = true;
-            int count = 0;
-            int total = files.Count;
+            var count = 0;
+            var total = files.Count;
 
             try
             {
@@ -427,7 +427,7 @@ namespace SlimViews.Tooling
                         }
 
                         // Determine the file extension to save as, falling back to original if none selected
-                        string saveExtension = string.IsNullOrEmpty(SelectedExtension)
+                        var saveExtension = string.IsNullOrEmpty(SelectedExtension)
                             ? Path.GetExtension(filePath)
                             : SelectedExtension;
 

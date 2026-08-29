@@ -60,7 +60,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view that owns the image.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void ConvertCif(ImageView owner, object obj)
+        internal void ConvertCif(ImageView? owner, object obj)
         {
             if (owner?.Image?.Bitmap == null)
                 return;
@@ -90,24 +90,22 @@ namespace SlimViews
         /// <param name="owner">The owner.</param>
         /// <param name="paths">The paths.</param>
         /// <param name="isSilent">if set to <c>true</c> [is silent].</param>
-        internal async Task DeleteAsync(ImageView owner, List<string?> paths, bool isSilent)
+        internal async Task DeleteAsync(ImageView? owner, List<string?> paths, bool isSilent)
         {
             if (owner == null || paths.Count == 0) return;
 
-            // 1. SCHRITT: Dem Mother Window befehlen, das Bild loszulassen.
-            // Wir leeren die Anzeige, damit WPF den File-Handle freigibt.
-            owner.Image?.Clear();
+            // 1. step: release image
+            owner.Image.Clear();
 
-            // Kleiner Trick: Wir geben WPF einen Moment Zeit, das UI-Binding zu lösen
             await Task.Yield();
 
-            int deletedCount = 0;
+            var deletedCount = 0;
 
             foreach (var path in paths)
             {
                 try
                 {
-                    // 2. SCHRITT: Jetzt ist die Datei (hoffentlich) frei zum Löschen
+                    // 2. step: delete file
                     if (await FileHandleSafeDelete.DeleteFile(path))
                     {
                         deletedCount++;
@@ -116,17 +114,15 @@ namespace SlimViews
                 }
                 catch (Exception ex)
                 {
-                    // Falls es immer noch lockt, sehen wir es hier im Trace
                     Trace.WriteLine($"CRITICAL: Lock still active on {path}: {ex.Message}");
                 }
             }
 
-            // 3. SCHRITT: UI aufräumen
+            // 3. Step: clean UI
             if (deletedCount > 0)
             {
-                // Die Liste im Hauptfenster aktualisieren (das entfernt die Thumbnails)
-                owner.LoadThumbs(owner.FileContext.CurrentPath);
-                owner.RefreshActionAsync(nameof(FileProcessingCommands));
+                await owner.LoadThumbs(owner.FileContext.CurrentPath);
+                await owner.RefreshActionAsync(nameof(FileProcessingCommands));
 
                 if (!isSilent)
                 {
@@ -137,10 +133,11 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// The "Selection" method: Gathers paths from the Mother Window state 
+        /// The "Selection" method: Gathers paths from the Mother Window state
         /// and delegates to the path-based DeleteAsync.
         /// </summary>
-        internal async Task DeleteAsync(ImageView owner)
+        /// <param name="owner">The owner.</param>
+        internal async Task DeleteAsync(ImageView? owner)
         {
             if (owner?.UiState == null || owner.FileContext?.Observer == null)
                 return;
@@ -177,7 +174,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view owner.</param>
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
-        internal void Move(ImageView owner, object obj)
+        internal void Move(ImageView? owner, object obj)
         {
             if (owner == null || (!File.Exists(owner.FileContext.FileName) && owner.UiState.IsSelectionEmpty))
                 return;
@@ -234,7 +231,7 @@ namespace SlimViews
                     ViewResources.MessageSuccess, MessageBoxButton.OK);
             }
 
-            owner.RefreshActionAsync(nameof(FileProcessingCommands));
+            _ = owner.RefreshActionAsync(nameof(FileProcessingCommands));
         }
 
         /// <summary>
@@ -242,7 +239,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view owner.</param>
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
-        internal void MoveAll(ImageView owner, object obj)
+        internal void MoveAll(ImageView? owner, object obj)
         {
             if (owner == null)
                 return;
@@ -277,7 +274,7 @@ namespace SlimViews
 
             _ = FileHandleCut.CutFiles(sourceFiles, targetDir, false);
 
-            owner.RefreshActionAsync(nameof(FileProcessingCommands));
+            _ = owner.RefreshActionAsync(nameof(FileProcessingCommands));
         }
 
         /// <summary>
@@ -286,7 +283,7 @@ namespace SlimViews
         /// <param name="owner">The image view owner.</param>
         internal async Task RenameCurrentAsync(ImageView owner)
         {
-            if (!owner.FileContext.Observer.TryGetValue(owner.FileContext.CurrentId, out string? oldPath))
+            if (!owner.FileContext.Observer.TryGetValue(owner.FileContext.CurrentId, out var oldPath))
                 return;
 
             var folder = Path.GetDirectoryName(oldPath);
@@ -302,7 +299,7 @@ namespace SlimViews
                 if (result == MessageBoxResult.No) return;
             }
 
-            string? resultPath = await RenameAsync(owner, oldPath, newPath, isSilent: false);
+            var resultPath = await RenameAsync(owner, oldPath, newPath, isSilent: false);
 
             if (resultPath != null)
             {
@@ -314,7 +311,8 @@ namespace SlimViews
         /// <summary>
         /// Core rename logic: Handles the Lock by clearing the owner view first.
         /// </summary>
-        internal async Task<string?> RenameAsync(ImageView owner, string? sourcePath, string? targetPath, bool isSilent)
+        internal async Task<string?> RenameAsync(ImageView? owner, string? sourcePath, string? targetPath,
+            bool isSilent)
         {
             if (owner == null || string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(targetPath))
                 return null;
@@ -328,7 +326,7 @@ namespace SlimViews
 
             try
             {
-                bool success = await FileHandleRename.RenameFile(sourcePath, targetPath);
+                var success = await FileHandleRename.RenameFile(sourcePath, targetPath);
 
                 if (success)
                 {
@@ -340,8 +338,8 @@ namespace SlimViews
                     }
 
                     // 2. REFRESH UI
-                    owner.LoadThumbs(owner.FileContext.CurrentPath);
-                    owner.RefreshActionAsync(nameof(FileProcessingCommands));
+                    await owner.LoadThumbs(owner.FileContext.CurrentPath);
+                    await owner.RefreshActionAsync(nameof(FileProcessingCommands));
 
                     return targetPath;
                 }
@@ -363,7 +361,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view owner.</param>
         /// <param name="obj">Unused parameter (reserved for interface compatibility).</param>
-        internal void Save(ImageView owner, object obj)
+        internal void Save(ImageView? owner, object obj)
         {
             if (owner?.Image.BitmapImage == null)
                 return;

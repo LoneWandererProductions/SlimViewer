@@ -180,7 +180,8 @@ namespace FileHandler
         /// <param name="subString">The sub string.</param>
         /// <param name="invert">if set to <c>true</c> [invert].</param>
         /// <returns>All files with a specific substring.</returns>
-        public static List<string?> GetFilesWithSubString(string? path, IEnumerable<string> appendix, bool subdirectories,
+        public static List<string?> GetFilesWithSubString(string? path, IEnumerable<string> appendix,
+            bool subdirectories,
             string subString, bool invert)
         {
             var lst = GetFilesByExtensionFullPath(path, appendix, subdirectories);

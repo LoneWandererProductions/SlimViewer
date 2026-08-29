@@ -395,7 +395,7 @@ namespace Common.Images
                 return;
             }
 
-            control?.OnItemsSourceChanged();
+            _ = control?.OnItemsSourceChanged();
         }
 
         /// <summary>

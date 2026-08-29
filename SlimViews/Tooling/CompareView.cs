@@ -163,7 +163,7 @@ namespace SlimViews.Tooling
             {
                 var group = DuplicateGroups.FirstOrDefault(g => g.GroupId == args.SenderTag);
 
-                if (group != null && group.Images.TryGetValue(args.Id, out string? path))
+                if (group != null && group.Images.TryGetValue(args.Id, out var path))
                 {
                     if (File.Exists(path))
                     {
@@ -283,27 +283,29 @@ namespace SlimViews.Tooling
             if (_duplicates == null || _duplicates.Count == 0) return;
             DuplicateGroups.Clear();
 
-            int baseIndex = _index * 10;
+            var baseIndex = _index * 10;
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 List<string?>? groupPaths = _duplicates.ElementAtOrDefault(baseIndex + i);
                 if (groupPaths == null || !groupPaths.Any()) continue;
 
-                var groupModel = new DuplicateGroupModel();
-
-                groupModel.GroupId = $"Group_{i}";
-                groupModel.NewName = Path.GetFileNameWithoutExtension(groupPaths.First());
+                var groupModel = new DuplicateGroupModel
+                {
+                    GroupId = $"Group_{i}",
+                    NewName = Path.GetFileNameWithoutExtension(groupPaths.First())
+                };
 
                 // ---> Bind the UI buttons to the ViewModel logic <---
-                groupModel.DeleteAllCommand = new DelegateCommand<object>(_ => DeleteGroupAsync(groupModel));
+                groupModel.DeleteAllCommand =
+                    new DelegateCommand<object>(async _ => await DeleteGroupAsync(groupModel));
                 groupModel.DeleteSelectedCommand =
                     new DelegateCommand<object>(async (param) => await DeleteSelectedAsync(groupModel, param));
                 groupModel.RenameSelectedCommand =
                     new DelegateCommand<object>(async (param) => await RenameSelectedAsync(groupModel, param));
 
                 var imageDict = new Dictionary<int, string?>();
-                int localId = 0;
+                var localId = 0;
                 foreach (var path in groupPaths)
                 {
                     imageDict.Add(localId++, path);
@@ -385,7 +387,7 @@ namespace SlimViews.Tooling
             }
 
             // Release the UI lock if the image we are previewing is about to be deleted
-            if (selectedKeys.Any(k => group.Images.TryGetValue(k, out string? p) && p == SelectedImagePath))
+            if (selectedKeys.Any(k => group.Images.TryGetValue(k, out var p) && p == SelectedImagePath))
             {
                 SelectedImagePath = null;
                 await Task.Yield(); // Give WPF's binding engine a tick to release the image control
@@ -395,11 +397,12 @@ namespace SlimViews.Tooling
 
             foreach (var key in selectedKeys)
             {
-                if (group.Images.TryGetValue(key, out string? path))
+                if (group.Images.TryGetValue(key, out var path))
                 {
                     try
                     {
-                        await _imageView.Commands.FileService.DeleteAsync(_imageView, new List<string?> { path }, false);
+                        await _imageView.Commands.FileService.DeleteAsync(_imageView, new List<string?> { path },
+                            false);
 
                         updatedImages.Remove(key);
                         group.Images.Remove(key); // Remove from the group immediately to update the UI
@@ -435,14 +438,14 @@ namespace SlimViews.Tooling
             if (selectedKeys.Count == 0) selectedKeys.Add(CurrentImageId);
 
             var updatedImages = new Dictionary<int, string?>(group.Images);
-            bool anySuccess = false;
+            var anySuccess = false;
 
             // Track if we are renaming the currently previewed image
-            bool isPreviewingRenamedImage = false;
+            var isPreviewingRenamedImage = false;
 
             foreach (var key in selectedKeys)
             {
-                if (group.Images.TryGetValue(key, out string? sourcePath))
+                if (group.Images.TryGetValue(key, out var sourcePath))
                 {
                     var extension = Path.GetExtension(sourcePath);
                     var directory = Path.GetDirectoryName(sourcePath);
@@ -457,7 +460,7 @@ namespace SlimViews.Tooling
                     }
 
                     // Use the Owner's FileService to ensure the main viewer is cleared
-                    string? newPath =
+                    var newPath =
                         await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath,
                             isSilent: true);
 
@@ -528,7 +531,7 @@ namespace SlimViews.Tooling
                     infoBody = ViewResources.BuildUnifiedImageInfo(path, fileName, bitmap);
                 }
 
-                int score = GetScoreForPath(path);
+                var score = GetScoreForPath(path);
 
                 // Combine the multiline body with the similarity score
                 CurrentSelectedImageInfo = $"{infoBody}{Environment.NewLine}Similarity: {score}%";
@@ -552,7 +555,7 @@ namespace SlimViews.Tooling
             {
                 // Find the key (ID) for this path to get the matching score
                 var key = group.Images.FirstOrDefault(x => x.Value == path).Key;
-                if (group.SimilarityScores.TryGetValue(key, out int score))
+                if (group.SimilarityScores.TryGetValue(key, out var score))
                 {
                     return score;
                 }

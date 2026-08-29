@@ -439,7 +439,7 @@ namespace SlimViews
                         SaveUndoState();
 
                         // Draw the color (or transparent pixels) onto the bitmap
-                        Bitmap updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, size);
+                        var updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, size);
 
                         // Push the update back to the main UI thread
                         Application.Current.Dispatcher.Invoke(() => CommitImageChange(updatedBitmap));
@@ -449,7 +449,7 @@ namespace SlimViews
             // 2. Color Picker (Eyedropper) Logic
             else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)
             {
-                ColorHsv pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, radius: 1);
+                var pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, radius: 1);
                 var pickedColor = Color.FromArgb(pickedHsv.A, pickedHsv.R, pickedHsv.G, pickedHsv.B);
                 MyDrawingState.BrushColor = ColorTranslator.ToHtml(pickedColor);
             }
@@ -479,7 +479,7 @@ namespace SlimViews
                     // Heavy memory clone in the background
                     SaveUndoState();
 
-                    Bitmap newBitmap = Image.Bitmap;
+                    var newBitmap = Image.Bitmap;
 
                     if (tool == DrawTool.Eraser)
                     {
@@ -540,9 +540,7 @@ namespace SlimViews
             }
         }
 
-        // -------------------------------------------------------------------
-        // 5. FILE NAVIGATION & LOADING LOGIC
-        // -------------------------------------------------------------------
+        // --- 5. FILE NAVIGATION & LOADING LOGIC ---
 
         /// <summary>
         /// Determines whether this instance can run the specified argument.
@@ -666,7 +664,7 @@ namespace SlimViews
 
             if (string.Equals(pathObj.Extension, ViewResources.CbzExt, StringComparison.OrdinalIgnoreCase))
             {
-                GenerateCbrViewAsync(pathObj);
+                _ = GenerateCbrViewAsync(pathObj);
                 return;
             }
 
@@ -679,7 +677,7 @@ namespace SlimViews
 
             GenerateView(pathObj.FilePath);
 
-            LoadThumbs(pathObj.Folder, pathObj.FilePath);
+            _ = LoadThumbs(pathObj.Folder, pathObj.FilePath);
         }
 
         /// <summary>
@@ -691,7 +689,7 @@ namespace SlimViews
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpenCbz, FileContext.CurrentPath);
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            GenerateCbrViewAsync(pathObj);
+            _ = GenerateCbrViewAsync(pathObj);
         }
 
         /// <summary>
@@ -721,7 +719,7 @@ namespace SlimViews
             var path = DialogHandler.ShowFolder(FileContext.CurrentPath);
             if (!Directory.Exists(path)) return;
 
-            LoadThumbs(path);
+            _ = LoadThumbs(path);
         }
 
         /// <summary>
@@ -767,9 +765,7 @@ namespace SlimViews
             }
         }
 
-        // -------------------------------------------------------------------
-        // 6. HELPER METHODS (Loading & Thumbnails)
-        // -------------------------------------------------------------------
+        // --- 6. HELPER METHODS (Loading & Thumbnails) ---
 
         /// <summary>
         /// Changes the image.
@@ -779,7 +775,7 @@ namespace SlimViews
         {
             if (!FileContext.Observer.TryGetValue(id, out var path) || !File.Exists(path))
             {
-                RefreshActionAsync(nameof(ChangeImage));
+                _ = RefreshActionAsync(nameof(ChangeImage));
                 return;
             }
 
@@ -836,7 +832,7 @@ namespace SlimViews
             UiState.StatusImage = UiState.RedIconPath;
 
             // Call the lower-level processor logic
-            bool success = ImageProcessor.SaveImage(path, extension, bitmap);
+            var success = ImageProcessor.SaveImage(path, extension, bitmap);
 
             // Update UI Status to "Done" (Green)
             UiState.StatusImage = UiState.GreenIconPath;
@@ -890,11 +886,11 @@ namespace SlimViews
                 {
                     // If you are in "SubFolder" mode, don't reload if the new folder 
                     // is just a child of the current path.
-                    bool isSubfolder = folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
+                    var isSubfolder = folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
 
                     if (!UiState.UseSubFolders || !isSubfolder)
                     {
-                        LoadThumbs(folder, targetPath);
+                        _ = LoadThumbs(folder, targetPath);
                     }
                 }
             }
@@ -949,7 +945,7 @@ namespace SlimViews
             if (info == null)
             {
                 Image.Clear();
-                LoadThumbs(FileContext.CurrentPath);
+                await LoadThumbs(FileContext.CurrentPath);
                 return;
             }
 
@@ -1058,7 +1054,7 @@ namespace SlimViews
             UiState.StatusImage = UiState.RedIconPath;
 
             // 1. Fetch and Sort files
-            List<string?> files = FileHandleSearch.GetFilesByExtensionFullPath(
+            var files = FileHandleSearch.GetFilesByExtensionFullPath(
                 folder,
                 ImagingResources.Appendix,
                 UiState.UseSubFolders);
@@ -1089,6 +1085,7 @@ namespace SlimViews
         /// <summary>
         /// Generates the dictionary and updates the UI source.
         /// </summary>
+        /// <param name="lst">The list of images.</param>
         private async Task GenerateThumbView(IReadOnlyCollection<string?>? lst)
         {
             if (!IsThumbsVisible || lst == null) return;
