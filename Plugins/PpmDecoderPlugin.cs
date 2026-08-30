@@ -1,6 +1,6 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Plugins.Ppm
+ * PROJECT:     Plugins
  * FILE:        PpmDecoderPlugin.cs
  * PURPOSE:     Example IImageDecoderPlugin - decodes binary PPM ("P6") images.
  *              Exists to prove the plugin pipeline end-to-end with a format
