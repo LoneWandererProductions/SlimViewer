@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Imaging.Interfaces;
 
-namespace Plugins
+namespace Imaging.Plugins
 {
     /// <summary>
     ///     Decodes binary PPM (Netpbm "P6") images.
@@ -73,10 +73,14 @@ namespace Plugins
         }
 
         /// <summary>
-        ///     Builds a GDI+ Bitmap from raw RGB bytes. No unsafe/pointer code -
-        ///     Marshal.Copy does the managed-to-native transfer, which keeps this
-        ///     usable as a template without needing AllowUnsafeBlocks.
+        /// Builds a GDI+ Bitmap from raw RGB bytes. No unsafe/pointer code -
+        /// Marshal.Copy does the managed-to-native transfer, which keeps this
+        /// usable as a template without needing AllowUnsafeBlocks.
         /// </summary>
+        /// <param name="rgb">The RGB.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Normal Bitmap</returns>
         private static Bitmap ToBitmap(byte[] rgb, int width, int height)
         {
             var bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
@@ -129,9 +133,12 @@ namespace Plugins
         }
 
         /// <summary>
-        ///     Reads one whitespace-delimited token from the PPM header, skipping
-        ///     '#' comments (which run to end of line), per the Netpbm spec.
+        /// Reads one whitespace-delimited token from the PPM header, skipping
+        /// '#' comments (which run to end of line), per the Netpbm spec.
         /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns></returns>
+        /// <exception cref="System.IO.InvalidDataException">Unexpected end of file while reading PPM header.</exception>
         private static string ReadToken(Stream stream)
         {
             var token = new StringBuilder();
@@ -163,6 +170,7 @@ namespace Plugins
             {
                 var c = (char)b;
                 if (char.IsWhiteSpace(c)) break;
+
                 token.Append(c);
             }
 

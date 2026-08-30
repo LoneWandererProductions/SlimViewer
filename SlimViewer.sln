@@ -52,7 +52,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.MemoryLog", "Core.Memo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imaging.Objects", "Imaging.Objects\Imaging.Objects.csproj", "{F06EFC21-7C82-40E6-92E2-75ED97281387}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugins", "Plugins\Plugins.csproj", "{4C857792-8A0B-47AF-9474-279E1DC043D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imaging.Plugins", "Imaging.Plugins\Imaging.Plugins.csproj", "{57E078F3-CFDE-42C5-9170-78FBEF9D7AE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,10 +140,10 @@ Global
 		{F06EFC21-7C82-40E6-92E2-75ED97281387}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F06EFC21-7C82-40E6-92E2-75ED97281387}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F06EFC21-7C82-40E6-92E2-75ED97281387}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C857792-8A0B-47AF-9474-279E1DC043D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C857792-8A0B-47AF-9474-279E1DC043D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C857792-8A0B-47AF-9474-279E1DC043D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C857792-8A0B-47AF-9474-279E1DC043D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57E078F3-CFDE-42C5-9170-78FBEF9D7AE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57E078F3-CFDE-42C5-9170-78FBEF9D7AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57E078F3-CFDE-42C5-9170-78FBEF9D7AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57E078F3-CFDE-42C5-9170-78FBEF9D7AE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

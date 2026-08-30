@@ -34,7 +34,8 @@ namespace Imaging
     /// </remarks>
     public sealed class ImageDecoderPluginRegistry
     {
-        private static readonly Lazy<ImageDecoderPluginRegistry> LazyInstance = new(() => new ImageDecoderPluginRegistry());
+        private static readonly Lazy<ImageDecoderPluginRegistry> LazyInstance =
+            new(() => new ImageDecoderPluginRegistry());
 
         private readonly Dictionary<string, IImageDecoderPlugin> _byExtension =
             new(StringComparer.OrdinalIgnoreCase);

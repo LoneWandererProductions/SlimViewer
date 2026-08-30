@@ -19,6 +19,9 @@ using FileHandler;
 
 namespace Imaging.Compare
 {
+    /// <summary>
+    /// Handles and checks similarity of Images.
+    /// </summary>
     internal static class ImageSimilarity
     {
         /// <summary>
@@ -83,6 +86,8 @@ namespace Imaging.Compare
                 foreach (var cache in duplicates.Select(item => ImageProcessing.FindSimilarImages(item, dup, threshold))
                              .Where(cache => cache != null))
                 {
+                    if (cache == null) continue;
+
                     dup = dup.Except(cache).ToList();
                     groups.Add(cache);
                 }
