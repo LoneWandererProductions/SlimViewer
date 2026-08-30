@@ -33,7 +33,20 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto">
+                <RowDefinition.Style>
+                    <Style TargetType="RowDefinition">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Visibility, ElementName=DrawingBorder}" Value="Collapsed">
+                                <Setter Property="MaxHeight" Value="0" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Visibility, ElementName=DrawingBorder}" Value="Hidden">
+                                <Setter Property="MaxHeight" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
             <RowDefinition Height="5" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -347,7 +360,7 @@
         </Grid>
 
         <!-- DRAWING TOOLBAR -->
-        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+        <Border x:Name="DrawingBorder" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                 BorderBrush="LightGray" BorderThickness="0,1,0,1"
                 Background="#F5F5F5" Padding="2" Margin="0,0,0,4">
 
@@ -355,6 +368,15 @@
                                                 ToolState="{Binding DataContext.MyDrawingState, RelativeSource={RelativeSource AncestorType=Window}}"
                                                 ToolChangedCommand="{Binding DataContext.Commands.ToolChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
         </Border>
+
+        <!-- TOP GRID SPLITTER (Between Drawing Toolbar and Image)             -->
+        <GridSplitter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="#EAEAEA"
+                      ResizeBehavior="PreviousAndNext"
+                      ResizeDirection="Rows"
+                      ShowsPreview="True" />
 
         <!-- MAIN VIEWPORT GRID -->
         <Grid Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0">

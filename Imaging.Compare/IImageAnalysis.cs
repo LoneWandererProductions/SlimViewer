@@ -9,6 +9,7 @@
 // ReSharper disable UnusedMemberInSuper.Global
 // ReSharper disable UnusedMember.Global
 
+using Imaging.Objects;
 using System.Drawing;
 
 namespace Imaging.Compare

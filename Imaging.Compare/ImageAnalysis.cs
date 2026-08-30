@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBeInternal
 
+using Imaging.Objects;
 using System.Drawing;
 
 namespace Imaging.Compare
