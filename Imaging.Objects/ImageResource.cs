@@ -1,17 +1,17 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     RenderEngine
+ * PROJECT:     ImageResource
  * FILE:        RenderResource.cs
  * PURPOSE:     String Resources for rendering operations.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace RenderEngine
+namespace Imaging.Objects
 {
     /// <summary>
     ///     Mostly static string constants.
     /// </summary>
-    internal static class RenderResource
+    internal static class ImageResource
     {
         /// <summary>
         /// The error input buffer

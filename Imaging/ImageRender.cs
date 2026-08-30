@@ -59,7 +59,7 @@ namespace Imaging
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException"></exception>
-        public Bitmap? GetBitmapFile(string? path)
+        public Bitmap? GetBitmapFile(string path)
         {
             return ImageStream.LoadBitmapFromFile(path);
         }
@@ -75,7 +75,7 @@ namespace Imaging
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public Bitmap GetOriginalBitmap(string? path)
+        public Bitmap GetOriginalBitmap(string path)
         {
             return ImageStream.GetOriginalBitmap(path);
         }
@@ -293,7 +293,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        public BitmapImage GetBitmapImage(string? path)
+        public BitmapImage GetBitmapImage(string path)
         {
             return ImageStreamMedia.GetBitmapImage(path);
         }
@@ -314,7 +314,7 @@ namespace Imaging
         /// <exception cref="UriFormatException"></exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        public BitmapImage GetBitmapImage(string? path, int width, int height)
+        public BitmapImage GetBitmapImage(string path, int width, int height)
         {
             return ImageStreamMedia.GetBitmapImage(path, width, height);
         }
@@ -331,7 +331,7 @@ namespace Imaging
         /// <exception cref="IOException">Error while we try to access the File</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        public BitmapImage? GetBitmapImageFileStream(string? path)
+        public BitmapImage? GetBitmapImageFileStream(string path)
         {
             return ImageStreamMedia.GetBitmapImageFileStream(path);
         }
@@ -352,7 +352,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Error while we try to access the File</exception>
-        public BitmapImage? GetBitmapImageFileStream(string? path, int width, int height)
+        public BitmapImage? GetBitmapImageFileStream(string path, int width, int height)
         {
             return ImageStreamMedia.GetBitmapImageFileStream(path, width, height);
         }
