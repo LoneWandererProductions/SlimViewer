@@ -21,7 +21,6 @@ using System.Windows;
 using Common.Dialogs;
 using Common.Images;
 using Extended.Extensions;
-using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
 using Imaging.Enums;

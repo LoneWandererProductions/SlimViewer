@@ -10,7 +10,6 @@
 // ReSharper disable MemberCanBeInternal, must be public, else the View Model won't work
 
 using Common.Dialogs;
-using ExtendedSystemObjects;
 using FileHandler;
 using Imaging;
 using Imaging.Enums;

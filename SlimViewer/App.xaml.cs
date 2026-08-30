@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Core.MemoryLog;
+using Imaging;
 
 //System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Warning | System.Diagnostics.SourceLevels.Error;
 
@@ -50,6 +51,30 @@ namespace SlimViewer
             // `LoadThumbs(folder, file);` with no `await` or `_ =`). Without this,
             // those exceptions are silently swallowed once the Task is collected.
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+
+            LoadDecoderPlugins();
+        }
+
+        /// <summary>
+        /// Loads any image decoder plugins dropped into the Plugins folder next to
+        /// the executable. A missing folder, or a folder with nothing in it, is a
+        /// normal, silent no-op - most installs won't have any plugins at all.
+        /// </summary>
+        private static void LoadDecoderPlugins()
+        {
+            try
+            {
+                var pluginDirectory = Path.Combine(AppContext.BaseDirectory, "Plugins");
+                ImageDecoderPluginRegistry.Instance.LoadFromDirectory(pluginDirectory);
+            }
+            catch (Exception ex)
+            {
+                // ImageDecoderPluginRegistry already isolates failures per-plugin -
+                // this is a last-resort net for something going wrong in the
+                // scanning itself, so a bad Plugins folder can never block startup.
+                InMemoryLogger.Instance.Log(LogLevel.Warning, "Decoder plugin loading failed",
+                    libraryName: LibraryName, exception: ex);
+            }
         }
 
         /// <summary>

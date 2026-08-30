@@ -41,7 +41,7 @@ namespace Imaging.Helpers
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException">File not Found</exception>
-        internal static Bitmap? LoadBitmapFromFile(string path)
+        internal static Bitmap? LoadBitmapFromFile(string? path)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -64,9 +64,27 @@ namespace Imaging.Helpers
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static Bitmap GetOriginalBitmap(string path)
+        internal static Bitmap GetOriginalBitmap(string? path)
         {
             ImageHelper.ValidateFilePath(path);
+
+            // Give a registered plugin first refusal on this extension. This is
+            // the one place a new image type needs to hook in - everything else
+            // (file dialogs, folder scans, the converter tool, thumbnails) already
+            // reads from ImagingResources.Appendix, which plugin registration
+            // updates automatically.
+            if (ImageDecoderPluginRegistry.Instance.TryGetDecoder(Path.GetExtension(path), out var plugin))
+            {
+                try
+                {
+                    return plugin.Decode(path);
+                }
+                catch (Exception ex)
+                {
+                    ImageHelper.HandleException(ex);
+                    throw;
+                }
+            }
 
             try
             {
