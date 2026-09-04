@@ -5,9 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
-        xmlns:commonControls="clr-namespace:Common.Controls;assembly=Common.Controls"
         xmlns:external="clr-namespace:Common.Controls;assembly=Common.Controls"
-        xmlns:local="clr-namespace:SlimViewer"
         xmlns:slimControls="clr-namespace:SlimControls;assembly=SlimControls"
         xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews"
         d:DataContext="{d:DesignInstance Type=slimviews:ImageView}"
@@ -452,7 +450,7 @@
         <!-- ================================================================= -->
         <!-- THUMBNAIL PANEL (COLLAPSES WITH ThumbnailVisibility)              -->
         <!-- ================================================================= -->
-        <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}">
+        <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}" Cursor="Hand">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
