@@ -361,7 +361,6 @@
         <Border x:Name="DrawingBorder" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                 BorderBrush="LightGray" BorderThickness="0,1,0,1"
                 Background="#F5F5F5" Padding="2" Margin="0,0,0,4">
-
             <slimControls:DrawingToolBarControl HorizontalAlignment="Left"
                                                 ToolState="{Binding DataContext.MyDrawingState, RelativeSource={RelativeSource AncestorType=Window}}"
                                                 ToolChangedCommand="{Binding DataContext.Commands.ToolChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
