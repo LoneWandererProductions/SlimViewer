@@ -89,22 +89,27 @@ namespace SlimViews
         /// <param name="imageExport">The target path for converted images.</param>
         internal static async Task ConvertGifActionAsync(string gifPath, string imageExport)
         {
-            var images = await Render.SplitGif(gifPath); // Call the asynchronous SplitGifAsync method
+            var images = await Render.SplitGif(gifPath);
 
             foreach (var image in images)
-                try
+            {
+                using (image) // Disposes the frame once the loop iteration finishes
                 {
-                    var fileName = $"frame{ImagingResources.JpgExt}";
-                    var fullPath = Path.Combine(imageExport, fileName);
+                    try
+                    {
+                        var fileName = $"frame{ImagingResources.JpgExt}";
+                        var fullPath = Path.Combine(imageExport, fileName);
 
-                    var success = SaveImage(fullPath, ImagingResources.JpgExt, image);
-                    if (!success) ShowError(ViewResources.ErrorCouldNotSaveFile);
+                        var success = SaveImage(fullPath, ImagingResources.JpgExt, image);
+                        if (!success) ShowError(ViewResources.ErrorCouldNotSaveFile);
+                    }
+                    catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
+                    {
+                        Trace.WriteLine(ex);
+                        ShowError(ex.ToString(), nameof(ConvertGifAction));
+                    }
                 }
-                catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
-                {
-                    Trace.WriteLine(ex);
-                    ShowError(ex.ToString(), nameof(ConvertGifAction));
-                }
+            }
         }
 
         /// <summary>
@@ -617,21 +622,22 @@ namespace SlimViews
         {
             try
             {
-                //do not sear in the folder but instead we use the _observer
-                var lst = new List<string>();
-                lst.AddRange(observer.Values.Where(element =>
-                    Path.GetExtension(element) == source));
-
                 var count = 0;
                 var error = 0;
 
-                foreach (var check in from image in lst
-                         let btm = Render.GetOriginalBitmap(image)
-                         select SaveImage(image, target, btm))
-                    if (check)
+                // Query directly - no List allocation needed!
+                var matchingImages = observer.Values.Where(element => Path.GetExtension(element) == source);
+
+                foreach (var image in matchingImages)
+                {
+                    // Use the 'using' statement to guarantee the unmanaged resources are freed immediately
+                    using var btm = Render.GetOriginalBitmap(image);
+
+                    if (SaveImage(image, target, btm))
                         count++;
                     else
                         error++;
+                }
 
                 _ = MessageBox.Show(string.Concat(ViewResources.InformationConverted, count, Environment.NewLine,
                     ViewResources.InformationErrors, error));
