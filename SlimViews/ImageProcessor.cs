@@ -40,7 +40,7 @@ namespace SlimViews
         /// <value>
         ///     The render.
         /// </value>
-        internal static ImageRender Render { get; } = new();
+        internal static readonly ImageRender Render = new();
 
         /// <summary>
         ///     Gets the generator.
@@ -48,7 +48,7 @@ namespace SlimViews
         /// <value>
         ///     The generator.
         /// </value>
-        private static TextureGenerator Generator { get; } = new();
+        private static readonly TextureGenerator Generator = new();
 
         /// <summary>
         ///     Unpacks the specified folder.
@@ -58,6 +58,9 @@ namespace SlimViews
         /// <returns>The path to the target folder.</returns>
         internal static string? UnpackFolder(string? path, string? fileNameWithoutExt)
         {
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(fileNameWithoutExt))
+                return null;
+
             var tempFolder = Path.Combine(Directory.GetCurrentDirectory(), ViewResources.TempFolder);
             Directory.CreateDirectory(tempFolder);
 
@@ -142,8 +145,9 @@ namespace SlimViews
         /// <param name="point">The point.</param>
         /// <param name="color">The color.</param>
         /// <param name="radius">The optional radius.</param>
-        internal static Bitmap SetPixel(Bitmap btm, Point point, Color color, int radius = 1)
+        internal static Bitmap? SetPixel(Bitmap btm, Point point, Color color, int radius = 1)
         {
+            if (btm == null) return null;
             return Render.SetPixel(btm, point, color, radius);
         }
 
@@ -206,8 +210,9 @@ namespace SlimViews
         /// <param name="width">The desired width.</param>
         /// <param name="height">The desired height.</param>
         /// <returns>The resized bitmap.</returns>
-        internal static Bitmap Resize(Bitmap bitmap, int width, int height)
+        internal static Bitmap? Resize(Bitmap bitmap, int width, int height)
         {
+            if (bitmap == null) return null;
             try
             {
                 return Render.BitmapScaling(bitmap, width, height);
