@@ -1,7 +1,2 @@
-Before new release
--add the option to center the Thumbnail.
-- prepare menus for all the tools
-
-
-
-Last known good was befor: bca44428 
+Error once opening a gif other images do not get displayed. Need to investigate why this is happening and fix the issue.
+Deleting duplicate images from the view does not work as expected. Need to check the logic for identifying duplicates and ensure it is functioning correctly.
