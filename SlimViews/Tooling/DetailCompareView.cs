@@ -27,12 +27,13 @@ using ViewModel;
 
 namespace SlimViews.Tooling
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ViewModelBase" />
     /// <summary>
     ///     View for Detail Window
     /// </summary>
     /// <seealso cref="ViewModelBase" />
-    internal sealed class DetailCompareView : ViewModelBase
+    /// <seealso cref="IDisposable" />
+    internal sealed class DetailCompareView : ViewModelBase, IDisposable
     {
         /// <summary>
         ///     The chunk size
@@ -76,12 +77,12 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The first bitmap
         /// </summary>
-        private Bitmap _btmOne;
+        private Bitmap? _btmOne;
 
         /// <summary>
         ///     The first bitmap
         /// </summary>
-        private Bitmap _btmTwo;
+        private Bitmap? _btmTwo;
 
         /// <summary>
         ///     The color
@@ -101,7 +102,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The difference
         /// </summary>
-        private Bitmap _difference;
+        private Bitmap? _difference;
 
         /// <summary>
         ///     The information one
@@ -263,16 +264,21 @@ namespace SlimViews.Tooling
         public ICommand ExportCommand { get; }
 
         /// <summary>
-        ///     Determines whether the commands can execute.
+        /// Determines whether the commands can execute.
         /// </summary>
+        /// <param name="obj">Command parameter.</param>
+        /// <returns>
+        /// True if executable.
+        /// </returns>
         public new bool CanExecute(object obj)
         {
             return _btmOne != null && _btmTwo != null;
         }
 
         /// <summary>
-        ///     Action to open the first image.
+        /// Action to open the first image.
         /// </summary>
+        /// <param name="obj">The object.</param>
         private async void OpenOneAction(object obj)
         {
             var pathObj = OpenFile();
@@ -282,7 +288,10 @@ namespace SlimViews.Tooling
             try
             {
                 _similarity = null;
+
+                _difference?.Dispose();
                 _difference = null;
+
                 _colorOne = null;
 
                 if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
@@ -296,6 +305,8 @@ namespace SlimViews.Tooling
                 if (btm == null) return;
 
                 PathOne = pathObj.FilePath;
+
+                _btmOne?.Dispose();
                 _btmOne = btm;
                 BmpOne = btm.ToBitmapImage();
 
@@ -303,8 +314,8 @@ namespace SlimViews.Tooling
                                   Environment.NewLine;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    RtBoxInformation.AppendText(_informationOne);
-                    RtBoxInformation.ScrollToEnd();
+                    RtBoxInformation?.AppendText(_informationOne);
+                    RtBoxInformation?.ScrollToEnd();
                 });
 
                 Compare();
@@ -312,7 +323,10 @@ namespace SlimViews.Tooling
                 StatusImage = _redIcon;
 
                 var text = await ComputeText(btm);
-                await AppendTextAsync(TxtBoxColorInformation, text);
+                if (TxtBoxColorInformation != null)
+                {
+                    await AppendTextAsync(TxtBoxColorInformation, text);
+                }
 
                 _colorOne = text;
 
@@ -331,8 +345,9 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Action to open the second image.
+        /// Action to open the second image.
         /// </summary>
+        /// <param name="obj">The object.</param>
         private async void OpenTwoAction(object obj)
         {
             var pathObj = OpenFile();
@@ -342,7 +357,10 @@ namespace SlimViews.Tooling
             try
             {
                 _similarity = null;
+
+                _difference?.Dispose();
                 _difference = null;
+
                 _colorTwo = null;
 
                 if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
@@ -356,6 +374,8 @@ namespace SlimViews.Tooling
                 if (btm == null) return;
 
                 PathTwo = pathObj.FilePath;
+
+                _btmTwo?.Dispose();
                 _btmTwo = btm;
                 BmpTwo = btm.ToBitmapImage();
 
@@ -364,8 +384,8 @@ namespace SlimViews.Tooling
                                   Environment.NewLine;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    RtBoxInformation.AppendText(_informationTwo);
-                    RtBoxInformation.ScrollToEnd();
+                    RtBoxInformation?.AppendText(_informationTwo);
+                    RtBoxInformation?.ScrollToEnd();
                 });
 
                 Compare();
@@ -373,7 +393,10 @@ namespace SlimViews.Tooling
                 StatusImage = _redIcon;
 
                 var text = await ComputeText(btm);
-                await AppendTextAsync(TxtBoxColorInformation, text);
+                if (TxtBoxColorInformation != null)
+                {
+                    await AppendTextAsync(TxtBoxColorInformation, text);
+                }
 
                 _colorTwo = text;
 
@@ -392,10 +415,14 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Appends text to a TextBoxBase control asynchronously.
+        /// Appends text to a TextBoxBase control asynchronously.
         /// </summary>
+        /// <param name="textBox">The text box.</param>
+        /// <param name="text">The text.</param>
         private static async Task AppendTextAsync(TextBoxBase textBox, string text)
         {
+            if (textBox == null) return;
+
             var offset = 0;
             while (offset < text.Length)
             {
@@ -422,14 +449,16 @@ namespace SlimViews.Tooling
 
             var col = Color.FromName(Colors);
 
+            _difference?.Dispose();
             _difference = _analysis.DifferenceImage(_btmOne, _btmTwo, col);
 
-            BmpOne = _difference.ToBitmapImage();
+            BmpOne = _difference?.ToBitmapImage();
         }
 
         /// <summary>
-        ///     Action to export the comparison results.
+        /// Action to export the comparison results.
         /// </summary>
+        /// <param name="obj">The object.</param>
         private void ExportAction(object obj)
         {
             if (string.IsNullOrEmpty(_informationOne) && string.IsNullOrEmpty(_informationTwo)) return;
@@ -439,8 +468,10 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Computes the text for color information.
+        /// Computes the text for color information.
         /// </summary>
+        /// <param name="btm">The BTM.</param>
+        /// <returns>Resulting text for color information.</returns>
         private async Task<string> ComputeText(Bitmap btm)
         {
             var str = new StringBuilder();
@@ -467,8 +498,8 @@ namespace SlimViews.Tooling
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                RtBoxInformation.AppendText(_similarity);
-                RtBoxInformation.ScrollToEnd();
+                RtBoxInformation?.AppendText(_similarity);
+                RtBoxInformation?.ScrollToEnd();
             });
         }
 
@@ -478,6 +509,22 @@ namespace SlimViews.Tooling
         private static PathObject OpenFile()
         {
             return DialogHandler.HandleFileOpen(ViewResources.FileOpen);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Releases unmanaged resources used by bitmap instances.
+        /// </summary>
+        public void Dispose()
+        {
+            _btmOne?.Dispose();
+            _btmOne = null;
+
+            _btmTwo?.Dispose();
+            _btmTwo = null;
+
+            _difference?.Dispose();
+            _difference = null;
         }
     }
 }
