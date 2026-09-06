@@ -534,7 +534,7 @@ namespace Common.Images
 
             try
             {
-                token.ThrowIfCancellationRequested();
+                if (token.IsCancellationRequested) return;
 
                 // Copy items source
                 var pics = new Dictionary<int, string>(ItemsSource);
@@ -601,16 +601,23 @@ namespace Common.Images
                 var semaphore = new SemaphoreSlim(4);
                 var tasks = pics.Select(async kv =>
                 {
-                    await semaphore.WaitAsync(token);
-                    if (token.IsCancellationRequested)
+                    try
                     {
-                        semaphore.Release();
-                        return;
+                        await semaphore.WaitAsync();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return; // Gracefully exit without triggering an exception wave
                     }
 
                     try
                     {
+                        if (token.IsCancellationRequested) return;
                         await LoadSingleImage(kv.Key, kv.Value, exGrid, token, cellSize, thumbWidth);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
                     }
                     finally
                     {
@@ -727,7 +734,7 @@ namespace Common.Images
                 exGrid.Children.Add(cellContainer);
 
                 images.MouseDown += ImageClick_MouseDown;
-            }, DispatcherPriority.Normal, token);
+            }, DispatcherPriority.Normal);
         }
 
         /// <summary>

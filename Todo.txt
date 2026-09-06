@@ -1,2 +1,5 @@
 Error once opening a gif other images do not get displayed. Need to investigate why this is happening and fix the issue.
-Deleting duplicate images from the view does not work as expected. Need to check the logic for identifying duplicates and ensure it is functioning correctly.
+Rename clears the thumbview completly anew, delete as well
+moving the thumbview with left and right. does not move the scrollbar and the thumbview focus either
+in duplicateview when deleting multible we get a message foreach with number deleted 1
+the duplicateview does sometimes not update the list after deleting items or something. the rightclick menu should add the option to delete the selected items in the duplicateview and open in explorer
