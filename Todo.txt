@@ -1,0 +1,3 @@
+Compare View still is a bit hacky
+Some cleanup needed with the relays
+still some issues with the arrows and thumb

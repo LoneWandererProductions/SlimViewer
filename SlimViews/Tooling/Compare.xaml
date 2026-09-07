@@ -128,10 +128,32 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Grid.Column="0" Text="New Name:" VerticalAlignment="Center"
                                                        Foreground="#AAAAAA" FontSize="11" FontWeight="SemiBold" />
-                                            <TextBox Grid.Column="1" Height="24" VerticalContentAlignment="Center"
-                                                     Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
-                                                     Background="#141414" Foreground="#FFFFFF" BorderBrush="#444444"
-                                                     ToolTip="Target base name to apply when renaming selected group images" />
+                                            <TextBox Grid.Column="1" VerticalContentAlignment="Center"
+                                                 Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="#141414" Foreground="#FFFFFF" BorderBrush="#444444"
+                                                 CaretBrush="#FFFFFF"
+                                                 SelectionBrush="#007ACC"
+                                                 SelectionTextBrush="#FFFFFF"
+                                                 ToolTip="Target base name to apply when renaming selected group images">
+                                                <TextBox.Style>
+                                                    <Style TargetType="TextBox">
+                                                        <Setter Property="BorderBrush" Value="#444444" />
+                                                        <Setter Property="Background" Value="#141414" />
+                                                        <Setter Property="Foreground" Value="#FFFFFF" />
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsFocused" Value="True">
+                                                                <Setter Property="Background" Value="#1C1C1C" />
+                                                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                                                <Setter Property="BorderBrush" Value="#007ACC" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#1A1A1A" />
+                                                                <Setter Property="BorderBrush" Value="#555555" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
+                                            </TextBox>
                                         </Grid>
                                     </Border>
 

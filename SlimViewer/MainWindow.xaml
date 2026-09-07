@@ -481,11 +481,11 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Open file location in Windows Explorer" />
 
-            <ScrollViewer Grid.Row="0"
+            <WrapPanel Grid.Row="0"
                           Grid.Column="2"
                           Grid.ColumnSpan="4"
-                          HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Disabled">
+                          Orientation="Horizontal"
+                          VerticalAlignment="Center">
                 <TextBox Text="{Binding Path=Image.Information, Mode=OneWay}"
                          TextWrapping="NoWrap"
                          IsReadOnly="True"
@@ -493,7 +493,7 @@
                          BorderThickness="0"
                          Background="Transparent"
                          ToolTip="Image metadata and dimensions info" />
-            </ScrollViewer>
+            </WrapPanel>
 
             <Button Content="🔄 Refresh" Grid.Row="0" Grid.Column="5"
                     Height="30"
