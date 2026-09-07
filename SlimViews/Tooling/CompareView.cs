@@ -353,6 +353,11 @@ namespace SlimViews.Tooling
 
                 // kvp.Value is the file path string
                 await _imageView.Commands.FileService.DeleteAsync(_imageView, group.Images.Values.ToList(), false);
+
+                // The whole group is gone now - clear it out and drop the card, otherwise it lingers
+                // in the list showing thumbnails for files that no longer exist on disk.
+                group.Images = new Dictionary<int, string?>();
+                DuplicateGroups.Remove(group);
             }
             catch (Exception ex)
             {
@@ -394,6 +399,7 @@ namespace SlimViews.Tooling
             }
 
             var updatedImages = new Dictionary<int, string?>(group.Images);
+            var deletedCount = 0;
 
             foreach (var key in selectedKeys)
             {
@@ -401,11 +407,17 @@ namespace SlimViews.Tooling
                 {
                     try
                     {
+                        // isSilent: true - deleting each selected file one-by-one would otherwise pop
+                        // up a separate "1 file(s) deleted" message box per item. We show a single
+                        // summary message for the whole batch below instead.
                         await _imageView.Commands.FileService.DeleteAsync(_imageView, new List<string?> { path },
-                            false);
+                            true);
 
+                        deletedCount++;
                         updatedImages.Remove(key);
-                        group.Images.Remove(key); // Remove from the group immediately to update the UI
+                        // Note: don't mutate group.Images (the live, bound dictionary) here - it can
+                        // still be enumerated by an in-flight thumbnail rebuild. We swap it out for
+                        // updatedImages once, below, after the whole batch is done.
                     }
                     catch (Exception ex)
                     {
@@ -417,6 +429,11 @@ namespace SlimViews.Tooling
             // 5. Update UI State
             group.Images = updatedImages;
             selection.Clear();
+
+            if (deletedCount > 0)
+            {
+                MessageBox.Show($"{ViewResources.MessageCount}{deletedCount}", ViewResources.MessageSuccess);
+            }
 
             if (group.Images.Count <= 1)
             {

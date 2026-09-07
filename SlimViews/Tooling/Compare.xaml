@@ -145,6 +145,7 @@
                                                            Selection="{Binding Selection, Mode=OneWay}"
                                                            SenderTag="{Binding GroupId}"
                                                            SelectBox="True"
+                                                           DeleteSelectedCommand="{Binding DeleteSelectedCommand}"
                                                            ImageClickedCommand="{Binding DataContext.ThumbImageClicked, ElementName=RootWindow}" />
                                     </Border>
 
@@ -191,9 +192,9 @@
                 <Border Grid.Column="2" Background="#252526" BorderBrush="#383838" BorderThickness="1" Padding="6,4"
                         CornerRadius="6">
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="◀ Prev" Command="{Binding PreviousCommand}" Width="75" Height="26"
+                        <Button Content="◀ Prev" Command="{Binding PreviousCommand}" Width="75"
                                 Margin="0,0,6,0" ToolTip="Navigate to previous duplicate set" />
-                        <Button Content="Next ▶" Command="{Binding NextCommand}" Width="75" Height="26"
+                        <Button Content="Next ▶" Command="{Binding NextCommand}" Width="75"
                                 ToolTip="Navigate to next duplicate set" />
                     </StackPanel>
                 </Border>

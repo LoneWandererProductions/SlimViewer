@@ -226,6 +226,14 @@ namespace Common.Images
                 if (e.NewValue is BitmapSource newSource)
                 {
                     control.BtmImage.StopGif(); // Stop any running GIF
+
+                    // Reset zoom/pan before swapping in the new image. OnImagePathChanged (the GIF
+                    // path) already does this, but this - the far more common, static-image path -
+                    // never did: the old zoom level and scroll/pan position just carried straight
+                    // over onto whatever image loaded next, which is why zooming/panning one image
+                    // and then switching left the view looking completely off on the next one.
+                    control.ResetTransforms(resetZoom: true);
+
                     control.BtmImage.Source = newSource; // Push the edited bitmap to the core image control
 
                     // Instantly update canvas boundaries to match the newly generated bitmap

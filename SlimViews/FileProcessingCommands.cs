@@ -94,10 +94,18 @@ namespace SlimViews
         {
             if (owner == null || paths.Count == 0) return;
 
-            // 1. step: release image
-            owner.Image.Clear();
+            // Only release the viewer if the image currently on screen is actually one of the
+            // files we're about to delete - otherwise there's no lock to release and no reason
+            // to blank the preview out from under the user.
+            var isCurrentImageAffected = owner.FileContext.FilePath != null &&
+                                          paths.Any(p => string.Equals(p, owner.FileContext.FilePath,
+                                              StringComparison.OrdinalIgnoreCase));
 
-            await Task.Yield();
+            if (isCurrentImageAffected)
+            {
+                owner.Image.Clear();
+                await Task.Yield();
+            }
 
             var deletedCount = 0;
 
@@ -105,11 +113,26 @@ namespace SlimViews
             {
                 try
                 {
-                    // 2. step: delete file
+                    // step: delete file
                     if (await FileHandleSafeDelete.DeleteFile(path))
                     {
                         deletedCount++;
-                        if (owner.Count > 0) owner.Count--;
+
+                        // Remove just this one thumbnail cell in place (leaving a blank gap
+                        // where it was) instead of forcing a full folder rescan + thumb view
+                        // rebuild. Much faster, and the rest of the grid - including scroll
+                        // position and any other selections - stays untouched.
+                        var match = owner.FileContext.Observer?.FirstOrDefault(x =>
+                            string.Equals(x.Value, path, StringComparison.OrdinalIgnoreCase));
+
+                        if (match?.Value != null)
+                        {
+                            owner.UiState.Thumb?.RemoveSingleItem(match.Value.Key);
+                            if (owner.Count > 0) owner.Count--;
+                        }
+
+                        owner.FileContext.Files?.RemoveAll(f =>
+                            string.Equals(f, path, StringComparison.OrdinalIgnoreCase));
                     }
                 }
                 catch (Exception ex)
@@ -118,11 +141,14 @@ namespace SlimViews
                 }
             }
 
-            // 3. Step: clean UI
             if (deletedCount > 0)
             {
-                await owner.LoadThumbs(owner.FileContext.CurrentPath);
-                await owner.RefreshActionAsync(nameof(FileProcessingCommands));
+                if (isCurrentImageAffected)
+                {
+                    // The image we were viewing is gone - move on to whatever is now current
+                    // (falls back gracefully to the first remaining image, or to nothing).
+                    owner.NextAction(owner);
+                }
 
                 if (!isSilent)
                 {
@@ -319,10 +345,17 @@ namespace SlimViews
 
             if (sourcePath == targetPath) return sourcePath;
 
-            // 1. LOCK PREVENTION: Clear the image viewer
-            // If the owner is currently displaying the file we are about to rename, WPF will lock it.
-            owner.Image?.Clear();
-            await Task.Yield();
+            var isCurrentImage = string.Equals(owner.FileContext.FilePath, sourcePath,
+                StringComparison.OrdinalIgnoreCase);
+
+            // 1. LOCK PREVENTION: only clear the viewer if we're renaming the file it currently
+            // has open - that's the only case WPF could be holding a lock on the file. Renaming
+            // some other file (e.g. from the duplicate/similar view) shouldn't blank the preview.
+            if (isCurrentImage)
+            {
+                owner.Image?.Clear();
+                await Task.Yield();
+            }
 
             try
             {
@@ -330,16 +363,29 @@ namespace SlimViews
 
                 if (success)
                 {
-                    // Update the Observer in the Mother Window so the ID now points to the new path
-                    var match = owner.FileContext.Observer.FirstOrDefault(x => x.Value == sourcePath);
-                    if (match.Value != null)
+                    // Update the Observer entry IN PLACE - same dictionary instance the Thumbnails
+                    // control is bound to, so this alone keeps things in sync. Renaming doesn't
+                    // change any pixel data, so the existing thumbnail cell needs no visual refresh,
+                    // and there's no need for a full folder rescan / thumb view rebuild.
+                    var match = owner.FileContext.Observer?.FirstOrDefault(x => x.Value == sourcePath);
+                    if (match?.Value != null)
                     {
-                        owner.FileContext.Observer[match.Key] = targetPath;
+                        owner.FileContext.Observer[match.Value.Key] = targetPath;
                     }
 
-                    // 2. REFRESH UI
-                    await owner.LoadThumbs(owner.FileContext.CurrentPath);
-                    await owner.RefreshActionAsync(nameof(FileProcessingCommands));
+                    // Keep the raw file list consistent too (used for sorting/navigation elsewhere).
+                    var idx = owner.FileContext.Files?.FindIndex(f =>
+                        string.Equals(f, sourcePath, StringComparison.OrdinalIgnoreCase)) ?? -1;
+                    if (idx >= 0)
+                    {
+                        owner.FileContext.Files![idx] = targetPath;
+                    }
+
+                    if (isCurrentImage)
+                    {
+                        owner.FileContext.FilePath = targetPath;
+                        owner.FileContext.FileName = Path.GetFileName(targetPath);
+                    }
 
                     return targetPath;
                 }

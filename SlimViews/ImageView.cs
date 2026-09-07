@@ -561,7 +561,9 @@ namespace SlimViews
             if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
             ChangeImage(Utility.GetNextElement(FileContext.CurrentId, FileContext.Observer.Keys.ToList()));
-            UiState.Thumb.Next();
+            // Drive the thumbnail highlight/scroll from FileContext.CurrentId (now updated by ChangeImage)
+            // instead of Thumbnails' own internal click-tracked state, so it can never drift out of sync.
+            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -574,7 +576,8 @@ namespace SlimViews
             if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
             ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, FileContext.Observer.Keys.ToList()));
-            UiState.Thumb.Previous();
+            // See NextAction: keep the thumbnail highlight/scroll anchored to the real current id.
+            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -980,7 +983,7 @@ namespace SlimViews
                     // important for the undo/redo logic
                     ClearHistory();
 
-                    Image.BitmapImage = null; // <--- ADD THIS: Clear any residual static image
+                    Image.BitmapImage = null; // <--- Clear any residual static image
                     Image.GifPath = filePath;
                     var info = ImageGifHandler.GetImageInfo(filePath);
                     Image.Information = ViewResources.BuildGifInformation(filePath, info);
@@ -999,11 +1002,22 @@ namespace SlimViews
                         return;
                     }
 
+                    // IMPORTANT: clear GifPath *before* pushing the new BitmapImage.
+                    // ImageZoom.ImagePath and ImageZoom.ImageSource are two separate
+                    // dependency properties bound to Image.GifPath / Image.BitmapImage
+                    // respectively, and each has its own independent change handler:
+                    //   - ImagePath changing to null/empty nulls out BtmImage.Source.
+                    //   - ImageSource changing pushes the new bitmap into BtmImage.Source.
+                    // Setting GifPath = null *after* BitmapImage was already applied re-triggers
+                    // the ImagePath handler and wipes the freshly-set bitmap back to null - the
+                    // image would only actually appear after opening a second, different image
+                    // (because by then GifPath is already null, so re-assigning null is a no-op
+                    // and the handler never fires again). Clearing GifPath first avoids the clobber.
+                    Image.GifPath = null;
                     Image.Bitmap = bmp;
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
-                    Image.GifPath = null;
                     Image.Information =
-                        ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
+                        ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage!);
                 }
 
                 FileContext.FilePath = filePath;
