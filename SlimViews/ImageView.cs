@@ -833,12 +833,14 @@ namespace SlimViews
         {
             // Update UI Status to "Working" (Red)
             UiState.StatusImage = UiState.RedIconPath;
+            UiState.IsBusy = true;
 
             // Call the lower-level processor logic
             var success = ImageProcessor.SaveImage(path, extension, bitmap);
 
             // Update UI Status to "Done" (Green)
             UiState.StatusImage = UiState.GreenIconPath;
+            UiState.IsBusy = false;
 
             return success;
         }
@@ -972,6 +974,7 @@ namespace SlimViews
             // done - see the two checks against _imageLoadGeneration below.
             var myGeneration = Interlocked.Increment(ref _imageLoadGeneration);
             UiState.StatusImage = UiState.RedIconPath;
+            UiState.IsBusy = true;
 
             try
             {
@@ -983,7 +986,7 @@ namespace SlimViews
                     // important for the undo/redo logic
                     ClearHistory();
 
-                    Image.BitmapImage = null; // <--- Clear any residual static image
+                    Image.BitmapImage = null; // <--- ADD THIS: Clear any residual static image
                     Image.GifPath = filePath;
                     var info = ImageGifHandler.GetImageInfo(filePath);
                     Image.Information = ViewResources.BuildGifInformation(filePath, info);
@@ -1017,7 +1020,7 @@ namespace SlimViews
                     Image.Bitmap = bmp;
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
                     Image.Information =
-                        ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage!);
+                        ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
                 }
 
                 FileContext.FilePath = filePath;
@@ -1036,6 +1039,7 @@ namespace SlimViews
                 if (myGeneration == Interlocked.Read(ref _imageLoadGeneration))
                 {
                     UiState.StatusImage = UiState.GreenIconPath;
+                    UiState.IsBusy = false;
                 }
             }
         }
@@ -1066,6 +1070,7 @@ namespace SlimViews
         {
             FileContext.CurrentPath = folder;
             UiState.StatusImage = UiState.RedIconPath;
+            UiState.IsBusy = true;
 
             // 1. Fetch and Sort files
             var files = FileHandleSearch.GetFilesByExtensionFullPath(
@@ -1078,6 +1083,11 @@ namespace SlimViews
                 Count = 0;
                 FileContext.Observer = null;
                 Image.Clear();
+                // No further work is coming (GenerateThumbView(sortedFiles) below is what
+                // normally clears the busy state) - clear it here too, otherwise an empty
+                // folder leaves the indicator stuck on "busy" forever.
+                UiState.StatusImage = UiState.GreenIconPath;
+                UiState.IsBusy = false;
                 NavigationLogic(); // Update UI for empty state
                 return;
             }
@@ -1102,9 +1112,17 @@ namespace SlimViews
         /// <param name="lst">The list of images.</param>
         private async Task GenerateThumbView(IReadOnlyCollection<string?>? lst)
         {
-            if (!IsThumbsVisible || lst == null) return;
+            if (!IsThumbsVisible || lst == null)
+            {
+                // Nothing is actually going to run - don't leave the indicator stuck on "busy"
+                // from the outer GenerateThumbView(folder) call that got us here.
+                UiState.StatusImage = UiState.GreenIconPath;
+                UiState.IsBusy = false;
+                return;
+            }
 
             UiState.StatusImage = UiState.RedIconPath;
+            UiState.IsBusy = true;
 
             // Create the dictionary in the background
             var dict = await Task.Run(lst.ToDictionary).ConfigureAwait(false);
@@ -1116,6 +1134,7 @@ namespace SlimViews
                 FileContext.Observer = dict;
 
                 UiState.StatusImage = UiState.GreenIconPath;
+                UiState.IsBusy = false;
                 NavigationLogic();
             });
         }
@@ -1163,6 +1182,7 @@ namespace SlimViews
         public void ImageLoadedCommandAction(object obj)
         {
             if (!string.IsNullOrEmpty(UiState.StatusImage)) UiState.StatusImage = UiState.GreenIconPath;
+            UiState.IsBusy = false;
         }
 
         /// <summary>

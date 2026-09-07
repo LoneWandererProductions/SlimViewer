@@ -119,5 +119,15 @@ namespace SlimViews.Tooling
         /// The delete all command.
         /// </value>
         public ICommand DeleteAllCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the "ignore this group for the current session" command. Dismisses the
+        /// group from the list without touching any files on disk; it comes back on the next
+        /// app run (or if it's not re-added at all, see CompareView's ignore-signature set).
+        /// </summary>
+        /// <value>
+        /// The ignore group command.
+        /// </value>
+        public ICommand IgnoreGroupCommand { get; set; }
     }
 }

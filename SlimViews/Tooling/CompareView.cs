@@ -59,6 +59,11 @@ namespace SlimViews.Tooling
         private string? _status;
 
         /// <summary>
+        ///     Whether a scan, delete, or rename is currently running.
+        /// </summary>
+        private bool _isBusy;
+
+        /// <summary>
         /// The selected image path
         /// </summary>
         private string? _selectedImagePath;
@@ -68,6 +73,13 @@ namespace SlimViews.Tooling
         ///     Each inner list represents a single observer group.
         /// </summary>
         private List<List<string>>? _duplicates;
+
+        /// <summary>
+        ///     Signatures (see <see cref="GetGroupSignature" />) of groups the user has dismissed
+        ///     with "Ignore for Session". Session-only by design - it's cleared the moment the app
+        ///     restarts, since a later run might reasonably want to see these again.
+        /// </summary>
+        private readonly HashSet<string> _ignoredGroupSignatures = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The current selected image information
@@ -132,6 +144,19 @@ namespace SlimViews.Tooling
         {
             get => _status;
             set => SetProperty(ref _status, value, nameof(Status));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a scan, delete, or rename is currently running.
+        /// Drives the pulsing <see cref="Common.Images.BusyIndicator" /> in the Compare window.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if busy; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value, nameof(IsBusy));
         }
 
         /// <summary>
@@ -214,38 +239,50 @@ namespace SlimViews.Tooling
             ImageView imageView = null)
         {
             _imageView = imageView;
+            IsBusy = true;
 
-            // UI Feedback: Let the user know exactly what kind of search is running
-            Status = similarity == 0
-                ? "Scanning for exact duplicates..."
-                : $"Scanning for images with {similarity}% similarity...";
-
-            _duplicates = await Task.Run(() =>
+            try
             {
-                // This is the "Tricky" part:
-                // similarity == 0 means bit-for-bit check
-                // similarity > 0 means visual histogram/perceptual check
-                return similarity == 0
-                    ? _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
-                    : _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix, similarity);
-            }).ConfigureAwait(false);
+                // UI Feedback: Let the user know exactly what kind of search is running
+                Status = similarity == 0
+                    ? "Scanning for exact duplicates..."
+                    : $"Scanning for images with {similarity}% similarity...";
 
-            if (_duplicates == null || _duplicates.Count == 0)
-            {
-                Status = "No matching images found.";
-                return;
+                _duplicates = await Task.Run(() =>
+                {
+                    // This is the "Tricky" part:
+                    // similarity == 0 means bit-for-bit check
+                    // similarity > 0 means visual histogram/perceptual check
+                    var results = similarity == 0
+                        ? _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
+                        : _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix, similarity);
+
+                    // Drop any group the user explicitly dismissed earlier this session
+                    // ("Ignore for Session") so a rescan doesn't just bring it straight back.
+                    return results?.Where(g => !_ignoredGroupSignatures.Contains(GetGroupSignature(g))).ToList();
+                }).ConfigureAwait(false);
+
+                if (_duplicates == null || _duplicates.Count == 0)
+                {
+                    Status = "No matching images found.";
+                    return;
+                }
+
+                // Ceiling division for pagination
+                _rows = (_duplicates.Count + 9) / 10;
+                _index = 0;
+
+                // Trigger the UI thread update
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    GenerateView();
+                    Status = $"Found {_duplicates.Count} groups of matches.";
+                });
             }
-
-            // Ceiling division for pagination
-            _rows = (_duplicates.Count + 9) / 10;
-            _index = 0;
-
-            // Trigger the UI thread update
-            Application.Current.Dispatcher.Invoke(() =>
+            finally
             {
-                GenerateView();
-                Status = $"Found {_duplicates.Count} groups of matches.";
-            });
+                IsBusy = false;
+            }
         }
 
         /// <summary>
@@ -303,6 +340,8 @@ namespace SlimViews.Tooling
                     new DelegateCommand<object>(async (param) => await DeleteSelectedAsync(groupModel, param));
                 groupModel.RenameSelectedCommand =
                     new DelegateCommand<object>(async (param) => await RenameSelectedAsync(groupModel, param));
+                groupModel.IgnoreGroupCommand =
+                    new DelegateCommand<object>(_ => IgnoreGroup(groupModel, groupPaths));
 
                 var imageDict = new Dictionary<int, string?>();
                 var localId = 0;
@@ -314,6 +353,45 @@ namespace SlimViews.Tooling
                 groupModel.Images = imageDict;
                 DuplicateGroups.Add(groupModel);
             }
+        }
+
+        /// <summary>
+        ///     Builds a stable signature for a group of file paths, independent of ordering or of
+        ///     which page/index the group currently occupies - used to remember dismissed groups
+        ///     across pagination and rescans within the same session.
+        /// </summary>
+        /// <param name="paths">The file paths making up the group.</param>
+        private static string GetGroupSignature(IEnumerable<string?> paths) =>
+            string.Join("|", paths.Where(p => p != null).OrderBy(p => p, StringComparer.OrdinalIgnoreCase));
+
+        /// <summary>
+        ///     Dismisses a duplicate/similar group for the rest of this session: it disappears from
+        ///     the list immediately, pagination is recalculated, and it won't reappear even if the
+        ///     folder is rescanned again - but nothing is deleted, and a fresh app run will see it
+        ///     again as usual.
+        /// </summary>
+        /// <param name="group">The group card being dismissed.</param>
+        /// <param name="groupPaths">The group's raw file paths, as stored in <see cref="_duplicates" />.</param>
+        private void IgnoreGroup(DuplicateGroupModel group, List<string?> groupPaths)
+        {
+            _ignoredGroupSignatures.Add(GetGroupSignature(groupPaths));
+            _duplicates?.Remove(groupPaths);
+
+            DuplicateGroups.Remove(group);
+
+            if (_duplicates == null || _duplicates.Count == 0)
+            {
+                _rows = 0;
+                _index = 0;
+                Status = "No matching images found.";
+                return;
+            }
+
+            _rows = (_duplicates.Count + 9) / 10;
+            if (_index > _rows - 1) _index = Math.Max(0, _rows - 1);
+
+            GenerateView();
+            Status = $"Found {_duplicates.Count} groups of matches.";
         }
 
         /// <summary>
@@ -342,6 +420,7 @@ namespace SlimViews.Tooling
         /// <param name="group">The group.</param>
         private async Task DeleteGroupAsync(DuplicateGroupModel group)
         {
+            IsBusy = true;
             try
             {
                 // Release the UI lock if the currently previewed image is in this group
@@ -363,6 +442,10 @@ namespace SlimViews.Tooling
             {
                 Trace.WriteLine(ex);
             }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         /// <summary>
@@ -379,65 +462,73 @@ namespace SlimViews.Tooling
                 return;
             }
 
-            // 2. Handle empty selection (Default to current image)
-            if (selection.IsEmpty)
+            IsBusy = true;
+            try
             {
-                selection.AddOrUpdate(CurrentImageId, true, (key, oldValue) => true);
-            }
-
-            var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
-            if (selectedKeys.Count == 0)
-            {
-                selectedKeys.Add(CurrentImageId);
-            }
-
-            // Release the UI lock if the image we are previewing is about to be deleted
-            if (selectedKeys.Any(k => group.Images.TryGetValue(k, out var p) && p == SelectedImagePath))
-            {
-                SelectedImagePath = null;
-                await Task.Yield(); // Give WPF's binding engine a tick to release the image control
-            }
-
-            var updatedImages = new Dictionary<int, string?>(group.Images);
-            var deletedCount = 0;
-
-            foreach (var key in selectedKeys)
-            {
-                if (group.Images.TryGetValue(key, out var path))
+                // 2. Handle empty selection (Default to current image)
+                if (selection.IsEmpty)
                 {
-                    try
-                    {
-                        // isSilent: true - deleting each selected file one-by-one would otherwise pop
-                        // up a separate "1 file(s) deleted" message box per item. We show a single
-                        // summary message for the whole batch below instead.
-                        await _imageView.Commands.FileService.DeleteAsync(_imageView, new List<string?> { path },
-                            true);
+                    selection.AddOrUpdate(CurrentImageId, true, (key, oldValue) => true);
+                }
 
-                        deletedCount++;
-                        updatedImages.Remove(key);
-                        // Note: don't mutate group.Images (the live, bound dictionary) here - it can
-                        // still be enumerated by an in-flight thumbnail rebuild. We swap it out for
-                        // updatedImages once, below, after the whole batch is done.
-                    }
-                    catch (Exception ex)
+                var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+                if (selectedKeys.Count == 0)
+                {
+                    selectedKeys.Add(CurrentImageId);
+                }
+
+                // Release the UI lock if the image we are previewing is about to be deleted
+                if (selectedKeys.Any(k => group.Images.TryGetValue(k, out var p) && p == SelectedImagePath))
+                {
+                    SelectedImagePath = null;
+                    await Task.Yield(); // Give WPF's binding engine a tick to release the image control
+                }
+
+                var updatedImages = new Dictionary<int, string?>(group.Images);
+                var deletedCount = 0;
+
+                foreach (var key in selectedKeys)
+                {
+                    if (group.Images.TryGetValue(key, out var path))
                     {
-                        Trace.WriteLine($"Failed to delete {path}: {ex.Message}");
+                        try
+                        {
+                            // isSilent: true - deleting each selected file one-by-one would otherwise pop
+                            // up a separate "1 file(s) deleted" message box per item. We show a single
+                            // summary message for the whole batch below instead.
+                            await _imageView.Commands.FileService.DeleteAsync(_imageView, new List<string?> { path },
+                                true);
+
+                            deletedCount++;
+                            updatedImages.Remove(key);
+                            // Note: don't mutate group.Images (the live, bound dictionary) here - it can
+                            // still be enumerated by an in-flight thumbnail rebuild. We swap it out for
+                            // updatedImages once, below, after the whole batch is done.
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.WriteLine($"Failed to delete {path}: {ex.Message}");
+                        }
                     }
                 }
+
+                // 5. Update UI State
+                group.Images = updatedImages;
+                selection.Clear();
+
+                if (deletedCount > 0)
+                {
+                    MessageBox.Show($"{ViewResources.MessageCount}{deletedCount}", ViewResources.MessageSuccess);
+                }
+
+                if (group.Images.Count <= 1)
+                {
+                    DuplicateGroups.Remove(group);
+                }
             }
-
-            // 5. Update UI State
-            group.Images = updatedImages;
-            selection.Clear();
-
-            if (deletedCount > 0)
+            finally
             {
-                MessageBox.Show($"{ViewResources.MessageCount}{deletedCount}", ViewResources.MessageSuccess);
-            }
-
-            if (group.Images.Count <= 1)
-            {
-                DuplicateGroups.Remove(group);
+                IsBusy = false;
             }
         }
 
@@ -451,61 +542,69 @@ namespace SlimViews.Tooling
             if (parameter is not ConcurrentDictionary<int, bool> selection || string.IsNullOrWhiteSpace(group.NewName))
                 return;
 
-            var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
-            if (selectedKeys.Count == 0) selectedKeys.Add(CurrentImageId);
-
-            var updatedImages = new Dictionary<int, string?>(group.Images);
-            var anySuccess = false;
-
-            // Track if we are renaming the currently previewed image
-            var isPreviewingRenamedImage = false;
-
-            foreach (var key in selectedKeys)
+            IsBusy = true;
+            try
             {
-                if (group.Images.TryGetValue(key, out var sourcePath))
+                var selectedKeys = selection.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+                if (selectedKeys.Count == 0) selectedKeys.Add(CurrentImageId);
+
+                var updatedImages = new Dictionary<int, string?>(group.Images);
+                var anySuccess = false;
+
+                // Track if we are renaming the currently previewed image
+                var isPreviewingRenamedImage = false;
+
+                foreach (var key in selectedKeys)
                 {
-                    var extension = Path.GetExtension(sourcePath);
-                    var directory = Path.GetDirectoryName(sourcePath);
-                    var targetPath = Path.Combine(directory, group.NewName + extension);
-
-                    // Drop the CompareView lock if this is the active preview image
-                    if (sourcePath == SelectedImagePath)
+                    if (group.Images.TryGetValue(key, out var sourcePath))
                     {
-                        SelectedImagePath = null;
-                        isPreviewingRenamedImage = true;
-                        await Task.Yield(); // Give WPF a tick to release the file handle
-                    }
+                        var extension = Path.GetExtension(sourcePath);
+                        var directory = Path.GetDirectoryName(sourcePath);
+                        var targetPath = Path.Combine(directory, group.NewName + extension);
 
-                    // Use the Owner's FileService to ensure the main viewer is cleared
-                    var newPath =
-                        await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath,
-                            isSilent: true);
-
-                    if (newPath != null)
-                    {
-                        updatedImages[key] = newPath;
-                        anySuccess = true;
-
-                        //  Restore the preview using the new file path!
-                        if (isPreviewingRenamedImage)
+                        // Drop the CompareView lock if this is the active preview image
+                        if (sourcePath == SelectedImagePath)
                         {
-                            SelectedImagePath = newPath;
-                            isPreviewingRenamedImage = false; // Reset flag
+                            SelectedImagePath = null;
+                            isPreviewingRenamedImage = true;
+                            await Task.Yield(); // Give WPF a tick to release the file handle
+                        }
+
+                        // Use the Owner's FileService to ensure the main viewer is cleared
+                        var newPath =
+                            await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath,
+                                isSilent: true);
+
+                        if (newPath != null)
+                        {
+                            updatedImages[key] = newPath;
+                            anySuccess = true;
+
+                            //  Restore the preview using the new file path!
+                            if (isPreviewingRenamedImage)
+                            {
+                                SelectedImagePath = newPath;
+                                isPreviewingRenamedImage = false; // Reset flag
+                            }
+                        }
+                        else if (isPreviewingRenamedImage)
+                        {
+                            // If rename failed for some reason, put the old preview back
+                            SelectedImagePath = sourcePath;
+                            isPreviewingRenamedImage = false;
                         }
                     }
-                    else if (isPreviewingRenamedImage)
-                    {
-                        // If rename failed for some reason, put the old preview back
-                        SelectedImagePath = sourcePath;
-                        isPreviewingRenamedImage = false;
-                    }
+                }
+
+                if (anySuccess)
+                {
+                    group.Images = updatedImages;
+                    Status = "Rename complete.";
                 }
             }
-
-            if (anySuccess)
+            finally
             {
-                group.Images = updatedImages;
-                Status = "Rename complete.";
+                IsBusy = false;
             }
         }
 

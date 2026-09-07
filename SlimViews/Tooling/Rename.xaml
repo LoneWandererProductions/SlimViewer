@@ -60,14 +60,14 @@
 
                     <!-- Replacement Target -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Target / Find Text:" Foreground="#555" FontSize="11" />
-                    <TextBox Grid.Row="2" Grid.Column="0" Height="26" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center"
                              Text="{Binding Path=Replacement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Enter the target text you want to add, remove, or find" />
 
                     <!-- Replacement Value -->
                     <TextBlock Grid.Row="0" Grid.Column="2" Text="New Replacement Text:" Foreground="#555"
                                FontSize="11" />
-                    <TextBox Grid.Row="2" Grid.Column="2" Height="26" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center"
                              Text="{Binding Replacer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Enter the new text that will replace the target text" />
                 </Grid>
@@ -85,16 +85,16 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button Grid.Row="0" Grid.Column="0" Content="➕ Add Appendages" Height="26"
+                    <Button Grid.Row="0" Grid.Column="0" Content="➕ Add Appendages" 
                             Command="{Binding AddCommand}" ToolTip="Appends the target text to the filenames" />
-                    <Button Grid.Row="0" Grid.Column="2" Content="✂️ Strip Ends" Height="26"
+                    <Button Grid.Row="0" Grid.Column="2" Content="✂️ Strip Ends"
                             Command="{Binding RemoveAppendageCommand}"
                             ToolTip="Removes the target text from the beginning or end of filenames" />
 
-                    <Button Grid.Row="2" Grid.Column="0" Content="🗑️ Remove Text" Height="26"
+                    <Button Grid.Row="2" Grid.Column="0" Content="🗑️ Remove Text"
                             Command="{Binding RemoveCommand}"
                             ToolTip="Removes all instances of the target text from filenames" />
-                    <Button Grid.Row="2" Grid.Column="2" Content="🔄 Replace Text" Height="26"
+                    <Button Grid.Row="2" Grid.Column="2" Content="🔄 Replace Text"
                             Command="{Binding ReplaceCommand}"
                             ToolTip="Replaces target text instances with the new replacement text" />
                 </Grid>
@@ -120,14 +120,14 @@
 
                     <TextBlock Grid.Column="0" Text="Chars to Strip from Start:" VerticalAlignment="Center"
                                Foreground="#555" FontSize="11" />
-                    <TextBox Grid.Column="1" Height="26" VerticalContentAlignment="Center" TextAlignment="Center"
+                    <TextBox Grid.Column="1"  VerticalContentAlignment="Center" TextAlignment="Center"
                              Text="{Binding Numbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Number of characters to strip from the start of filenames" />
 
-                    <Button Grid.Column="3" Content="✂️ Strip N Chars" Height="26"
+                    <Button Grid.Column="3" Content="✂️ Strip N Chars"
                             Command="{Binding AppendagesAtCommand}"
                             ToolTip="Removes the specified number of characters from the start of filenames" />
-                    <Button Grid.Column="5" Content="🔢 Reorder Numbers" Height="26"
+                    <Button Grid.Column="5" Content="🔢 Reorder Numbers"
                             Command="{Binding ReorderCommand}"
                             ToolTip="Automatically normalizes and reorders numbers found in filenames" />
                 </Grid>

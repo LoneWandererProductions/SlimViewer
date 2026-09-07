@@ -301,6 +301,9 @@
                     <MenuItem Header="▶️ Autoplay GIFs" IsCheckable="True"
                               IsChecked="{Binding AutoplayGifImage, ElementName=ImageControl, Mode=TwoWay}"
                               ToolTip="Automatically play animated GIFs when opened" />
+                    <MenuItem Header="🔒 Lock Zoom" IsCheckable="True"
+                              IsChecked="{Binding LockZoom, ElementName=ImageControl, Mode=TwoWay}"
+                              ToolTip="Keep the current zoom level and pan position when switching images - handy for paging through equal-sized scans, like a scanned book" />
                     <MenuItem Header="📊 Image Analyzer" Command="{Binding Commands.AnalyzerWindow}"
                               ToolTip="Analyze image color distribution and metadata" />
                 </MenuItem>
@@ -481,11 +484,11 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Open file location in Windows Explorer" />
 
-            <WrapPanel Grid.Row="0"
+            <ScrollViewer Grid.Row="0"
                           Grid.Column="2"
                           Grid.ColumnSpan="4"
-                          Orientation="Horizontal"
-                          VerticalAlignment="Center">
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled">
                 <TextBox Text="{Binding Path=Image.Information, Mode=OneWay}"
                          TextWrapping="NoWrap"
                          IsReadOnly="True"
@@ -493,7 +496,7 @@
                          BorderThickness="0"
                          Background="Transparent"
                          ToolTip="Image metadata and dimensions info" />
-            </WrapPanel>
+            </ScrollViewer>
 
             <Button Content="🔄 Refresh" Grid.Row="0" Grid.Column="5"
                     Height="30"
@@ -502,8 +505,10 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Reload folder contents and regenerate thumbnails" />
 
-            <Image Grid.Row="2" Grid.Column="0" Source="{Binding UiState.StatusImage}"
-                   ToolTip="Current background processing status (Green = Ready, Red = Busy)" />
+            <Images:BusyIndicator Grid.Row="2" Grid.Column="0"
+                   IsBusy="{Binding UiState.IsBusy}"
+                   HorizontalAlignment="Left" VerticalAlignment="Center"
+                   ToolTip="Current background processing status (pulsing = busy, steady = ready)" />
 
             <Button Content="🏷️" Grid.Row="2" Grid.Column="1"
                     Command="{Binding Commands.Rename}"

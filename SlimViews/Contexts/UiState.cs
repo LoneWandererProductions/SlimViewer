@@ -26,12 +26,38 @@ namespace SlimViews.Contexts
         private string? _statusImage;
 
         /// <summary>
+        /// Whether background work is in progress
+        /// </summary>
+        private bool _isBusy;
+
+        /// <summary>
         ///     Gets or sets the root.
         /// </summary>
         /// <value>
         ///     The root.
         /// </value>
         internal readonly string? Root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
+        /// Gets or sets a value indicating whether background work (loading an image, scanning
+        /// a folder, deleting/renaming files, etc.) is currently in progress. Drives the pulsing
+        /// <see cref="Common.Images.BusyIndicator" /> dot shown in the UI - a steady dot when
+        /// <c>false</c>, a pulsing one when <c>true</c>. This is the thing to set/clear around any
+        /// background operation; <see cref="StatusImage" /> is kept only for anything still bound
+        /// to the older red/green icon-swap.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if busy; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value;
+                OnPropertyChanged(nameof(IsBusy));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the status image.
