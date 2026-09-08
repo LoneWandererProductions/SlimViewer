@@ -335,11 +335,13 @@ namespace SlimViews.Tooling
 
                 // ---> Bind the UI buttons to the ViewModel logic <---
                 groupModel.DeleteAllCommand =
-                    new DelegateCommand<object>(async _ => await DeleteGroupAsync(groupModel));
+                    new DelegateCommand<object>(async _ => await DeleteGroupAsync(groupModel, groupPaths));
                 groupModel.DeleteSelectedCommand =
-                    new DelegateCommand<object>(async (param) => await DeleteSelectedAsync(groupModel, param));
+                    new DelegateCommand<object>(async (param) =>
+                        await DeleteSelectedAsync(groupModel, param, groupPaths));
                 groupModel.RenameSelectedCommand =
-                    new DelegateCommand<object>(async (param) => await RenameSelectedAsync(groupModel, param));
+                    new DelegateCommand<object>(async (param) =>
+                        await RenameSelectedAsync(groupModel, param, groupPaths));
                 groupModel.IgnoreGroupCommand =
                     new DelegateCommand<object>(_ => IgnoreGroup(groupModel, groupPaths));
 
@@ -365,6 +367,36 @@ namespace SlimViews.Tooling
             string.Join("|", paths.Where(p => p != null).OrderBy(p => p, StringComparer.OrdinalIgnoreCase));
 
         /// <summary>
+        ///     Removes a whole raw group from <see cref="_duplicates" /> (e.g. once it's fully
+        ///     deleted, ignored, or has dropped to 0-1 remaining images) and keeps pagination
+        ///     (<see cref="_rows" />/<see cref="_index" />) consistent, then refreshes the visible
+        ///     page. This is what actually stops a stale/broken group from reappearing - with
+        ///     deleted files showing up as gray/broken thumbnails - the moment the user pages away
+        ///     and back, since <see cref="GenerateView" /> always rebuilds strictly from
+        ///     <see cref="_duplicates" />.
+        /// </summary>
+        /// <param name="groupPaths">The group's raw file paths, as stored in <see cref="_duplicates" />.</param>
+        private void RemoveGroupFromMaster(List<string?> groupPaths)
+        {
+            _duplicates?.Remove(groupPaths);
+
+            if (_duplicates == null || _duplicates.Count == 0)
+            {
+                _rows = 0;
+                _index = 0;
+                DuplicateGroups.Clear();
+                Status = "No matching images found.";
+                return;
+            }
+
+            _rows = (_duplicates.Count + 9) / 10;
+            if (_index > _rows - 1) _index = Math.Max(0, _rows - 1);
+
+            GenerateView();
+            Status = $"Found {_duplicates.Count} groups of matches.";
+        }
+
+        /// <summary>
         ///     Dismisses a duplicate/similar group for the rest of this session: it disappears from
         ///     the list immediately, pagination is recalculated, and it won't reappear even if the
         ///     folder is rescanned again - but nothing is deleted, and a fresh app run will see it
@@ -375,23 +407,7 @@ namespace SlimViews.Tooling
         private void IgnoreGroup(DuplicateGroupModel group, List<string?> groupPaths)
         {
             _ignoredGroupSignatures.Add(GetGroupSignature(groupPaths));
-            _duplicates?.Remove(groupPaths);
-
-            DuplicateGroups.Remove(group);
-
-            if (_duplicates == null || _duplicates.Count == 0)
-            {
-                _rows = 0;
-                _index = 0;
-                Status = "No matching images found.";
-                return;
-            }
-
-            _rows = (_duplicates.Count + 9) / 10;
-            if (_index > _rows - 1) _index = Math.Max(0, _rows - 1);
-
-            GenerateView();
-            Status = $"Found {_duplicates.Count} groups of matches.";
+            RemoveGroupFromMaster(groupPaths);
         }
 
         /// <summary>
@@ -418,7 +434,8 @@ namespace SlimViews.Tooling
         /// Deletes the group asynchronous.
         /// </summary>
         /// <param name="group">The group.</param>
-        private async Task DeleteGroupAsync(DuplicateGroupModel group)
+        /// <param name="groupPaths">The group's raw file paths, as stored in <see cref="_duplicates" />.</param>
+        private async Task DeleteGroupAsync(DuplicateGroupModel group, List<string?> groupPaths)
         {
             IsBusy = true;
             try
@@ -433,10 +450,11 @@ namespace SlimViews.Tooling
                 // kvp.Value is the file path string
                 await _imageView.Commands.FileService.DeleteAsync(_imageView, group.Images.Values.ToList(), false);
 
-                // The whole group is gone now - clear it out and drop the card, otherwise it lingers
-                // in the list showing thumbnails for files that no longer exist on disk.
+                // The whole group is gone now - drop it from the master list too (not just the
+                // live UI dictionary), otherwise paging away and back rebuilds this exact card
+                // from the stale raw path list and shows every image as a broken/gray thumbnail.
                 group.Images = new Dictionary<int, string?>();
-                DuplicateGroups.Remove(group);
+                RemoveGroupFromMaster(groupPaths);
             }
             catch (Exception ex)
             {
@@ -453,7 +471,8 @@ namespace SlimViews.Tooling
         /// </summary>
         /// <param name="group">The group.</param>
         /// <param name="parameter">The parameter.</param>
-        private async Task DeleteSelectedAsync(DuplicateGroupModel group, object parameter)
+        /// <param name="groupPaths">The group's raw file paths, as stored in <see cref="_duplicates" />.</param>
+        private async Task DeleteSelectedAsync(DuplicateGroupModel group, object parameter, List<string?> groupPaths)
         {
             // 1. Validate and extract selection
             if (parameter is not ConcurrentDictionary<int, bool> selection)
@@ -486,6 +505,7 @@ namespace SlimViews.Tooling
 
                 var updatedImages = new Dictionary<int, string?>(group.Images);
                 var deletedCount = 0;
+                var deletedPaths = new List<string?>();
 
                 foreach (var key in selectedKeys)
                 {
@@ -501,6 +521,7 @@ namespace SlimViews.Tooling
 
                             deletedCount++;
                             updatedImages.Remove(key);
+                            deletedPaths.Add(path);
                             // Note: don't mutate group.Images (the live, bound dictionary) here - it can
                             // still be enumerated by an in-flight thumbnail rebuild. We swap it out for
                             // updatedImages once, below, after the whole batch is done.
@@ -510,6 +531,15 @@ namespace SlimViews.Tooling
                             Trace.WriteLine($"Failed to delete {path}: {ex.Message}");
                         }
                     }
+                }
+
+                // Keep the master list (_duplicates) in sync with what's actually still on disk -
+                // groupPaths is the very same List<string> object stored inside _duplicates, so
+                // this is what stops a paged-away-and-back visit from rebuilding the group with
+                // the deleted file(s) still in it (shown as broken/gray thumbnails).
+                foreach (var deletedPath in deletedPaths)
+                {
+                    groupPaths.Remove(deletedPath);
                 }
 
                 // 5. Update UI State
@@ -523,7 +553,9 @@ namespace SlimViews.Tooling
 
                 if (group.Images.Count <= 1)
                 {
-                    DuplicateGroups.Remove(group);
+                    // Not enough images left for this to be a meaningful duplicate/similar group -
+                    // drop it from the master list too so it can't reappear later this session.
+                    RemoveGroupFromMaster(groupPaths);
                 }
             }
             finally
@@ -537,7 +569,8 @@ namespace SlimViews.Tooling
         /// </summary>
         /// <param name="group">The group.</param>
         /// <param name="parameter">The parameter.</param>
-        private async Task RenameSelectedAsync(DuplicateGroupModel group, object parameter)
+        /// <param name="groupPaths">The group's raw file paths, as stored in <see cref="_duplicates" />.</param>
+        private async Task RenameSelectedAsync(DuplicateGroupModel group, object parameter, List<string?> groupPaths)
         {
             if (parameter is not ConcurrentDictionary<int, bool> selection || string.IsNullOrWhiteSpace(group.NewName))
                 return;
@@ -579,6 +612,13 @@ namespace SlimViews.Tooling
                         {
                             updatedImages[key] = newPath;
                             anySuccess = true;
+
+                            // Keep the master list (_duplicates) in sync too - groupPaths is the
+                            // same List<string> object stored inside _duplicates, so without this
+                            // a paged-away-and-back visit would rebuild the group with the old,
+                            // now-nonexistent path and show it as a broken/gray thumbnail.
+                            var rawIndex = groupPaths.IndexOf(sourcePath);
+                            if (rawIndex >= 0) groupPaths[rawIndex] = newPath;
 
                             //  Restore the preview using the new file path!
                             if (isPreviewingRenamedImage)
