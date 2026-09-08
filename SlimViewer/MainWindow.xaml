@@ -513,7 +513,7 @@
 
             <Images:BusyIndicator Grid.Row="2" Grid.Column="0"
                    IsBusy="{Binding UiState.IsBusy}"
-                   HorizontalAlignment="Left" VerticalAlignment="Center"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
                    ToolTip="Current background processing status (pulsing = busy, steady = ready)" />
 
             <Button Content="🏷️" Grid.Row="2" Grid.Column="1"
