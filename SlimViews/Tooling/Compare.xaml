@@ -101,13 +101,13 @@
                                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                                             <Button Content="🙈 Ignore for Session"
                                                     Command="{Binding IgnoreGroupCommand}"
-                                                    Padding="8,3" Height="26" Margin="0,0,6,0"
+                                                    Padding="8,3" Margin="0,0,6,0"
                                                     Background="#2A2A1C" Foreground="#E0C46B" BorderBrush="#5E552A"
                                                     ToolTip="Hide this group for the rest of this session without deleting anything - it comes back next time the app runs" />
 
                                             <Button Content="🗑️ Delete Entire Group"
                                                     Command="{Binding DeleteAllCommand}"
-                                                    Padding="8,3" Height="26"
+                                                    Padding="8,3"
                                                     Background="#3A1C1C" Foreground="#FF6B6B" BorderBrush="#5E2A2A"
                                                     ToolTip="Delete all images in this comparison group from disk" />
                                         </StackPanel>
@@ -167,13 +167,13 @@
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Button Content="🗑️ Delete Selected"
-                                                Margin="0,0,6,0" Height="26" Padding="10,2"
+                                                Margin="0,0,6,0" Padding="10,2"
                                                 Command="{Binding DeleteSelectedCommand}"
                                                 CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}"
                                                 ToolTip="Delete only the checked/selected images in this group" />
 
                                         <Button Content="🏷️ Rename Selected"
-                                                Height="26" Padding="10,2"
+                                                Padding="10,2"
                                                 Command="{Binding RenameSelectedCommand}"
                                                 CommandParameter="{Binding ElementName=ThumbControl, Path=Selection}"
                                                 ToolTip="Apply the new filename to checked/selected images" />

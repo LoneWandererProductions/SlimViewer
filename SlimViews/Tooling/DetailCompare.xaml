@@ -58,11 +58,11 @@
                         <ColumnDefinition Width="36" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap"
+                    <TextBox Grid.Column="0" VerticalContentAlignment="Center" TextWrapping="NoWrap"
                              HorizontalScrollBarVisibility="Auto"
                              Text="{Binding Path=PathOne, Mode=OneWay}" IsReadOnly="True"
                              ToolTip="File path for Image 1" />
-                    <Button Grid.Column="2" Content="📁" Height="26" Command="{Binding OpenOneCommand}"
+                    <Button Grid.Column="2" Content="📁" Command="{Binding OpenOneCommand}"
                             ToolTip="Load Image 1 from disk" />
                 </Grid>
 
@@ -106,11 +106,11 @@
                         <ColumnDefinition Width="36" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Grid.Column="0" Height="26" VerticalContentAlignment="Center" TextWrapping="NoWrap"
+                    <TextBox Grid.Column="0" VerticalContentAlignment="Center" TextWrapping="NoWrap"
                              HorizontalScrollBarVisibility="Auto"
                              Text="{Binding Path=PathTwo, Mode=OneWay}" IsReadOnly="True"
                              ToolTip="File path for Image 2" />
-                    <Button Grid.Column="2" Content="📁" Height="26" Command="{Binding OpenTwoCommand}"
+                    <Button Grid.Column="2" Content="📁" Command="{Binding OpenTwoCommand}"
                             ToolTip="Load Image 2 from disk" />
                 </Grid>
 

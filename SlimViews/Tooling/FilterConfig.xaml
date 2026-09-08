@@ -71,7 +71,7 @@
                     <!-- Factor -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Factor" VerticalAlignment="Center"
                                FontWeight="SemiBold" Foreground="#555" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"
                              Text="{Binding Factor, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsFactorActive}"
                              ToolTip="The multiplier applied to the pixel values" />
@@ -79,7 +79,7 @@
                     <!-- Bias -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Bias" VerticalAlignment="Center"
                                FontWeight="SemiBold" Foreground="#555" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center"
                              Text="{Binding Bias, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsBiasActive}"
                              ToolTip="The offset added to the pixel values (Brightness shift)" />
@@ -87,7 +87,7 @@
                     <!-- Sigma -->
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Sigma" VerticalAlignment="Center"
                                FontWeight="SemiBold" Foreground="#555" />
-                    <TextBox Grid.Row="4" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center"
                              Text="{Binding Sigma, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsSigmaActive}"
                              ToolTip="Standard deviation for blur kernels (Gaussian)" />
@@ -95,7 +95,7 @@
                     <!-- Base Window Size -->
                     <TextBlock Grid.Row="6" Grid.Column="0" Text="Base Window Size" VerticalAlignment="Center"
                                FontWeight="SemiBold" Foreground="#555" />
-                    <TextBox Grid.Row="6" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="6" Grid.Column="1" VerticalContentAlignment="Center"
                              Text="{Binding BaseWindowSize, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsBaseWindowSizeActive}"
                              ToolTip="The area of effect for the filter (Kernel Size)" />
@@ -103,7 +103,7 @@
                     <!-- Scale -->
                     <TextBlock Grid.Row="8" Grid.Column="0" Text="Scale" VerticalAlignment="Center"
                                FontWeight="SemiBold" Foreground="#555" />
-                    <TextBox Grid.Row="8" Grid.Column="1" Height="26" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="8" Grid.Column="1" VerticalContentAlignment="Center"
                              Text="{Binding Scale, UpdateSourceTrigger=PropertyChanged}"
                              IsEnabled="{Binding IsScaleActive}"
                              ToolTip="Final normalization factor" />
