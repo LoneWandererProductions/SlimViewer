@@ -12,9 +12,8 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Common.Dialogs;component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            <!-- Theme now comes from Application.Resources (App.xaml) - was merging Common.Dialogs'
+                 own Themes/Generic.xaml here, which no longer exists. -->
 
             <!-- Transparent Read-Only TextBox to enable text selection/copying -->
             <Style x:Key="SelectableTextStyle" TargetType="TextBox">

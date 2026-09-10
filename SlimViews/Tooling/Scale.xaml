@@ -1,4 +1,4 @@
-﻿<Window x:Class="SlimViews.Tooling.Scale"
+<Window x:Class="SlimViews.Tooling.Scale"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,9 @@
         Width="340"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -31,7 +33,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
             <TextBlock Text="📐" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBlock Text="Scale and Rotate Image" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"
-                       Foreground="#333" />
+                       Foreground="{DynamicResource TextPrimaryBrush}" />
         </StackPanel>
 
         <!-- Settings Card -->
@@ -52,7 +54,7 @@
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="🔄" Margin="0,0,4,0" VerticalAlignment="Center" />
                     <TextBlock Text="Rotation Angle:" VerticalAlignment="Center" FontWeight="SemiBold"
-                               Foreground="#555" ToolTip="Angle in degrees to rotate the image" />
+                               Foreground="{DynamicResource TextSecondaryBrush}" ToolTip="Angle in degrees to rotate the image" />
                 </StackPanel>
                 <TextBox Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
                          Text="{Binding Path=Degree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -61,7 +63,7 @@
                 <!-- Scale Factor -->
                 <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="🔍" Margin="0,0,4,0" VerticalAlignment="Center" />
-                    <TextBlock Text="Scale Factor:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555"
+                    <TextBlock Text="Scale Factor:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
                                ToolTip="Multiplier for resizing the image dimensions" />
                 </StackPanel>
                 <TextBox Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center"

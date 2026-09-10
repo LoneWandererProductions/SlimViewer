@@ -1,4 +1,4 @@
-﻿<Window x:Class="SlimViews.Tooling.Resizer"
+<Window x:Class="SlimViews.Tooling.Resizer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,9 @@
         Width="680"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -35,19 +37,19 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
             <TextBlock Text="🖼️" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
             <TextBlock Text="Batch Image Resizer" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"
-                       Foreground="#333" />
+                       Foreground="{DynamicResource TextPrimaryBrush}" />
         </StackPanel>
 
         <!-- 1. Resizing & Filter Options Card -->
         <Border Grid.Row="1" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
-                <TextBlock Text="📐 Resizing &amp; Filter Options" FontWeight="SemiBold" Foreground="#444"
+                <TextBlock Text="📐 Resizing &amp; Filter Options" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
                            Margin="0,0,0,10" />
 
                 <!-- Scaling Mode Selector -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,12">
-                    <TextBlock Text="Mode:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555"
+                    <TextBlock Text="Mode:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
                                Margin="0,0,10,0" />
                     <RadioButton Content="Percentages (%)" VerticalAlignment="Center" Margin="0,0,16,0"
                                  IsChecked="{Binding IsPercentagesChecked, Mode=TwoWay}"
@@ -73,19 +75,19 @@
                     </Grid.RowDefinitions>
 
                     <!-- Width -->
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Width:" VerticalAlignment="Center" Foreground="#555" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Width:" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                     <TextBox Grid.Row="0" Grid.Column="1"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Width, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Enter the target width (in pixels or percentage)" />
 
                     <!-- Height -->
-                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Height:" VerticalAlignment="Center" Foreground="#555" />
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Height:" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                     <TextBox Grid.Row="0" Grid.Column="4"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Height, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Enter the target height (in pixels or percentage)" />
 
                     <!-- Filter -->
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Filter:" VerticalAlignment="Center" Foreground="#555" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Filter:" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                     <ComboBox Grid.Row="2" Grid.Column="1"  VerticalContentAlignment="Center"
                               ItemsSource="{Binding FilterOptions}"
                               SelectedItem="{Binding SelectedFilterOption, Mode=TwoWay}"
@@ -93,7 +95,7 @@
 
                     <!-- Extension -->
                     <TextBlock Grid.Row="2" Grid.Column="3" Text="Extension:" VerticalAlignment="Center"
-                               Foreground="#555" />
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
                     <ComboBox Grid.Row="2" Grid.Column="4"  VerticalContentAlignment="Center"
                               ItemsSource="{Binding FileExtensions}"
                               SelectedItem="{Binding SelectedExtension, Mode=TwoWay}"
@@ -106,7 +108,7 @@
         <Border Grid.Row="3" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
-                <TextBlock Text="📂 Folder Paths" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,10" />
+                <TextBlock Text="📂 Folder Paths" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,10" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -123,7 +125,7 @@
 
                     <!-- Input Path -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Input Path:" VerticalAlignment="Center"
-                               Foreground="#555" />
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
                     <TextBox Grid.Row="0" Grid.Column="1"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Input, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="The folder containing the images you want to process" />
@@ -132,7 +134,7 @@
 
                     <!-- Output Path -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Output Path:" VerticalAlignment="Center"
-                               Foreground="#555" />
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
                     <TextBox Grid.Row="2" Grid.Column="1"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Output, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="The folder where the resized images will be saved" />

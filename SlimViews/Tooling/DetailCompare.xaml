@@ -1,4 +1,4 @@
-﻿<Window x:Class="SlimViews.Tooling.DetailCompare"
+<Window x:Class="SlimViews.Tooling.DetailCompare"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,9 @@
         Height="550" Width="1100"
         MinHeight="480" MinWidth="950"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -45,7 +47,7 @@
                 <!-- Pane Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                    <TextBlock Text="Image 1 (Source)" FontWeight="Bold" FontSize="13" Foreground="#333"
+                    <TextBlock Text="Image 1 (Source)" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}"
                                VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -93,7 +95,7 @@
                 <!-- Pane Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                    <TextBlock Text="Image 2 (Target)" FontWeight="Bold" FontSize="13" Foreground="#333"
+                    <TextBlock Text="Image 2 (Target)" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}"
                                VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -147,7 +149,7 @@
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="🔬" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                        <TextBlock Text="Analysis &amp; Diff" FontWeight="Bold" FontSize="13" Foreground="#333"
+                        <TextBlock Text="Analysis &amp; Diff" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -188,7 +190,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Highlight Color:" VerticalAlignment="Center" Foreground="#555"
+                            <TextBlock Text="Highlight Color:" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontSize="11" Margin="0,0,8,0" ToolTip="Select color to highlight differences" />
                             <Images:ColorSelection Grid.Column="1" Height="24"
                                                    StartColor="{Binding Colors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
