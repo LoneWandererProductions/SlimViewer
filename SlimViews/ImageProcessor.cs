@@ -625,6 +625,12 @@ namespace SlimViews
         /// <param name="observer">The observer.</param>
         internal static void FolderConvert(string target, string source, Dictionary<int, string> observer)
         {
+            if (observer == null)
+            {
+                Trace.WriteLine("Observer dictionary is null.");
+                return;
+            }
+            
             try
             {
                 var count = 0;
@@ -647,7 +653,7 @@ namespace SlimViews
                 _ = MessageBox.Show(string.Concat(ViewResources.InformationConverted, count, Environment.NewLine,
                     ViewResources.InformationErrors, error));
             }
-            catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
+            catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException or NullReferenceException)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),

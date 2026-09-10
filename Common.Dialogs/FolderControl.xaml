@@ -19,7 +19,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="110" />
+            <ColumnDefinition Width="120" />
             <!-- Quick Access sidebar -->
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="*" />
@@ -50,7 +50,7 @@
         </Border>
 
         <!-- Toolbar + tree -->
-        <Grid Grid.Column="2">
+        <Grid Grid.Column="2" Cursor="Hand">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <!-- Nav buttons -->
@@ -64,13 +64,13 @@
 
             <!-- Navigation buttons -->
             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Button Content="◀" Width="32" Command="{Binding BackCommand}"
+                <Button Content="◀"  Command="{Binding BackCommand}"
                         ToolTip="Back (Alt+Left)" Margin="0,0,4,0" />
-                <Button Content="▶" Width="32" Command="{Binding ForwardCommand}"
+                <Button Content="▶" Command="{Binding ForwardCommand}"
                         ToolTip="Forward (Alt+Right)" Margin="0,0,4,0" />
-                <Button Content="▲ Up" Width="52" Command="{Binding UpCommand}"
+                <Button Content="▲ Up"  Command="{Binding UpCommand}"
                         ToolTip="Up to parent folder (Backspace)" Margin="0,0,10,0" />
-                <Button Content="Go" Width="52" Command="{Binding GoCommand}"
+                <Button Content="Go" Command="{Binding GoCommand}"
                         ToolTip="Navigate to the typed path (Enter)" Margin="0,0,4,0" />
                 <Button Content="Open in Explorer" Command="{Binding ExplorerCommand}"
                         ToolTip="Open the current folder in Windows Explorer" />

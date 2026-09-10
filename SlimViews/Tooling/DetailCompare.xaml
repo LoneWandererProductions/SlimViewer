@@ -9,8 +9,7 @@
         Height="550" Width="1100"
         MinHeight="480" MinWidth="950"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="CanResizeWithGrip"
-        Background="#FAFAFA">
+        ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -55,7 +54,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="6" />
-                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="45" />
                     </Grid.ColumnDefinitions>
 
                     <TextBox Grid.Column="0" VerticalContentAlignment="Center" TextWrapping="NoWrap"
@@ -103,7 +102,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="6" />
-                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="45" />
                     </Grid.ColumnDefinitions>
 
                     <TextBox Grid.Column="0" VerticalContentAlignment="Center" TextWrapping="NoWrap"
@@ -174,11 +173,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Content="⚡ Diff Image" Height="28" FontWeight="SemiBold"
+                            <Button Grid.Column="0" Content="⚡ Diff Image"  FontWeight="SemiBold"
                                     Command="{Binding DifferenceCommand}"
                                     ToolTip="Generate a visual difference overlay on Image 1" />
 
-                            <Button Grid.Column="2" Content="💾 Export" Height="28"
+                            <Button Grid.Column="2" Content="💾 Export" 
                                     Command="{Binding ExportCommand}"
                                     ToolTip="Export Information as Text file and diff Image if available" />
                         </Grid>

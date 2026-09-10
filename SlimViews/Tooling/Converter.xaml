@@ -9,8 +9,7 @@
         Width="340"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
-        Background="#FAFAFA">
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <ResourceDictionary>

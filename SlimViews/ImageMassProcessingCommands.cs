@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Common.Dialogs;
 using SlimControls;
 using SlimViews.Interfaces;
 using SlimViews.Tooling;
@@ -65,6 +66,14 @@ namespace SlimViews
         /// <param name="owner">The owner.</param>
         internal void FolderRenameWindow(ImageView owner)
         {
+            //catch someone doesn't try to rename files when no folder is loaded
+
+            if (owner.FileContext.Observer == null)
+            {
+                DialogHandler.ErrorDialog("No files to rename. Please load a folder first.", "Rename Error");
+                return;
+            }
+
             SlimViewerRegister.ResetRenaming();
 
             var dct = new Dictionary<int, string>();
@@ -190,7 +199,7 @@ namespace SlimViews
         {
             var resizer = new Resizer(owner.FileContext.CurrentPath)
             {
-                Topmost = true,
+                Topmost = false,
                 Owner = owner.UiState.Main
             };
             resizer.Show();

@@ -9,8 +9,7 @@
         WindowStartupLocation="CenterOwner"
         Title="Texture Configuration"
         Height="780" Width="480"
-        ResizeMode="CanResizeWithGrip"
-        Background="#FAFAFA">
+        ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
         <ResourceDictionary>

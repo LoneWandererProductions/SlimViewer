@@ -1072,11 +1072,24 @@ namespace SlimViews
             UiState.StatusImage = UiState.RedIconPath;
             UiState.IsBusy = true;
 
-            // 1. Fetch and Sort files
-            var files = FileHandleSearch.GetFilesByExtensionFullPath(
-                folder,
-                ImagingResources.Appendix,
-                UiState.UseSubFolders);
+            // Both the file-system scan and the natural-sort pass below can take real, noticeable
+            // time on a folder with a huge number of images (or a recursive sub-folder scan) - and
+            // both used to run synchronously right here on the UI thread, before hitting the first
+            // real 'await' further down. That blocks the UI thread solid for the whole scan, so
+            // WPF never actually gets a chance to render the just-set IsBusy=true - the indicator
+            // was "on" the whole time, it just never got painted. Doing the scan+sort inside
+            // Task.Run keeps the UI thread free to actually show it.
+            var (files, sortedFiles) = await Task.Run(() =>
+            {
+                var scanned = FileHandleSearch.GetFilesByExtensionFullPath(
+                    folder,
+                    ImagingResources.Appendix,
+                    UiState.UseSubFolders);
+
+                var sorted = scanned.IsNullOrEmpty() ? null : scanned.PathSort();
+
+                return (scanned, sorted);
+            }).ConfigureAwait(true);
 
             if (files.IsNullOrEmpty())
             {
@@ -1094,9 +1107,6 @@ namespace SlimViews
 
             FileContext.Files = files;
             Count = files.Count;
-
-            // Use the sorted list if your FileContext provides it
-            var sortedFiles = FileContext.FilesSorted;
 
             // 2. WAIT for the dictionary generation to complete
             // This is the crucial change: 'await' instead of '_'

@@ -11,8 +11,7 @@
         MinHeight="480" MinWidth="800"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip"
-        Loaded="Window_Loaded"
-        Background="#FAFAFA">
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <ResourceDictionary>

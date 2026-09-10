@@ -107,38 +107,51 @@ namespace SlimViews
                 await Task.Yield();
             }
 
+            // This didn't set IsBusy at all before, unlike the Compare window's equivalent -
+            // combined with DeleteFile's Recycle-Bin call previously blocking the UI thread with
+            // no real await, a multi-file delete looked completely frozen (no busy indicator, and
+            // the file-count label jumping straight from start to finish instead of counting down).
+            owner.UiState.IsBusy = true;
+
             var deletedCount = 0;
 
-            foreach (var path in paths)
+            try
             {
-                try
+                foreach (var path in paths)
                 {
-                    // step: delete file
-                    if (await FileHandleSafeDelete.DeleteFile(path))
+                    try
                     {
-                        deletedCount++;
-
-                        // Remove just this one thumbnail cell in place (leaving a blank gap
-                        // where it was) instead of forcing a full folder rescan + thumb view
-                        // rebuild. Much faster, and the rest of the grid - including scroll
-                        // position and any other selections - stays untouched.
-                        var match = owner.FileContext.Observer?.FirstOrDefault(x =>
-                            string.Equals(x.Value, path, StringComparison.OrdinalIgnoreCase));
-
-                        if (match?.Value != null)
+                        // step: delete file
+                        if (await FileHandleSafeDelete.DeleteFile(path))
                         {
-                            owner.UiState.Thumb?.RemoveSingleItem(match.Value.Key);
-                            if (owner.Count > 0) owner.Count--;
-                        }
+                            deletedCount++;
 
-                        owner.FileContext.Files?.RemoveAll(f =>
-                            string.Equals(f, path, StringComparison.OrdinalIgnoreCase));
+                            // Remove just this one thumbnail cell in place (leaving a blank gap
+                            // where it was) instead of forcing a full folder rescan + thumb view
+                            // rebuild. Much faster, and the rest of the grid - including scroll
+                            // position and any other selections - stays untouched.
+                            var match = owner.FileContext.Observer?.FirstOrDefault(x =>
+                                string.Equals(x.Value, path, StringComparison.OrdinalIgnoreCase));
+
+                            if (match?.Value != null)
+                            {
+                                owner.UiState.Thumb?.RemoveSingleItem(match.Value.Key);
+                                if (owner.Count > 0) owner.Count--;
+                            }
+
+                            owner.FileContext.Files?.RemoveAll(f =>
+                                string.Equals(f, path, StringComparison.OrdinalIgnoreCase));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine($"CRITICAL: Lock still active on {path}: {ex.Message}");
                     }
                 }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine($"CRITICAL: Lock still active on {path}: {ex.Message}");
-                }
+            }
+            finally
+            {
+                owner.UiState.IsBusy = false;
             }
 
             if (deletedCount > 0)

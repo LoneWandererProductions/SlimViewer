@@ -9,8 +9,7 @@
         Height="580" Width="520"
         MinHeight="480" MinWidth="450"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="CanResizeWithGrip"
-        Background="#FAFAFA">
+        ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
         <ResourceDictionary>

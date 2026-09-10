@@ -167,10 +167,10 @@ namespace SlimViews.Tooling
             _redIcon = Path.Combine(_root, ViewResources.IconPathRed);
 
             // Initialize commands in the constructor
-            OpenOneCommand = new DelegateCommand<object>(OpenOneAction, CanExecute);
-            OpenTwoCommand = new DelegateCommand<object>(OpenTwoAction, CanExecute);
-            DifferenceCommand = new DelegateCommand<object>(DifferenceAction, CanExecute);
-            ExportCommand = new DelegateCommand<object>(ExportAction, CanExecute);
+            OpenOneCommand = new DelegateCommand<object>(_ => OpenOneAction(_), _ => !IsWorking);
+            OpenTwoCommand = new DelegateCommand<object>(_ => OpenTwoAction(_), _ => !IsWorking);
+            DifferenceCommand = new DelegateCommand<object>(DifferenceAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
+            ExportCommand = new DelegateCommand<object>(ExportAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
         }
 
         /// <summary>
@@ -262,18 +262,6 @@ namespace SlimViews.Tooling
         ///     Command to export the comparison results.
         /// </summary>
         public ICommand ExportCommand { get; }
-
-        /// <summary>
-        /// Determines whether the commands can execute.
-        /// </summary>
-        /// <param name="obj">Command parameter.</param>
-        /// <returns>
-        /// True if executable.
-        /// </returns>
-        public new bool CanExecute(object obj)
-        {
-            return _btmOne != null && _btmTwo != null;
-        }
 
         /// <summary>
         /// Action to open the first image.

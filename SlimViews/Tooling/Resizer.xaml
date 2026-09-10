@@ -9,8 +9,7 @@
         Width="680"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
-        Background="#FAFAFA">
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -75,19 +74,19 @@
 
                     <!-- Width -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Width:" VerticalAlignment="Center" Foreground="#555" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="0" Grid.Column="1"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Width, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Enter the target width (in pixels or percentage)" />
 
                     <!-- Height -->
                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Height:" VerticalAlignment="Center" Foreground="#555" />
-                    <TextBox Grid.Row="0" Grid.Column="4" Height="28" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="0" Grid.Column="4"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Height, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Enter the target height (in pixels or percentage)" />
 
                     <!-- Filter -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Filter:" VerticalAlignment="Center" Foreground="#555" />
-                    <ComboBox Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                    <ComboBox Grid.Row="2" Grid.Column="1"  VerticalContentAlignment="Center"
                               ItemsSource="{Binding FilterOptions}"
                               SelectedItem="{Binding SelectedFilterOption, Mode=TwoWay}"
                               ToolTip="Select an optional visual filter to apply to all processed images" />
@@ -95,7 +94,7 @@
                     <!-- Extension -->
                     <TextBlock Grid.Row="2" Grid.Column="3" Text="Extension:" VerticalAlignment="Center"
                                Foreground="#555" />
-                    <ComboBox Grid.Row="2" Grid.Column="4" Height="28" VerticalContentAlignment="Center"
+                    <ComboBox Grid.Row="2" Grid.Column="4"  VerticalContentAlignment="Center"
                               ItemsSource="{Binding FileExtensions}"
                               SelectedItem="{Binding SelectedExtension, Mode=TwoWay}"
                               ToolTip="Leave empty to keep original format, or select a new format to convert all images" />
@@ -114,7 +113,7 @@
                         <ColumnDefinition Width="90" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="8" />
-                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="45" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -125,19 +124,19 @@
                     <!-- Input Path -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Input Path:" VerticalAlignment="Center"
                                Foreground="#555" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="0" Grid.Column="1"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Input, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="The folder containing the images you want to process" />
-                    <Button Grid.Row="0" Grid.Column="3" Content="📁" Height="28"
+                    <Button Grid.Row="0" Grid.Column="3" Content="📁" 
                             Command="{Binding InputCommand}" ToolTip="Browse for Input Folder" />
 
                     <!-- Output Path -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Output Path:" VerticalAlignment="Center"
                                Foreground="#555" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="2" Grid.Column="1"  VerticalContentAlignment="Center"
                              Text="{Binding Path=Output, UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="The folder where the resized images will be saved" />
-                    <Button Grid.Row="2" Grid.Column="3" Content="📁" Height="28"
+                    <Button Grid.Row="2" Grid.Column="3" Content="📁" 
                             Command="{Binding OutputCommand}" ToolTip="Browse for Output Folder" />
                 </Grid>
             </StackPanel>

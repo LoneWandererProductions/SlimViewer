@@ -3,18 +3,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Palette matches SlimViewer's main window (light neutral grays, #CCCCCC borders) rather than
-        the previous green-on-white theme, which visually clashed with every window that opens this
-        dialog. AccentColor is used sparingly - focus rings and the selected tree row - so it doesn't
-        compete with the rest of the app's mostly-monochrome look.
+        Palette now matches the rest of the app (SlimViewer's main window + the Compare/duplicate
+        window), instead of a third, separate light theme that used to clash with both of them.
+        Same color roles as before (Accent/Background/Text/Surface/Hover/Pressed/Border), just
+        swapped to the dark values lifted from SlimViews/Tooling/Compare.xaml.
     -->
-    <Color x:Key="AccentColor">#FF0078D4</Color>
-    <Color x:Key="BackgroundColor">#FFFFFFFF</Color>
-    <Color x:Key="TextColor">#FF1E1E1E</Color>
-    <Color x:Key="SurfaceColor">#FFF5F5F5</Color>
-    <Color x:Key="HoverColor">#FFEAEAEA</Color>
-    <Color x:Key="PressedColor">#FFDCDCDC</Color>
-    <Color x:Key="BorderColor">#FFCCCCCC</Color>
+    <Color x:Key="AccentColor">#FF007ACC</Color>
+    <Color x:Key="BackgroundColor">#FF141414</Color>
+    <Color x:Key="TextColor">#FFE0E0E0</Color>
+    <Color x:Key="SurfaceColor">#FF252526</Color>
+    <Color x:Key="HoverColor">#FF333333</Color>
+    <Color x:Key="PressedColor">#FF1A1A1A</Color>
+    <Color x:Key="BorderColor">#FF383838</Color>
     <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}" />
     <SolidColorBrush x:Key="BackgroundBrush" Color="{DynamicResource BackgroundColor}" />
     <SolidColorBrush x:Key="TextBrush" Color="{DynamicResource TextColor}" />
