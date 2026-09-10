@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
 
         <!-- Application Header Card -->
-        <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="0" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="14,12">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -38,7 +38,7 @@
         </Border>
 
         <!-- License Terms Card -->
-        <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="2" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <Grid>
                 <Grid.RowDefinitions>

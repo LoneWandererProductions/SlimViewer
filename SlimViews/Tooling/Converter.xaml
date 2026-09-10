@@ -71,7 +71,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="To:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#555" />
+            <TextBlock Text="To:" FontWeight="SemiBold" Foreground="#555" VerticalAlignment="Center" />
             <ComboBox Grid.Column="1"
                       Height="28"
                       VerticalContentAlignment="Center"

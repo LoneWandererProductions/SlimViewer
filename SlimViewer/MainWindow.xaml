@@ -12,6 +12,8 @@
         mc:Ignorable="d"
         Title="Slim Viewer"
         Padding="5"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
         Drop="Image_Drop"
         AllowDrop="True"
         UseLayoutRounding="True"
@@ -25,9 +27,16 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <!--
+        Background is also set explicitly here (in addition to the implicit Window style in the
+        merged dictionary above) as a belt-and-suspenders measure - local values always win
+        regardless of any style-resolution-order subtlety, so this guarantees the whole window
+        area is dark instead of leaving it to chance.
+    -->
     <Grid external:GlobalKeyHandler.Attach="True"
           external:GlobalKeyHandler.SkipTextControls="True"
-          external:GlobalKeyHandler.CommandBindings="{Binding CommandBindings}">
+          external:GlobalKeyHandler.CommandBindings="{Binding CommandBindings}"
+          Background="{DynamicResource WindowBackgroundBrush}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -339,6 +348,7 @@
                 <Label Content="{Binding Path=Count}" VerticalAlignment="Center" Margin="0,0,10,0"
                        ToolTip="Total number of images in the current list" />
                 <Images:ColorPickerMenu x:Name="ColorPick"
+                                        Background="{DynamicResource SurfaceBrush}"
                                         ColorChangedCommand="{Binding Commands.ColorChanged}"
                                         ToolTip="Select canvas background color" />
             </StackPanel>

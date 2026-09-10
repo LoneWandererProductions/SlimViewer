@@ -39,7 +39,7 @@
         </StackPanel>
 
         <!-- 1. Resizing & Filter Options Card -->
-        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="1" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
                 <TextBlock Text="📐 Resizing &amp; Filter Options" FontWeight="SemiBold" Foreground="#444"
@@ -103,7 +103,7 @@
         </Border>
 
         <!-- 2. Folder Paths Card -->
-        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="3" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
                 <TextBlock Text="📂 Folder Paths" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,10" />

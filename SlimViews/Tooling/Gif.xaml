@@ -28,7 +28,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="6,4">
+        <Border Grid.Row="0" Background="#252526" BorderBrush="#383838" BorderThickness="0,0,0,1" Padding="6,4">
             <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
 
                 <Button Command="{Binding OpenCommand}" Height="28" Padding="10,2" Margin="2"
@@ -110,7 +110,7 @@
                 <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" Background="#E0E0E0" Margin="0,1"
                               ToolTip="Drag to resize thumbnail strip" />
 
-                <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                <Border Grid.Row="2" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                         Padding="4">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                         <Images:Thumbnails Name="Thumb"
@@ -129,7 +129,7 @@
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel>
 
-                    <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+                    <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                             Padding="12" Margin="0,0,0,10">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">

@@ -31,7 +31,7 @@
         <!-- ================================================================= -->
         <!-- PANE 1: IMAGE ONE (SOURCE)                                        -->
         <!-- ================================================================= -->
-        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Column="0" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
@@ -79,7 +79,7 @@
         <!-- ================================================================= -->
         <!-- PANE 2: IMAGE TWO (TARGET)                                        -->
         <!-- ================================================================= -->
-        <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Column="2" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
@@ -127,7 +127,7 @@
         <!-- ================================================================= -->
         <!-- PANE 3: ANALYSIS & COMPARISON CONTROLS                            -->
         <!-- ================================================================= -->
-        <Border Grid.Column="4" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Column="4" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="10">
             <Grid>
                 <Grid.RowDefinitions>

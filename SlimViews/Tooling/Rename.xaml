@@ -39,7 +39,7 @@
         </StackPanel>
 
         <!-- 1. Text Replacement & Append Options Card -->
-        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="1" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
                 <TextBlock Text="✏️ Text Manipulation" FontWeight="SemiBold" Foreground="#444" Margin="0,0,0,8" />
@@ -101,7 +101,7 @@
         </Border>
 
         <!-- 2. Positional Trimming & Numbering Card -->
-        <Border Grid.Row="3" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="3" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
                 <TextBlock Text="🔢 Position &amp; Numbering Options" FontWeight="SemiBold" Foreground="#444"
@@ -134,7 +134,7 @@
         </Border>
 
         <!-- 3. Live Preview DataGrid Card -->
-        <Border Grid.Row="5" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="5" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="1">
             <DataGrid ItemsSource="{Binding PreviewItems}"
                       AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"

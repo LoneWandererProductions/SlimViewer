@@ -27,11 +27,4 @@
         <Label x:Name="LLblText" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
                Grid.ColumnSpan="3" Grid.Column="0" />
     </Grid>
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Common.Dialogs;component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
 </Window>

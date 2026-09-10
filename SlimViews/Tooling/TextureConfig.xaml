@@ -38,7 +38,7 @@
         </StackPanel>
 
         <!-- Top Texture Selector Card -->
-        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="1" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="10" Margin="0,0,0,12">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -58,7 +58,7 @@
             <StackPanel Margin="0,0,6,0">
 
                 <!-- 1. GENERAL SETTINGS CARD -->
-                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12"
+                <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel>
                         <TextBlock Text="⚙️ General Settings" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10" />
@@ -195,7 +195,7 @@
                 </Border>
 
                 <!-- 2. CROSSHATCH SETTINGS CARD -->
-                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12"
+                <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel>
                         <TextBlock Text="📐 Crosshatch Settings" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10" />
@@ -257,7 +257,7 @@
                 </Border>
 
                 <!-- 3. CELLULAR / COLOR-MAPPED SETTINGS CARD -->
-                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12"
+                <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel>
                         <TextBlock Text="🧫 Cellular / Color-Mapped Settings" FontWeight="Bold" Foreground="#333"
@@ -324,7 +324,7 @@
                 </Border>
 
                 <!-- 4. ADVANCED TEXTURE SETTINGS CARD -->
-                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+                <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12">
                     <StackPanel>
                         <TextBlock Text="🌊 Advanced Texture Settings" FontWeight="Bold" Foreground="#333"
                                    Margin="0,0,0,10" />

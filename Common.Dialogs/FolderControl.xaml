@@ -8,15 +8,6 @@
              MinHeight="320"
              MinWidth="480"
              Padding="5">
-
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Common.Dialogs;component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120" />
@@ -27,23 +18,23 @@
         </Grid.ColumnDefinitions>
 
         <!-- Quick Access sidebar -->
-        <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+        <Border Grid.Column="0"
                 BorderThickness="1" CornerRadius="4">
             <StackPanel Margin="4">
-                <TextBlock Text="Quick Access" FontSize="10" Foreground="{DynamicResource TextBrush}"
+                <TextBlock Text="Quick Access" FontSize="10"
                            Opacity="0.6" Margin="6,4,6,4" />
-                <Button Content="🖥️  Desktop" Style="{StaticResource SidebarButtonStyle}"
+                <Button Content="🖥️  Desktop"
                         Command="{Binding DesktopCommand}" ToolTip="Jump to the Desktop folder" />
-                <Button Content="💽  This PC" Style="{StaticResource SidebarButtonStyle}"
+                <Button Content="💽  This PC"
                         Command="{Binding RootCommand}" ToolTip="Jump to the drive root" />
-                <Button Content="📄  Documents" Style="{StaticResource SidebarButtonStyle}"
+                <Button Content="📄  Documents" 
                         Command="{Binding DocsCommand}" ToolTip="Jump to Documents" />
-                <Button Content="👤  Personal" Style="{StaticResource SidebarButtonStyle}"
+                <Button Content="👤  Personal" 
                         Command="{Binding PersonalCommand}" ToolTip="Jump to your user profile folder" />
-                <Button Content="🖼️  Pictures" Style="{StaticResource SidebarButtonStyle}"
+                <Button Content="🖼️  Pictures" 
                         Command="{Binding PicturesCommand}" ToolTip="Jump to Pictures" />
                 <Separator Margin="4,8" />
-                <Button Content="➕  New Folder" Style="{StaticResource SidebarButtonStyle}"
+                <Button Content="➕  New Folder"
                         Command="{Binding CreateFolderCommand}"
                         ToolTip="Create a new folder inside the current one" />
             </StackPanel>

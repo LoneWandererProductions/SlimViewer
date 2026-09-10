@@ -26,7 +26,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header Title Card -->
-        <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
+        <Border Grid.Row="0" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="14,12">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="📖" FontSize="20" VerticalAlignment="Center" Margin="0,0,8,0" />
@@ -40,7 +40,7 @@
             <StackPanel Margin="0,0,6,0">
 
                 <!-- 1. Overview Card -->
-                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12"
+                <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
@@ -55,7 +55,7 @@
                 </Border>
 
                 <!-- 2. Keyboard Shortcuts Card -->
-                <Border Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="12">
+                <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                             <TextBlock Text="⌨️" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0" />
