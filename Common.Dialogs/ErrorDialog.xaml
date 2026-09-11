@@ -8,7 +8,9 @@
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        UseLayoutRounding="True">
+        UseLayoutRounding="True"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}">
 
     <Window.Resources>
         <ResourceDictionary>

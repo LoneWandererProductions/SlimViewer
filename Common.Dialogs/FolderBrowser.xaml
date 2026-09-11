@@ -8,6 +8,8 @@
     MinWidth="520" MinHeight="360"
     WindowStartupLocation="CenterOwner"
     ResizeMode="CanResizeWithGrip"
+    Background="{DynamicResource WindowBackgroundBrush}"
+    Foreground="{DynamicResource TextPrimaryBrush}"
     Topmost="False">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>

@@ -8,6 +8,8 @@
     xmlns:dialogs="clr-namespace:Common.Dialogs"
     mc:Ignorable="d"
     Topmost="True"
+    Background="{DynamicResource WindowBackgroundBrush}"
+    Foreground="{DynamicResource TextPrimaryBrush}"
     Title="Connect to Server" Height="450" Width="450">
     <Window.DataContext>
         <dialogs:SqlView x:Name="View" x:FieldModifier="public" />

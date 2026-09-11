@@ -59,14 +59,19 @@ namespace SlimViews.Tooling
         public ICommand OkayCommand { get; }
 
         /// <summary>
-        ///     Gets the available source extensions.
+        ///     Gets the available source extensions. IEnumerable rather than List, matching
+        ///     ImagingResources.Appendix's actual type (ObservableCollection) - this is also what
+        ///     lets the ComboBox bound to it live-update if a plugin registers a new extension
+        ///     after this window is already open, instead of needing List specifically and just
+        ///     failing to compile against the new type.
         /// </summary>
-        public List<string> SelectedSource => ImagingResources.Appendix;
+        public IEnumerable<string> SelectedSource => ImagingResources.Appendix;
 
         /// <summary>
-        ///     Gets the available target extensions.
+        ///     Gets the available target extensions. See <see cref="SelectedSource" /> for why this
+        ///     is IEnumerable rather than List.
         /// </summary>
-        public List<string> ExtensionSource => ImagingResources.Appendix;
+        public IEnumerable<string> ExtensionSource => ImagingResources.Appendix;
 
         /// <summary>
         ///     Gets or sets the target extension selection.
