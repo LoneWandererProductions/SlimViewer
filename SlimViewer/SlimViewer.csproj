@@ -23,7 +23,6 @@
         <None Remove="Plugins\runtimes\win-x64\native\libwebpmux.dll" />
         <None Remove="Plugins\runtimes\win\lib\net9.0\Microsoft.Win32.SystemEvents.dll" />
         <None Remove="Plugins\System.Drawing.Common.dll" />
-        <None Remove="Plugins\System.Private.Windows.Core.dll" />
         <None Remove="System\green.png" />
         <None Remove="System\red.png" />
     </ItemGroup>
@@ -57,9 +56,6 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="Plugins\System.Drawing.Common.dll">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="Plugins\System.Private.Windows.Core.dll">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>

@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Helpers;
 using Imaging.Plugins.Interface;
 using System;
 using System.Collections.Generic;
