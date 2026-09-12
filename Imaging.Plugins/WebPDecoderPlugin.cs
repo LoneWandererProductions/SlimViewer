@@ -32,29 +32,19 @@ namespace Imaging.Plugins
                 return false;
             }
 
-            // Check for "RIFF" at bytes 0-3 and "WEBP" at bytes 8-11
-            bool isRiffWebp = header[0] == 'R' &&
-                               header[1] == 'I' &&
-                               header[2] == 'F' &&
-                               header[3] == 'F' &&
-                               header[8] == 'W' &&
-                               header[9] == 'E' &&
-                               header[10] == 'B' &&
-                               header[11] == 'P';
-
-            if (!isRiffWebp)
-            {
-                return false;
-            }
-
-            // Optional: If you want to verify the sub-chunk type (VP8, VP8L, VP8X) at bytes 12-15
-            if (header.Length >= 16)
-            {
-                // header[12..15] contains 'VP8 ', 'VP8L', or 'VP8X'
-                // You can inspect them here if needed, or just return true for any valid WebP container
-            }
-
-            return true;
+            return header[0] == 'R' &&
+                   header[1] == 'I' &&
+                   header[2] == 'F' &&
+                   header[3] == 'F' &&
+                   header[8] == 'W' &&
+                   header[9] == 'E' &&
+                   header[10] == 'B' &&
+                   header[11] == 'P' &&
+                   (
+                       (header[12] == 'V' && header[13] == 'P' && header[14] == '8' && header[15] == ' ') ||
+                       (header[12] == 'V' && header[13] == 'P' && header[14] == '8' && header[15] == 'L') ||
+                       (header[12] == 'V' && header[13] == 'P' && header[14] == '8' && header[15] == 'X')
+                   );
         }
 
         /// <inheritdoc />

@@ -21,16 +21,10 @@ namespace Imaging
     ///     handle this extension?" for <c>ImageStream.GetOriginalBitmap</c>.
     /// </summary>
     /// <remarks>
-    ///     Deliberately simple: <see cref="Assembly.LoadFrom(string)" /> plus
-    ///     reflection, not a full plugin framework (MEF, AssemblyLoadContext
-    ///     isolation, hot-unload). SlimViewer's plugins are trusted, first-party,
-    ///     restart-to-update DLLs, not untrusted or hot-swappable code, so the
-    ///     extra machinery a general-purpose plugin host needs isn't buying
-    ///     anything here. If that ever changes - loading plugins you didn't write,
-    ///     or needing to unload/reload one without restarting - an
-    ///     AssemblyLoadContext-per-plugin is the natural next step; the
-    ///     <see cref="IImageDecoderPlugin" /> contract doesn't need to change to
-    ///     get there.
+    ///     Deliberately simple: plugins are trusted, first-party DLLs and are
+    ///     loaded with an AssemblyLoadContext and AssemblyDependencyResolver so
+    ///     that plugin-specific managed and native dependencies remain next to
+    ///     the plugin. There is no hot-unload or isolation requirement.
     /// </remarks>
     public sealed class ImageDecoderPluginRegistry
     {
@@ -50,6 +44,11 @@ namespace Imaging
         /// The plugins
         /// </summary>
         private readonly List<IImageDecoderPlugin> _plugins = new();
+
+        /// <summary>
+        /// The load contexts
+        /// </summary>
+        private readonly List<PluginLoadContext> _loadContexts = new();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ImageDecoderPluginRegistry"/> class from being created.
@@ -146,31 +145,45 @@ namespace Imaging
 
             try
             {
-                assembly = Assembly.LoadFrom(dllPath);
+                var fullPath = Path.GetFullPath(dllPath);
+
+                var loadContext = new PluginLoadContext(fullPath);
+                _loadContexts.Add(loadContext);
+
+                assembly = loadContext.LoadFromAssemblyPath(fullPath);
             }
-            catch (Exception ex) when (ex is BadImageFormatException or FileLoadException or IOException)
+            catch (Exception ex) when (
+                ex is BadImageFormatException or
+                FileLoadException or
+                IOException)
             {
-                Trace.WriteLine($"[ImageDecoderPluginRegistry] Could not load '{dllPath}': {ex}");
+                Trace.WriteLine(
+                    $"[ImageDecoderPluginRegistry] Could not load '{dllPath}': {ex}");
+
                 return;
             }
 
             IEnumerable<Type> candidateTypes;
+
             try
             {
                 candidateTypes = assembly.GetTypes();
             }
             catch (ReflectionTypeLoadException ex)
             {
-                // Some types in the assembly failed to load (e.g. a dependency
-                // this plugin needs isn't present) - use whichever types DID
-                // load rather than discarding the whole assembly over it.
                 candidateTypes = ex.Types.OfType<Type>();
-                Trace.WriteLine($"[ImageDecoderPluginRegistry] Partial load for '{dllPath}': {ex}");
+
+                Trace.WriteLine(
+                    $"[ImageDecoderPluginRegistry] Partial load for '{dllPath}': {ex}");
             }
 
             foreach (var type in candidateTypes)
             {
-                if (type is not { IsClass: true, IsAbstract: false } ||
+                if (type is not
+                    {
+                        IsClass: true,
+                        IsAbstract: false
+                    } ||
                     !typeof(IImageDecoderPlugin).IsAssignableFrom(type))
                 {
                     continue;
@@ -178,16 +191,19 @@ namespace Imaging
 
                 try
                 {
-                    if (Activator.CreateInstance(type) is IImageDecoderPlugin plugin)
+                    if (Activator.CreateInstance(type)
+                        is IImageDecoderPlugin plugin)
                     {
                         Register(plugin);
                     }
                 }
-                catch (Exception ex) when (ex is MissingMethodException or TargetInvocationException)
+                catch (Exception ex) when (
+                    ex is MissingMethodException or
+                    TargetInvocationException)
                 {
-                    // A plugin whose constructor throws (bad config, missing
-                    // resource, etc.) is skipped, not fatal to the others.
-                    Trace.WriteLine($"[ImageDecoderPluginRegistry] Failed to construct '{type.FullName}': {ex}");
+                    Trace.WriteLine(
+                        $"[ImageDecoderPluginRegistry] " +
+                        $"Failed to construct '{type.FullName}': {ex}");
                 }
             }
         }

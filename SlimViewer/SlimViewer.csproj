@@ -15,6 +15,12 @@
     <ItemGroup>
         <None Remove="Plugins\Imaging.Plugins.dll" />
         <None Remove="Plugins\Imaging.Plugins.Interface.dll" />
+        <None Remove="Plugins\Imazen.WebP.dll" />
+        <None Remove="Plugins\runtimes\win-x64\native\libsharpyuv.dll" />
+        <None Remove="Plugins\runtimes\win-x64\native\libwebp.dll" />
+        <None Remove="Plugins\runtimes\win-x64\native\libwebpdemux.dll" />
+        <None Remove="Plugins\runtimes\win-x64\native\libwebpmux.dll" />
+        <None Remove="Plugins\runtimes\win\lib\net9.0\Microsoft.Win32.SystemEvents.dll" />
         <None Remove="System\green.png" />
         <None Remove="System\red.png" />
     </ItemGroup>
@@ -24,6 +30,24 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="Plugins\Imaging.Plugins.Interface.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Plugins\Imazen.WebP.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Plugins\runtimes\win-x64\native\libsharpyuv.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Plugins\runtimes\win-x64\native\libwebp.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Plugins\runtimes\win-x64\native\libwebpdemux.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Plugins\runtimes\win-x64\native\libwebpmux.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Plugins\runtimes\win\lib\net9.0\Microsoft.Win32.SystemEvents.dll">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>

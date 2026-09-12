@@ -58,8 +58,14 @@ namespace Imaging.Helpers
                     // Check if a registered plugin can handle this file format (e.g., WebP, PPM)
                     if (ImageDecoderPluginRegistry.Instance.TryGetDecoder(header, out var plugin))
                     {
-                        // Decode via plugin into a GDI+ Bitmap, then convert to WPF BitmapSource
+                        Trace.WriteLine($"Decoder found: {plugin.Name}");
+
                         using var gdiBitmap = plugin.Decode(filePath);
+
+                        Trace.WriteLine(
+                            $"Decoder returns Bitmap: {gdiBitmap.Width}x{gdiBitmap.Height}, " +
+                            $"PixelFormat={gdiBitmap.PixelFormat}");
+
                         return ConvertBitmapToBitmapSource(gdiBitmap, width, height);
                     }
 
@@ -77,7 +83,8 @@ namespace Imaging.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"Fehler beim Laden: {ex.Message}");
+                    Trace.WriteLine($"Fehler beim Laden von '{filePath}':");
+                    Trace.WriteLine(ex.ToString());
                     return null;
                 }
             });
@@ -989,6 +996,5 @@ namespace Imaging.Helpers
 
             return bitmapImage;
         }
-
     }
 }
