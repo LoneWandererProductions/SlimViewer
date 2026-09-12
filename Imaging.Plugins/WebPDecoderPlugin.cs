@@ -26,14 +26,35 @@ namespace Imaging.Plugins
         /// <inheritdoc />
         public bool CanDecode(byte[] header)
         {
-            // WebP magic number check (RIFF....WEBP specification)
+            // A WebP file must be at least 12 bytes long to check RIFF + Webp container markers
             if (header == null || header.Length < 12)
             {
                 return false;
             }
 
-            return header[0] == 'R' && header[1] == 'I' && header[2] == 'F' && header[3] == 'F' &&
-                   header[8] == 'W' && header[9] == 'E' && header[10] == 'B' && header[11] == 'P';
+            // Check for "RIFF" at bytes 0-3 and "WEBP" at bytes 8-11
+            bool isRiffWebp = header[0] == 'R' &&
+                               header[1] == 'I' &&
+                               header[2] == 'F' &&
+                               header[3] == 'F' &&
+                               header[8] == 'W' &&
+                               header[9] == 'E' &&
+                               header[10] == 'B' &&
+                               header[11] == 'P';
+
+            if (!isRiffWebp)
+            {
+                return false;
+            }
+
+            // Optional: If you want to verify the sub-chunk type (VP8, VP8L, VP8X) at bytes 12-15
+            if (header.Length >= 16)
+            {
+                // header[12..15] contains 'VP8 ', 'VP8L', or 'VP8X'
+                // You can inspect them here if needed, or just return true for any valid WebP container
+            }
+
+            return true;
         }
 
         /// <inheritdoc />
