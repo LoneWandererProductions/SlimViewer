@@ -170,12 +170,12 @@ namespace Imaging.Cifs
         public int Width { get; init; }
 
         /// <summary>
-        ///     Gets the check sum.
+        ///     Gets the pixel count.
         /// </summary>
         /// <value>
-        ///     The check sum.
+        ///     The pixel count.
         /// </value>
-        public int CheckSum => Height * Width;
+        public int PixelCount => Height * Width;
 
         /// <summary>
         ///     Gets the number of colors.
@@ -213,7 +213,7 @@ namespace Imaging.Cifs
             var coordinate = new PointId(x, y, Width);
             var id = coordinate.Id;
 
-            if (id > CheckSum)
+            if (id > PixelCount)
             {
                 return false;
             }
@@ -286,7 +286,7 @@ namespace Imaging.Cifs
         /// <exception cref="KeyNotFoundException">id</exception>
         public Color GetColor(int id)
         {
-            if (id < 0 || id > Height * Width)
+            if (id < 0 || id >= Height * Width)
             {
                 throw new ArgumentOutOfRangeException(nameof(id), CifResources.ErrorInterface);
             }
@@ -320,7 +320,7 @@ namespace Imaging.Cifs
                 return null;
             }
 
-            var image = new Bitmap(Height, Width);
+            var image = new Bitmap(Width, Height);
             var dbm = DirectBitmap.GetInstance(image);
 
             foreach (var (key, value) in CifImage)

@@ -21,7 +21,10 @@
 - GIF
 - JPG
 - TIF
+- PNG
 - CBR
+- WebP
+- BMP
 
 ## Supported Filters
 
