@@ -11,6 +11,9 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MissingSpace
 
+using Extended.Extensions;
+using Imaging.Enums;
+using Mathematics.Constants;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,9 +23,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Extended.Extensions;
-using Imaging.Enums;
-using Mathematics.Constants;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace Imaging.Helpers
 {
@@ -30,8 +32,57 @@ namespace Imaging.Helpers
     ///     Loads a BitMapImage out of a specific path
     ///     Can Combine two Images and returns a new one
     /// </summary>
-    internal static class ImageStream
+    public static class ImageStream
     {
+        /// <summary>
+        /// Gets the bitmap image file stream asynchronous.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Returns a BitmapImage if successful; otherwise, null.</returns>
+        public static async Task<BitmapImage?> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)) return null;
+
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    // Read header bytes to check for plugin support
+                    var bytes = File.ReadAllBytes(filePath);
+                    var headerLen = Math.Min(16, bytes.Length);
+                    var header = new byte[headerLen];
+                    Array.Copy(bytes, header, headerLen);
+
+                    // Check if a registered plugin can handle this file format (e.g., WebP, PPM)
+                    if (ImageDecoderPluginRegistry.Instance.TryGetDecoder(header, out var plugin))
+                    {
+                        // Decode via plugin into a GDI+ Bitmap, then convert to WPF BitmapSource
+                        using var gdiBitmap = plugin.Decode(filePath);
+                        return ConvertBitmapToBitmapSource(gdiBitmap, width, height);
+                    }
+
+                    // Fallback to standard WPF stream loading for native formats (PNG, JPEG, etc.)
+                    var bitmapImage = new BitmapImage();
+                    using var ms = new MemoryStream(bytes);
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.DecodePixelWidth = width;
+                    bitmapImage.StreamSource = ms;
+                    bitmapImage.EndInit();
+                    bitmapImage.Freeze();
+
+                    return bitmapImage;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Fehler beim Laden: {ex.Message}");
+                    return null;
+                }
+            });
+        }
+
         /// <summary>
         ///     Get the bitmap file.
         ///     Will  leak like crazy. Only use it if we load Icons or something.
@@ -911,5 +962,33 @@ namespace Imaging.Helpers
                 new float[] { 0, 0, 0, 0, 1 } // Translation
             });
         }
+
+        /// <summary>
+        /// Converts a GDI+ Bitmap into a frozen WPF BitmapImage scaled to target dimensions.
+        /// </summary>
+        /// <param name="gdiBitmap">The GDI bitmap.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>Returns a BitmapImage.</returns>
+        private static BitmapImage ConvertBitmapToBitmapSource(Bitmap gdiBitmap, int width, int height)
+        {
+            using var ms = new MemoryStream();
+
+            // Resize or save directly depending on thumbnail sizing strategy
+            // For thumbnails, saving as PNG into a memory stream is a reliable bridge to WPF
+            gdiBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            ms.Position = 0;
+
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.DecodePixelWidth = width;
+            bitmapImage.StreamSource = ms;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+
+            return bitmapImage;
+        }
+
     }
 }

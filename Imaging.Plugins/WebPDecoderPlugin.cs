@@ -6,11 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using Imaging.Interfaces;
+using Imaging.Plugins.Interface;
 using Imazen.WebP;
 
 namespace Imaging.Plugins

@@ -33,4 +33,8 @@
         <ProjectReference Include="..\SlimViews\SlimViews.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Plugins\" />
+    </ItemGroup>
+
 </Project>

@@ -10,11 +10,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Plugins.Interface;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
-using Imaging.Interfaces;
 
 namespace Imaging.Plugins
 {

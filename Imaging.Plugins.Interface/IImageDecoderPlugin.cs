@@ -1,16 +1,15 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging.Interfaces
+ * PROJECT:     Imaging.Plugins.Interface
  * FILE:        IImageDecoderPlugin.cs
  * PURPOSE:     Contract for a plugin that decodes an image format the core
  *              Imaging pipeline doesn't natively understand.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.Collections.Generic;
 using System.Drawing;
 
-namespace Imaging.Interfaces
+namespace Imaging.Plugins.Interface
 {
     /// <summary>
     ///     Implement this to add support for a new image type without touching
@@ -50,7 +49,7 @@ namespace Imaging.Interfaces
         /// </summary>
         /// <param name="path">Full path to the file to decode.</param>
         /// <returns>The decoded image.</returns>
-        /// <exception cref="System.Exception">
+        /// <exception cref="Exception">
         ///     Throw on failure rather than returning null - the caller logs and
         ///     handles it exactly like a native decode failure.
         /// </exception>
