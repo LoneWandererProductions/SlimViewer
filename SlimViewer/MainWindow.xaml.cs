@@ -74,6 +74,21 @@ namespace SlimViewer
             else _view.ChangeImage(files);
         }
 
+        /// <summary>
+        ///     Handles the KeyDown event of the ThumbFilterBox control - Escape clears the quick
+        ///     filter, matching the same convention used elsewhere in the app (e.g. the folder
+        ///     picker's path box).
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.Input.KeyEventArgs" /> instance containing the event data.</param>
+        private void ThumbFilterBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Escape || _view == null) return;
+
+            _view.ThumbFilterText = string.Empty;
+            e.Handled = true;
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Raises the <see cref="Window.Closing" /> event.

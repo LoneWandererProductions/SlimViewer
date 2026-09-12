@@ -553,6 +553,83 @@ namespace SlimViews
 
         // Navigation Actions
         /// <summary>
+        /// The thumb filter text
+        /// </summary>
+        private string? _thumbFilterText;
+
+        /// <summary>
+        /// Gets or sets the live, Explorer-style quick-filter applied to the thumbnail strip -
+        /// matches by file name, case-insensitive. Setting this just toggles visibility on
+        /// already-rendered thumbnails (see Thumbnails.ApplyFilter) rather than reloading anything,
+        /// so it's cheap on every keystroke even for a large folder. Cleared automatically whenever
+        /// a new folder is loaded (see GenerateThumbView).
+        /// </summary>
+        /// <value>
+        /// The thumb filter text.
+        /// </value>
+        public string? ThumbFilterText
+        {
+            get => _thumbFilterText;
+            set
+            {
+                if (_thumbFilterText == value) return;
+                _thumbFilterText = value;
+                OnPropertyChanged();
+                ApplyThumbFilter();
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether a filter is active and it hid every thumbnail (i.e. no
+        /// file name matched). Bound to a small "No matches" placeholder in the UI so a filter that
+        /// matches nothing doesn't just look like an empty/broken thumbnail strip.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the current filter matches nothing; otherwise, <c>false</c>.
+        /// </value>
+        public bool ThumbFilterHasNoMatches =>
+            !string.IsNullOrWhiteSpace(_thumbFilterText) &&
+            (UiState.Thumb?.GetVisibleIds().Count ?? 0) == 0 &&
+            (FileContext.Observer?.Count ?? 0) > 0;
+
+        /// <summary>
+        /// Re-applies <see cref="ThumbFilterText" /> to the thumbnail strip.
+        /// </summary>
+        private void ApplyThumbFilter()
+        {
+            if (UiState.Thumb == null) return;
+
+            if (string.IsNullOrWhiteSpace(_thumbFilterText))
+            {
+                UiState.Thumb.ApplyFilter(null);
+            }
+            else
+            {
+                var term = _thumbFilterText.Trim();
+                UiState.Thumb.ApplyFilter(path =>
+                    Path.GetFileName(path)?.Contains(term, StringComparison.OrdinalIgnoreCase) == true);
+            }
+
+            OnPropertyChanged(nameof(ThumbFilterHasNoMatches));
+        }
+
+        /// <summary>
+        /// Gets the ids Next/Previous should step through: the currently-visible (filtered) ids
+        /// when a filter is active and actually matches something, otherwise every id - so arrow
+        /// key/button navigation never lands on a thumbnail the filter is hiding.
+        /// </summary>
+        private List<int> GetNavigableKeys()
+        {
+            if (!string.IsNullOrWhiteSpace(_thumbFilterText) && UiState.Thumb != null)
+            {
+                var visible = UiState.Thumb.GetVisibleIds();
+                if (visible.Count > 0) return visible;
+            }
+
+            return FileContext.Observer.Keys.ToList();
+        }
+
+        /// <summary>
         /// Next Image action.
         /// </summary>
         /// <param name="obj">The object.</param>
@@ -560,7 +637,7 @@ namespace SlimViews
         {
             if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
-            ChangeImage(Utility.GetNextElement(FileContext.CurrentId, FileContext.Observer.Keys.ToList()));
+            ChangeImage(Utility.GetNextElement(FileContext.CurrentId, GetNavigableKeys()));
             // Drive the thumbnail highlight/scroll from FileContext.CurrentId (now updated by ChangeImage)
             // instead of Thumbnails' own internal click-tracked state, so it can never drift out of sync.
             UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
@@ -575,7 +652,7 @@ namespace SlimViews
         {
             if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
-            ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, FileContext.Observer.Keys.ToList()));
+            ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, GetNavigableKeys()));
             // See NextAction: keep the thumbnail highlight/scroll anchored to the real current id.
             UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
@@ -1071,6 +1148,16 @@ namespace SlimViews
             FileContext.CurrentPath = folder;
             UiState.StatusImage = UiState.RedIconPath;
             UiState.IsBusy = true;
+
+            // A filter from the previous folder shouldn't silently persist and hide everything in
+            // the new one. Reset the backing field directly (not the property) - there's nothing
+            // to un-filter yet since the thumb strip is about to be rebuilt from scratch anyway,
+            // this is just here to keep the filter textbox's bound Text visually cleared.
+            if (_thumbFilterText != null)
+            {
+                _thumbFilterText = null;
+                OnPropertyChanged(nameof(ThumbFilterText));
+            }
 
             // Both the file-system scan and the natural-sort pass below can take real, noticeable
             // time on a folder with a huge number of images (or a recursive sub-folder scan) - and

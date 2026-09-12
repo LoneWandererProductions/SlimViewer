@@ -8,6 +8,7 @@
         xmlns:external="clr-namespace:Common.Controls;assembly=Common.Controls"
         xmlns:slimControls="clr-namespace:SlimControls;assembly=SlimControls"
         xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews"
+        xmlns:converter="clr-namespace:Common.Converter;assembly=Common.Converter"
         d:DataContext="{d:DesignInstance Type=slimviews:ImageView}"
         mc:Ignorable="d"
         Title="Slim Viewer"
@@ -24,6 +25,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converter:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" Collapse="True" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -464,6 +466,21 @@
                     </Style>
                 </ToggleButton.Style>
             </ToggleButton>
+
+            <!--
+                4. Quick filter - Explorer-style live filter of the thumbnail strip by file name.
+                Only shown while the strip is actually expanded (no point filtering something that's
+                collapsed). See ImageView.ThumbFilterText / Thumbnails.ApplyFilter for how this stays
+                cheap - it toggles visibility on already-rendered cells rather than reloading.
+            -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0"
+                        Visibility="{Binding ThumbnailVisibility}">
+                <TextBlock Text="🔎" VerticalAlignment="Center" Margin="0,0,4,0" Opacity="0.7" />
+                <TextBox x:Name="ThumbFilterBox" Width="160" VerticalAlignment="Center" 
+                         Text="{Binding ThumbFilterText, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Quick filter thumbnails by file name (Esc to clear)"
+                         KeyDown="ThumbFilterBox_KeyDown" />
+            </StackPanel>
         </Grid>
 
         <!-- ================================================================= -->
@@ -505,14 +522,14 @@
                  Grid.Column="2"
                  Grid.ColumnSpan="2"
                  Text="{Binding Path=Image.Information, Mode=OneWay}"
-                 TextWrapping="Wrap"
+                 TextWrapping="NoWrap"
                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                  IsReadOnly="True"
                  Focusable="True"
                  BorderThickness="0"
                  Margin="0,0,5,0"
-                 ToolTip="Image metadata and dimensions info" />
+                 ToolTip="{Binding Path=Image.Information, Mode=OneWay}" />
 
             <Button Content="🔄 Refresh" Grid.Row="0" Grid.Column="5"
                     Height="30"
@@ -561,6 +578,15 @@
                                SelectBox="True" IsCheckBoxSelected="False"
                                ImageClickedCommand="{Binding Commands.ThumbImageClicked}"
                                ImageLoadedCommand="{Binding Commands.ImageLoaded}" />
+
+            <!-- Shown when the quick filter matches nothing, so it doesn't just look like a blank/
+                 broken thumbnail strip. -->
+            <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6"
+                       Text="No thumbnails match your filter"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextMutedBrush}"
+                       IsHitTestVisible="False"
+                       Visibility="{Binding ThumbFilterHasNoMatches, Converter={StaticResource BoolToVisibilityConverter}}" />
         </Grid>
 
     </Grid>

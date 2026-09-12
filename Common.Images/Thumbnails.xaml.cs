@@ -903,6 +903,52 @@ namespace Common.Images
         }
 
         /// <summary>
+        ///     Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
+        ///     on a predicate over each item's file path, without touching <see cref="ItemsSource" />
+        ///     or re-decoding/reloading anything - this is deliberately just a Visibility toggle on
+        ///     cells that already exist, so it stays cheap even on every keystroke.
+        ///     Note: cells live in a fixed Grid with an explicit Row/Column per id (not a reflowing
+        ///     panel like WrapPanel), so hiding a cell leaves a gap at its original position rather
+        ///     than repacking the grid - a filtered view will look sparse rather than tightly packed.
+        /// </summary>
+        /// <param name="predicate">
+        ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
+        ///     <c>null</c> to clear the filter and show everything again.
+        /// </param>
+        public void ApplyFilter(Func<string, bool>? predicate)
+        {
+            if (Border == null || ItemsSource == null) return;
+
+            foreach (var (id, border) in Border)
+            {
+                if (border?.Parent is not UIElement cellContainer) continue;
+
+                var isVisible = predicate == null ||
+                                 (ItemsSource.TryGetValue(id, out var path) &&
+                                  !string.IsNullOrEmpty(path) && predicate(path));
+
+                cellContainer.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the ids of thumbnails currently showing (i.e. not hidden by
+        ///     <see cref="ApplyFilter" />), in ascending order. Used to keep keyboard/button
+        ///     Next/Previous navigation consistent with what's actually on screen while a filter is
+        ///     active, instead of stepping through items the user can't even see.
+        /// </summary>
+        public List<int> GetVisibleIds()
+        {
+            if (Border == null) return [];
+
+            return Border
+                .Where(kvp => kvp.Value?.Parent is UIElement { Visibility: Visibility.Visible })
+                .Select(kvp => kvp.Key)
+                .OrderBy(id => id)
+                .ToList();
+        }
+
+        /// <summary>
         ///     Handles the MouseRightButtonDown event of the ImageClick control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
