@@ -11,17 +11,15 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMethodReturnValue.Global
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <inheritdoc />
     /// <summary>
-    /// BiMap is a bi-directional map implementation that allows for efficient lookups in both directions. 
-    /// It maintains two internal dictionaries to store the forward and reverse mappings, ensuring that each key-value pair is unique across both sides. 
-    /// The class is thread-safe, allowing for concurrent access and modifications without risking data corruption. 
+    /// BiMap is a bi-directional map implementation that allows for efficient lookups in both directions.
+    /// It maintains two internal dictionaries to store the forward and reverse mappings, ensuring that each key-value pair is unique across both sides.
+    /// The class is thread-safe, allowing for concurrent access and modifications without risking data corruption.
     /// It implements IReadOnlyCollection to provide enumeration capabilities over the key-value pairs.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the BiMap.</typeparam>
@@ -80,9 +78,7 @@ namespace ExtendedSystemObjects
         /// <summary>
         /// Initializes a new instance of the <see cref="T:ExtendedSystemObjects.BiMap`1" /> class.
         /// </summary>
-        public BiMap() : this(0)
-        {
-        }
+        public BiMap() : this(0) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BiMap{T}"/> class.
@@ -99,7 +95,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="left">The left.</param>
         /// <param name="right">The right.</param>
-        /// <exception cref="System.ArgumentException">Duplicate detected. Both values must be unique across their respective sides.</exception>
+        /// <exception cref="ArgumentException">Duplicate detected. Both values must be unique across their respective sides.</exception>
         public void Add(T left, T right)
         {
             lock (_lock)

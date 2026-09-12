@@ -8,12 +8,10 @@
 
 // ReSharper disable UnusedMember.Global
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <summary>
     ///      Vault item with expiration and data tracking
@@ -26,9 +24,7 @@ namespace ExtendedSystemObjects
         ///      Initializes a new instance of the <see cref="VaultItem{TU}" /> class.
         ///      Needed for Json serialization.
         /// </summary>
-        public VaultItem()
-        {
-        }
+        public VaultItem() { }
 
         /// <summary>
         ///      Initializes a new instance of the <see cref="VaultItem{U}" /> class.
@@ -47,7 +43,17 @@ namespace ExtendedSystemObjects
             if (expiryTime != null)
             {
                 HasExpireTime = true;
-                ExpiryDate = CreationDate.Add((TimeSpan)expiryTime);
+                try
+                {
+                    ExpiryDate = CreationDate.Add(expiryTime.Value);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Trace.WriteLine(
+                        $"Failed to calculate expiry date for item with creation date {CreationDate} and expiry time {expiryTime}");
+                    // Fallback to MaxValue if TimeSpan overflows DateTime limits
+                    ExpiryDate = DateTime.MaxValue;
+                }
             }
             else
             {
@@ -131,7 +137,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///      The additional metadata.
         /// </value>
-        public Dictionary<string, object> AdditionalMetadata { get; set; } = new();
+        public Dictionary<string, object>? AdditionalMetadata { get; set; } = new();
 
         /// <summary>
         ///      Calculates the size of an object using deterministic estimation.
@@ -143,32 +149,44 @@ namespace ExtendedSystemObjects
         {
             if (data == null) return 0;
 
-            // 1. Handle Strings (Existing)
-            if (data is string s) return (s.Length * sizeof(char)) + 24;
+            // 1. Handle Strings
+            if (data is string s) return s.Length * sizeof(char) + 24;
 
-            // 2. NEW: Handle Arrays (Very important for byte[] tests!)
+            // 2. Handle Arrays safely (prevents Marshal.SizeOf exception on reference arrays)
             if (data is Array array)
-            {
-                // Get the length of the array and multiply by the size of the element type
-                long elementSize = Marshal.SizeOf(array.GetType().GetElementType() ?? typeof(byte));
-                return (array.Length * elementSize) + 24;
-            }
-
-            // 3. Handle Value Types (Existing)
-            if (typeof(T).IsValueType)
             {
                 try
                 {
-                    return Marshal.SizeOf(typeof(T));
+                    var elementType = array.GetType().GetElementType() ?? typeof(byte);
+                    long elementSize = elementType.IsValueType ? Marshal.SizeOf(elementType) : nint.Size;
+                    return array.Length * elementSize + 24;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return IntPtr.Size;
+                    Trace.WriteLine(
+                        $"Failed to calculate size for array of type {array.GetType()}. Falling back to default size estimation. Exception: {ex}");
+                    return array.Length * nint.Size + 24;
                 }
             }
 
-            // 4. Handle Reference Types (Existing)
-            return IntPtr.Size + 16;
+            // 3. Handle Value Types (using runtime type handles boxed primitives/structs when T is object or interface)
+            var actualType = data.GetType();
+            if (actualType.IsValueType)
+            {
+                try
+                {
+                    return Marshal.SizeOf(actualType);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(
+                        $"Failed to calculate size for value type {actualType}. Falling back to default size estimation. Exception: {ex}");
+                    return nint.Size;
+                }
+            }
+
+            // 4. Handle Reference Types
+            return nint.Size + 16;
         }
 
         /// <summary>
@@ -176,7 +194,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public override string ToString()
         {
-            var status = HasExpired ? "EXPIRED" : (HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent");
+            var status = HasExpired ? "EXPIRED" : HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent";
             return $"VaultItem<{typeof(TU).Name}> | {status} | Size: {DataSize} bytes | Desc: {Description}";
         }
     }

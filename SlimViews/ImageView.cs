@@ -16,7 +16,7 @@
 using Common.Dialogs;
 using Common.Images;
 using Extended.Extensions;
-using ExtendedSystemObjects;
+using Extended.Objects;
 using FileHandler;
 using Imaging;
 using Imaging.Cifs;

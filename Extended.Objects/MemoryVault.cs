@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        MemoryVault.cs
  * PURPOSE:     In Memory Storage
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,18 +10,16 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable EventNeverSubscribedTo.Global
 // ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using System;
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text.Json;
-using System.Threading;
-using ExtendedSystemObjects.Helper;
+using Extended.Objects.Helper;
 
-
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <inheritdoc />
     /// <summary>
@@ -128,6 +126,14 @@ namespace ExtendedSystemObjects
         public long MemoryThreshold { get; init; } = 10 * 1024 * 1024; // Default 10 MB
 
         /// <summary>
+        /// Gets the last error message.
+        /// </summary>
+        /// <value>
+        /// The last error message.
+        /// </value>
+        public string LastErrorMessage { get; private set; } = string.Empty;
+
+        /// <summary>
         ///     Event triggered when memory usage exceeds the threshold.
         /// </summary>
         public event EventHandler<VaultMemoryThresholdExceededEventArgs>? MemoryThresholdExceeded;
@@ -155,15 +161,29 @@ namespace ExtendedSystemObjects
         {
             EnsureNotDisposed();
 
+            var vaultItem = new VaultItem<TU?>(data, expiryTime, description);
+
+            return InsertItem(vaultItem);
+        }
+
+        /// <summary>
+        /// Inserts an already-constructed vault item and updates id/size/threshold bookkeeping.
+        /// Shared by <see cref="Add"/> and <see cref="LoadFromDisk"/>.
+        /// </summary>
+        private long InsertItem(VaultItem<TU?> vaultItem)
+        {
             // Generate next available unique ID atomically
             var identifier = Interlocked.Increment(ref _nextId);
 
-            var vaultItem = new VaultItem<TU?>(data, expiryTime, description);
-
             _vault[identifier] = vaultItem;
 
-            // Increment total bytes atomically
-            var itemSize = vaultItem.DataSize + (description?.Length * 2 ?? 0);
+            // Increment total bytes atomically (Symmetrical with DecrementMemory)
+            var itemSize = vaultItem.DataSize + (vaultItem.Description?.Length * 2 ?? 0);
+            if (vaultItem.AdditionalMetadata != null)
+            {
+                itemSize += vaultItem.AdditionalMetadata.Count * 64;
+            }
+
             Interlocked.Add(ref _totalBytes, itemSize);
 
             if (Interlocked.Read(ref _totalBytes) > MemoryThreshold)
@@ -329,15 +349,20 @@ namespace ExtendedSystemObjects
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                var message = $"Failed to save item with identifier {identifier} to disk at {filePath}: {ex}";
+                LastErrorMessage = message;
+                Trace.WriteLine(message);
                 return false;
             }
         }
 
         /// <summary>
-        ///     Loads an item from disk and stores it in the vault.
+        /// Loads an item from disk and stores it in the vault.
         /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>The identifier of the loaded item, or -1 if loading failed.</returns>
         public long LoadFromDisk(string filePath)
         {
             EnsureNotDisposed();
@@ -345,21 +370,22 @@ namespace ExtendedSystemObjects
             try
             {
                 var json = File.ReadAllText(filePath);
-                var item = JsonSerializer.Deserialize<VaultItem<TU>>(json);
+
+                // Note: Deserialize directly to VaultItem<TU?> so it perfectly matches the dictionary
+                var item = JsonSerializer.Deserialize<VaultItem<TU?>>(json);
 
                 if (item != null)
                 {
-                    // Add item to vault and preserve metadata via init-only constructor
-                    var vaultItem = new VaultItem<TU?>(item.Data, item.ExpiryTime, item.Description)
-                    {
-                        AdditionalMetadata = item.AdditionalMetadata
-                    };
-
-                    return Add(vaultItem.Data, vaultItem.ExpiryTime, vaultItem.Description);
+                    // The deserializer already populated CreationDate, ExpiryDate, and AdditionalMetadata.
+                    // Just insert the fully reconstructed item directly!
+                    return InsertItem(item);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                var message = $"Failed to load item from disk at {filePath}: {ex}";
+                LastErrorMessage = message;
+                Trace.WriteLine(message);
                 return -1;
             }
 
@@ -419,7 +445,7 @@ namespace ExtendedSystemObjects
         /// Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
