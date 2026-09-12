@@ -55,5 +55,14 @@ namespace Imaging.Interfaces
         ///     handles it exactly like a native decode failure.
         /// </exception>
         Bitmap Decode(string path);
+
+        /// <summary>
+        /// Determines whether this instance can decode the specified header.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance can decode the specified header; otherwise, <c>false</c>.
+        /// </returns>
+        bool CanDecode(byte[] header);
     }
 }

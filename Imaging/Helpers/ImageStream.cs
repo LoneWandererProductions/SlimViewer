@@ -70,18 +70,24 @@ namespace Imaging.Helpers
 
             try
             {
-                // Load the file into memory completely
                 var bytes = File.ReadAllBytes(path);
 
+                // 1. Ask the plugin registry if any loaded plugin recognizes the TRUE format
+                if (ImageDecoderPluginRegistry.Instance.TryGetDecoder(bytes, out var plugin))
+                {
+                    return plugin.Decode(path);
+                }
+
+                // 2. If no plugin claims it, fall back to native GDI+
                 using var ms = new MemoryStream(bytes);
                 using var temp = Image.FromStream(ms, useEmbeddedColorManagement: false, validateImageData: false);
 
-                // Fully decouple by cloning pixel data to a new bitmap
-                var bmp = new Bitmap(temp.Width, temp.Height, temp.PixelFormat);
+                // 3. Fully decouple by cloning pixel data
+                var bmp = new Bitmap(temp.Width, temp.Height, PixelFormat.Format32bppArgb); // Prevent indexed crashes
                 using var g = Graphics.FromImage(bmp);
                 g.DrawImage(temp, new Rectangle(0, 0, temp.Width, temp.Height));
 
-                return bmp; // Fully independent bitmap, no underlying reference
+                return bmp;
             }
             catch (Exception ex)
             {

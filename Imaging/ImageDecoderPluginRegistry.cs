@@ -34,12 +34,26 @@ namespace Imaging
     /// </remarks>
     public sealed class ImageDecoderPluginRegistry
     {
+        /// <summary>
+        /// The lazy instance
+        /// </summary>
         private static readonly Lazy<ImageDecoderPluginRegistry> LazyInstance =
             new(() => new ImageDecoderPluginRegistry());
 
+        /// <summary>
+        /// The by extension
+        /// </summary>
         private readonly Dictionary<string, IImageDecoderPlugin> _byExtension =
             new(StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// The plugins
+        /// </summary>
+        private readonly List<IImageDecoderPlugin> _plugins = new();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ImageDecoderPluginRegistry"/> class from being created.
+        /// </summary>
         private ImageDecoderPluginRegistry()
         {
         }
@@ -94,32 +108,38 @@ namespace Imaging
         {
             ArgumentNullException.ThrowIfNull(plugin);
 
+            _plugins.Add(plugin);
+
+            // We still register extensions for the UI/Appendix, but NOT for routing
             foreach (var ext in plugin.SupportedExtensions)
             {
                 var normalized = NormalizeExtension(ext);
-                _byExtension[normalized] = plugin;
-
                 if (!ImagingResources.Appendix.Contains(normalized, StringComparer.OrdinalIgnoreCase))
                 {
                     ImagingResources.Appendix.Add(normalized);
                 }
             }
 
-            Trace.WriteLine(
-                $"[ImageDecoderPluginRegistry] Loaded '{plugin.Name}' for {string.Join(", ", plugin.SupportedExtensions)}");
+            Trace.WriteLine($"[ImageDecoderPluginRegistry] Loaded '{plugin.Name}'");
         }
 
         /// <summary>
-        ///     Looks up whether a plugin handles <paramref name="extension" />.
+        /// Looks up whether a plugin handles <paramref name="extension" />.
         /// </summary>
-        /// <param name="extension">Extension including the leading dot, any case.</param>
-        public bool TryGetDecoder(string? extension, out IImageDecoderPlugin? plugin)
+        /// <param name="headerBytes">The header bytes.</param>
+        /// <param name="plugin">The plugin.</param>
+        /// <returns><c>true</c> if a plugin was found; otherwise, <c>false</c>.</returns>
+        public bool TryGetDecoder(byte[] headerBytes, out IImageDecoderPlugin? plugin)
         {
-            plugin = null;
-            return !string.IsNullOrEmpty(extension) &&
-                   _byExtension.TryGetValue(NormalizeExtension(extension), out plugin);
+            // Iterate through plugins and let them inspect the magic numbers
+            plugin = _plugins.FirstOrDefault(p => p.CanDecode(headerBytes));
+            return plugin != null;
         }
 
+        /// <summary>
+        /// Loads the plugins from assembly.
+        /// </summary>
+        /// <param name="dllPath">The DLL path.</param>
         private void LoadPluginsFromAssembly(string dllPath)
         {
             Assembly assembly;
@@ -172,6 +192,11 @@ namespace Imaging
             }
         }
 
+        /// <summary>
+        /// Normalizes the extension.
+        /// </summary>
+        /// <param name="extension">The extension.</param>
+        /// <returns>The normalized extension.</returns>
         private static string NormalizeExtension(string extension)
         {
             var trimmed = extension.Trim();
