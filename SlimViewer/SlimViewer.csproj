@@ -13,8 +13,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Remove="Plugins\Imaging.Plugins.dll" />
+        <None Remove="Plugins\Imaging.Plugins.Interface.dll" />
         <None Remove="System\green.png" />
         <None Remove="System\red.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Plugins\Imaging.Plugins.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Plugins\Imaging.Plugins.Interface.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
@@ -31,10 +42,6 @@
         <ProjectReference Include="..\Imaging\Imaging.csproj" />
         <ProjectReference Include="..\SlimControls\SlimControls.csproj" />
         <ProjectReference Include="..\SlimViews\SlimViews.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Plugins\" />
     </ItemGroup>
 
 </Project>
