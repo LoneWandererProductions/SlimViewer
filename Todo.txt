@@ -1,2 +1,3 @@
-common.dialog the windows are still white.
-the combox box is not showing any options.
+basic window dialog is not themed
+Adding all the plugins extension to the dialog is missing
+Saving via the plugin is not working
