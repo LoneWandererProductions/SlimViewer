@@ -1,0 +1,139 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "Imaging.Plugins/1.0.0": {
+        "dependencies": {
+          "Imaging.Plugins.Interface": "1.0.0",
+          "Imazen.WebP": "11.0.0",
+          "Imazen.WebP.NativeRuntime.win-x64": "1.6.1",
+          "System.Drawing.Common": "9.0.19"
+        },
+        "runtime": {
+          "Imaging.Plugins.dll": {}
+        }
+      },
+      "Imazen.WebP/11.0.0": {
+        "dependencies": {
+          "System.Drawing.Common": "9.0.19"
+        },
+        "runtime": {
+          "lib/net8.0/Imazen.WebP.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.0.0"
+          }
+        }
+      },
+      "Imazen.WebP.NativeRuntime.win-x64/1.6.1": {
+        "runtimeTargets": {
+          "runtimes/win-x64/native/libsharpyuv.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libwebp.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libwebpdemux.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libwebpmux.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Win32.SystemEvents/9.0.19": {
+        "runtime": {
+          "lib/net9.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1926.36724"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net9.0/Microsoft.Win32.SystemEvents.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1926.36724"
+          }
+        }
+      },
+      "System.Drawing.Common/9.0.19": {
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "9.0.19"
+        },
+        "runtime": {
+          "lib/net9.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1926.37001"
+          },
+          "lib/net9.0/System.Private.Windows.Core.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1926.37001"
+          }
+        }
+      },
+      "Imaging.Plugins.Interface/1.0.0": {
+        "dependencies": {
+          "System.Drawing.Common": "9.0.19"
+        },
+        "runtime": {
+          "Imaging.Plugins.Interface.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Imaging.Plugins/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Imazen.WebP/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8g1uXOLfUn6eLIGUl2H4XW0bovxYKC+CV8BYd4nLWn5ArO+zMM4npL5h+FvAGTYqBNnay/EHennlNHz8G+K7Cg==",
+      "path": "imazen.webp/11.0.0",
+      "hashPath": "imazen.webp.11.0.0.nupkg.sha512"
+    },
+    "Imazen.WebP.NativeRuntime.win-x64/1.6.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xNAC283neZQZRvO7qBV2JsMddN25IcOMqijH6W9w0r/5+S9aqQyLUNQwYWFPJ2YADOYhaAsDlXG9Kq2K1oxSnA==",
+      "path": "imazen.webp.nativeruntime.win-x64/1.6.1",
+      "hashPath": "imazen.webp.nativeruntime.win-x64.1.6.1.nupkg.sha512"
+    },
+    "Microsoft.Win32.SystemEvents/9.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VP2edB6mVEMG3WtnW2tFjPPiFyQG2ROuZ863mFUjF9ZTsr75lHsWoi9uy+hbtBEcVyPrS2fFq6xewoJydePIiw==",
+      "path": "microsoft.win32.systemevents/9.0.19",
+      "hashPath": "microsoft.win32.systemevents.9.0.19.nupkg.sha512"
+    },
+    "System.Drawing.Common/9.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ON699pZK06eVeT6G1267S9zpsRcA5N74NNHh6aWzwZiP0e6VD39Z7EJ4iv5Lq+kS+OpkFJXPk6DIIDq0/nXH0g==",
+      "path": "system.drawing.common/9.0.19",
+      "hashPath": "system.drawing.common.9.0.19.nupkg.sha512"
+    },
+    "Imaging.Plugins.Interface/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

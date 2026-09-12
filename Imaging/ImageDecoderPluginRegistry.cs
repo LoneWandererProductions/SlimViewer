@@ -63,9 +63,12 @@ namespace Imaging
         public static ImageDecoderPluginRegistry Instance => LazyInstance.Value;
 
         /// <summary>
-        ///     Gets the plugins currently loaded, for a diagnostics/about screen if
-        ///     one is ever wanted.
+        /// Gets the plugins currently loaded, for a diagnostics/about screen if
+        /// one is ever wanted.
         /// </summary>
+        /// <value>
+        /// The loaded plugins.
+        /// </value>
         public IReadOnlyCollection<IImageDecoderPlugin> LoadedPlugins => _byExtension.Values.Distinct().ToList();
 
         /// <summary>
