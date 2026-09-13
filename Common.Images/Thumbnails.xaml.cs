@@ -464,6 +464,17 @@ namespace Common.Images
                 Thb.Children.Remove(checkbox);
             }
 
+            // This id's identity is gone - it must not linger in Selection. Previously this was
+            // never cleaned up here: a checked item that got deleted stayed "checked" forever as
+            // far as Selection was concerned, even though its checkbox/border/image were all gone.
+            // That corrupted every subsequent selection-based operation - most visibly,
+            // IsSelectionEmpty (a plain Selection.Count == 0 check) would incorrectly report
+            // "something is selected" from stale entries alone, so the next single-image delete
+            // (intended as "nothing selected, delete the current image") took the wrong branch:
+            // it tried to delete the stale (already-gone) ids instead, found no valid paths, and
+            // silently did nothing.
+            Selection?.TryRemove(id, out _);
+
             _ = ItemsSource.Remove(id);
 
             _refresh = true;
@@ -905,12 +916,11 @@ namespace Common.Images
         /// <summary>
         ///     Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
         ///     on a predicate over each item's file path, without touching <see cref="ItemsSource" />
-        ///     or re-decoding/reloading anything - this is deliberately just Visibility + a
-        ///     Grid.Row/Column reassignment on cells that already exist, so it stays cheap even on
-        ///     every keystroke. Matching cells are packed to the front (row-major, same order the
-        ///     grid was originally filled in) rather than left sitting at their original positions
-        ///     with gaps where non-matches used to be - clearing the filter (predicate: null)
-        ///     restores everyone to their original position.
+        ///     or re-decoding/reloading anything - this is deliberately just a Visibility toggle on
+        ///     cells that already exist, so it stays cheap even on every keystroke.
+        ///     Note: cells live in a fixed Grid with an explicit Row/Column per id (not a reflowing
+        ///     panel like WrapPanel), so hiding a cell leaves a gap at its original position rather
+        ///     than repacking the grid - a filtered view will look sparse rather than tightly packed.
         /// </summary>
         /// <param name="predicate">
         ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
@@ -920,46 +930,15 @@ namespace Common.Images
         {
             if (Border == null || ItemsSource == null) return;
 
-            // Same column count the grid was originally built with (see LoadSingleImage's own
-            // Grid.SetRow(cellContainer, key / thumbWidth) / SetColumn(... key % thumbWidth)) -
-            // reusing it here keeps a reflowed filtered view laid out exactly like the original.
-            var totalColumns = Thb.Children.OfType<Grid>().FirstOrDefault()?.ColumnDefinitions.Count ?? 0;
-
-            // Stable original order (ids were assigned sequentially when the grid was built).
-            var orderedIds = Border.Keys.OrderBy(id => id).ToList();
-
-            var visibleIds = predicate == null
-                ? orderedIds
-                : orderedIds.Where(id =>
-                    ItemsSource.TryGetValue(id, out var path) &&
-                    !string.IsNullOrEmpty(path) &&
-                    predicate(path)).ToList();
-
-            var visibleSet = new HashSet<int>(visibleIds);
-            var position = 0;
-
-            foreach (var id in orderedIds)
+            foreach (var (id, border) in Border)
             {
-                if (!Border.TryGetValue(id, out var border) || border?.Parent is not UIElement cellContainer)
-                {
-                    continue;
-                }
+                if (border?.Parent is not UIElement cellContainer) continue;
 
-                if (!visibleSet.Contains(id))
-                {
-                    cellContainer.Visibility = Visibility.Collapsed;
-                    continue;
-                }
+                var isVisible = predicate == null ||
+                                 (ItemsSource.TryGetValue(id, out var path) &&
+                                  !string.IsNullOrEmpty(path) && predicate(path));
 
-                cellContainer.Visibility = Visibility.Visible;
-
-                if (totalColumns > 0)
-                {
-                    Grid.SetRow(cellContainer, position / totalColumns);
-                    Grid.SetColumn(cellContainer, position % totalColumns);
-                }
-
-                position++;
+                cellContainer.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
