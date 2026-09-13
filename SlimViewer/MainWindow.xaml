@@ -357,7 +357,7 @@
 
             <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="🔍" VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="Zoom scale level" />
-                <Slider Width="80"
+                <Slider Width="120"
                         Minimum="0.1"
                         Maximum="5.0"
                         Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"
@@ -476,7 +476,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0"
                         Visibility="{Binding ThumbnailVisibility}">
                 <TextBlock Text="🔎" VerticalAlignment="Center" Margin="0,0,4,0" Opacity="0.7" />
-                <TextBox x:Name="ThumbFilterBox" Width="160" VerticalAlignment="Center" 
+                <TextBox x:Name="ThumbFilterBox" Width="160" VerticalAlignment="Center" Padding="4,2"
                          Text="{Binding ThumbFilterText, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="Quick filter thumbnails by file name (Esc to clear)"
                          KeyDown="ThumbFilterBox_KeyDown" />

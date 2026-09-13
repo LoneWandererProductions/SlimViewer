@@ -24,6 +24,7 @@ using Extended.Extensions;
 using FileHandler;
 using Imaging;
 using Imaging.Enums;
+using Imaging.Plugins.Interface;
 using SlimControls;
 using Point = System.Drawing.Point;
 
@@ -293,18 +294,58 @@ namespace SlimViews
         internal static bool SaveImage(string path, string extension, Bitmap bitmap)
         {
             path = Path.ChangeExtension(path, extension);
-            var format = extension switch
-            {
-                ImagingResources.PngExt => ImageFormat.Png,
-                ImagingResources.JpgExt => ImageFormat.Jpeg,
-                ImagingResources.BmpExt => ImageFormat.Bmp,
-                ImagingResources.GifExt => ImageFormat.Gif,
-                ImagingResources.TifExt => ImageFormat.Tiff,
-                _ => throw new ArgumentException(ViewResources.ErrorNotSupported) // Handle unsupported formats
-            };
 
-            Render.SaveBitmap(bitmap, path, format);
-            return true;
+            if (TryGetBuiltInFormat(extension, out var format))
+            {
+                Render.SaveBitmap(bitmap, path, format);
+                return true;
+            }
+
+            // Not one of the built-in GDI+ formats - see if a decoder/encoder plugin can write
+            // it instead (e.g. saving back out to .webp). This is what actually lets a plugin
+            // format round-trip: decoding one already worked via ImageDecoderPluginRegistry, this
+            // is the save-side counterpart that was previously just missing entirely - any
+            // extension not in the switch below threw, full stop, regardless of what plugins were
+            // loaded.
+            if (ImageDecoderPluginRegistry.Instance.TryGetEncoder(extension, out var encoderPlugin) &&
+                encoderPlugin != null)
+            {
+                encoderPlugin.Encode(bitmap, path);
+                return true;
+            }
+
+            throw new ArgumentException(ViewResources.ErrorNotSupported);
+        }
+
+        /// <summary>
+        ///     Maps a file extension to one of the built-in GDI+ <see cref="ImageFormat" />s.
+        /// </summary>
+        /// <param name="extension">The file extension.</param>
+        /// <param name="format">The resolved format, if <paramref name="extension" /> is a built-in one.</param>
+        /// <returns><c>true</c> if <paramref name="extension" /> is a built-in format; otherwise, <c>false</c>.</returns>
+        private static bool TryGetBuiltInFormat(string extension, out ImageFormat format)
+        {
+            switch (extension)
+            {
+                case ImagingResources.PngExt:
+                    format = ImageFormat.Png;
+                    return true;
+                case ImagingResources.JpgExt:
+                    format = ImageFormat.Jpeg;
+                    return true;
+                case ImagingResources.BmpExt:
+                    format = ImageFormat.Bmp;
+                    return true;
+                case ImagingResources.GifExt:
+                    format = ImageFormat.Gif;
+                    return true;
+                case ImagingResources.TifExt:
+                    format = ImageFormat.Tiff;
+                    return true;
+                default:
+                    format = default;
+                    return false;
+            }
         }
 
         /// <summary>

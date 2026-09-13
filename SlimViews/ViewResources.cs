@@ -7,7 +7,10 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media.Imaging;
+using Imaging;
 using Imaging.Gifs;
 
 namespace SlimViews
@@ -18,17 +21,68 @@ namespace SlimViews
     internal static class ViewResources
     {
         /// <summary>
-        ///     The file open Options (const). Value: "Image Files(*.png)|*.png|Image Files(*.jpg)|*.jpg|Image
-        ///     Files(*.Bmp)|*.Bmp|Image Files(*.gif)|*.gif|Image Files(*.tif)|*.tif|All files (*.*)|*.*".
-        ///     All is finally first.
+        ///     The file open filter for the main "Open Image" dialog, built dynamically from
+        ///     <see cref="ImagingResources.Appendix" /> rather than hardcoded, so a format added by
+        ///     a decoder plugin at startup (see ImageDecoderPluginRegistry) actually shows up as a
+        ///     selectable option here. This used to be a compile-time const string listing only the
+        ///     built-in formats (jpg/png/bmp/gif/tif) - a loaded plugin's extension (e.g. .webp) was
+        ///     already in Appendix (used for folder scans/thumbnails/the converter tool) but never
+        ///     reached the actual native file-open dialog at all, since that dialog's filter string
+        ///     was fixed at compile time and had no connection to Appendix.
         /// </summary>
-        internal const string FileOpen =
-            "All Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif;*.tiff|" +
-            "JPEG (*.jpg)|*.jpg;*.jpeg|" +
-            "Portable Network Graphics (*.png)|*.png|" +
-            "Bitmap (*.bmp)|*.bmp|" +
-            "GIF (*.gif)|*.gif|" +
-            "TIFF (*.tif)|*.tif;*.tiff";
+        internal static string FileOpen => BuildImageFilter();
+
+        /// <summary>
+        ///     Builds the "Open Image" filter string. Known built-in formats keep the same
+        ///     hand-written, friendly group names as before (so existing wording doesn't change);
+        ///     anything else in Appendix - i.e. a plugin-provided extension - gets a generic
+        ///     "EXT Files (*.ext)|*.ext" entry so it's still selectable even without a curated name.
+        /// </summary>
+        private static string BuildImageFilter()
+        {
+            var extensions = ImagingResources.Appendix
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (extensions.Count == 0) return "All files (*.*)|*.*";
+
+            var parts = new List<string>
+            {
+                $"All Image Files|{string.Join(";", extensions.Select(e => $"*{e}"))}"
+            };
+
+            var knownGroups = new (string Label, string[] Exts)[]
+            {
+                ("JPEG", new[] { ".jpg", ".jpeg" }),
+                ("Portable Network Graphics", new[] { ".png" }),
+                ("Bitmap", new[] { ".bmp" }),
+                ("GIF", new[] { ".gif" }),
+                ("TIFF", new[] { ".tif", ".tiff" })
+            };
+
+            var covered = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var (label, exts) in knownGroups)
+            {
+                var present = exts.Where(e => extensions.Contains(e, StringComparer.OrdinalIgnoreCase)).ToList();
+                if (present.Count == 0) continue;
+
+                foreach (var ext in present) covered.Add(ext);
+
+                var pattern = string.Join(";", present.Select(e => $"*{e}"));
+                parts.Add($"{label} ({pattern})|{pattern}");
+            }
+
+            // Plugin-provided (or otherwise unrecognized) extensions - no curated name to work
+            // with here, so a plain "WEBP Files (*.webp)|*.webp" style entry per extension.
+            foreach (var ext in extensions.Where(e => !covered.Contains(e)))
+            {
+                var label = ext.TrimStart('.').ToUpperInvariant();
+                parts.Add($"{label} Files (*{ext})|*{ext}");
+            }
+
+            return string.Join("|", parts);
+        }
 
         /// <summary>
         ///     The file open CBR (const). Value: "Comic Book File (*.cbz)|*.cbz".
