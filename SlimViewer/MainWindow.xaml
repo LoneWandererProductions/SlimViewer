@@ -357,7 +357,7 @@
 
             <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="🔍" VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="Zoom scale level" />
-                <Slider Width="120"
+                <Slider Width="80"
                         Minimum="0.1"
                         Maximum="5.0"
                         Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"
