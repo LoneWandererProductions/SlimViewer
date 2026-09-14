@@ -637,34 +637,30 @@ namespace Common.Images
                 Thb.Children.Add(exGrid);
 
                 // --- Load images with limited concurrency ---
-                var semaphore = new SemaphoreSlim(4);
-                var tasks = pics.Select(async kv =>
+                // Parallel.ForEachAsync (.NET 6+) is the purpose-built replacement for the old
+                // manual SemaphoreSlim + task-list + Task.WhenAll dance: it caps concurrency via
+                // MaxDegreeOfParallelism, wires cancellation through automatically, and reads as
+                // "run this many at a time" instead of hand-rolled acquire/release/finally
+                // plumbing. Note this doesn't change how many threads a single LoadSingleImage
+                // call occupies while running - that's addressed separately in
+                // ImageStream.GetBitmapImageFileStreamAsync, which now does its file read with
+                // ReadAllBytesAsync instead of a blocking File.ReadAllBytes, so each occupied
+                // thread is held only for the actual decode, not the disk wait too.
+                await Parallel.ForEachAsync(pics, new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = 4,
+                    CancellationToken = token
+                }, async (kv, ct) =>
                 {
                     try
                     {
-                        await semaphore.WaitAsync();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        return; // Gracefully exit without triggering an exception wave
-                    }
-
-                    try
-                    {
-                        if (token.IsCancellationRequested) return;
-                        await LoadSingleImage(kv.Key, kv.Value, exGrid, token, cellSize, thumbWidth);
+                        await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
                     }
                     catch (OperationCanceledException)
                     {
                         // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
                     }
-                    finally
-                    {
-                        semaphore.Release();
-                    }
-                }).ToArray();
-
-                await Task.WhenAll(tasks);
+                });
 
                 ImageLoaded?.Invoke();
             }
