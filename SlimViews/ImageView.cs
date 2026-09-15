@@ -1257,7 +1257,7 @@ namespace SlimViews
         /// <summary>
         /// Navigation logic.
         /// </summary>
-        private void NavigationLogic()
+        internal void NavigationLogic()
         {
             if (FileContext.Count <= 1)
                 UiState.HideButtons();

@@ -101,6 +101,10 @@ namespace SlimViews
                                           paths.Any(p => string.Equals(p, owner.FileContext.FilePath,
                                               StringComparison.OrdinalIgnoreCase));
 
+            // Captured before anything is actually removed from Observer - needed afterward to
+            // find whichever surviving image now sits closest to where this one was.
+            var currentIdBeforeDelete = owner.FileContext.CurrentId;
+
             if (isCurrentImageAffected)
             {
                 owner.Image.Clear();
@@ -158,9 +162,25 @@ namespace SlimViews
             {
                 if (isCurrentImageAffected)
                 {
-                    // The image we were viewing is gone - move on to whatever is now current
-                    // (falls back gracefully to the first remaining image, or to nothing).
-                    owner.NextAction(owner);
+                    // The image we were viewing is gone - move to whichever surviving image now
+                    // sits closest to where it was, instead of owner.NextAction(owner). NextAction
+                    // uses Utility.GetNextElement, whose "id not found in the list" fallback wraps
+                    // around to the very first id - the exact same fallback it uses for "we're at
+                    // the last item, wrap to the first". Since the just-deleted id is *always*
+                    // "not found" immediately after RemoveSingleItem, every single-image delete
+                    // was unconditionally teleporting the view (and the thumbnail scrollbar with
+                    // it) back to the first image in the whole folder, no matter where the deleted
+                    // image actually was. Finding the closest surviving neighbor keeps the user in
+                    // roughly the same place instead.
+                    var survivors = owner.FileContext.Observer?.Keys;
+                    var nextId = FindClosestSurvivingId(currentIdBeforeDelete, survivors);
+
+                    if (nextId >= 0)
+                    {
+                        owner.ChangeImage(nextId);
+                        owner.UiState.Thumb?.SelectAndCenter(nextId);
+                        owner.NavigationLogic();
+                    }
                 }
 
                 if (!isSilent)
@@ -169,6 +189,30 @@ namespace SlimViews
                         ViewResources.MessageSuccess);
                 }
             }
+        }
+
+        /// <summary>
+        /// Finds whichever surviving id now sits closest to where <paramref name="removedId" />
+        /// used to be: the smallest surviving id that is still &gt;= <paramref name="removedId" />
+        /// (i.e. "the next image in the folder, now shifted down one"), falling back to the
+        /// largest surviving id if the removed one was at (or past) the end.
+        /// </summary>
+        /// <param name="removedId">The id that was just removed.</param>
+        /// <param name="survivingIds">The ids still present after removal.</param>
+        /// <returns>The closest surviving id, or -1 if none remain.</returns>
+        private static int FindClosestSurvivingId(int removedId, IEnumerable<int>? survivingIds)
+        {
+            if (survivingIds == null) return -1;
+
+            var sorted = survivingIds.OrderBy(x => x).ToList();
+            if (sorted.Count == 0) return -1;
+
+            foreach (var id in sorted)
+            {
+                if (id >= removedId) return id;
+            }
+
+            return sorted[^1];
         }
 
         /// <summary>

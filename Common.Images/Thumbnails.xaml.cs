@@ -850,24 +850,19 @@ namespace Common.Images
         /// <param name="id">The identifier of the item to select and scroll into view.</param>
         public void SelectAndCenter(int id)
         {
-            // Defer to after the next layout/render pass rather than doing this inline. A plain
-            // synchronous UpdateLayout() call inside CenterOnItem still isn't quite enough on its
-            // own under back-to-back key presses - WPF can apply a ScrollToXOffset request itself
-            // slightly after Arrange, tied to the render pass rather than pure layout, so a second
-            // press arriving before that render tick lands measures off a still-stale position.
-            // Queuing at DispatcherPriority.Loaded guarantees a full Measure/Arrange/Render cycle
-            // has actually completed before we touch anything - this is the standard WPF fix for
-            // "ScrollIntoView / selection only updates every other time" style bugs.
-            Dispatcher.BeginInvoke(new Action(() =>
+            // No longer deferred to DispatcherPriority.Loaded - that was only needed because
+            // CenterOnItem used to measure the target element's already-rendered position via
+            // TransformToAncestor, which could race an in-flight layout/render pass under
+            // back-to-back key presses. Now that CenterOnItem computes the target position
+            // arithmetically instead of measuring anything, there's no render-pipeline race left
+            // to defer around, so this can just run immediately.
+            if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
             {
-                if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
-                {
-                    return;
-                }
+                return;
+            }
 
-                UpdateSelectedBorder(border);
-                CenterOnItem(id);
-            }), DispatcherPriority.Loaded);
+            UpdateSelectedBorder(border);
+            CenterOnItem(id);
         }
 
         /// <summary>
@@ -876,37 +871,33 @@ namespace Common.Images
         /// <param name="id">The ID of the item to center on.</param>
         public void CenterOnItem(int id)
         {
-            if (MainScrollViewer == null || Border == null)
-            {
-                return;
-            }
+            if (MainScrollViewer == null) return;
 
-            // Check if the item with the specified ID exists
-            if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
-            {
-                // ScrollToHorizontalOffset/ScrollToVerticalOffset don't take effect synchronously -
-                // they just request a layout pass. If this method gets called again (e.g. the next
-                // arrow-key press) before that pass has actually run, TransformToAncestor below would
-                // measure off the *old*, not-yet-scrolled position, so the target would land one item
-                // short - it only ever "catches up" once a layout pass finally squeezes in, which
-                // looks like the highlight/scroll only updating every other keypress. Forcing the
-                // layout to flush here guarantees we always measure from where the view really is.
-                MainScrollViewer.UpdateLayout();
+            // Compute the cell's position arithmetically from known grid geometry (column count,
+            // cell size) instead of measuring the already-rendered element via
+            // TransformToAncestor. The measurement approach depended on a layout pass having
+            // actually caught up with any pending change (a previous scroll request, a
+            // border-thickness change from the selection highlight, etc.) before the transform
+            // could be trusted - UpdateLayout() and deferring to DispatcherPriority.Loaded both
+            // helped, but were still fundamentally racing the render pipeline. This calculation
+            // only depends on values that are already known for certain - the id, the grid's
+            // column count (ThumbWidth), and the uniform cell size (ThumbCellSize), the same
+            // values LoadSingleImage itself used to place the cell in the first place - so there's
+            // nothing left to race.
+            var columns = Math.Max(1, ThumbWidth);
+            var cellSize = ThumbCellSize > 0 ? ThumbCellSize : 100;
 
-                // Get the position of the target element relative to the ScrollViewer
-                var itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
-                var itemPosition = itemTransform.Transform(new Point(0, 0));
+            var row = id / columns;
+            var col = id % columns;
 
-                // Calculate the offsets needed to center the item
-                var centerOffsetX = itemPosition.X - MainScrollViewer.ViewportWidth / 2 +
-                                    targetElement.RenderSize.Width / 2;
-                var centerOffsetY = itemPosition.Y - MainScrollViewer.ViewportHeight / 2 +
-                                    targetElement.RenderSize.Height / 2;
+            var itemX = col * cellSize;
+            var itemY = row * cellSize;
 
-                // Set the ScrollViewer's offset to center the item
-                MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
-                MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
-            }
+            var centerOffsetX = itemX - MainScrollViewer.ViewportWidth / 2 + cellSize / 2.0;
+            var centerOffsetY = itemY - MainScrollViewer.ViewportHeight / 2 + cellSize / 2.0;
+
+            MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
+            MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
         }
 
         /// <summary>
