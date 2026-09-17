@@ -1,3 +1,5 @@
 basic window dialog is not themed
-Adding all the plugins extension to the dialog is missing
-Saving via the plugin is not working
+Saving via the plugin is working but not yet implemented
+image paning via mouse scrollbar is a bit wonky also the scrollbar bar gets rather small not sure if this is a bug.
+issue with Thumbnail search, looks like the search searches to fast and does not wait or cleanup until the user has finished typing.
+Second the searched results are not as one block at the start.

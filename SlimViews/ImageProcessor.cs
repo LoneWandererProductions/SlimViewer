@@ -24,7 +24,6 @@ using Extended.Extensions;
 using FileHandler;
 using Imaging;
 using Imaging.Enums;
-using Imaging.Plugins.Interface;
 using SlimControls;
 using Point = System.Drawing.Point;
 
