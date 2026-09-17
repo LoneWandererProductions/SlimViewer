@@ -110,20 +110,14 @@ namespace SlimViews
         public ICommand Pixelate { get; }
 
         /// <summary>
-        /// Gets the similar.
+        /// Gets the command that opens the duplicate/similar-image search dialog (folder
+        /// selection + exact percentage, replacing the old fixed-preset Duplicate/Similar
+        /// command pair).
         /// </summary>
         /// <value>
-        /// The similar.
+        /// The find duplicates command.
         /// </value>
-        public ICommand Similar { get; }
-
-        /// <summary>
-        /// Gets the duplicate.
-        /// </summary>
-        /// <value>
-        /// The duplicate.
-        /// </value>
-        public ICommand Duplicate { get; }
+        public ICommand FindDuplicates { get; }
 
         /// <summary>
         /// Gets the rename.
@@ -312,8 +306,7 @@ namespace SlimViews
             Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);
             FolderConvert = Make_NoParamCmd(_imageMassService.FolderConvertWindow);
             FolderRename = Make_NoParamCmd(_imageMassService.FolderRenameWindow);
-            Duplicate = Make_NoParamCmd(_imageMassService.DuplicateWindow);
-            Similar = Make_ObjParamCmd(_imageMassService.SimilarWindow);
+            FindDuplicates = Make_NoParamCmd(_imageMassService.FindDuplicatesWindow);
             FolderSearch = Make_NoParamCmd(_imageMassService.FolderSearch);
             ResizerWindow = Make_NoParamCmd(_imageMassService.ResizerWindow);
             AnalyzerWindow = Make_NoParamCmd(_imageMassService.AnalyzerWindow);

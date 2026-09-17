@@ -6,6 +6,7 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Generic;
 using System.Windows;
 
 namespace SlimViews.Tooling
@@ -34,7 +35,7 @@ namespace SlimViews.Tooling
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Compare" /> class.
+        ///     Initializes a new instance of the <see cref="Compare" /> class for a single folder.
         /// </summary>
         public Compare(bool subFolders, string? currentFolder, ImageView imageView, int similarity = 0)
         {
@@ -43,6 +44,21 @@ namespace SlimViews.Tooling
             DataContext = _viewModel;
 
             _ = _viewModel.AsyncInitiate(subFolders, currentFolder, similarity, imageView);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Compare" /> class across one or more
+        ///     folders, searched together as a single pool.
+        /// </summary>
+        public Compare(bool subFolders, IReadOnlyCollection<string> folders, ImageView imageView,
+            int similarity = 0)
+        {
+            InitializeComponent();
+            _viewModel = new CompareView();
+            DataContext = _viewModel;
+
+            _ = _viewModel.AsyncInitiate(subFolders, folders, similarity, imageView);
         }
     }
 }

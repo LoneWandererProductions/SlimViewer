@@ -835,4 +835,37 @@
         </Setter>
     </Style>
 
+    <!--
+        Basic property-level styling (Foreground/Background/BorderBrush only, no custom
+        ControlTemplate) for CheckBox/RadioButton/ListBox - unlike Menu/ComboBox/TabControl, these
+        don't have a large opaque background of their own by default, so plain property setters
+        get most of the way there. The checkbox/radio glyph itself may still show default OS
+        chrome (a light box/circle) since that would need a full template like Menu got - a
+        smaller, lower-priority inconsistency than what a solid opaque background mismatch caused
+        elsewhere.
+    -->
+    <Style TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+
+    <Style TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+
+    <Style TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+    </Style>
+
+    <Style TargetType="ListBoxItem">
+        <Setter Property="Padding" Value="4,2" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+                <Setter Property="Foreground" Value="White" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

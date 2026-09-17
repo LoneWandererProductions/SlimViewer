@@ -295,17 +295,8 @@
                     <MenuItem Header="🖼️ Mass Resizer" Command="{Binding Commands.ResizerWindow}"
                               ToolTip="Resize all images in a folder" />
                     <Separator />
-                    <MenuItem Header="👯 Find Duplicates" Command="{Binding Commands.Duplicate}"
-                              ToolTip="Search for exact duplicate images" />
-                    <MenuItem Header="🔍 Find Similar Images">
-                        <MenuItem Header="Near Identical (95%)" Command="{Binding Commands.Similar}"
-                                  CommandParameter="95" />
-                        <MenuItem Header="Highly Similar (90%)" Command="{Binding Commands.Similar}"
-                                  CommandParameter="90" />
-                        <MenuItem Header="Visual Match (80%)" Command="{Binding Commands.Similar}"
-                                  CommandParameter="80" />
-                        <MenuItem Header="Loose Match (70%)" Command="{Binding Commands.Similar}" CommandParameter="70" />
-                    </MenuItem>
+                    <MenuItem Header="👯 Find Duplicates / Similar Images..." Command="{Binding Commands.FindDuplicates}"
+                              ToolTip="Search one or more folders for exact duplicates or visually similar images" />
                     <Separator />
                     <MenuItem Header="🎞️ Gif Editor" Command="{Binding Commands.GifWindow}"
                               CommandParameter="{Binding Image.GifPath}" ToolTip="Open frame editor for animated GIFs" />
@@ -380,7 +371,6 @@
                                                 ToolState="{Binding DataContext.MyDrawingState, RelativeSource={RelativeSource AncestorType=Window}}"
                                                 ToolChangedCommand="{Binding DataContext.Commands.ToolChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
         </Border>
-
         <!-- TOP GRID SPLITTER (Between Drawing Toolbar and Image)             -->
         <GridSplitter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                       HorizontalAlignment="Stretch"
@@ -447,7 +437,7 @@
             <!-- 3. Your original ToggleButton -->
             <ToggleButton HorizontalAlignment="Center" VerticalAlignment="Center"
                           IsChecked="{Binding IsThumbsVisible, Mode=TwoWay}"
-                          Padding="14,1" 
+                          Padding="14,1"
                           Cursor="Hand" ToolTip="Flip thumbnail panel open or closed">
                 <ToggleButton.Style>
                     <!--

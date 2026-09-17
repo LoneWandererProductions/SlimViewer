@@ -119,12 +119,25 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Duplicates the window.
+        /// Opens the duplicate/similar-image search configuration dialog, then launches the
+        /// comparison window with whatever folders/mode/percentage the user chose. Replaces the
+        /// old DuplicateWindow/SimilarWindow pair (four fixed 70/80/90/95% menu presets, always
+        /// scoped to just the currently-open folder) with one entry point that lets the user pick
+        /// any folder(s) and an exact percentage.
         /// </summary>
         /// <param name="owner">The owner.</param>
-        internal void DuplicateWindow(ImageView owner)
+        internal void FindDuplicatesWindow(ImageView owner)
         {
-            var compareWindow = new Compare(owner.UseSubFolders, owner.FileContext.CurrentPath, owner)
+            var config = new DuplicateSearchConfig(owner.FileContext.CurrentPath)
+            {
+                Topmost = true,
+                Owner = owner.UiState.Main
+            };
+
+            if (config.ShowDialog() != true) return;
+
+            var compareWindow = new Compare(config.IncludeSubfolders, config.Folders.ToList(), owner,
+                config.Similarity)
             {
                 Topmost = true,
                 Owner = owner.UiState.Main
@@ -203,28 +216,6 @@ namespace SlimViews
                 Owner = owner.UiState.Main
             };
             resizer.Show();
-        }
-
-        /// <summary>
-        /// Show the similar search window.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="parameter">The parameter.</param>
-        public void SimilarWindow(ImageView owner, object? parameter)
-        {
-            // If no parameter is passed, default to 90
-            var similarity = 90;
-            if (parameter != null && int.TryParse(parameter.ToString(), out var result))
-            {
-                similarity = result;
-            }
-
-            var compareWindow = new Compare(owner.UseSubFolders, owner.FileContext.CurrentPath, owner, similarity)
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-            compareWindow.Show();
         }
 
         /// <summary>

@@ -228,8 +228,8 @@ namespace SlimViews.Tooling
         private ICommand? _nextCommand;
 
         /// <summary>
-        /// Initiates the comparison asynchronously.
-        /// Retrieves duplicates or similar images and populates observer groups.
+        /// Initiates the comparison asynchronously against a single folder. Kept for existing
+        /// callers - delegates to the multi-folder overload below with a one-item folder list.
         /// </summary>
         /// <param name="subFolders">Include subfolders if true.</param>
         /// <param name="currentFolder">The folder to scan.</param>
@@ -238,15 +238,40 @@ namespace SlimViews.Tooling
         internal async Task AsyncInitiate(bool subFolders, string? currentFolder, int similarity = 0,
             ImageView imageView = null)
         {
+            var folders = string.IsNullOrWhiteSpace(currentFolder)
+                ? Array.Empty<string>()
+                : new[] { currentFolder };
+
+            await AsyncInitiate(subFolders, folders, similarity, imageView);
+        }
+
+        /// <summary>
+        /// Initiates the comparison asynchronously across one or more folders.
+        /// Retrieves duplicates or similar images and populates observer groups.
+        /// </summary>
+        /// <param name="subFolders">Include subfolders if true.</param>
+        /// <param name="folders">The folders to scan, searched together as a single pool.</param>
+        /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
+        /// <param name="imageView">The image view.</param>
+        internal async Task AsyncInitiate(bool subFolders, IReadOnlyCollection<string> folders, int similarity = 0,
+            ImageView imageView = null)
+        {
             _imageView = imageView;
             IsBusy = true;
 
             try
             {
+                if (folders == null || folders.Count == 0)
+                {
+                    Status = "No folder selected to search.";
+                    return;
+                }
+
                 // UI Feedback: Let the user know exactly what kind of search is running
+                var folderLabel = folders.Count == 1 ? "the selected folder" : $"{folders.Count} selected folders";
                 Status = similarity == 0
-                    ? "Scanning for exact duplicates..."
-                    : $"Scanning for images with {similarity}% similarity...";
+                    ? $"Scanning {folderLabel} for exact duplicates..."
+                    : $"Scanning {folderLabel} for images with {similarity}% similarity...";
 
                 _duplicates = await Task.Run(() =>
                 {
@@ -254,8 +279,8 @@ namespace SlimViews.Tooling
                     // similarity == 0 means bit-for-bit check
                     // similarity > 0 means visual histogram/perceptual check
                     var results = similarity == 0
-                        ? _compare.GetDuplicateImages(currentFolder, subFolders, ImagingResources.Appendix)
-                        : _compare.GetSimilarImages(currentFolder, subFolders, ImagingResources.Appendix, similarity);
+                        ? _compare.GetDuplicateImages(folders, subFolders, ImagingResources.Appendix)
+                        : _compare.GetSimilarImages(folders, subFolders, ImagingResources.Appendix, similarity);
 
                     // Drop any group the user explicitly dismissed earlier this session
                     // ("Ignore for Session") so a rescan doesn't just bring it straight back.
