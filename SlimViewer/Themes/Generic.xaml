@@ -938,8 +938,6 @@
                             <Setter Property="Foreground" Value="#FFFFFF" />
                         </Trigger>
                         <MultiTrigger>
-                            <Condition Property="IsSelected" Value="True" />
-                            <Condition Property="IsActive" Value="False" />
                             <Setter TargetName="border" Property="Background" Value="{StaticResource TextMutedBrush}" />
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
