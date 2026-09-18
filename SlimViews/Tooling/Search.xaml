@@ -39,7 +39,8 @@
         <Border Grid.Row="1" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
-                <TextBlock Text="📝 Search by File Name" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,8" />
+                <TextBlock Text="📝 Search by File Name" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,8" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -63,7 +64,8 @@
         <Border Grid.Row="3" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                 Padding="12">
             <StackPanel>
-                <TextBlock Text="🎨 Search by RGB Color" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,8" />
+                <TextBlock Text="🎨 Search by RGB Color" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,8" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -105,7 +107,8 @@
 
                     <!-- Tolerance Range -->
                     <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,4,0"
+                        <TextBlock Text="Tolerance:" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,4,0"
                                    ToolTip="Color matching tolerance range" />
                         <TextBox Width="45" Height="28" VerticalContentAlignment="Center" TextAlignment="Center"
                                  Text="{Binding Path=Range, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

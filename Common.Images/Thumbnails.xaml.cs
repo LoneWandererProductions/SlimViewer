@@ -982,7 +982,9 @@ namespace Common.Images
         /// </summary>
         public List<int> GetVisibleIds()
         {
-            if (Border == null) return [];
+            if (Border == null) return
+            []
+            ;
 
             return Border
                 .Where(kvp => kvp.Value?.Parent is UIElement { Visibility: Visibility.Visible })

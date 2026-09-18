@@ -98,8 +98,8 @@ namespace SlimViews
             // files we're about to delete - otherwise there's no lock to release and no reason
             // to blank the preview out from under the user.
             var isCurrentImageAffected = owner.FileContext.FilePath != null &&
-                                          paths.Any(p => string.Equals(p, owner.FileContext.FilePath,
-                                              StringComparison.OrdinalIgnoreCase));
+                                         paths.Any(p => string.Equals(p, owner.FileContext.FilePath,
+                                             StringComparison.OrdinalIgnoreCase));
 
             // Captured before anything is actually removed from Observer - needed afterward to
             // find whichever surviving image now sits closest to where this one was.

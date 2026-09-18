@@ -70,8 +70,14 @@ namespace Extended.Objects
             get
             {
                 _lock.EnterReadLock();
-                try { return _data.Count; }
-                finally { _lock.ExitReadLock(); }
+                try
+                {
+                    return _data.Count;
+                }
+                finally
+                {
+                    _lock.ExitReadLock();
+                }
             }
         }
 
@@ -96,7 +102,10 @@ namespace Extended.Objects
 
                     throw new KeyNotFoundException($"Key '{key}' not found.");
                 }
-                finally { _lock.ExitReadLock(); }
+                finally
+                {
+                    _lock.ExitReadLock();
+                }
             }
             set
             {
@@ -112,7 +121,10 @@ namespace Extended.Objects
                         AddInternal(string.Empty, key, value);
                     }
                 }
-                finally { _lock.ExitWriteLock(); }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
             }
         }
 
@@ -132,8 +144,14 @@ namespace Extended.Objects
         public void Add(string category, TK key, TV value)
         {
             _lock.EnterWriteLock();
-            try { AddInternal(NormalizeCategory(category), key, value); }
-            finally { _lock.ExitWriteLock(); }
+            try
+            {
+                AddInternal(NormalizeCategory(category), key, value);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -181,7 +199,10 @@ namespace Extended.Objects
 
                 return true;
             }
-            finally { _lock.ExitWriteLock(); }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -194,8 +215,14 @@ namespace Extended.Objects
         public bool ContainsKey(TK key)
         {
             _lock.EnterReadLock();
-            try { return _data.ContainsKey(key); }
-            finally { _lock.ExitReadLock(); }
+            try
+            {
+                return _data.ContainsKey(key);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -219,7 +246,10 @@ namespace Extended.Objects
                 value = default;
                 return false;
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -243,7 +273,10 @@ namespace Extended.Objects
                 category = null;
                 return false;
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -262,7 +295,10 @@ namespace Extended.Objects
 
                 throw new KeyNotFoundException();
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -306,7 +342,10 @@ namespace Extended.Objects
 
                 return true;
             }
-            finally { _lock.ExitWriteLock(); }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -321,7 +360,10 @@ namespace Extended.Objects
                 // Must snapshot keys inside the lock to allow safe iteration outside
                 return new List<string>(_categories.Keys);
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -343,7 +385,10 @@ namespace Extended.Objects
 
                 return Array.Empty<TK>();
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -360,7 +405,10 @@ namespace Extended.Objects
                 // Must snapshot keys inside the lock
                 return new List<TK>(_data.Keys);
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -378,7 +426,10 @@ namespace Extended.Objects
 
                 return null;
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
 
@@ -401,7 +452,10 @@ namespace Extended.Objects
                 foreach (var key in keys) dict[key] = _data[key].Value;
                 return dict;
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -415,7 +469,10 @@ namespace Extended.Objects
                 _data.Clear();
                 _categories.Clear();
             }
-            finally { _lock.ExitWriteLock(); }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -435,7 +492,10 @@ namespace Extended.Objects
                 foreach (var kvp in _data)
                     snapshot.Add((kvp.Key, kvp.Value.Category, kvp.Value.Value));
             }
-            finally { _lock.ExitReadLock(); }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
 
             // Iterate outside the lock to avoid deadlocks or contention
             foreach (var item in snapshot) yield return item;

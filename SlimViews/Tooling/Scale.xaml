@@ -54,7 +54,8 @@
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="🔄" Margin="0,0,4,0" VerticalAlignment="Center" />
                     <TextBlock Text="Rotation Angle:" VerticalAlignment="Center" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextSecondaryBrush}" ToolTip="Angle in degrees to rotate the image" />
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               ToolTip="Angle in degrees to rotate the image" />
                 </StackPanel>
                 <TextBox Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center"
                          Text="{Binding Path=Degree, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -63,7 +64,8 @@
                 <!-- Scale Factor -->
                 <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="🔍" Margin="0,0,4,0" VerticalAlignment="Center" />
-                    <TextBlock Text="Scale Factor:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
+                    <TextBlock Text="Scale Factor:" VerticalAlignment="Center" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
                                ToolTip="Multiplier for resizing the image dimensions" />
                 </StackPanel>
                 <TextBox Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center"

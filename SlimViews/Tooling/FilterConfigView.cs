@@ -98,7 +98,7 @@ namespace SlimViews.Tooling
             // 2. Set the default selected filter (e.g., the first one)
             SelectedFilter = FilterOptions.FirstOrDefault();
 
-            // 3. UpdateActiveProperties will now pull the LOADED settings from the Facade 
+            // 3. UpdateActiveProperties will now pull the LOADED settings from the Facade
             // because it calls ImagingFacade.GetFilterSettings(SelectedFilter)
         }
 

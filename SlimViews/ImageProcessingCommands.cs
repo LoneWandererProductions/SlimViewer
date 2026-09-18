@@ -116,6 +116,7 @@ namespace SlimViews
         {
             if (owner?.Image?.Bitmap == null)
                 return;
+
             var pixelWidth = 2;
 
             if (parameter != null && int.TryParse(parameter.ToString(), out var result))

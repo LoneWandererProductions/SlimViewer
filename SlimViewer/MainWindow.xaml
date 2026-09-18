@@ -295,7 +295,8 @@
                     <MenuItem Header="🖼️ Mass Resizer" Command="{Binding Commands.ResizerWindow}"
                               ToolTip="Resize all images in a folder" />
                     <Separator />
-                    <MenuItem Header="👯 Find Duplicates / Similar Images..." Command="{Binding Commands.FindDuplicates}"
+                    <MenuItem Header="👯 Find Duplicates / Similar Images..."
+                              Command="{Binding Commands.FindDuplicates}"
                               ToolTip="Search one or more folders for exact duplicates or visually similar images" />
                     <Separator />
                     <MenuItem Header="🎞️ Gif Editor" Command="{Binding Commands.GifWindow}"
@@ -509,17 +510,17 @@
                     ToolTip="Open file location in Windows Explorer" />
 
             <TextBox Grid.Row="0"
-                 Grid.Column="2"
-                 Grid.ColumnSpan="2"
-                 Text="{Binding Path=Image.Information, Mode=OneWay}"
-                 TextWrapping="NoWrap"
-                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                 IsReadOnly="True"
-                 Focusable="True"
-                 BorderThickness="0"
-                 Margin="0,0,5,0"
-                 ToolTip="{Binding Path=Image.Information, Mode=OneWay}" />
+                     Grid.Column="2"
+                     Grid.ColumnSpan="2"
+                     Text="{Binding Path=Image.Information, Mode=OneWay}"
+                     TextWrapping="NoWrap"
+                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     IsReadOnly="True"
+                     Focusable="True"
+                     BorderThickness="0"
+                     Margin="0,0,5,0"
+                     ToolTip="{Binding Path=Image.Information, Mode=OneWay}" />
 
             <Button Content="🔄 Refresh" Grid.Row="0" Grid.Column="5"
                     Height="30"
@@ -529,9 +530,9 @@
                     ToolTip="Reload folder contents and regenerate thumbnails" />
 
             <Images:BusyIndicator Grid.Row="2" Grid.Column="0"
-                   IsBusy="{Binding UiState.IsBusy}"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                   ToolTip="Current background processing status (pulsing = busy, steady = ready)" />
+                                  IsBusy="{Binding UiState.IsBusy}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  ToolTip="Current background processing status (pulsing = busy, steady = ready)" />
 
             <Button Content="🏷️" Grid.Row="2" Grid.Column="1"
                     Command="{Binding Commands.Rename}"

@@ -114,7 +114,8 @@ namespace Common.Dialogs
                 catch
                 {
                     // Fallback to native MessageBox if custom XAML or resource initialization fails
-                    MessageBox.Show($"{safeMessage}\n\n{safeDetails}", safeTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"{safeMessage}\n\n{safeDetails}", safeTitle, MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
 

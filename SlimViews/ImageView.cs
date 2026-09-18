@@ -573,6 +573,7 @@ namespace SlimViews
             set
             {
                 if (_thumbFilterText == value) return;
+
                 _thumbFilterText = value;
                 OnPropertyChanged();
                 ApplyThumbFilter();
@@ -966,7 +967,7 @@ namespace SlimViews
 
                 if (folder != null && folder != FileContext.CurrentPath)
                 {
-                    // If you are in "SubFolder" mode, don't reload if the new folder 
+                    // If you are in "SubFolder" mode, don't reload if the new folder
                     // is just a child of the current path.
                     var isSubfolder = folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
 

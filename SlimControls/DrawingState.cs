@@ -98,6 +98,7 @@ namespace SlimControls
             set
             {
                 if (_activeTool == value) return;
+
                 _activeTool = value;
                 OnPropertyChanged();
 
@@ -120,6 +121,7 @@ namespace SlimControls
             set
             {
                 if (_activeAreaMode == value) return;
+
                 _activeAreaMode = value;
                 UpdateSubStates();
                 OnPropertyChanged();
@@ -139,6 +141,7 @@ namespace SlimControls
             set
             {
                 if (_selectedShape == value) return;
+
                 _selectedShape = value;
 
                 // FIX: When user picks a shape, automatically switch the Active Tool
@@ -193,6 +196,7 @@ namespace SlimControls
             set
             {
                 if (Math.Abs(_brushOpacity - value) < 0.01) return;
+
                 _brushOpacity = value;
                 OnPropertyChanged();
             }

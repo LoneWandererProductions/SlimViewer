@@ -30,7 +30,8 @@
                 Padding="14,12">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="📖" FontSize="20" VerticalAlignment="Center" Margin="0,0,8,0" />
-                <TextBlock Text="SlimViewer Documentation" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"
+                <TextBlock Text="SlimViewer Documentation" FontSize="18" FontWeight="Bold"
+                           Foreground="{DynamicResource TextPrimaryBrush}"
                            VerticalAlignment="Center" />
             </StackPanel>
         </Border>
@@ -45,12 +46,14 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                             <TextBlock Text="💡" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0" />
-                            <TextBlock Text="Overview" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}"
+                            <TextBlock Text="Overview" FontSize="14" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource AccentBrush}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                         <TextBlock
                             Text="SlimViewer is a fast, lightweight image viewer and editor. Use the top menu or the keyboard shortcuts below to navigate, edit, and manage your images without taking your hands off the keyboard."
-                            TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18" FontSize="12" />
+                            TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18"
+                            FontSize="12" />
                     </StackPanel>
                 </Border>
 
@@ -89,7 +92,8 @@
                             </Grid.RowDefinitions>
 
                             <!-- Left Arrow -->
-                            <Border Grid.Row="0" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="0" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="◀ Left Arrow" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
@@ -99,7 +103,8 @@
                                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
 
                             <!-- Right Arrow -->
-                            <Border Grid.Row="2" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="2" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="▶ Right Arrow" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
@@ -109,74 +114,88 @@
                                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
 
                             <!-- Delete -->
-                            <Border Grid.Row="4" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="4" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="Delete" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
                                            Foreground="#333" />
                             </Border>
                             <TextBlock Grid.Row="4" Grid.Column="1" Text="Delete current image from disk"
-                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="12" />
 
                             <!-- F5 -->
-                            <Border Grid.Row="6" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="6" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="F5" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
                                            Foreground="#333" />
                             </Border>
                             <TextBlock Grid.Row="6" Grid.Column="1" Text="Refresh current image"
-                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="12" />
 
                             <!-- Ctrl + O -->
-                            <Border Grid.Row="8" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="8" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="Ctrl + O" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
                                            Foreground="#333" />
                             </Border>
                             <TextBlock Grid.Row="8" Grid.Column="1" Text="Open Image file dialog"
-                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="12" />
 
                             <!-- Ctrl + S -->
-                            <Border Grid.Row="10" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="10" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="Ctrl + S" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
                                            Foreground="#333" />
                             </Border>
                             <TextBlock Grid.Row="10" Grid.Column="1" Text="Save current image edits"
-                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="12" />
 
                             <!-- Ctrl + Z -->
-                            <Border Grid.Row="12" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="12" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="Ctrl + Z" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
                                            Foreground="#333" />
                             </Border>
                             <TextBlock Grid.Row="12" Grid.Column="1" Text="Undo last edit operation"
-                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="12" />
 
                             <!-- Ctrl + Y -->
-                            <Border Grid.Row="14" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="14" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="Ctrl + Y" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
                                            Foreground="#333" />
                             </Border>
                             <TextBlock Grid.Row="14" Grid.Column="1" Text="Redo last undone operation"
-                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="12" />
 
                             <!-- Ctrl + C -->
-                            <Border Grid.Row="16" Grid.Column="0" Background="#F2F2F2" BorderBrush="{DynamicResource BorderBrush}"
+                            <Border Grid.Row="16" Grid.Column="0" Background="#F2F2F2"
+                                    BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                 <TextBlock Text="Ctrl + C" FontFamily="Consolas" FontWeight="Bold" FontSize="11"
                                            Foreground="#333" />
                             </Border>
                             <TextBlock Grid.Row="16" Grid.Column="1" Text="Copy current image to Windows clipboard"
-                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="12" />
                         </Grid>
                     </StackPanel>
                 </Border>

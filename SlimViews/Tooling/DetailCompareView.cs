@@ -167,10 +167,12 @@ namespace SlimViews.Tooling
             _redIcon = Path.Combine(_root, ViewResources.IconPathRed);
 
             // Initialize commands in the constructor
-            OpenOneCommand = new DelegateCommand<object>(_ => OpenOneAction(_), _ => !IsWorking);
-            OpenTwoCommand = new DelegateCommand<object>(_ => OpenTwoAction(_), _ => !IsWorking);
-            DifferenceCommand = new DelegateCommand<object>(DifferenceAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
-            ExportCommand = new DelegateCommand<object>(ExportAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
+            OpenOneCommand = new DelegateCommand<object>(OpenOneAction, _ => !IsWorking);
+            OpenTwoCommand = new DelegateCommand<object>(OpenTwoAction, _ => !IsWorking);
+            DifferenceCommand =
+                new DelegateCommand<object>(DifferenceAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
+            ExportCommand =
+                new DelegateCommand<object>(ExportAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
         }
 
         /// <summary>

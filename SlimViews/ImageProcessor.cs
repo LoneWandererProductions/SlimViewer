@@ -145,9 +145,10 @@ namespace SlimViews
         /// <param name="point">The point.</param>
         /// <param name="color">The color.</param>
         /// <param name="radius">The optional radius.</param>
-        internal static Bitmap? SetPixel(Bitmap btm, Point point, Color color, int radius = 1)
+        internal static Bitmap? SetPixel(Bitmap? btm, Point point, Color color, int radius = 1)
         {
             if (btm == null) return null;
+
             return Render.SetPixel(btm, point, color, radius);
         }
 
@@ -213,6 +214,7 @@ namespace SlimViews
         internal static Bitmap? Resize(Bitmap bitmap, int width, int height)
         {
             if (bitmap == null) return null;
+
             try
             {
                 return Render.BitmapScaling(bitmap, width, height);
@@ -670,7 +672,7 @@ namespace SlimViews
                 Trace.WriteLine("Observer dictionary is null.");
                 return;
             }
-            
+
             try
             {
                 var count = 0;
@@ -693,7 +695,8 @@ namespace SlimViews
                 _ = MessageBox.Show(string.Concat(ViewResources.InformationConverted, count, Environment.NewLine,
                     ViewResources.InformationErrors, error));
             }
-            catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException or NullReferenceException)
+            catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException
+                                           or NullReferenceException)
             {
                 Trace.WriteLine(ex);
                 _ = MessageBox.Show(ex.ToString(),

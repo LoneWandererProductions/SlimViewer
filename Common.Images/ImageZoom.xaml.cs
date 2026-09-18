@@ -520,7 +520,7 @@ namespace Common.Images
             // Pass the path to ImageGif. It will automatically figure out if it's a GIF or a static image.
             BtmImage.GifSource = ImagePath;
 
-            // Note: SelectionAdorner and Canvas sizing will be updated automatically 
+            // Note: SelectionAdorner and Canvas sizing will be updated automatically
             // when BtmImage_ImageLoaded fires!
         }
 

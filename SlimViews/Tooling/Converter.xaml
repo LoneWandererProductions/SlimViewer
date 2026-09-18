@@ -46,7 +46,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="From:" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+            <TextBlock Text="From:" VerticalAlignment="Center" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
             <ComboBox Grid.Column="1"
                       Height="28"
                       VerticalContentAlignment="Center"
@@ -73,7 +74,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="To:" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+            <TextBlock Text="To:" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
+                       VerticalAlignment="Center" />
             <ComboBox Grid.Column="1"
                       Height="28"
                       VerticalContentAlignment="Center"

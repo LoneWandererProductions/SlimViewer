@@ -343,6 +343,7 @@ namespace SlimViews.Tooling
         private void GenerateView()
         {
             if (_duplicates == null || _duplicates.Count == 0) return;
+
             DuplicateGroups.Clear();
 
             var baseIndex = _index * 10;

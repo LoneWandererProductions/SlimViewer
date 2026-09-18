@@ -289,7 +289,10 @@ namespace Common.Images
             try
             {
                 // Offload dictionary iteration and array mapping to a background thread
-                var pixelData = await Task.Run(() => GeneratePixelData(cif, rOffset, gOffset, bOffset, isIsolationEnabled, selectedColor, token), token);
+                var pixelData =
+                    await Task.Run(
+                        () => GeneratePixelData(cif, rOffset, gOffset, bOffset, isIsolationEnabled, selectedColor,
+                            token), token);
 
                 if (token.IsCancellationRequested || pixelData == null) return;
 

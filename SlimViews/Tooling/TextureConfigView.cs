@@ -579,6 +579,7 @@ namespace SlimViews.Tooling
             set
             {
                 if (!SetProperty(ref _colorRampText, value, nameof(ColorRampText))) return;
+
                 _colorRamp = ParseColorRamp(value);
             }
         }

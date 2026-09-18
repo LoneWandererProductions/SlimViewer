@@ -678,7 +678,7 @@ namespace SlimViews.Tooling
         // Update GenerateThumbViewAsync
         private async Task GenerateThumbViewAsync(ICollection<string?> files, CancellationToken token)
         {
-            var dict = await Task.Run(() => files.ToDictionary(), token);
+            var dict = await Task.Run(files.ToDictionary, token);
 
             // Initialize delays for new files (Default 100ms)
             // We do this on the UI thread or safely inside the ViewModel to ensure sync

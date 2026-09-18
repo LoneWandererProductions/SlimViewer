@@ -47,7 +47,8 @@
                     <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Texture Type" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <TextBlock Text="Texture Type" FontWeight="SemiBold" VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
                 <ComboBox Grid.Column="1" Height="28" VerticalContentAlignment="Center"
                           ItemsSource="{Binding TextureOptions}"
                           SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}"
@@ -63,7 +64,8 @@
                 <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel>
-                        <TextBlock Text="⚙️ General Settings" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,10" />
+                        <TextBlock Text="⚙️ General Settings" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,10" />
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -200,7 +202,8 @@
                 <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel>
-                        <TextBlock Text="📐 Crosshatch Settings" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,10" />
+                        <TextBlock Text="📐 Crosshatch Settings" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,10" />
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -262,7 +265,8 @@
                 <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel>
-                        <TextBlock Text="🧫 Cellular / Color-Mapped Settings" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"
+                        <TextBlock Text="🧫 Cellular / Color-Mapped Settings" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    Margin="0,0,0,10" />
 
                         <Grid>
@@ -328,7 +332,8 @@
                 <!-- 4. ADVANCED TEXTURE SETTINGS CARD -->
                 <Border Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="12">
                     <StackPanel>
-                        <TextBlock Text="🌊 Advanced Texture Settings" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"
+                        <TextBlock Text="🌊 Advanced Texture Settings" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    Margin="0,0,0,10" />
 
                         <Grid>

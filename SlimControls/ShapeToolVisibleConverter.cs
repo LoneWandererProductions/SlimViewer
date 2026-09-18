@@ -20,6 +20,7 @@ namespace SlimControls
             // Annahme: value ist der Name des aktiven Tools als string
             if (value is string and "Shape")
                 return Visibility.Visible;
+
             return Visibility.Collapsed;
         }
 

@@ -30,7 +30,8 @@
 
                 <!-- Title & Version Info -->
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="SlimViewer" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                    <TextBlock Text="SlimViewer" FontSize="20" FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimaryBrush}" />
                     <TextBlock Text="Version 1.0.0 | Created by Peter Geinitz (Wayfarer)"
                                FontSize="12" Foreground="{DynamicResource TextMutedBrush}" Margin="0,2,0,0" />
                 </StackPanel>
@@ -49,12 +50,14 @@
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="📜" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" />
-                    <TextBlock Text="License Agreement" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
+                    <TextBlock Text="License Agreement" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
                                VerticalAlignment="Center" />
                 </StackPanel>
 
                 <TextBox Grid.Row="2" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                         Background="#F9F9F9" Foreground="#333333" BorderBrush="{DynamicResource BorderBrush}" Padding="8"
+                         Background="#F9F9F9" Foreground="#333333" BorderBrush="{DynamicResource BorderBrush}"
+                         Padding="8"
                          FontFamily="Consolas" FontSize="11" xml:space="preserve"
                          ToolTip="Software license terms (Apache License, Version 2.0)">Copyright 2024-2026 Peter Geinitz
 

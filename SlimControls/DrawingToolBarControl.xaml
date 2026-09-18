@@ -95,7 +95,8 @@
                             Value="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
                     <TextBlock
                         Text="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:F0}px}"
-                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="24" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="24"
+                        Foreground="{DynamicResource TextSecondaryBrush}" />
                 </StackPanel>
 
                 <!-- Brush Opacity Slider -->
@@ -106,7 +107,8 @@
                             Value="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
                     <TextBlock
                         Text="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:P0}}"
-                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="28" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="28"
+                        Foreground="{DynamicResource TextSecondaryBrush}" />
                 </StackPanel>
             </StackPanel>
 
@@ -174,7 +176,7 @@
                         <ComboBox
                             ItemsSource="{Binding Path=ToolState.Textures, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             SelectedItem="{Binding Path=ToolState.Texture.TextureName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                            Width="120" FontSize="11" VerticalContentAlignment="Center" Padding="4,2" 
+                            Width="120" FontSize="11" VerticalContentAlignment="Center" Padding="4,2"
                             ToolTip="Select texture pattern" />
                     </StackPanel>
 
@@ -186,7 +188,7 @@
                         <ComboBox
                             ItemsSource="{Binding Path=ToolState.Filters, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             SelectedItem="{Binding Path=ToolState.Filter.FilterName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                            Width="120" FontSize="11" VerticalContentAlignment="Center" Padding="4,2" 
+                            Width="120" FontSize="11" VerticalContentAlignment="Center" Padding="4,2"
                             ToolTip="Select image filter to apply" />
                     </StackPanel>
                 </StackPanel>

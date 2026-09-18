@@ -47,7 +47,8 @@
                 <!-- Pane Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                    <TextBlock Text="Image 1 (Source)" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}"
+                    <TextBlock Text="Image 1 (Source)" FontWeight="Bold" FontSize="13"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
                                VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -75,7 +76,8 @@
         </Border>
 
         <!-- SPLITTER 1 -->
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource BorderBrush}"
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Background="{DynamicResource BorderBrush}"
                       Margin="1,0" ToolTip="Drag to resize panes" />
 
         <!-- ================================================================= -->
@@ -95,7 +97,8 @@
                 <!-- Pane Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Text="🖼️" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                    <TextBlock Text="Image 2 (Target)" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}"
+                    <TextBlock Text="Image 2 (Target)" FontWeight="Bold" FontSize="13"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
                                VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -123,7 +126,8 @@
         </Border>
 
         <!-- SPLITTER 2 -->
-        <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource BorderBrush}"
+        <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Background="{DynamicResource BorderBrush}"
                       Margin="1,0" ToolTip="Drag to resize panes" />
 
         <!-- ================================================================= -->
@@ -149,7 +153,8 @@
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="🔬" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" />
-                        <TextBlock Text="Analysis &amp; Diff" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}"
+                        <TextBlock Text="Analysis &amp; Diff" FontWeight="Bold" FontSize="13"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -158,7 +163,8 @@
                 </Grid>
 
                 <!-- Control Bar Card -->
-                <Border Grid.Row="2" Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4"
+                <Border Grid.Row="2" Background="{DynamicResource PanelBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4"
                         Padding="8">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -175,11 +181,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Content="⚡ Diff Image"  FontWeight="SemiBold"
+                            <Button Grid.Column="0" Content="⚡ Diff Image" FontWeight="SemiBold"
                                     Command="{Binding DifferenceCommand}"
                                     ToolTip="Generate a visual difference overlay on Image 1" />
 
-                            <Button Grid.Column="2" Content="💾 Export" 
+                            <Button Grid.Column="2" Content="💾 Export"
                                     Command="{Binding ExportCommand}"
                                     ToolTip="Export Information as Text file and diff Image if available" />
                         </Grid>
@@ -190,7 +196,8 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Highlight Color:" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"
+                            <TextBlock Text="Highlight Color:" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontSize="11" Margin="0,0,8,0" ToolTip="Select color to highlight differences" />
                             <Images:ColorSelection Grid.Column="1" Height="24"
                                                    StartColor="{Binding Colors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -203,13 +210,15 @@
                 <TabControl Grid.Row="4" Margin="0">
                     <TabItem Header="📋 Information">
                         <RichTextBox Name="Information" IsReadOnly="True" BorderThickness="0"
-                                     Background="{DynamicResource PanelBrush}" Foreground="{DynamicResource TextPrimaryBrush}"
+                                     Background="{DynamicResource PanelBrush}"
+                                     Foreground="{DynamicResource TextPrimaryBrush}"
                                      Padding="4" />
                     </TabItem>
                     <TabItem Header="🎨 Color Details">
                         <TextBox Name="ColorInformation" IsReadOnly="True" HorizontalScrollBarVisibility="Auto"
                                  VerticalScrollBarVisibility="Auto" BorderThickness="0"
-                                 Background="{DynamicResource PanelBrush}" Foreground="{DynamicResource TextPrimaryBrush}"
+                                 Background="{DynamicResource PanelBrush}"
+                                 Foreground="{DynamicResource TextPrimaryBrush}"
                                  Padding="4" />
                     </TabItem>
                 </TabControl>
