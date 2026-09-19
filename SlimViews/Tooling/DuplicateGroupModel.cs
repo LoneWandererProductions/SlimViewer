@@ -32,12 +32,12 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The new name
         /// </summary>
-        private string _newName;
+        private string? _newName;
 
         /// <summary>
         /// The group identifier
         /// </summary>
-        private string _groupId;
+        private string? _groupId;
 
         /// <summary>
         /// Gets the group identifier.
@@ -45,10 +45,10 @@ namespace SlimViews.Tooling
         /// <value>
         /// The group identifier.
         /// </value>
-        public string GroupId
+        public string? GroupId
         {
             get => _groupId;
-            set => SetProperty(ref _groupId, value, nameof(GroupId));
+            init => SetProperty(ref _groupId, value, nameof(GroupId));
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The new name.
         /// </value>
-        public string NewName
+        public string? NewName
         {
             get => _newName;
             set => SetProperty(ref _newName, value, nameof(NewName));
@@ -101,7 +101,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The delete selected command.
         /// </value>
-        public ICommand DeleteSelectedCommand { get; set; }
+        public ICommand? DeleteSelectedCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the rename selected command.
@@ -109,7 +109,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The rename selected command.
         /// </value>
-        public ICommand RenameSelectedCommand { get; set; }
+        public ICommand? RenameSelectedCommand { get; set; }
 
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The delete all command.
         /// </value>
-        public ICommand DeleteAllCommand { get; set; }
+        public ICommand? DeleteAllCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the "ignore this group for the current session" command. Dismisses the
@@ -128,6 +128,6 @@ namespace SlimViews.Tooling
         /// <value>
         /// The ignore group command.
         /// </value>
-        public ICommand IgnoreGroupCommand { get; set; }
+        public ICommand? IgnoreGroupCommand { get; set; }
     }
 }

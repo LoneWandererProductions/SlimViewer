@@ -10,6 +10,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Core.MemoryLog;
 using Imaging;
 using SlimViews.Contexts;

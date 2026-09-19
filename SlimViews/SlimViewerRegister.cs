@@ -6,6 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+using SlimViews.Tooling;
+
 namespace SlimViews
 {
     /// <summary>
@@ -43,7 +45,7 @@ namespace SlimViews
         /// <value>
         ///     The source.
         /// </value>
-        internal static string Source { get; set; }
+        internal static string? Source { get; set; }
 
         /// <summary>
         ///     Gets or sets the target.
@@ -51,7 +53,7 @@ namespace SlimViews
         /// <value>
         ///     The target.
         /// </value>
-        internal static string Target { get; set; }
+        internal static string? Target { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [GIF clean up].

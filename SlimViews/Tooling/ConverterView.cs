@@ -28,22 +28,22 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The extension select
         /// </summary>
-        private string _extensionSelect;
+        private string? _extensionSelect;
 
         /// <summary>
         /// The source
         /// </summary>
-        private string _source;
+        private string? _source;
 
         /// <summary>
         /// The source select
         /// </summary>
-        private string _sourceSelect;
+        private string? _sourceSelect;
 
         /// <summary>
         /// The target
         /// </summary>
-        private string _target;
+        private string? _target;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ConverterView" /> class.
@@ -65,18 +65,18 @@ namespace SlimViews.Tooling
         ///     after this window is already open, instead of needing List specifically and just
         ///     failing to compile against the new type.
         /// </summary>
-        public IEnumerable<string> SelectedSource => ImagingResources.Appendix;
+        public IEnumerable<string?> SelectedSource => ImagingResources.Appendix;
 
         /// <summary>
         ///     Gets the available target extensions. See <see cref="SelectedSource" /> for why this
         ///     is IEnumerable rather than List.
         /// </summary>
-        public IEnumerable<string> ExtensionSource => ImagingResources.Appendix;
+        public IEnumerable<string?> ExtensionSource => ImagingResources.Appendix;
 
         /// <summary>
         ///     Gets or sets the target extension selection.
         /// </summary>
-        public string ExtensionSelect
+        public string? ExtensionSelect
         {
             get => _extensionSelect;
             set => SetField(ref _extensionSelect, value, () => Target = value, nameof(ExtensionSelect));
@@ -85,7 +85,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the source extension selection.
         /// </summary>
-        public string SourceSelect
+        public string? SourceSelect
         {
             get => _sourceSelect;
             set => SetField(ref _sourceSelect, value, () => Source = value, nameof(SourceSelect));
@@ -94,7 +94,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the source.
         /// </summary>
-        public string Source
+        public string? Source
         {
             get => _source;
             set
@@ -108,7 +108,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the target.
         /// </summary>
-        public string Target
+        public string? Target
         {
             get => _target;
             set

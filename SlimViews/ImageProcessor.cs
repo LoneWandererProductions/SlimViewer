@@ -169,14 +169,14 @@ namespace SlimViews
         /// <summary>
         ///     Asynchronously generates an export file with specified information and an optional difference bitmap.
         /// </summary>
-        internal static async Task GenerateExportAsync(string informationOne, string informationTwo, string colorOne,
-            string colorTwo, string similarity, Bitmap difference)
+        internal static async Task GenerateExportAsync(string? informationOne, string? informationTwo, string? colorOne,
+            string? colorTwo, string? similarity, Bitmap? difference)
         {
             var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenTxt, null!);
 
             if (pathObj == null) return;
 
-            var content = new List<string>
+            var content = new List<string?>
             {
                 informationOne,
                 colorOne,
@@ -189,7 +189,7 @@ namespace SlimViews
 
             try
             {
-                await File.WriteAllLinesAsync(pathObj.FilePath, content).ConfigureAwait(false);
+                await File.WriteAllLinesAsync(pathObj.FilePath!, content!).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is IOException or ArgumentException)
             {
@@ -211,7 +211,7 @@ namespace SlimViews
         /// <param name="width">The desired width.</param>
         /// <param name="height">The desired height.</param>
         /// <returns>The resized bitmap.</returns>
-        internal static Bitmap? Resize(Bitmap bitmap, int width, int height)
+        internal static Bitmap? Resize(Bitmap? bitmap, int width, int height)
         {
             if (bitmap == null) return null;
 
@@ -234,7 +234,7 @@ namespace SlimViews
         /// <param name="bitmap">The bitmap to filter.</param>
         /// <param name="filter">The filter to apply.</param>
         /// <returns>The filtered bitmap.</returns>
-        internal static Bitmap Filter(Bitmap bitmap, FiltersType filter)
+        internal static Bitmap? Filter(Bitmap? bitmap, FiltersType filter)
         {
             if (filter == FiltersType.None) return bitmap;
 
@@ -257,12 +257,12 @@ namespace SlimViews
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="texture">The texture.</param>
         /// <returns>The textured bitmap.</returns>
-        internal static Bitmap Texture(Bitmap bitmap, TextureType texture)
+        internal static Bitmap? Texture(Bitmap? bitmap, TextureType texture)
         {
             try
             {
                 //just overlay the whole image with the texture, will be changed later
-                return Generator.GenerateTextureOverlay(bitmap, bitmap.Width, bitmap.Height, texture,
+                return Generator.GenerateTextureOverlay(bitmap, bitmap!.Width, bitmap.Height, texture,
                     MaskShape.Rectangle);
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException)
@@ -280,7 +280,7 @@ namespace SlimViews
         /// <param name="bitmap">The bitmap to pixelate.</param>
         /// <param name="pixelWidth">The width of the pixelate.</param>
         /// <returns>The pixelated bitmap.</returns>
-        public static Bitmap Pixelate(Bitmap bitmap, int pixelWidth)
+        public static Bitmap? Pixelate(Bitmap bitmap, int pixelWidth)
         {
             return Render.Pixelate(bitmap, pixelWidth);
         }
@@ -292,7 +292,7 @@ namespace SlimViews
         /// <param name="extension">The desired file extension.</param>
         /// <param name="bitmap">The bitmap to save.</param>
         /// <returns>True if the save was successful; otherwise, false.</returns>
-        internal static bool SaveImage(string path, string extension, Bitmap bitmap)
+        internal static bool SaveImage(string? path, string? extension, Bitmap? bitmap)
         {
             path = Path.ChangeExtension(path, extension);
 
@@ -324,7 +324,7 @@ namespace SlimViews
         /// <param name="extension">The file extension.</param>
         /// <param name="format">The resolved format, if <paramref name="extension" /> is a built-in one.</param>
         /// <returns><c>true</c> if <paramref name="extension" /> is a built-in format; otherwise, <c>false</c>.</returns>
-        private static bool TryGetBuiltInFormat(string extension, out ImageFormat format)
+        private static bool TryGetBuiltInFormat(string? extension, out ImageFormat? format)
         {
             switch (extension)
             {
@@ -354,7 +354,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="path">The path to the image.</param>
         /// <returns>The loaded bitmap, or null if loading fails.</returns>
-        internal static Bitmap LoadImage(string? path)
+        internal static Bitmap? LoadImage(string? path)
         {
             try
             {
@@ -374,7 +374,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>The generated bitmap, or null if generation fails.</returns>
-        internal static Bitmap GenerateImage(string? filePath)
+        internal static Bitmap? GenerateImage(string? filePath)
         {
             try
             {
@@ -395,7 +395,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="message">The message to display.</param>
         /// <param name="source">The source of the error (optional).</param>
-        private static void ShowError(string message, string source = null)
+        private static void ShowError(string message, string? source = null)
         {
             DialogHandler.ErrorDialog(message, source);
         }
@@ -405,7 +405,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Darken Image</returns>
-        internal static Bitmap Darken(Bitmap bitmap)
+        internal static Bitmap? Darken(Bitmap bitmap)
         {
             return Render.AdjustBrightness(bitmap, 0.1f);
         }
@@ -415,7 +415,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="bitmap">The bitmap.</param>
         /// <returns>Brighten the Image</returns>
-        internal static Bitmap Brighten(Bitmap bitmap)
+        internal static Bitmap? Brighten(Bitmap bitmap)
         {
             return Render.AdjustBrightness(bitmap, -0.1f);
         }
@@ -436,7 +436,7 @@ namespace SlimViews
         /// <param name="frame">The selection frame.</param>
         /// <param name="btm">The bitmap.</param>
         /// <returns>Changed bitmap or in case of error the original</returns>
-        internal static Bitmap EraseImage(SelectionFrame frame, Bitmap btm)
+        internal static Bitmap? EraseImage(SelectionFrame frame, Bitmap? btm)
         {
             try
             {
@@ -464,8 +464,8 @@ namespace SlimViews
             var mask = Translator.MapCodeToTool(frame.Tool);
             var point = new Point(frame.X, frame.Y);
 
-            // 2. FIX: Prepare Shape Parameters for Polygon/FreeForm
-            object shapeParams = null;
+            // 2. Prepare Shape Parameters for Polygon/FreeForm
+            object? shapeParams = null;
 
             if (mask == MaskShape.Polygon)
             {
@@ -513,13 +513,13 @@ namespace SlimViews
         /// <param name="frame">The frame.</param>
         /// <param name="texture">The texture.</param>
         /// <returns>Changed bitmap or in case of error the original</returns>
-        public static Bitmap FillTexture(Bitmap bitmap, SelectionFrame frame, TextureType texture)
+        public static Bitmap? FillTexture(Bitmap? bitmap, SelectionFrame frame, TextureType texture)
         {
             var mask = Translator.MapCodeToTool(frame.Tool);
             var point = new Point(frame.X, frame.Y);
 
-            // FIX: Prepare Polygon Points
-            object shapeParams = null;
+            // Prepare Polygon Points
+            object? shapeParams = null;
             if (mask == MaskShape.Polygon && frame.Points is { Count: > 0 })
             {
                 // Convert WPF Points -> GDI+ Points
@@ -530,7 +530,7 @@ namespace SlimViews
 
             try
             {
-                // FIX: Pass shapeParams to the Generator
+                // Pass shapeParams to the Generator
                 // Ensure your GenerateTextureOverlay method accepts this argument!
                 return Generator.GenerateTextureOverlay(
                     bitmap,
@@ -557,13 +557,13 @@ namespace SlimViews
         /// <param name="frame">The frame.</param>
         /// <param name="filter">The filter.</param>
         /// <returns>Changed bitmap or in case of error the original</returns>
-        public static Bitmap FillFilter(Bitmap bitmap, SelectionFrame frame, FiltersType filter)
+        public static Bitmap? FillFilter(Bitmap? bitmap, SelectionFrame frame, FiltersType filter)
         {
             var mask = Translator.MapCodeToTool(frame.Tool);
             var point = new Point(frame.X, frame.Y);
 
-            // FIX: Prepare Polygon Points
-            object shapeParams = null;
+            // Prepare Polygon Points
+            object? shapeParams = null;
             if (mask == MaskShape.Polygon && frame.Points is { Count: > 0 })
             {
                 // Convert WPF Points -> GDI+ Points
@@ -574,7 +574,7 @@ namespace SlimViews
 
             try
             {
-                // FIX: Pass shapeParams to the Render engine
+                // Pass shapeParams to the Render engine
                 // Ensure your FilterImageArea method accepts this argument!
                 return Render.FilterImageArea(
                     bitmap,
@@ -600,7 +600,7 @@ namespace SlimViews
         /// <param name="btm">The bitmap.</param>
         /// <param name="degree">The degree.</param>
         /// <returns>Changed bitmap or in case of error the original</returns>
-        public static Bitmap RotateImage(Bitmap btm, int degree)
+        public static Bitmap? RotateImage(Bitmap? btm, int degree)
         {
             try
             {
@@ -665,7 +665,7 @@ namespace SlimViews
         /// <param name="target">The target.</param>
         /// <param name="source">The source.</param>
         /// <param name="observer">The observer.</param>
-        internal static void FolderConvert(string target, string source, Dictionary<int, string> observer)
+        internal static void FolderConvert(string? target, string? source, Dictionary<int, string>? observer)
         {
             if (observer == null)
             {
@@ -679,7 +679,8 @@ namespace SlimViews
                 var error = 0;
 
                 // Query directly - no List allocation needed!
-                var matchingImages = observer.Values.Where(element => Path.GetExtension(element) == source);
+                IEnumerable<string?> matchingImages =
+                    observer.Values.Where(element => Path.GetExtension(element) == source);
 
                 foreach (var image in matchingImages)
                 {

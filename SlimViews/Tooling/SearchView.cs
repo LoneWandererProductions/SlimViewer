@@ -52,7 +52,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The image view
         /// </summary>
-        private ImageView _imageView;
+        private ImageView? _imageView;
 
         /// <summary>
         /// The include subfolders
@@ -72,7 +72,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The search string
         /// </summary>
-        private string _searchString;
+        private string? _searchString;
 
         /// <summary>
         /// The is working
@@ -82,12 +82,12 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The search by color command
         /// </summary>
-        private ICommand _searchByColorCommand;
+        private ICommand? _searchByColorCommand;
 
         /// <summary>
         /// The search by text command
         /// </summary>
-        private ICommand _searchByTextCommand;
+        private ICommand? _searchByTextCommand;
 
         /// <summary>
         ///     Gets or sets the search range for color comparison.
@@ -140,7 +140,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the text to search for in file names.
         /// </summary>
-        public string SearchString
+        public string? SearchString
         {
             get => _searchString;
             set => SetProperty(ref _searchString, value, nameof(SearchString));
@@ -176,12 +176,12 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Initializes the SearchView with the specified parameters.
         /// </summary>
-        public void Initialize(bool includeSubfolders, string? currentFolder, ImageView imageView,
-            ColorHsv initialColor = null)
+        public void Initialize(bool includeSubfolders, string? currentFolder, ImageView? imageView,
+            ColorHsv? initialColor = null)
         {
             _includeSubfolders = includeSubfolders;
 
-            // FIXED: Check the passed parameter, not the private field
+            // Check the passed parameter, not the private field
             if (string.IsNullOrEmpty(currentFolder))
             {
                 _ = MessageBox.Show(ViewResources.ErrorDirectoryMessage, nameof(ArgumentException), MessageBoxButton.OK,
@@ -232,7 +232,7 @@ namespace SlimViews.Tooling
                 }
 
                 // Dispatch back to the UI thread to safely update the Main Window
-                Application.Current.Dispatcher.Invoke(() => _imageView.ChangeImage(files));
+                Application.Current.Dispatcher.Invoke(() => _imageView?.ChangeImage(files));
             }
             finally
             {
@@ -259,7 +259,7 @@ namespace SlimViews.Tooling
                 }
 
                 // Dispatch back to the UI thread to safely update the Main Window
-                Application.Current.Dispatcher.Invoke(() => _imageView.ChangeImage(files));
+                Application.Current.Dispatcher.Invoke(() => _imageView!.ChangeImage(files));
             }
             catch (ArgumentException ex)
             {

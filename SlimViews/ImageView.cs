@@ -235,7 +235,7 @@ namespace SlimViews
         public bool AutoClean
         {
             get => UiState.AutoClean;
-            set
+            init
             {
                 UiState.AutoClean = value;
                 OnPropertyChanged();
@@ -276,7 +276,7 @@ namespace SlimViews
         public int Similarity
         {
             get => _similarity;
-            set
+            init
             {
                 if (value is < 0 or > 100) return;
 
@@ -310,7 +310,7 @@ namespace SlimViews
         /// Commits the image change.
         /// </summary>
         /// <param name="newGdiBitmap">The new GDI bitmap.</param>
-        internal void CommitImageChange(Bitmap newGdiBitmap) => HistoryManager.CommitImageChange(newGdiBitmap);
+        internal void CommitImageChange(Bitmap? newGdiBitmap) => HistoryManager.CommitImageChange(newGdiBitmap);
 
         // --- 3. INITIALIZATION ---
 
@@ -943,7 +943,7 @@ namespace SlimViews
         /// <param name="extension">The file extension (e.g., ".png").</param>
         /// <param name="bitmap">The GDI+ Bitmap (System.Drawing.Bitmap).</param>
         /// <returns>True if successful, False otherwise.</returns>
-        internal bool SaveImage(string path, string extension, Bitmap bitmap)
+        internal bool SaveImage(string? path, string? extension, Bitmap? bitmap)
         {
             // Update UI Status to "Working" (Red)
             UiState.IsBusy = true;

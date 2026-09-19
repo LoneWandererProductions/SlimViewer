@@ -57,7 +57,7 @@ namespace SlimViews
         /// <value>
         ///     <c>true</c> if [main automatic play GIF]; otherwise, <c>false</c>.
         /// </value>
-        public bool MainAutoPlayGif { get; set; }
+        public bool MainAutoPlayGif { get; init; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [main sub folders].

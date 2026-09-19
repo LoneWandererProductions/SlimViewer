@@ -35,7 +35,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The cancel command
         /// </summary>
-        private ICommand _cancelCommand;
+        private ICommand? _cancelCommand;
 
         /// <summary>
         ///     The height
@@ -50,7 +50,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The input command
         /// </summary>
-        private ICommand _inputCommand;
+        private ICommand? _inputCommand;
 
         /// <summary>
         ///     The is percentages checked
@@ -65,22 +65,22 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The output
         /// </summary>
-        private string _output;
+        private string? _output;
 
         /// <summary>
         ///     The output command
         /// </summary>
-        private ICommand _outputCommand;
+        private ICommand? _outputCommand;
 
         /// <summary>
         ///     The process command
         /// </summary>
-        private ICommand _processCommand;
+        private ICommand? _processCommand;
 
         /// <summary>
         ///     The selected extension
         /// </summary>
-        private string _selectedExtension;
+        private string? _selectedExtension;
 
         /// <summary>
         ///     The selected filter option
@@ -159,7 +159,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The selected extension.
         /// </value>
-        public string SelectedExtension
+        public string? SelectedExtension
         {
             get => _selectedExtension;
             set => SetProperty(ref _selectedExtension, value, nameof(SelectedExtension));
@@ -215,7 +215,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The output.
         /// </value>
-        public string Output
+        public string? Output
         {
             get => _output;
             set => SetProperty(ref _output, value, nameof(Output));
@@ -321,7 +321,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The file extensions.
         /// </value>
-        public IEnumerable<string> FileExtensions => ImagingResources.Appendix;
+        public IEnumerable<string?> FileExtensions => ImagingResources.Appendix;
 
         /// <summary>
         ///     Cancels the action and closes the window

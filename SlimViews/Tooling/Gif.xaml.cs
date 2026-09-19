@@ -40,7 +40,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The initial file path.
         /// </value>
-        public string? InitialFilePath { get; set; }
+        public string? InitialFilePath { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Gif"/> class.

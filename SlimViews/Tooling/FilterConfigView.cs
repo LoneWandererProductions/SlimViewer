@@ -28,7 +28,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The current configuration
         /// </summary>
-        private readonly FilterConfiguration _currentConfig;
+        private readonly FilterConfiguration? _currentConfig;
 
         /// <summary>
         ///     The base window size
@@ -43,7 +43,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The cancel command
         /// </summary>
-        private ICommand _cancelCommand;
+        private ICommand? _cancelCommand;
 
         /// <summary>
         ///     The factor
@@ -53,12 +53,12 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The reset command
         /// </summary>
-        private ICommand _resetCommand;
+        private ICommand? _resetCommand;
 
         /// <summary>
         ///     The save command
         /// </summary>
-        private ICommand _saveCommand;
+        private ICommand? _saveCommand;
 
         /// <summary>
         ///     The scale
@@ -181,7 +181,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The current configuration.
         /// </value>
-        public FilterConfiguration CurrentConfig
+        public FilterConfiguration? CurrentConfig
         {
             get => _currentConfig;
             init
@@ -263,7 +263,7 @@ namespace SlimViews.Tooling
         /// <param name="command">The command.</param>
         /// <param name="execute">The execute.</param>
         /// <returns>The selected Command</returns>
-        private ICommand GetCommand(ref ICommand command, Action<object> execute)
+        private ICommand GetCommand(ref ICommand? command, Action<object> execute)
         {
             return command ??= new DelegateCommand<object>(execute, CanExecute);
         }

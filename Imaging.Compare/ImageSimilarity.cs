@@ -37,7 +37,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             return folderPath == null
                 ? null
@@ -58,7 +58,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetSimilarImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));

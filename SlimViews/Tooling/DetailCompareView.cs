@@ -8,11 +8,12 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
+using Common.Dialogs;
+using Imaging;
+using Imaging.Compare;
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +21,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Common.Dialogs;
-using Imaging;
-using Imaging.Compare;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -47,32 +45,14 @@ namespace SlimViews.Tooling
         private readonly ImageAnalysis _analysis;
 
         /// <summary>
-        ///     The green icon
+        ///     The first BitmapImage
         /// </summary>
-        private readonly string _greenIcon;
-
-        /// <summary>
-        ///     The red icon
-        /// </summary>
-        private readonly string _redIcon;
-
-        /// <summary>
-        ///     Gets or sets the root.
-        /// </summary>
-        /// <value>
-        ///     The root.
-        /// </value>
-        private readonly string _root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private BitmapImage? _bmpOne;
 
         /// <summary>
         ///     The first BitmapImage
         /// </summary>
-        private BitmapImage _bmpOne;
-
-        /// <summary>
-        ///     The first BitmapImage
-        /// </summary>
-        private BitmapImage _bmpTwo;
+        private BitmapImage? _bmpTwo;
 
         /// <summary>
         ///     The first bitmap
@@ -87,17 +67,17 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The color
         /// </summary>
-        private string _color;
+        private string? _color;
 
         /// <summary>
         ///     The color one
         /// </summary>
-        private string _colorOne;
+        private string? _colorOne;
 
         /// <summary>
         ///     The color two
         /// </summary>
-        private string _colorTwo;
+        private string? _colorTwo;
 
         /// <summary>
         ///     The difference
@@ -107,32 +87,32 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The information one
         /// </summary>
-        private string _informationOne;
+        private string? _informationOne;
 
         /// <summary>
         ///     The information two
         /// </summary>
-        private string _informationTwo;
+        private string? _informationTwo;
 
         /// <summary>
         ///     The path one
         /// </summary>
-        private string _pathOne;
+        private string? _pathOne;
 
         /// <summary>
         ///     The path two
         /// </summary>
-        private string _pathTwo;
+        private string? _pathTwo;
 
         /// <summary>
         ///     The similarity
         /// </summary>
-        private string _similarity;
+        private string? _similarity;
 
         /// <summary>
         ///     The status image
         /// </summary>
-        private string _statusImage;
+        private string? _statusImage;
 
         /// <summary>
         /// The is working
@@ -150,12 +130,12 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The information RichTextBox
         /// </summary>
-        public RichTextBox RtBoxInformation;
+        public RichTextBox? RtBoxInformation;
 
         /// <summary>
         ///     The color information TextBox
         /// </summary>
-        public TextBox TxtBoxColorInformation;
+        public TextBox? TxtBoxColorInformation;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DetailCompareView" /> class.
@@ -163,8 +143,6 @@ namespace SlimViews.Tooling
         public DetailCompareView()
         {
             _analysis = new ImageAnalysis();
-            _greenIcon = Path.Combine(_root, ViewResources.IconPathGreen);
-            _redIcon = Path.Combine(_root, ViewResources.IconPathRed);
 
             // Initialize commands in the constructor
             OpenOneCommand = new DelegateCommand<object>(OpenOneAction, _ => !IsWorking);
@@ -194,7 +172,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the first BitmapImage.
         /// </summary>
-        public BitmapImage BmpOne
+        public BitmapImage? BmpOne
         {
             get => _bmpOne;
             set => SetProperty(ref _bmpOne, value, nameof(BmpOne));
@@ -203,7 +181,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the second BitmapImage.
         /// </summary>
-        public BitmapImage BmpTwo
+        public BitmapImage? BmpTwo
         {
             get => _bmpTwo;
             set => SetProperty(ref _bmpTwo, value, nameof(BmpTwo));
@@ -212,7 +190,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the path of the first image.
         /// </summary>
-        public string PathOne
+        public string? PathOne
         {
             get => _pathOne;
             set => SetProperty(ref _pathOne, value, nameof(PathOne));
@@ -221,7 +199,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the path of the second image.
         /// </summary>
-        public string PathTwo
+        public string? PathTwo
         {
             get => _pathTwo;
             set => SetProperty(ref _pathTwo, value, nameof(PathTwo));
@@ -230,7 +208,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the status image.
         /// </summary>
-        public string StatusImage
+        public string? StatusImage
         {
             get => _statusImage;
             set => SetProperty(ref _statusImage, value, nameof(StatusImage));
@@ -239,7 +217,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Gets or sets the color used for difference highlighting.
         /// </summary>
-        public string Colors
+        public string? Colors
         {
             get => _color;
             set => SetProperty(ref _color, value, nameof(Colors));
@@ -284,7 +262,7 @@ namespace SlimViews.Tooling
 
                 _colorOne = null;
 
-                if (!ImagingResources.Appendix.Contains(pathObj.Extension.ToLower()))
+                if (!ImagingResources.Appendix.Contains(pathObj.Extension?.ToLower()))
                 {
                     MessageBox.Show($"{ViewResources.ErrorFileNotSupported}{pathObj.Extension}",
                         ViewResources.ErrorMessage);
@@ -309,8 +287,6 @@ namespace SlimViews.Tooling
                 });
 
                 Compare();
-
-                StatusImage = _redIcon;
 
                 var text = await ComputeText(btm);
                 if (TxtBoxColorInformation != null)
@@ -380,8 +356,6 @@ namespace SlimViews.Tooling
 
                 Compare();
 
-                StatusImage = _redIcon;
-
                 var text = await ComputeText(btm);
                 if (TxtBoxColorInformation != null)
                 {
@@ -409,7 +383,7 @@ namespace SlimViews.Tooling
         /// </summary>
         /// <param name="textBox">The text box.</param>
         /// <param name="text">The text.</param>
-        private static async Task AppendTextAsync(TextBoxBase textBox, string text)
+        private static async Task AppendTextAsync(TextBoxBase? textBox, string? text)
         {
             if (textBox == null) return;
 
@@ -462,7 +436,7 @@ namespace SlimViews.Tooling
         /// </summary>
         /// <param name="btm">The BTM.</param>
         /// <returns>Resulting text for color information.</returns>
-        private async Task<string> ComputeText(Bitmap btm)
+        private async Task<string?> ComputeText(Bitmap btm)
         {
             var str = new StringBuilder();
             await Task.Run(() =>
@@ -471,7 +445,7 @@ namespace SlimViews.Tooling
                     str.AppendLine(
                         $"{ViewResources.InformationColor}{color}{ViewResources.InformationCount}{count}");
             });
-            StatusImage = _greenIcon;
+
             return str.ToString();
         }
 

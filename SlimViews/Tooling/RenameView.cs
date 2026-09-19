@@ -20,6 +20,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Extended.Extensions;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -89,12 +90,12 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The internal dictionary keeping track of all files.
         /// </summary>
-        private ConcurrentDictionary<int, string>? _observer;
+        private ConcurrentDictionary<int, string?>? _observer;
 
         /// <summary>
         /// The image view
         /// </summary>
-        private ImageView _imageView;
+        private readonly ImageView? _imageView;
 
         /// <summary>
         ///     Gets the collection of items bound to the Preview DataGrid in the UI.
@@ -110,7 +111,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The replacement string.
         /// </value>
-        public string Replacement
+        public string? Replacement
         {
             get => _replacement;
             set => SetProperty(ref _replacement, value, nameof(Replacement));
@@ -134,7 +135,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The replacer string.
         /// </value>
-        public string Replacer
+        public string? Replacer
         {
             get => _replacer;
             set => SetProperty(ref _replacer, value, nameof(Replacer));
@@ -233,7 +234,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The observer.
         /// </value>
-        public ConcurrentDictionary<int, string?> Observer
+        public ConcurrentDictionary<int, string?>? Observer
         {
             get => _observer;
             set
@@ -249,16 +250,18 @@ namespace SlimViews.Tooling
         private void InitializePreview()
         {
             PreviewItems.Clear();
-            if (_observer == null) return;
+            if (_observer.IsNullOrEmpty()) return;
 
-            foreach (var kvp in _observer)
+            foreach (var (key, value) in _observer)
             {
+                if (string.IsNullOrEmpty(value)) continue;
+
                 PreviewItems.Add(new PreviewItem
                 {
-                    Id = kvp.Key,
-                    OriginalPath = kvp.Value,
-                    OriginalName = Path.GetFileName(kvp.Value),
-                    NewName = Path.GetFileName(kvp.Value), // Defaults to original until a command is run
+                    Id = key,
+                    OriginalPath = value,
+                    OriginalName = Path.GetFileName(value),
+                    NewName = Path.GetFileName(value), // Defaults to original until a command is run
                     Status = "Pending"
                 });
             }
@@ -275,14 +278,12 @@ namespace SlimViews.Tooling
         /// Initializes a new instance of the <see cref="RenameView"/> class.
         /// </summary>
         /// <param name="imageView">The image view.</param>
-        public RenameView(ImageView imageView)
+        public RenameView(ImageView? imageView)
         {
             _imageView = imageView;
         }
 
-        // ------------------------------------------------------------------
-        // PREVIEW GENERATION LOGIC (Synchronous, Memory Only)
-        // ------------------------------------------------------------------
+        //--- PREVIEW GENERATION LOGIC (Synchronous, Memory Only) ---
 
         /// <summary>
         ///     Removes Appendage in File Name (Preview Only)
@@ -290,7 +291,7 @@ namespace SlimViews.Tooling
         /// <param name="obj">The object.</param>
         private void RemoveAppendageAction(object obj)
         {
-            if (Replacement == null) Replacement = string.Empty;
+            Replacement ??= string.Empty;
 
             foreach (var item in PreviewItems)
             {
@@ -384,9 +385,7 @@ namespace SlimViews.Tooling
             }
         }
 
-        // ------------------------------------------------------------------
-        // HARD DRIVE COMMIT LOGIC (Asynchronous)
-        // ------------------------------------------------------------------
+        // --- HARD DRIVE COMMIT LOGIC (Asynchronous) ---
 
         /// <summary>
         ///     Reads the Preview Grid and executes the actual file renames on the disk.
@@ -397,12 +396,12 @@ namespace SlimViews.Tooling
             IsWorking = true;
             try
             {
-                var updatedObserver = new ConcurrentDictionary<int, string?>(Observer);
+                var updatedObserver = new ConcurrentDictionary<int, string?>(Observer!);
                 var changesMade = false;
 
                 // 1. DROP THE LOCK ONCE FOR THE ENTIRE BATCH
                 // This ensures if the main window is viewing a file we are about to rename, it lets go.
-                _imageView.Image?.Clear();
+                _imageView?.Image.Clear();
                 await Task.Yield();
 
                 foreach (var item in PreviewItems)
@@ -441,7 +440,7 @@ namespace SlimViews.Tooling
 
                     // 3. REFRESH THE MOTHER UI EXACTLY ONCE AT THE END
                     // Push the updated dictionary back to the main window and trigger one clean reload
-                    _imageView.FileContext.Observer = new Dictionary<int, string?>(updatedObserver);
+                    _imageView!.FileContext.Observer = new Dictionary<int, string?>(updatedObserver);
                     await _imageView.LoadThumbs(_imageView.FileContext.CurrentPath);
                     await _imageView.RefreshActionAsync(nameof(RenameView));
                 }

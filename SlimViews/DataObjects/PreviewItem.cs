@@ -22,7 +22,7 @@ namespace SlimViews.DataObjects
         /// <summary>
         ///     Gets or sets the internal ID from the observer dictionary.
         /// </summary>
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         /// <summary>
         ///     Gets or sets the original full file path.

@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Imaging.Compare;
 using ViewModel;
 

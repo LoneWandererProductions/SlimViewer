@@ -25,7 +25,7 @@ namespace FileHandler
         /// <param name="appendage">The appendage.</param>
         /// <param name="comparison">The comparison.</param>
         /// <returns>New File name.</returns>
-        public static string RemoveAppendage(this string str, string appendage,
+        public static string RemoveAppendage(this string str, string? appendage,
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             str = NormalizeInput(str);
@@ -43,7 +43,7 @@ namespace FileHandler
         /// <param name="appendage">The appendage.</param>
         /// <param name="comparison">The comparison.</param>
         /// <returns>New File name.</returns>
-        public static string AddAppendage(this string str, string appendage,
+        public static string AddAppendage(this string str, string? appendage,
             StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             str = NormalizeInput(str);
@@ -62,7 +62,7 @@ namespace FileHandler
         /// <param name="update">The update.</param>
         /// <param name="comparison">The comparison.</param>
         /// <returns>New File name.</returns>
-        public static string ReplacePart(this string str, string targetStr, string update,
+        public static string ReplacePart(this string str, string? targetStr, string? update,
             StringComparison comparison = StringComparison.Ordinal)
         {
             str = NormalizeInput(str);
@@ -121,7 +121,7 @@ namespace FileHandler
         /// <param name="str">The string.</param>
         /// <returns>Normalized File name.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        private static string NormalizeSubInput(string str)
+        private static string? NormalizeSubInput(string? str)
         {
             ArgumentNullException.ThrowIfNull(str);
             return str;

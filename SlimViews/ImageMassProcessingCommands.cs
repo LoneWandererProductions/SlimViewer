@@ -64,7 +64,7 @@ namespace SlimViews
         /// Rename the Folder action.
         /// </summary>
         /// <param name="owner">The owner.</param>
-        internal void FolderRenameWindow(ImageView owner)
+        internal void FolderRenameWindow(ImageView? owner)
         {
             //catch someone doesn't try to rename files when no folder is loaded
 

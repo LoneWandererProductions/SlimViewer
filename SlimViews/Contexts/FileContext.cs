@@ -42,7 +42,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The observer.
         /// </value>
-        public Dictionary<int, string>? Observer
+        public Dictionary<int, string?> Observer
         {
             get => _observer;
             set

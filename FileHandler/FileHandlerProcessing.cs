@@ -24,7 +24,7 @@ namespace FileHandler
         /// <param name="fileExtList">The file extension list. Null elements are converted to empty strings.</param>
         /// <returns>A cleaned list of file extensions without dots.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileExtList"/> is null.</exception>
-        internal static List<string> CleanUpExtensionList(IEnumerable<string> fileExtList)
+        internal static List<string?> CleanUpExtensionList(IEnumerable<string?> fileExtList)
         {
             if (fileExtList == null)
             {

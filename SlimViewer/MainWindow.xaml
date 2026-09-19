@@ -550,7 +550,7 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Reload folder contents and regenerate thumbnails" />
 
-            <images:BusyIndicator Grid.Row="2"
+            <images:BusyIndicator Grid.Row="2" Grid.Column="0"
                                   IsBusy="{Binding UiState.IsBusy}"
                                   HorizontalAlignment="Center" VerticalAlignment="Center"
                                   ToolTip="Current background processing status (pulsing = busy, steady = ready)" />

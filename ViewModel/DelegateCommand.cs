@@ -40,7 +40,7 @@ namespace ViewModel
         /// executable.</param>
         /// <exception cref="System.ArgumentNullException">execute</exception>
         /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
-        public DelegateCommand(Action<T?> execute, Predicate<T?>? canExecute = null)
+        public DelegateCommand(Action<object> execute, Predicate<object>? canExecute = null)
         {
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;

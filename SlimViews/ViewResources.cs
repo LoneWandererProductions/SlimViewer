@@ -60,11 +60,12 @@ namespace SlimViews
                 ("TIFF", new[] { ".tif", ".tiff" })
             };
 
-            var covered = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var covered = new HashSet<string?>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var (label, exts) in knownGroups)
             {
-                var present = exts.Where(e => extensions.Contains(e, StringComparer.OrdinalIgnoreCase)).ToList();
+                List<string?> present =
+                    exts.Where(e => extensions.Contains(e, StringComparer.OrdinalIgnoreCase)).ToList();
                 if (present.Count == 0) continue;
 
                 foreach (var ext in present) covered.Add(ext);
@@ -237,7 +238,7 @@ namespace SlimViews
         /// <summary>
         ///     The MessageBox caption Error (const). Value: "Error"
         /// </summary>
-        internal const string ErrorMessage = "Error: ";
+        internal const string? ErrorMessage = "Error: ";
 
         /// <summary>
         ///     The error File not Found Text (const). Value: "File not found: "
@@ -355,7 +356,7 @@ namespace SlimViews
         /// <param name="fileName">Name of the file.</param>
         /// <param name="bmp">The BMP.</param>
         /// <returns>String of Image Information</returns>
-        internal static string BuildImageInformation(string filePath, string? fileName, BitmapImage bmp)
+        internal static string BuildImageInformation(string filePath, string? fileName, BitmapImage? bmp)
         {
             return string.Concat(ImagePath, filePath, ImageName,
                 fileName, ImageHeight, bmp.Height, ImageWidth,
@@ -370,7 +371,7 @@ namespace SlimViews
         /// <param name="name">The name of the image file.</param>
         /// <param name="imageSource">Can be an ImageGifInfo or BitmapImage object.</param>
         /// <returns>A multiline string containing image metadata.</returns>
-        internal static string BuildUnifiedImageInfo(string? path, string name, object imageSource)
+        internal static string BuildUnifiedImageInfo(string? path, string name, object? imageSource)
         {
             // Handle GIF-specific logic
             if (imageSource is ImageGifInfo gifInfo)
@@ -403,7 +404,7 @@ namespace SlimViews
         /// <param name="fileName">Name of the file.</param>
         /// <param name="bmp">The BMP.</param>
         /// <returns>String of Image Information with line breaks.</returns>
-        public static string BuildImageInformationLine(string filePath, string fileName, BitmapImage bmp)
+        public static string BuildImageInformationLine(string filePath, string fileName, BitmapImage? bmp)
         {
             return string.Concat(ImagePath, filePath, Environment.NewLine,
                 ImageName, fileName, Environment.NewLine,
