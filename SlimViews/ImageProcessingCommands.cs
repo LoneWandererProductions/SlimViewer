@@ -22,9 +22,9 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="filterName">The name of the filter to apply.</param>
-        internal void ApplyFilter(ImageView owner, string filterName)
+        internal void ApplyFilter(ImageView? owner, string filterName)
         {
-            if (owner?.Image?.Bitmap == null || string.IsNullOrWhiteSpace(filterName))
+            if (owner?.Image.Bitmap == null || string.IsNullOrWhiteSpace(filterName))
                 return;
 
             owner.SaveUndoState();
@@ -39,9 +39,9 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="textureName">The name of the texture to apply.</param>
-        internal void ApplyTexture(ImageView owner, string textureName)
+        internal void ApplyTexture(ImageView? owner, string textureName)
         {
-            if (owner?.Image?.Bitmap == null || string.IsNullOrWhiteSpace(textureName))
+            if (owner?.Image.Bitmap == null || string.IsNullOrWhiteSpace(textureName))
                 return;
 
             owner.SaveUndoState();
@@ -57,9 +57,9 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void Brighten(ImageView owner, object obj)
+        internal void Brighten(ImageView? owner, object obj)
         {
-            if (owner?.Image?.Bitmap == null)
+            if (owner?.Image.Bitmap == null)
                 return;
 
             owner.SaveUndoState();
@@ -74,9 +74,9 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void Darken(ImageView owner, object obj)
+        internal void Darken(ImageView? owner, object obj)
         {
-            if (owner?.Image?.Bitmap == null)
+            if (owner?.Image.Bitmap == null)
                 return;
 
             owner.SaveUndoState();
@@ -91,9 +91,9 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void Mirror(ImageView owner, object? obj)
+        internal void Mirror(ImageView? owner, object? obj)
         {
-            if (owner?.Image?.Bitmap == null)
+            if (owner?.Image.Bitmap == null)
                 return;
 
             // Create a new bitmap based on the original
@@ -112,9 +112,9 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="parameter">Unused parameter (reserved for future use).</param>
-        internal void Pixelate(ImageView owner, object parameter)
+        internal void Pixelate(ImageView? owner, object? parameter)
         {
-            if (owner?.Image?.Bitmap == null)
+            if (owner?.Image.Bitmap == null)
                 return;
 
             var pixelWidth = 2;
@@ -138,7 +138,7 @@ namespace SlimViews
         /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void RotateBackward(ImageView? owner, object obj)
         {
-            if (owner?.Image?.Bitmap == null)
+            if (owner?.Image.Bitmap == null)
                 return;
 
             owner.SaveUndoState();
@@ -154,7 +154,7 @@ namespace SlimViews
         /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void RotateForward(ImageView? owner, object obj)
         {
-            if (owner?.Image?.Bitmap == null)
+            if (owner?.Image.Bitmap == null)
                 return;
 
             owner.SaveUndoState();

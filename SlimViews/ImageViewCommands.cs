@@ -395,20 +395,19 @@ namespace SlimViews
             DelegateCommand<object> MakeNoParamCmd(Action<ImageView> svcAction) =>
                 new(_ => svcAction(owner), CanRun);
 
-            // Service that expects (ImageView, object?) -> use object command parameter
-            DelegateCommand<object> MakeObjParamCmd(Action<ImageView?, object> svcAction) =>
+            // Service that expects (ImageView, object?)
+            DelegateCommand<object> MakeObjParamCmd(Action<ImageView, object?> svcAction) =>
                 new(p => svcAction(owner, p), CanRun);
 
-            // Service that expects (ImageView, string?) -> use string-typed command
-            DelegateCommand<string> MakeStringParamCmd(Action<ImageView, string> svcAction) =>
+            // Service that expects (ImageView, string?)
+            DelegateCommand<string> MakeStringParamCmd(Action<ImageView, string?> svcAction) =>
                 new(s => svcAction(owner, s), CanRun);
 
-            // Service that expects (ImageView, SelectionFrame) etc. -- handled directly where needed
-            // Bool? parameter commands (for CleanTempFolder)
+            // Bool? parameter commands
             DelegateCommand<bool?> MakeBoolParamCmd(Action<bool?> action) =>
                 new(action, CanRun);
 
-            // Async commands which take object? parameter and return Task (e.g. Rename)
+            // Async commands
             AsyncDelegateCommand<object> MakeAsyncObjCmd(Func<object?, Task> asyncAction) =>
                 new(asyncAction, CanRun);
 
