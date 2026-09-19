@@ -21,7 +21,7 @@ namespace SlimViews.Contexts
         /// <summary>
         /// The observer
         /// </summary>
-        private Dictionary<int, string> _observer;
+        private Dictionary<int, string>? _observer;
 
         /// <summary>
         /// The file name
@@ -59,7 +59,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The name of the file.
         /// </value>
-        public string FileName
+        public string? FileName
         {
             get => _fileName;
             set
@@ -76,7 +76,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The files.
         /// </value>
-        internal List<string?>? Files { get; set; } =  [];
+        internal List<string>? Files { get; set; } =  [];
 
         /// <summary>
         /// Gets or sets the current identifier.
@@ -101,14 +101,6 @@ namespace SlimViews.Contexts
         ///   <c>true</c> if this instance is files empty; otherwise, <c>false</c>.
         /// </value>
         internal bool IsFilesEmpty => Files.Count == 0;
-
-        /// <summary>
-        /// Gets the files sorted.
-        /// </summary>
-        /// <value>
-        /// The files sorted.
-        /// </value>
-        internal List<string> FilesSorted => Files.PathSort();
 
         /// <summary>
         /// Determines whether [is key in observer] [the specified key].

@@ -319,8 +319,6 @@
                     <MenuItem Header="🗜️ Compress Cif" IsCheckable="True" IsChecked="{Binding Path=Image.CompressCif}"
                               ToolTip="Enable compression for CIF files" />
                     <Separator />
-                    <MenuItem Header="🗜️ Compress Cif" IsCheckable="True" IsChecked="{Binding Path=Image.CompressCif}"
-                              ToolTip="Enable compression for CIF files" />
                     <!-- Menu Item to toggle the sidebar -->
                     <Separator />
                     <MenuItem Header="🎛️ Toggle Cif Editor" Command="{Binding Commands.ToggleCifEditor}"
@@ -431,12 +429,12 @@
                           HorizontalAlignment="Center"
                           VerticalAlignment="Stretch"
                           Background="{StaticResource BorderBrush}"
-                          Visibility="{Binding CifEditorVisibility}" />
+                          Visibility="{Binding UiState.CifEditorVisibility}" />
 
             <!-- CIF Channel Editor -->
             <images:CifChannelEditor Grid.Column="4"
-                                     Visibility="{Binding CifEditorVisibility}"
-                                     CifSource="{Binding ActiveCif}" />
+                                     Visibility="{Binding UiState.CifEditorVisibility}"
+                                     CifSource="{Binding Image.ActiveCif}" />
         </Grid>
 
         <!-- ================================================================= -->
@@ -510,7 +508,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="45" />
                 <ColumnDefinition Width="45" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="503*" />
+                <ColumnDefinition Width="632*" />
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="10" />
                 <ColumnDefinition Width="100" />
@@ -533,7 +532,7 @@
 
             <TextBox Grid.Row="0"
                      Grid.Column="2"
-                     Grid.ColumnSpan="2"
+                     Grid.ColumnSpan="3"
                      Text="{Binding Path=Image.Information, Mode=OneWay}"
                      TextWrapping="NoWrap"
                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
@@ -541,50 +540,51 @@
                      IsReadOnly="True"
                      Focusable="True"
                      BorderThickness="0"
-                     Margin="0,0,5,0"
-                     ToolTip="{Binding Path=Image.Information, Mode=OneWay}" />
+                     Margin="0,0,5,4"
+                     ToolTip="{Binding Path=Image.Information, Mode=OneWay}" Grid.RowSpan="2" />
 
-            <Button Content="🔄 Refresh" Grid.Row="0" Grid.Column="5"
+            <Button Content="🔄 Refresh" Grid.Row="0" Grid.Column="6"
                     Height="30"
                     VerticalAlignment="Top"
                     Command="{Binding Commands.Refresh}"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Reload folder contents and regenerate thumbnails" />
 
-            <images:BusyIndicator Grid.Row="2" Grid.Column="0"
+            <images:BusyIndicator Grid.Row="2"
                                   IsBusy="{Binding UiState.IsBusy}"
                                   HorizontalAlignment="Center" VerticalAlignment="Center"
                                   ToolTip="Current background processing status (pulsing = busy, steady = ready)" />
 
-            <Button Content="🏷️" Grid.Row="2" Grid.Column="1"
+            <Button Content="🏷️" Grid.Row="1" Grid.Column="1"
                     Command="{Binding Commands.Rename}"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
-                    ToolTip="Rename current image file" />
+                    ToolTip="Rename current image file" Margin="0,5,0,5" Grid.RowSpan="3" />
 
-            <TextBox Grid.Row="2" Grid.Column="2"
+            <TextBox Grid.Row="1" Grid.Column="2"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
                      Text="{Binding Path=FileContext.FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     TextWrapping="Wrap" ToolTip="Active file name (Edit and press Enter to commit rename)">
+                     TextWrapping="Wrap" ToolTip="Active file name (Edit and press Enter to commit rename)"
+                     Grid.ColumnSpan="2" Margin="0,5,0,5" Grid.RowSpan="3">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding Commands.Rename}" Key="Enter" />
                 </TextBox.InputBindings>
             </TextBox>
 
-            <Button Content="📦 Move" Grid.Row="2" Grid.Column="3"
+            <Button Content="📦 Move" Grid.Row="1" Grid.Column="4"
                     Command="{Binding Commands.Move}"
                     Height="30"
                     VerticalAlignment="Top"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
-                    ToolTip="Move current image to another folder" />
+                    ToolTip="Move current image to another folder" Margin="0,5,0,0" Grid.RowSpan="2" />
 
-            <Button Content="📦📦 Move All" Grid.Row="2" Grid.Column="5"
+            <Button Content="📦📦 Move All" Grid.Row="1" Grid.Column="6"
                     Command="{Binding Commands.MoveAll}"
                     Height="30"
                     VerticalAlignment="Top"
                     IsEnabled="{Binding Path=Image.IsImageActive}"
-                    ToolTip="Move all loaded images in current list to target folder" />
+                    ToolTip="Move all loaded images in current list to target folder" Margin="0,5,0,0" Grid.RowSpan="2" />
 
-            <images:Thumbnails Name="Thumbnail" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6"
+            <images:Thumbnails Name="Thumbnail" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="7"
                                ItemsSource="{Binding FileContext.Observer}"
                                ThumbCellSize="100" ThumbHeight="1"
                                Background="{DynamicResource SurfaceBrush}"
@@ -594,12 +594,13 @@
 
             <!-- Shown when the quick filter matches nothing, so it doesn't just look like a blank/
                  broken thumbnail strip. -->
-            <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6"
+            <TextBlock Grid.Row="4" Grid.Column="3"
                        Text="No thumbnails match your filter"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       HorizontalAlignment="Left" VerticalAlignment="Center"
                        Foreground="{DynamicResource TextMutedBrush}"
                        IsHitTestVisible="False"
-                       Visibility="{Binding ThumbFilterHasNoMatches, Converter={StaticResource BoolToVisibilityConverter}}" />
+                       Visibility="{Binding ThumbFilterHasNoMatches, Converter={StaticResource BoolToVisibilityConverter}}"
+                       Margin="30,0,0,0" />
         </Grid>
 
     </Grid>

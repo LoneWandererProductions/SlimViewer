@@ -45,6 +45,29 @@ namespace SlimViews.Contexts
         /// </summary>
         private string? _information;
 
+        /// <summary>
+        /// The active cif
+        /// </summary>
+        private Cif? _activeCif;
+
+        /// <summary>
+        /// Gets or sets the active raw CIF data for the CifEditor.
+        /// </summary>
+        /// <value>
+        /// The active cif.
+        /// </value>
+        public Cif? ActiveCif
+        {
+            get => _activeCif;
+            set
+            {
+                if (SetProperty(ref _activeCif, value))
+                {
+                    OnPropertyChanged(nameof(ActiveCif));
+                }
+            }
+        }
+
         // Core image data
         /// <summary>
         /// Gets or sets the bitmap.

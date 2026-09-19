@@ -260,43 +260,6 @@ namespace SlimViews
             }
         }
 
-        // --- Cif / Color Channel Properties ---
-
-        /// <summary>
-        /// The cif editor visibility
-        /// </summary>
-        private Visibility _cifEditorVisibility = Visibility.Collapsed;
-
-        /// <summary>
-        /// The active cif
-        /// </summary>
-        private Cif? _activeCif;
-
-        /// <summary>
-        /// Gets or sets the cif editor visibility.
-        /// </summary>
-        /// <value>
-        /// The cif editor visibility.
-        /// </value>
-        public Visibility CifEditorVisibility
-        {
-            get => _cifEditorVisibility;
-            set => SetProperty(ref _cifEditorVisibility, value);
-        }
-
-
-        /// <summary>
-        /// Gets or sets the active cif.
-        /// </summary>
-        /// <value>
-        /// The active cif.
-        /// </value>
-        public Cif? ActiveCif
-        {
-            get => _activeCif;
-            set => SetProperty(ref _activeCif, value);
-        }
-
         // --- Transient / Command Properties ---
 
         /// <summary>
@@ -373,7 +336,7 @@ namespace SlimViews
         /// <param name="thumb">The thumb.</param>
         /// <param name="colorPick">The color pick.</param>
         public ImageView(bool subFolders, bool compressCif, int similarity, bool autoClean,
-            ImageZoom imageZoom, Window mainWindow, Thumbnails thumb, ColorPickerMenu colorPick) : this()
+            ImageZoom? imageZoom, Window? mainWindow, Thumbnails? thumb, ColorPickerMenu? colorPick) : this()
         {
             UseSubFolders = subFolders;
             Image.CompressCif = compressCif;
@@ -673,9 +636,23 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void ToggleCifEditorAction(object obj)
         {
-            CifEditorVisibility = CifEditorVisibility == Visibility.Visible
-                ? Visibility.Collapsed
-                : Visibility.Visible;
+            if (UiState.CifEditorVisibility == Visibility.Visible)
+            {
+                // Close panel and wipe the active CIF to save memory
+                UiState.CifEditorVisibility = Visibility.Collapsed;
+                Image.ActiveCif = null;
+            }
+            else
+            {
+                // Open panel
+                UiState.CifEditorVisibility = Visibility.Visible;
+
+                // If an image is already loaded, convert it immediately
+                if (Image.Bitmap != null)
+                {
+                    Image.ActiveCif = new Cif(Image.Bitmap, Image.CustomImageFormat);
+                }
+            }
         }
 
         /// <summary>
@@ -830,12 +807,15 @@ namespace SlimViews
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, FileContext.CurrentPath);
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
-            // Store the raw CIF object for the CifChannelEditor to use
-            ActiveCif = Image.CustomImageFormat.GetCif(pathObj.FilePath);
-            if (ActiveCif == null) return;
+            // 1. Update the FileContext path so subsequent calls read the correct new file
+            FileContext.FilePath = pathObj.FilePath;
+
+            // 2. Store the raw CIF object in ImageContext
+            Image.ActiveCif = Image.CustomImageFormat?.GetCif(FileContext.FilePath);
+            if (Image.ActiveCif == null) return;
 
             // Continue with existing render logic
-            Image.Bitmap = Image.CustomImageFormat.GetImageFromCif(pathObj.FilePath);
+            Image.Bitmap = Image.CustomImageFormat?.GetImageFromCif(FileContext.FilePath);
             if (Image.Bitmap == null) return;
 
             Image.BitmapImage = Image.BitmapSource;
@@ -843,8 +823,8 @@ namespace SlimViews
             Image.Information =
                 ViewResources.BuildImageInformation(FileContext.FilePath, FileContext.FileName, Image.BitmapImage);
 
-            // Optional: Automatically open the editor when a CIF is loaded
-            CifEditorVisibility = Visibility.Visible;
+            // 3. Update the panel visibility via UiState
+            UiState.CifEditorVisibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -966,14 +946,12 @@ namespace SlimViews
         internal bool SaveImage(string path, string extension, Bitmap bitmap)
         {
             // Update UI Status to "Working" (Red)
-            UiState.StatusImage = UiState.RedIconPath;
             UiState.IsBusy = true;
 
             // Call the lower-level processor logic
             var success = ImageProcessor.SaveImage(path, extension, bitmap);
 
             // Update UI Status to "Done" (Green)
-            UiState.StatusImage = UiState.GreenIconPath;
             UiState.IsBusy = false;
 
             return success;
@@ -1107,7 +1085,6 @@ namespace SlimViews
             // so the busy indicator only clears once the *latest* click is actually
             // done - see the two checks against _imageLoadGeneration below.
             var myGeneration = Interlocked.Increment(ref _imageLoadGeneration);
-            UiState.StatusImage = UiState.RedIconPath;
             UiState.IsBusy = true;
 
             try
@@ -1120,7 +1097,7 @@ namespace SlimViews
                     // important for the undo/redo logic
                     ClearHistory();
 
-                    Image.BitmapImage = null; // <--- ADD THIS: Clear any residual static image
+                    Image.BitmapImage = null; // Clear any residual static image
                     Image.GifPath = filePath;
                     var info = ImageGifHandler.GetImageInfo(filePath);
                     Image.Information = ViewResources.BuildGifInformation(filePath, info);
@@ -1153,6 +1130,18 @@ namespace SlimViews
                     Image.GifPath = null;
                     Image.Bitmap = bmp;
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
+
+                    if (Image.Bitmap != null && UiState.CifEditorVisibility == Visibility.Visible)
+                    {
+                        // Convert to CIF automatically because the panel is open
+                        Image.ActiveCif = new Cif(Image.Bitmap, Image.CustomImageFormat);
+                    }
+                    else
+                    {
+                        // Ensure memory is cleared if the panel is closed
+                        Image.ActiveCif = null;
+                    }
+
                     Image.Information =
                         ViewResources.BuildImageInformation(filePath, FileContext.FileName, Image.BitmapImage);
                 }
@@ -1172,7 +1161,6 @@ namespace SlimViews
                 // flight - clearing the indicator here would hide that it's still working.
                 if (myGeneration == Interlocked.Read(ref _imageLoadGeneration))
                 {
-                    UiState.StatusImage = UiState.GreenIconPath;
                     UiState.IsBusy = false;
                 }
             }
@@ -1203,7 +1191,6 @@ namespace SlimViews
         private async Task GenerateThumbView(string? folder)
         {
             FileContext.CurrentPath = folder;
-            UiState.StatusImage = UiState.RedIconPath;
             UiState.IsBusy = true;
 
             // A filter from the previous folder shouldn't silently persist and hide everything in
@@ -1243,7 +1230,6 @@ namespace SlimViews
                 // No further work is coming (GenerateThumbView(sortedFiles) below is what
                 // normally clears the busy state) - clear it here too, otherwise an empty
                 // folder leaves the indicator stuck on "busy" forever.
-                UiState.StatusImage = UiState.GreenIconPath;
                 UiState.IsBusy = false;
                 NavigationLogic(); // Update UI for empty state
                 return;
@@ -1270,12 +1256,10 @@ namespace SlimViews
             {
                 // Nothing is actually going to run - don't leave the indicator stuck on "busy"
                 // from the outer GenerateThumbView(folder) call that got us here.
-                UiState.StatusImage = UiState.GreenIconPath;
                 UiState.IsBusy = false;
                 return;
             }
 
-            UiState.StatusImage = UiState.RedIconPath;
             UiState.IsBusy = true;
 
             // Create the dictionary in the background
@@ -1287,7 +1271,6 @@ namespace SlimViews
                 // This triggers FileContext.OnPropertyChanged(nameof(Observer))
                 FileContext.Observer = dict;
 
-                UiState.StatusImage = UiState.GreenIconPath;
                 UiState.IsBusy = false;
                 NavigationLogic();
             });
@@ -1335,7 +1318,6 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         public void ImageLoadedCommandAction(object obj)
         {
-            if (!string.IsNullOrEmpty(UiState.StatusImage)) UiState.StatusImage = UiState.GreenIconPath;
             UiState.IsBusy = false;
         }
 

@@ -6,8 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Common.Images;
 using System.IO;
+using Common.Images;
 using System.Reflection;
 using System.Windows;
 using ViewModel;
@@ -20,11 +20,6 @@ namespace SlimViews.Contexts
     /// <seealso cref="System.IEquatable&lt;SlimViews.Contexts.UiState&gt;" />
     public class UiState : ViewModelBase
     {
-        /// <summary>
-        /// The status image
-        /// </summary>
-        private string? _statusImage;
-
         /// <summary>
         /// Whether background work is in progress
         /// </summary>
@@ -39,12 +34,32 @@ namespace SlimViews.Contexts
         internal readonly string? Root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
+        /// The cif editor visibility
+        /// </summary>
+        private Visibility _cifEditorVisibility = Visibility.Collapsed;
+
+        /// <summary>
+        /// Gets or sets the visibility of the CifChannelEditor panel.
+        /// </summary>
+        /// <value>
+        /// The cif editor visibility.
+        /// </value>
+        public Visibility CifEditorVisibility
+        {
+            get => _cifEditorVisibility;
+            set
+            {
+                _cifEditorVisibility = value;
+                OnPropertyChanged(nameof(CifEditorVisibility));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether background work (loading an image, scanning
         /// a folder, deleting/renaming files, etc.) is currently in progress. Drives the pulsing
         /// <see cref="Common.Images.BusyIndicator" /> dot shown in the UI - a steady dot when
         /// <c>false</c>, a pulsing one when <c>true</c>. This is the thing to set/clear around any
-        /// background operation; <see cref="StatusImage" /> is kept only for anything still bound
-        /// to the older red/green icon-swap.
+        /// background operation.
         /// </summary>
         /// <value>
         ///   <c>true</c> if busy; otherwise, <c>false</c>.
@@ -58,38 +73,6 @@ namespace SlimViews.Contexts
                 OnPropertyChanged(nameof(IsBusy));
             }
         }
-
-        /// <summary>
-        /// Gets or sets the status image.
-        /// </summary>
-        /// <value>
-        /// The status image.
-        /// </value>
-        public string? StatusImage
-        {
-            get => _statusImage;
-            set
-            {
-                _statusImage = value;
-                OnPropertyChanged(nameof(StatusImage));
-            }
-        }
-
-        /// <summary>
-        /// Gets the green icon path.
-        /// </summary>
-        /// <value>
-        /// The green icon path.
-        /// </value>
-        internal string GreenIconPath => Path.Combine(Root, ViewResources.IconPathGreen);
-
-        /// <summary>
-        /// Gets the red icon path.
-        /// </summary>
-        /// <value>
-        /// The red icon path.
-        /// </value>
-        internal string RedIconPath => Path.Combine(Root, ViewResources.IconPathRed);
 
         /// <summary>
         /// Gets or sets the left button visibility.
@@ -122,7 +105,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The main window.
         /// </value>
-        internal Window Main { get; set; }
+        internal Window? Main { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to Image Zoom custom Control itself.
@@ -131,7 +114,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The zoom.
         /// </value>
-        internal ImageZoom ImageZoomControl { get; set; }
+        internal ImageZoom? ImageZoomControl { get; set; }
 
         /// <summary>
         /// Gets or sets the thumb Control.
@@ -140,7 +123,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The thumb.
         /// </value>
-        internal Thumbnails Thumb { get; set; }
+        internal Thumbnails? Thumb { get; set; }
 
         /// <summary>
         /// Gets or sets the picker.
@@ -148,9 +131,9 @@ namespace SlimViews.Contexts
         /// <value>
         /// The picker.
         /// </value>
-        internal ColorPickerMenu Picker { get; set; }
+        internal ColorPickerMenu? Picker { get; set; }
 
-        //Internal control settings
+        //--- Internal control settings ---
 
         /// <summary>
         /// Gets or sets a value indicating whether [automatic clean].
@@ -174,7 +157,7 @@ namespace SlimViews.Contexts
         /// <value>
         ///   <c>true</c> if this instance is selection empty; otherwise, <c>false</c>.
         /// </value>
-        internal bool IsSelectionEmpty => Thumb.Selection == null || Thumb.Selection.Count == 0;
+        internal bool IsSelectionEmpty => Thumb?.Selection == null || Thumb.Selection.Count == 0;
 
         /// <summary>
         /// Gets or sets a value indicating whether [use sub folders].
