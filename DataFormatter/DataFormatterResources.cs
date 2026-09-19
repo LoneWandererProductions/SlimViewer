@@ -1,9 +1,9 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataFormatterResources.cs
+ * FILE:        DataFormatter/DataFormatterResources.cs
  * PURPOSE:     Basic string Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace DataFormatter

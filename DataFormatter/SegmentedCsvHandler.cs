@@ -1,11 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        SegmentedCsvHandler.cs
+ * FILE:        DataFormatter/SegmentedCsvHandler.cs
  * PURPOSE:     My custom format, it is a collection of csv files separated with an keyword.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,7 +20,7 @@ namespace DataFormatter
         /// <summary>
         ///     Writes the CSV with layer keywords.
         /// </summary>
-        /// <param name="filepath">The file path.</param>
+        /// <param name="filepath">The filepath.</param>
         /// <param name="separator">The separator.</param>
         /// <param name="csvLayers">The CSV layers.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
@@ -46,12 +47,12 @@ namespace DataFormatter
         /// <summary>
         ///     Reads the CSV with layer keywords.
         /// </summary>
-        /// <param name="filePath">The file path.</param>
+        /// <param name="filepath">The filepath.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of our special format file</returns>
-        public static List<string>? ReadCsvWithLayerKeywords(string filePath, string layerKeyword)
+        public static List<string>? ReadCsvWithLayerKeywords(string filepath, string layerKeyword)
         {
-            var lst = CsvHelper.ReadFileContent(filePath);
+            var lst = CsvHelper.ReadFileContent(filepath);
             if (lst == null)
             {
                 return null;
@@ -63,7 +64,7 @@ namespace DataFormatter
             foreach (var line in lst)
                 // When the layer keyword is encountered, store the current layer
             {
-                if (line.StartsWith(layerKeyword))
+                if (line.StartsWith(layerKeyword, StringComparison.Ordinal))
                 {
                     if (currentLayer.Length > 0)
                     {

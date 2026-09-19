@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        FormatterApiFacade.cs
  * PURPOSE:     Api Façade for the DataFormatter library
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global
@@ -43,8 +43,8 @@ namespace DataFormatter
         /// <param name="file">The file.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of our special format file</returns>
-        public static List<string> ReadCsvWithLayers(string file, string layerKeyword)
-            => SegmentedCsvHandler.ReadCsvWithLayerKeywords(file, layerKeyword);
+        public static List<string>? ReadCsvWithLayers(string file, string layerKeyword)
+            => SegmentedCsvHandler.ReadCsvWithLayerKeywords(file);
 
         /// <summary>
         /// Writes the CSV with layers.
@@ -61,7 +61,7 @@ namespace DataFormatter
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>the values as String[]. Can return null.</returns>
-        public static IEnumerable<string> ReadFile(string path) => ReadText.ReadFile(path);
+        public static IEnumerable<string>? ReadFile(string path) => ReadText.ReadFile(path);
 
         /// <summary>
         /// Writes the file.
