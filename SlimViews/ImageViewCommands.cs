@@ -135,12 +135,60 @@ namespace SlimViews
         /// </value>
         public ICommand Folder { get; }
 
+        /// <summary>
+        /// Gets the mirror.
+        /// </summary>
+        /// <value>
+        /// The mirror.
+        /// </value>
         public ICommand Mirror { get; }
+
+        /// <summary>
+        /// Gets the rotate forward.
+        /// </summary>
+        /// <value>
+        /// The rotate forward.
+        /// </value>
         public ICommand RotateForward { get; }
+
+        /// <summary>
+        /// Gets the rotate backward.
+        /// </summary>
+        /// <value>
+        /// The rotate backward.
+        /// </value>
         public ICommand RotateBackward { get; }
+
+        /// <summary>
+        /// Gets the explorer.
+        /// </summary>
+        /// <value>
+        /// The explorer.
+        /// </value>
         public ICommand Explorer { get; }
+
+        /// <summary>
+        /// Gets the scale.
+        /// </summary>
+        /// <value>
+        /// The scale.
+        /// </value>
         public ICommand Scale { get; }
+
+        /// <summary>
+        /// Gets the folder rename.
+        /// </summary>
+        /// <value>
+        /// The folder rename.
+        /// </value>
         public ICommand FolderRename { get; }
+
+        /// <summary>
+        /// Gets the folder convert.
+        /// </summary>
+        /// <value>
+        /// The folder convert.
+        /// </value>
         public ICommand FolderConvert { get; }
 
         /// <summary>
@@ -151,12 +199,61 @@ namespace SlimViews
         /// </value>
         public ICommand Clear { get; }
 
+        /// <summary>
+        /// Gets the clean temporary folder.
+        /// </summary>
+        /// <value>
+        /// The clean temporary folder.
+        /// </value>
         public ICommand CleanTempFolder { get; }
+
+        /// <summary>
+        /// Gets the folder search.
+        /// </summary>
+        /// <value>
+        /// The folder search.
+        /// </value>
         public ICommand FolderSearch { get; }
+
+        /// <summary>
+        /// Gets the move.
+        /// </summary>
+        /// <value>
+        /// The move.
+        /// </value>
         public ICommand Move { get; }
+
+        /// <summary>
+        /// Gets the move all.
+        /// </summary>
+        /// <value>
+        /// The move all.
+        /// </value>
         public ICommand MoveAll { get; }
+
+        /// <summary>
+        /// Gets the open cif.
+        /// </summary>
+        /// <value>
+        /// The open cif.
+        /// </value>
         public ICommand OpenCif { get; }
+
+        /// <summary>
+        /// Gets the convert cif.
+        /// </summary>
+        /// <value>
+        /// The convert cif.
+        /// </value>
         public ICommand ConvertCif { get; }
+
+        /// <summary>
+        /// Gets the toggle cif editor.
+        /// </summary>
+        /// <value>
+        /// The toggle cif editor.
+        /// </value>
+        public ICommand ToggleCifEditor { get; }
 
         /// <summary>
         /// Gets the GIF window.
@@ -166,8 +263,22 @@ namespace SlimViews
         /// </value>
         public ICommand GifWindow { get; }
 
+        /// <summary>
+        /// Gets the analyzer window.
+        /// </summary>
+        /// <value>
+        /// The analyzer window.
+        /// </value>
         public ICommand AnalyzerWindow { get; }
+
+        /// <summary>
+        /// Gets the export string.
+        /// </summary>
+        /// <value>
+        /// The export string.
+        /// </value>
         public ICommand ExportString { get; }
+
         public ICommand ResizerWindow { get; }
         public ICommand ApplyFilter { get; }
         public ICommand ApplyTexture { get; }
@@ -176,9 +287,36 @@ namespace SlimViews
         public ICommand Brighten { get; }
         public ICommand Darken { get; }
 
+        /// <summary>
+        /// Gets the thumb image clicked.
+        /// </summary>
+        /// <value>
+        /// The thumb image clicked.
+        /// </value>
         public ICommand ThumbImageClicked { get; }
+
+        /// <summary>
+        /// Gets the image loaded.
+        /// </summary>
+        /// <value>
+        /// The image loaded.
+        /// </value>
         public ICommand ImageLoaded { get; }
+
+        /// <summary>
+        /// Gets the selected point.
+        /// </summary>
+        /// <value>
+        /// The selected point.
+        /// </value>
         public ICommand SelectedPoint { get; }
+
+        /// <summary>
+        /// Gets the selected frame.
+        /// </summary>
+        /// <value>
+        /// The selected frame.
+        /// </value>
         public ICommand SelectedFrame { get; }
 
         /// <summary>
@@ -254,24 +392,24 @@ namespace SlimViews
             // ---- Helpers (explicit names matching parameter patterns) ----
 
             // No-parameter on service: Action<ImageView>
-            DelegateCommand<object> Make_NoParamCmd(Action<ImageView> svcAction) =>
+            DelegateCommand<object> MakeNoParamCmd(Action<ImageView> svcAction) =>
                 new(_ => svcAction(owner), CanRun);
 
             // Service that expects (ImageView, object?) -> use object command parameter
-            DelegateCommand<object> Make_ObjParamCmd(Action<ImageView, object?> svcAction) =>
+            DelegateCommand<object> MakeObjParamCmd(Action<ImageView?, object> svcAction) =>
                 new(p => svcAction(owner, p), CanRun);
 
             // Service that expects (ImageView, string?) -> use string-typed command
-            DelegateCommand<string> Make_StringParamCmd(Action<ImageView, string?> svcAction) =>
+            DelegateCommand<string> MakeStringParamCmd(Action<ImageView, string> svcAction) =>
                 new(s => svcAction(owner, s), CanRun);
 
             // Service that expects (ImageView, SelectionFrame) etc. -- handled directly where needed
             // Bool? parameter commands (for CleanTempFolder)
-            DelegateCommand<bool?> Make_BoolParamCmd(Action<bool?> action) =>
+            DelegateCommand<bool?> MakeBoolParamCmd(Action<bool?> action) =>
                 new(action, CanRun);
 
             // Async commands which take object? parameter and return Task (e.g. Rename)
-            AsyncDelegateCommand<object> Make_AsyncObjCmd(Func<object?, Task> asyncAction) =>
+            AsyncDelegateCommand<object> MakeAsyncObjCmd(Func<object?, Task> asyncAction) =>
                 new(asyncAction, CanRun);
 
             // ---- UI / direct owner commands ----
@@ -290,6 +428,7 @@ namespace SlimViews
             Explorer = new DelegateCommand<object>(owner.ExplorerAction, CanRun);
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
             Clipboard = new DelegateCommand<object>(owner.ExportClipboardAction, CanRun);
+            ToggleCifEditor = new DelegateCommand<object>(owner.ToggleCifEditorAction, CanRun);
 
             SelectedPoint = new AsyncDelegateCommand<Point>(owner.SelectedPointAction, CanRun);
             SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
@@ -299,53 +438,53 @@ namespace SlimViews
             // itself while a swap is in flight, so mashing Ctrl+Z can't start a
             // second Undo before the first one has finished. A plain DelegateCommand
             // would also silently discard the Task UndoAsync/RedoAsync return.
-            Undo = Make_AsyncObjCmd(_ => owner.UndoAsync());
-            Redo = Make_AsyncObjCmd(_ => owner.RedoAsync());
+            Undo = MakeAsyncObjCmd(_ => owner.UndoAsync());
+            Redo = MakeAsyncObjCmd(_ => owner.RedoAsync());
 
             // ---- Image mass processing (service methods mostly take ImageView or ImageView+param) ----
-            Scale = Make_NoParamCmd(_imageMassService.ScaleWindow);
-            FolderConvert = Make_NoParamCmd(_imageMassService.FolderConvertWindow);
-            FolderRename = Make_NoParamCmd(_imageMassService.FolderRenameWindow);
-            FindDuplicates = Make_NoParamCmd(_imageMassService.FindDuplicatesWindow);
-            FolderSearch = Make_NoParamCmd(_imageMassService.FolderSearch);
-            ResizerWindow = Make_NoParamCmd(_imageMassService.ResizerWindow);
-            AnalyzerWindow = Make_NoParamCmd(_imageMassService.AnalyzerWindow);
-            ShowHelp = Make_NoParamCmd(_imageMassService.ShowHelp);
-            ShowAbout = Make_NoParamCmd(_imageMassService.ShowAbout);
-            GifWindow = Make_StringParamCmd(_imageMassService.GifWindow);
+            Scale = MakeNoParamCmd(_imageMassService.ScaleWindow);
+            FolderConvert = MakeNoParamCmd(_imageMassService.FolderConvertWindow);
+            FolderRename = MakeNoParamCmd(_imageMassService.FolderRenameWindow);
+            FindDuplicates = MakeNoParamCmd(_imageMassService.FindDuplicatesWindow);
+            FolderSearch = MakeNoParamCmd(_imageMassService.FolderSearch);
+            ResizerWindow = MakeNoParamCmd(_imageMassService.ResizerWindow);
+            AnalyzerWindow = MakeNoParamCmd(_imageMassService.AnalyzerWindow);
+            ShowHelp = MakeNoParamCmd(_imageMassService.ShowHelp);
+            ShowAbout = MakeNoParamCmd(_imageMassService.ShowAbout);
+            GifWindow = MakeStringParamCmd(_imageMassService.GifWindow);
 
             // FilterConfig and TextureConfig previously accepted a string? parameter in original
-            FilterConfig = Make_StringParamCmd(_imageMassService.FilterConfigWindow);
-            TextureConfig = Make_StringParamCmd(_imageMassService.TextureConfigWindow);
+            FilterConfig = MakeStringParamCmd(_imageMassService.FilterConfigWindow);
+            TextureConfig = MakeStringParamCmd(_imageMassService.TextureConfigWindow);
 
             // ---- Image processing (service methods that take owner + param) ----
-            Brighten = Make_StringParamCmd(_imageService.Brighten);
-            Darken = Make_StringParamCmd(_imageService.Darken);
+            Brighten = MakeStringParamCmd(_imageService.Brighten);
+            Darken = MakeStringParamCmd(_imageService.Darken);
 
-            ApplyFilter = Make_StringParamCmd(_imageService.ApplyFilter);
-            ApplyTexture = Make_StringParamCmd(_imageService.ApplyTexture);
+            ApplyFilter = MakeStringParamCmd(_imageService.ApplyFilter);
+            ApplyTexture = MakeStringParamCmd(_imageService.ApplyTexture);
 
             // Many image ops accept (ImageView, object?) in your original code
-            Mirror = Make_ObjParamCmd(_imageService.Mirror);
-            RotateForward = Make_ObjParamCmd(_imageService.RotateForward);
-            RotateBackward = Make_ObjParamCmd(_imageService.RotateBackward);
-            Pixelate = Make_ObjParamCmd(_imageService.Pixelate);
+            Mirror = MakeObjParamCmd(_imageService.Mirror);
+            RotateForward = MakeObjParamCmd(_imageService.RotateForward);
+            RotateBackward = MakeObjParamCmd(_imageService.RotateBackward);
+            Pixelate = MakeObjParamCmd(_imageService.Pixelate);
 
             // ---- File operations (service methods generally accept ImageView + param) ----
-            Delete = Make_AsyncObjCmd(obj => FileService.DeleteAsync(owner));
-            Move = Make_ObjParamCmd(FileService.Move);
-            MoveAll = Make_ObjParamCmd(FileService.MoveAll);
+            Delete = MakeAsyncObjCmd(obj => FileService.DeleteAsync(owner));
+            Move = MakeObjParamCmd(FileService.Move);
+            MoveAll = MakeObjParamCmd(FileService.MoveAll);
 
 
             // Rename is asynchronous in your original; pass the owner in the lambda to call the service method
-            Rename = Make_AsyncObjCmd(obj => FileService.RenameCurrentAsync(owner));
+            Rename = MakeAsyncObjCmd(obj => FileService.RenameCurrentAsync(owner));
 
-            ConvertCif = Make_ObjParamCmd(FileService.ConvertCif);
+            ConvertCif = MakeObjParamCmd(FileService.ConvertCif);
 
             // CleanTempFolder expects bool? (original: CleanTempAction(bool? obj) => _fileService.CleanTempFolder(obj))
-            CleanTempFolder = Make_BoolParamCmd(FileService.CleanTempFolder);
+            CleanTempFolder = MakeBoolParamCmd(FileService.CleanTempFolder);
 
-            Save = Make_ObjParamCmd(FileService.Save);
+            Save = MakeObjParamCmd(FileService.Save);
         }
     }
 }

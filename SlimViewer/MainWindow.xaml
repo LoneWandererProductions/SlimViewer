@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
+        xmlns:images="clr-namespace:Common.Images;assembly=Common.Images"
         xmlns:external="clr-namespace:Common.Controls;assembly=Common.Controls"
         xmlns:slimControls="clr-namespace:SlimControls;assembly=SlimControls"
         xmlns:slimviews="clr-namespace:SlimViews;assembly=SlimViews"
@@ -316,9 +316,15 @@
                               ToolTip="Open Custom Image Format" />
                     <MenuItem Header="🔄 Convert to Cif" Command="{Binding Commands.ConvertCif}"
                               ToolTip="Convert file to Custom Image Format" />
+                    <MenuItem Header="🗜️ Compress Cif" IsCheckable="True" IsChecked="{Binding Path=Image.CompressCif}"
+                              ToolTip="Enable compression for CIF files" />
                     <Separator />
                     <MenuItem Header="🗜️ Compress Cif" IsCheckable="True" IsChecked="{Binding Path=Image.CompressCif}"
                               ToolTip="Enable compression for CIF files" />
+                    <!-- Menu Item to toggle the sidebar -->
+                    <Separator />
+                    <MenuItem Header="🎛️ Toggle Cif Editor" Command="{Binding Commands.ToggleCifEditor}"
+                              ToolTip="Show/Hide the CIF Channel Editor side panel" />
                 </MenuItem>
 
                 <MenuItem Header="❓ Help">
@@ -341,7 +347,7 @@
                 <Label Content="📊 File Count:" VerticalAlignment="Center" FontWeight="Bold" />
                 <Label Content="{Binding Path=Count}" VerticalAlignment="Center" Margin="0,0,10,0"
                        ToolTip="Total number of images in the current list" />
-                <Images:ColorPickerMenu x:Name="ColorPick"
+                <images:ColorPickerMenu x:Name="ColorPick"
                                         Background="{DynamicResource SurfaceBrush}"
                                         ColorChangedCommand="{Binding Commands.ColorChanged}"
                                         ToolTip="Select canvas background color" />
@@ -387,6 +393,9 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <!-- New columns for Splitter and CIF Editor -->
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0" Content="◀"
@@ -397,7 +406,7 @@
                     Height="50" Width="30" Opacity="0.6"
                     ToolTip="Previous Image (Left Arrow Key)" />
 
-            <Images:ImageZoom Grid.Column="1" x:Name="ImageControl" Padding="5"
+            <images:ImageZoom Grid.Column="1" x:Name="ImageControl" Padding="5"
                               IsTabStop="True"
                               HorizontalAlignment="Left"
                               VerticalAlignment="Top"
@@ -415,6 +424,19 @@
                     HorizontalAlignment="Right"
                     Height="50" Width="30" Opacity="0.6"
                     ToolTip="Next Image (Right Arrow Key)" />
+
+            <!-- Vertical Splitter -->
+            <GridSplitter Grid.Column="3"
+                          Width="5"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch"
+                          Background="{StaticResource BorderBrush}"
+                          Visibility="{Binding CifEditorVisibility}" />
+
+            <!-- CIF Channel Editor -->
+            <images:CifChannelEditor Grid.Column="4"
+                                     Visibility="{Binding CifEditorVisibility}"
+                                     CifSource="{Binding ActiveCif}" />
         </Grid>
 
         <!-- ================================================================= -->
@@ -529,7 +551,7 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Reload folder contents and regenerate thumbnails" />
 
-            <Images:BusyIndicator Grid.Row="2" Grid.Column="0"
+            <images:BusyIndicator Grid.Row="2" Grid.Column="0"
                                   IsBusy="{Binding UiState.IsBusy}"
                                   HorizontalAlignment="Center" VerticalAlignment="Center"
                                   ToolTip="Current background processing status (pulsing = busy, steady = ready)" />
@@ -562,7 +584,7 @@
                     IsEnabled="{Binding Path=Image.IsImageActive}"
                     ToolTip="Move all loaded images in current list to target folder" />
 
-            <Images:Thumbnails Name="Thumbnail" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6"
+            <images:Thumbnails Name="Thumbnail" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6"
                                ItemsSource="{Binding FileContext.Observer}"
                                ThumbCellSize="100" ThumbHeight="1"
                                Background="{DynamicResource SurfaceBrush}"

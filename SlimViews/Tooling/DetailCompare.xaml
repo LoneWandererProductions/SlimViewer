@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
+        xmlns:images="clr-namespace:Common.Images;assembly=Common.Images"
         mc:Ignorable="d" x:ClassModifier="internal"
         Title="Detailed Image Comparer"
         Height="550" Width="1100"
@@ -70,7 +70,7 @@
 
                 <!-- Image Zoom Viewer Container -->
                 <Border Grid.Row="4" Background="#1E1E1E" CornerRadius="3" ClipToBounds="True">
-                    <Images:ImageZoom ImageSource="{Binding BmpOne}" />
+                    <images:ImageZoom ImageSource="{Binding BmpOne}" />
                 </Border>
             </Grid>
         </Border>
@@ -120,7 +120,7 @@
 
                 <!-- Image Zoom Viewer Container -->
                 <Border Grid.Row="4" Background="#1E1E1E" CornerRadius="3" ClipToBounds="True">
-                    <Images:ImageZoom ImageSource="{Binding BmpTwo}" />
+                    <images:ImageZoom ImageSource="{Binding BmpTwo}" />
                 </Border>
             </Grid>
         </Border>
@@ -199,7 +199,7 @@
                             <TextBlock Text="Highlight Color:" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontSize="11" Margin="0,0,8,0" ToolTip="Select color to highlight differences" />
-                            <Images:ColorSelection Grid.Column="1" Height="24"
+                            <images:ColorSelection Grid.Column="1" Height="24"
                                                    StartColor="{Binding Colors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                    ToolTip="Select color to highlight differences" />
                         </Grid>

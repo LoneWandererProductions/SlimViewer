@@ -44,7 +44,7 @@ namespace DataFormatter
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of our special format file</returns>
         public static List<string>? ReadCsvWithLayers(string file, string layerKeyword)
-            => SegmentedCsvHandler.ReadCsvWithLayerKeywords(file);
+            => SegmentedCsvHandler.ReadCsvWithLayerKeywords(file, layerKeyword);
 
         /// <summary>
         /// Writes the CSV with layers.

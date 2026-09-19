@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Gifs="clr-namespace:Imaging.Gifs;assembly=Imaging"
-        xmlns:Images="clr-namespace:Common.Images;assembly=Common.Images"
+        xmlns:gifs="clr-namespace:Imaging.Gifs;assembly=Imaging"
+        xmlns:images="clr-namespace:Common.Images;assembly=Common.Images"
         mc:Ignorable="d"
         Title="GIF Frame Editor"
         Height="620" Width="980"
@@ -102,7 +102,7 @@
                 <Border Grid.Row="0" Background="#1E1E1E" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4"
                         ClipToBounds="True">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <Gifs:ImageGif GifSource="{Binding GifPath}"
+                        <gifs:ImageGif GifSource="{Binding GifPath}"
                                        AutoStart="True"
                                        Stretch="Uniform"
                                        ToolTip="Live animation preview" />
@@ -115,7 +115,7 @@
                 <Border Grid.Row="2" Background="#252526" BorderBrush="#383838" BorderThickness="1" CornerRadius="4"
                         Padding="4">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                        <Images:Thumbnails Name="Thumb"
+                        <images:Thumbnails Name="Thumb"
                                            ItemsSource="{Binding Observer}"
                                            ThumbCellSize="100"
                                            ThumbHeight="1"

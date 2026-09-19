@@ -136,7 +136,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void RotateBackward(ImageView owner, object obj)
+        internal void RotateBackward(ImageView? owner, object obj)
         {
             if (owner?.Image?.Bitmap == null)
                 return;
@@ -152,7 +152,7 @@ namespace SlimViews
         /// </summary>
         /// <param name="owner">The image view to modify.</param>
         /// <param name="obj">Unused parameter (reserved for future use).</param>
-        internal void RotateForward(ImageView owner, object obj)
+        internal void RotateForward(ImageView? owner, object obj)
         {
             if (owner?.Image?.Bitmap == null)
                 return;

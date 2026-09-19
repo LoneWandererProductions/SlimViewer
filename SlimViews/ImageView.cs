@@ -52,7 +52,7 @@ namespace SlimViews
         /// </summary>
         public DrawingState MyDrawingState { get; set; } = new DrawingState();
 
-        // Internal Contexts (Data Holders)
+        //--- Internal Contexts (Data Holders) ---
 
         /// <summary>
         /// The image Context, holding all image-related data and operations.
@@ -258,6 +258,43 @@ namespace SlimViews
                 OnPropertyChanged();
                 NavigationLogic();
             }
+        }
+
+        // --- Cif / Color Channel Properties ---
+
+        /// <summary>
+        /// The cif editor visibility
+        /// </summary>
+        private Visibility _cifEditorVisibility = Visibility.Collapsed;
+
+        /// <summary>
+        /// The active cif
+        /// </summary>
+        private Cif? _activeCif;
+
+        /// <summary>
+        /// Gets or sets the cif editor visibility.
+        /// </summary>
+        /// <value>
+        /// The cif editor visibility.
+        /// </value>
+        public Visibility CifEditorVisibility
+        {
+            get => _cifEditorVisibility;
+            set => SetProperty(ref _cifEditorVisibility, value);
+        }
+
+
+        /// <summary>
+        /// Gets or sets the active cif.
+        /// </summary>
+        /// <value>
+        /// The active cif.
+        /// </value>
+        public Cif? ActiveCif
+        {
+            get => _activeCif;
+            set => SetProperty(ref _activeCif, value);
         }
 
         // --- Transient / Command Properties ---
@@ -631,6 +668,17 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Toggles the cif editor action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        internal void ToggleCifEditorAction(object obj)
+        {
+            CifEditorVisibility = CifEditorVisibility == Visibility.Visible
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+        }
+
+        /// <summary>
         /// Next Image action.
         /// </summary>
         /// <param name="obj">The object.</param>
@@ -782,6 +830,11 @@ namespace SlimViews
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpenCif, FileContext.CurrentPath);
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
+            // Store the raw CIF object for the CifChannelEditor to use
+            ActiveCif = Image.CustomImageFormat.GetCif(pathObj.FilePath);
+            if (ActiveCif == null) return;
+
+            // Continue with existing render logic
             Image.Bitmap = Image.CustomImageFormat.GetImageFromCif(pathObj.FilePath);
             if (Image.Bitmap == null) return;
 
@@ -789,6 +842,9 @@ namespace SlimViews
             FileContext.FileName = Path.GetFileName(FileContext.FilePath);
             Image.Information =
                 ViewResources.BuildImageInformation(FileContext.FilePath, FileContext.FileName, Image.BitmapImage);
+
+            // Optional: Automatically open the editor when a CIF is loaded
+            CifEditorVisibility = Visibility.Visible;
         }
 
         /// <summary>
