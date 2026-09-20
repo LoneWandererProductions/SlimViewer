@@ -4,8 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converter="clr-namespace:Common.Converter;assembly=Common.Converter"
-             mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="800">
+             mc:Ignorable="d">
     <UserControl.Resources>
         <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </UserControl.Resources>
@@ -29,7 +28,7 @@
         </Menu>
 
         <!-- Image Viewport -->
-        <Border Grid.Row="1" Grid.Column="0" Margin="5" BorderThickness="1" BorderBrush="#3E3E42" Background="#1E1E1E">
+        <Border Grid.Row="1" Grid.Column="0" Margin="5" BorderThickness="1">
             <Image x:Name="Viewport" RenderOptions.BitmapScalingMode="NearestNeighbor" />
         </Border>
 

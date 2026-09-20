@@ -644,14 +644,62 @@ namespace SlimViews
             }
             else
             {
-                // Open panel
+                // Open panel and close others
                 UiState.CifEditorVisibility = Visibility.Visible;
+                UiState.FilterConfigVisibility = Visibility.Collapsed;
+                UiState.TextureConfigVisibility = Visibility.Collapsed;
 
                 // If an image is already loaded, convert it immediately
                 if (Image.Bitmap != null)
                 {
                     Image.ActiveCif = new Cif(Image.Bitmap, Image.CustomImageFormat);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Toggles the filter configuration.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        internal void ToggleFilterConfigAction(object obj)
+        {
+            if (UiState.FilterConfigVisibility != Visibility.Visible)
+            {
+                UiState.FilterConfigVisibility = Visibility.Visible;
+                UiState.TextureConfigVisibility = Visibility.Collapsed;
+
+                if (UiState.CifEditorVisibility == Visibility.Visible)
+                {
+                    UiState.CifEditorVisibility = Visibility.Collapsed;
+                    Image.ActiveCif = null; // Ensure memory is cleared
+                }
+            }
+            else
+            {
+                UiState.FilterConfigVisibility = Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// Toggles the texture configuration action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        internal void ToggleTextureConfigAction(object obj)
+        {
+            if (UiState.TextureConfigVisibility != Visibility.Visible)
+            {
+                UiState.TextureConfigVisibility = Visibility.Visible;
+                UiState.FilterConfigVisibility = Visibility.Collapsed;
+
+                if (UiState.CifEditorVisibility == Visibility.Visible)
+                {
+                    UiState.CifEditorVisibility = Visibility.Collapsed;
+                    Image.ActiveCif = null; // Ensure memory is cleared
+                }
+            }
+            else
+            {
+                UiState.TextureConfigVisibility = Visibility.Collapsed;
             }
         }
 

@@ -256,6 +256,22 @@ namespace SlimViews
         public ICommand ToggleCifEditor { get; }
 
         /// <summary>
+        /// Gets the toggle filter configuration.
+        /// </summary>
+        /// <value>
+        /// The toggle filter configuration.
+        /// </value>
+        public ICommand ToggleFilterConfig { get; }
+
+        /// <summary>
+        /// Gets the toggle texture configuration.
+        /// </summary>
+        /// <value>
+        /// The toggle texture configuration.
+        /// </value>
+        public ICommand ToggleTextureConfig { get; }
+
+        /// <summary>
         /// Gets the GIF window.
         /// </summary>
         /// <value>
@@ -428,6 +444,8 @@ namespace SlimViews
             ExportString = new DelegateCommand<object>(owner.ExportStringAction, CanRun);
             Clipboard = new DelegateCommand<object>(owner.ExportClipboardAction, CanRun);
             ToggleCifEditor = new DelegateCommand<object>(owner.ToggleCifEditorAction, CanRun);
+            ToggleFilterConfig = new DelegateCommand<object>(owner.ToggleFilterConfigAction, CanRun);
+            ToggleTextureConfig = new DelegateCommand<object>(owner.ToggleTextureConfigAction, CanRun);
 
             SelectedPoint = new AsyncDelegateCommand<Point>(owner.SelectedPointAction, CanRun);
             SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);

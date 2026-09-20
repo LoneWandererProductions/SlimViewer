@@ -39,6 +39,16 @@ namespace SlimViews.Contexts
         private Visibility _cifEditorVisibility = Visibility.Collapsed;
 
         /// <summary>
+        /// The filter configuration visibility
+        /// </summary>
+        private Visibility _filterConfigVisibility = Visibility.Collapsed;
+
+        /// <summary>
+        /// The texture configuration visibility
+        /// </summary>
+        private Visibility _textureConfigVisibility = Visibility.Collapsed;
+
+        /// <summary>
         /// Gets or sets the visibility of the CifChannelEditor panel.
         /// </summary>
         /// <value>
@@ -51,6 +61,38 @@ namespace SlimViews.Contexts
             {
                 _cifEditorVisibility = value;
                 OnPropertyChanged(nameof(CifEditorVisibility));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the filter configuration visibility.
+        /// </summary>
+        /// <value>
+        /// The filter configuration visibility.
+        /// </value>
+        public Visibility FilterConfigVisibility
+        {
+            get => _filterConfigVisibility;
+            set
+            {
+                _filterConfigVisibility = value;
+                OnPropertyChanged(nameof(FilterConfigVisibility));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the texture configuration visibility.
+        /// </summary>
+        /// <value>
+        /// The texture configuration visibility.
+        /// </value>
+        public Visibility TextureConfigVisibility
+        {
+            get => _textureConfigVisibility;
+            set
+            {
+                _textureConfigVisibility = value;
+                OnPropertyChanged(nameof(TextureConfigVisibility));
             }
         }
 
