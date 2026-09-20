@@ -1015,8 +1015,8 @@ namespace Imaging.Texture
                     {
                         for (var checkX = startX; checkX <= endX; checkX++)
                         {
-                            double dx = (x + warpX) - featurePointsX[checkX, checkY];
-                            double dy = (y + warpY) - featurePointsY[checkX, checkY];
+                            var dx = (x + warpX) - featurePointsX[checkX, checkY];
+                            var dy = (y + warpY) - featurePointsY[checkX, checkY];
 
                             var leafShapeDist = Math.Sqrt(dx * dx * 1.8 + dy * dy * 0.8) + Math.Abs(dx) * 0.5;
 
@@ -1485,8 +1485,8 @@ namespace Imaging.Texture
                     {
                         for (var checkX = startX; checkX <= endX; checkX++)
                         {
-                            double dx = sampleX - featurePointsX[checkX, checkY];
-                            double dy = sampleY - featurePointsY[checkX, checkY];
+                            var dx = sampleX - featurePointsX[checkX, checkY];
+                            var dy = sampleY - featurePointsY[checkX, checkY];
                             var dist = Math.Sqrt(dx * dx + dy * dy);
 
                             if (dist < dist1)
