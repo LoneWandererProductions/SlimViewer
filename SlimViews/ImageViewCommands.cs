@@ -298,8 +298,6 @@ namespace SlimViews
         public ICommand ResizerWindow { get; }
         public ICommand ApplyFilter { get; }
         public ICommand ApplyTexture { get; }
-        public ICommand FilterConfig { get; }
-        public ICommand TextureConfig { get; }
         public ICommand Brighten { get; }
         public ICommand Darken { get; }
 
@@ -469,10 +467,6 @@ namespace SlimViews
             ShowHelp = MakeNoParamCmd(_imageMassService.ShowHelp);
             ShowAbout = MakeNoParamCmd(_imageMassService.ShowAbout);
             GifWindow = MakeStringParamCmd(_imageMassService.GifWindow);
-
-            // FilterConfig and TextureConfig previously accepted a string? parameter in original
-            FilterConfig = MakeStringParamCmd(_imageMassService.FilterConfigWindow);
-            TextureConfig = MakeStringParamCmd(_imageMassService.TextureConfigWindow);
 
             // ---- Image processing (service methods that take owner + param) ----
             Brighten = MakeStringParamCmd(_imageService.Brighten);

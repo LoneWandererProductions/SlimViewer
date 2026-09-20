@@ -149,62 +149,6 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Filters the configuration window.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
-        internal void FilterConfigWindow(ImageView owner, string obj)
-        {
-            var filterConfig = new FilterConfig
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-
-            if (!string.IsNullOrEmpty(obj))
-            {
-                var filter = Translator.GetFilterFromString(obj);
-
-                // Reassign the TextureConfig to initialize with texture if needed
-                filterConfig = new FilterConfig(filter)
-                {
-                    Topmost = true,
-                    Owner = owner.UiState.Main
-                };
-            }
-
-            filterConfig.Show();
-        }
-
-        /// <summary>
-        /// Textures the configuration window.
-        /// </summary>
-        /// <param name="owner">The owner.</param>
-        /// <param name="obj">The object.</param>
-        internal void TextureConfigWindow(ImageView owner, string obj)
-        {
-            var textureConfig = new TextureConfig
-            {
-                Topmost = true,
-                Owner = owner.UiState.Main
-            };
-
-            if (!string.IsNullOrEmpty(obj))
-            {
-                var texture = Translator.GetTextureFromString(obj);
-
-                // Reassign the TextureConfig to initialize with texture if needed
-                textureConfig = new TextureConfig(texture)
-                {
-                    Topmost = true,
-                    Owner = owner.UiState.Main
-                };
-            }
-
-            textureConfig.Show();
-        }
-
-        /// <summary>
         /// Resizers the window.
         /// </summary>
         /// <param name="owner">The owner.</param>

@@ -120,8 +120,6 @@
                     <MenuItem Header="↪️ Redo" Command="{Binding Commands.Redo}" InputGestureText="Ctrl+Y" ToolTip="Redo the last undone image edit" />
                     <Separator />
                     <MenuItem Header="🎨 Filter">
-                        <MenuItem Header="⚙️ Configure Filter" Command="{Binding Commands.FilterConfig}" ToolTip="Open filter configuration settings" />
-                        <Separator />
                         <MenuItem Header="TextureNoise" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureNoise}" IsEnabled="{Binding Path=Image.IsImageActive}" />
                         <MenuItem Header="TextureClouds" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureClouds}" IsEnabled="{Binding Path=Image.IsImageActive}" />
                         <MenuItem Header="TextureMarble" Command="{Binding Commands.ApplyTexture}" CommandParameter="{x:Static slimControls:ViewGuiResources.TextureMarble}" IsEnabled="{Binding Path=Image.IsImageActive}" />
@@ -139,8 +137,6 @@
                     </MenuItem>
 
                     <MenuItem Header="🧱 Texture">
-                        <MenuItem Header="⚙️ Configure Texture" Command="{Binding Commands.TextureConfig}" ToolTip="Open texture configuration settings" />
-                        <Separator />
                         <MenuItem Header="Sepia" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSepia}" IsEnabled="{Binding Path=Image.IsImageActive}" />
                         <MenuItem Header="GrayScale" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterGrayScale}" IsEnabled="{Binding Path=Image.IsImageActive}" />
                         <MenuItem Header="BlackAndWhite" Command="{Binding Commands.ApplyFilter}" CommandParameter="{x:Static slimControls:ViewGuiResources.FilterBlackAndWhite}" IsEnabled="{Binding Path=Image.IsImageActive}" />
