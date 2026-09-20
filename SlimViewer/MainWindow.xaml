@@ -320,7 +320,6 @@
                               ToolTip="Enable compression for CIF files" />
                     <Separator />
                     <!-- Menu Item to toggle the sidebar -->
-                    <Separator />
                     <MenuItem Header="🎛️ Toggle Cif Editor" Command="{Binding Commands.ToggleCifEditor}"
                               ToolTip="Show/Hide the CIF Channel Editor side panel" />
                 </MenuItem>

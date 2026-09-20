@@ -312,8 +312,7 @@ namespace Common.Images
         {
             if (CifSource == null || _writeableBitmap == null) return;
 
-            await _renderTokenSource?.CancelAsync()!;
-            _renderTokenSource = new CancellationTokenSource();
+            _renderTokenSource?.Cancel(); _renderTokenSource = new CancellationTokenSource();
             var token = _renderTokenSource.Token;
 
             var rOffset = RedOffset;
