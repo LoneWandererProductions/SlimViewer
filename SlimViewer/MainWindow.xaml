@@ -29,12 +29,6 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!--
-        Background is also set explicitly here (in addition to the implicit Window style in the
-        merged dictionary above) as a belt-and-suspenders measure - local values always win
-        regardless of any style-resolution-order subtlety, so this guarantees the whole window
-        area is dark instead of leaving it to chance.
-    -->
     <Grid external:GlobalKeyHandler.Attach="True"
           external:GlobalKeyHandler.SkipTextControls="True"
           external:GlobalKeyHandler.CommandBindings="{Binding CommandBindings}"
@@ -68,6 +62,10 @@
                                 <Setter Property="MaxHeight" Value="0" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding ThumbnailVisibility}" Value="Hidden">
+                                <Setter Property="MaxHeight" Value="0" />
+                            </DataTrigger>
+                            <!-- Automatically collapse thumbnail row when CIF Editor is open -->
+                            <DataTrigger Binding="{Binding UiState.CifEditorVisibility}" Value="Visible">
                                 <Setter Property="MaxHeight" Value="0" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -390,7 +388,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <!-- New columns for Splitter and CIF Editor -->
+                <!-- Splitter, Active Tool Panel, and Ribbon Sidebar Bar -->
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -422,7 +421,7 @@
                     Height="50" Width="30" Opacity="0.6"
                     ToolTip="Next Image (Right Arrow Key)" />
 
-            <!-- Vertical Splitter -->
+            <!-- Vertical Splitter for Active Tool Panel -->
             <GridSplitter Grid.Column="3"
                           Width="5"
                           HorizontalAlignment="Center"
@@ -430,10 +429,47 @@
                           Background="{StaticResource BorderBrush}"
                           Visibility="{Binding UiState.CifEditorVisibility}" />
 
-            <!-- CIF Channel Editor -->
-            <images:CifChannelEditor Grid.Column="4"
-                                     Visibility="{Binding UiState.CifEditorVisibility}"
-                                     CifSource="{Binding Image.ActiveCif}" />
+            <!-- ACTIVE SIDEBAR PANEL CONTAINER -->
+            <Border Grid.Column="4" Visibility="{Binding UiState.CifEditorVisibility}">
+                <!-- CIF Channel Editor -->
+                <images:CifChannelEditor CifSource="{Binding Image.ActiveCif}" />
+
+                <!-- Additional tool views can be hosted here or swapped via ViewModel content binding -->
+            </Border>
+
+            <!-- RIGHT VERTICAL RIBBON BAR -->
+            <Border Grid.Column="5"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1,0,0,0"
+                    Padding="2">
+                <StackPanel Orientation="Vertical">
+                    <!-- CIF Channel Editor Toggle Button -->
+                    <ToggleButton Command="{Binding Commands.ToggleCifEditor}"
+                                  ToolTip="CIF Channel Editor"
+                                  Margin="2" Padding="6,8"
+                                  Width="36" Height="36">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                <Setter Property="IsChecked" Value="False" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding UiState.CifEditorVisibility}" Value="Visible">
+                                        <Setter Property="IsChecked" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                        <TextBlock Text="🎛️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </ToggleButton>
+
+                    <!-- FUTURE SIDEBAR TOOL BUTTON SLOTS -->
+                    <!--
+                    <Button ToolTip="Future Sidebar Tool" Margin="2" Padding="6,8" Width="36" Height="36">
+                        <TextBlock Text="🛠️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    -->
+                </StackPanel>
+            </Border>
         </Grid>
 
         <!-- ================================================================= -->
@@ -460,12 +496,6 @@
                           Padding="14,1"
                           Cursor="Hand" ToolTip="Flip thumbnail panel open or closed">
                 <ToggleButton.Style>
-                    <!--
-                        BasedOn is the key fix here - without it, this Style completely replaces the
-                        app-wide dark ToggleButton style (Generic.xaml) instead of extending it, so
-                        this one fell back to WPF's stock 3D-beveled chrome while every other toggle
-                        button in the app got the flat, modern, dark-themed look.
-                    -->
                     <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
                         <Setter Property="Content" Value="📷 Thumbnails 🔽" />
                         <Style.Triggers>
@@ -477,12 +507,6 @@
                 </ToggleButton.Style>
             </ToggleButton>
 
-            <!--
-                4. Quick filter - Explorer-style live filter of the thumbnail strip by file name.
-                Only shown while the strip is actually expanded (no point filtering something that's
-                collapsed). See ImageView.ThumbFilterText / Thumbnails.ApplyFilter for how this stays
-                cheap - it toggles visibility on already-rendered cells rather than reloading.
-            -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0"
                         Visibility="{Binding ThumbnailVisibility}">
                 <TextBlock Text="🔎" VerticalAlignment="Center" Margin="0,0,4,0" Opacity="0.7" />
@@ -494,9 +518,21 @@
         </Grid>
 
         <!-- ================================================================= -->
-        <!-- THUMBNAIL PANEL (COLLAPSES WITH ThumbnailVisibility)              -->
+        <!-- THUMBNAIL PANEL (COLLAPSES WITH ThumbnailVisibility OR CIF Editor)-->
         <!-- ================================================================= -->
-        <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ThumbnailVisibility}" Cursor="Hand">
+        <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Cursor="Hand">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="{Binding ThumbnailVisibility}" />
+                    <Style.Triggers>
+                        <!-- Automatically hide thumbnail grid when CIF Editor is active -->
+                        <DataTrigger Binding="{Binding UiState.CifEditorVisibility}" Value="Visible">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
@@ -591,8 +627,6 @@
                                ImageClickedCommand="{Binding Commands.ThumbImageClicked}"
                                ImageLoadedCommand="{Binding Commands.ImageLoaded}" />
 
-            <!-- Shown when the quick filter matches nothing, so it doesn't just look like a blank/
-                 broken thumbnail strip. -->
             <TextBlock Grid.Row="4" Grid.Column="3"
                        Text="No thumbnails match your filter"
                        HorizontalAlignment="Left" VerticalAlignment="Center"
