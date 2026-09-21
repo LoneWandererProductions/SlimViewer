@@ -138,7 +138,7 @@ namespace SlimViews
             var compareWindow = new Compare(config.IncludeSubfolders, config.Folders.ToList(), owner,
                 config.Similarity)
             {
-                Topmost = true,
+                Topmost = false,
                 Owner = owner.UiState.Main
             };
 
