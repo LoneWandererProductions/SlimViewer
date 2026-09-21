@@ -1209,7 +1209,7 @@ namespace Imaging.Texture
             if (noiseGen == null) return buffer;
 
             // 1. Get stone heights (0.0 is mortar, 1.0 is peak rock)
-            var heightMap = noiseGen.GenerateVoronoiMap(gridCells, TextureConstants.DefaultSeed);
+            var heightMap = noiseGen.GenerateVoronoiMap(gridCells);
 
             // Lighting vector (Top-Left, pointing down at the surface)
             double lx = -1.0, ly = -1.0, lz = 1.5;

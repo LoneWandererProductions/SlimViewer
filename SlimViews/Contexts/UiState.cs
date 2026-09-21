@@ -7,9 +7,9 @@
  */
 
 using System.IO;
-using Common.Images;
 using System.Reflection;
 using System.Windows;
+using Common.Images;
 using ViewModel;
 
 namespace SlimViews.Contexts

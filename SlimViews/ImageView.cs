@@ -13,17 +13,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
-using Common.Dialogs;
-using Common.Images;
-using Extended.Extensions;
-using Extended.Objects;
-using FileHandler;
-using Imaging;
-using Imaging.Cifs;
-using Imaging.Enums;
-using Imaging.Gifs;
-using SlimControls;
-using SlimViews.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +24,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Common.Dialogs;
+using Common.Images;
+using Extended.Extensions;
+using Extended.Objects;
+using FileHandler;
+using Imaging;
+using Imaging.Cifs;
+using Imaging.Enums;
+using Imaging.Gifs;
+using SlimControls;
+using SlimViews.Contexts;
 using ViewModel;
+using Point = System.Windows.Point;
 
 namespace SlimViews
 {
@@ -414,7 +415,7 @@ namespace SlimViews
         /// Action triggered when a point is clicked (Pencil drawing, Color picking).
         /// </summary>
         /// <param name="wPoint">The w point.</param>
-        internal async Task SelectedPointAction(System.Windows.Point wPoint)
+        internal async Task SelectedPointAction(Point wPoint)
         {
             if (Image.Bitmap == null) return;
 

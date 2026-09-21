@@ -131,11 +131,6 @@ namespace SlimViews
         internal const string Select = "/select, \"";
 
         /// <summary>
-        ///     The Close (const). Value: "\"".
-        /// </summary>
-        internal const string Close = "\"";
-
-        /// <summary>
         ///     The Status Done (const). Value: "Done"
         /// </summary>
         internal const string StatusDone = "Done";
@@ -159,16 +154,6 @@ namespace SlimViews
         ///     The Message Box Header (const). Value: "File already exists"
         /// </summary>
         internal const string CaptionFileAlreadyExists = "File already exists";
-
-        /// <summary>
-        ///     The Icon Path Green (const). Value: @"System\green.png"
-        /// </summary>
-        internal const string IconPathGreen = @"System\green.png";
-
-        /// <summary>
-        ///     The Icon Path Red (const). Value:  @"System\red.png"
-        /// </summary>
-        internal const string IconPathRed = @"System\red.png";
 
         /// <summary>
         ///     The Cbz Extension (const). Value: ".cbz"
@@ -241,11 +226,6 @@ namespace SlimViews
         internal const string? ErrorMessage = "Error: ";
 
         /// <summary>
-        ///     The error File not Found Text (const). Value: "File not found: "
-        /// </summary>
-        internal const string ErrorFileNotFoundMessage = "File not found: ";
-
-        /// <summary>
         ///     The directory error message (const). Value: "Error Dictionary not found.".
         /// </summary>
         internal const string ErrorDirectoryMessage = "Error Dictionary not found.";
@@ -264,16 +244,6 @@ namespace SlimViews
         ///     The error Message extension not supported (const). Value: "Extension not yet supported: "
         /// </summary>
         internal const string ErrorFileNotSupported = "Extension not yet supported: ";
-
-        /// <summary>
-        ///     The Status Compare started (const). Value: "Compare started."
-        /// </summary>
-        internal const string StatusCompareStart = "Compare started.";
-
-        /// <summary>
-        ///     The Status Compare finished (const). Value: "Compare finished."
-        /// </summary>
-        internal const string StatusCompareFinished = "Compare finished.";
 
         /// <summary>
         ///     The New Gif file Name. (const). Value: "NewGif.gif"

@@ -10,6 +10,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 using SlimViews;
 
 namespace SlimViewer
@@ -81,9 +82,9 @@ namespace SlimViewer
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Windows.Input.KeyEventArgs" /> instance containing the event data.</param>
-        private void ThumbFilterBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void ThumbFilterBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != System.Windows.Input.Key.Escape || _view == null) return;
+            if (e.Key != Key.Escape || _view == null) return;
 
             _view.ThumbFilterText = string.Empty;
             e.Handled = true;

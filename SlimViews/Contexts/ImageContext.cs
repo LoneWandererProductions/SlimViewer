@@ -6,10 +6,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging;
-using Imaging.Cifs;
 using System.Drawing;
 using System.Windows.Media.Imaging;
+using Imaging;
+using Imaging.Cifs;
 using ViewModel;
 
 namespace SlimViews.Contexts

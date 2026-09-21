@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Common.Dialogs;
 using Imaging.Cifs;
+using Image = System.Windows.Controls.Image;
 using SystemDrawingColor = System.Drawing.Color;
 
 namespace Common.Images
@@ -312,7 +314,8 @@ namespace Common.Images
         {
             if (CifSource == null || _writeableBitmap == null) return;
 
-            _renderTokenSource?.Cancel(); _renderTokenSource = new CancellationTokenSource();
+            _renderTokenSource?.Cancel();
+            _renderTokenSource = new CancellationTokenSource();
             var token = _renderTokenSource.Token;
 
             var rOffset = RedOffset;
@@ -476,9 +479,9 @@ namespace Common.Images
             // Convert WriteableBitmap back to standard Bitmap for custom format pipeline
             using var outStream = new MemoryStream();
             BitmapEncoder enc = new PngBitmapEncoder();
-            enc.Frames.Add(BitmapFrame.Create((BitmapSource)_writeableBitmap));
+            enc.Frames.Add(BitmapFrame.Create(_writeableBitmap));
             enc.Save(outStream);
-            using var bitmap = new System.Drawing.Bitmap(outStream);
+            using var bitmap = new Bitmap(outStream);
 
             if (CifSource.Compressed)
                 _customFormat.GenerateCifCompressedFromBitmap(bitmap, newPath);

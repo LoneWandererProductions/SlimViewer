@@ -13,7 +13,6 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-using Imaging.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,6 +26,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Imaging.Helpers;
 
 namespace Common.Images
 {
@@ -901,32 +901,17 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
-        ///     on a predicate over each item's file path, without touching <see cref="ItemsSource" />
-        ///     or re-decoding/reloading anything - this is deliberately just a Visibility toggle on
-        ///     cells that already exist, so it stays cheap even on every keystroke.
-        ///     Note: cells live in a fixed Grid with an explicit Row/Column per id (not a reflowing
-        ///     panel like WrapPanel), so hiding a cell leaves a gap at its original position rather
-        ///     than repacking the grid - a filtered view will look sparse rather than tightly packed.
+        /// Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
+        /// on a predicate over each item's file path, without touching <see cref="ItemsSource" />
+        /// or re-decoding/reloading anything - this is deliberately just a Visibility toggle on
+        /// cells that already exist, so it stays cheap even on every keystroke.
+        /// Note: cells live in a fixed Grid with an explicit Row/Column per id (not a reflowing
+        /// panel like WrapPanel), so hiding a cell leaves a gap at its original position rather
+        /// than repacking the grid - a filtered view will look sparse rather than tightly packed.
         /// </summary>
-        /// <param name="predicate">
-        ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
-        ///     <c>null</c> to clear the filter and show everything again.
-        /// </param>
-        /// <summary>
-        ///     Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
-        ///     on a predicate over each item's file path, without touching <see cref="ItemsSource" />
-        ///     or re-decoding/reloading anything - this is deliberately just Visibility + a
-        ///     Grid.Row/Column reassignment on cells that already exist, so it stays cheap even on
-        ///     every keystroke. Matching cells are packed to the front (row-major, same order the
-        ///     grid was originally filled in) rather than left sitting at their original positions
-        ///     with gaps where non-matches used to be - clearing the filter (predicate: null)
-        ///     restores everyone to their original position.
-        /// </summary>
-        /// <param name="predicate">
-        ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
-        ///     <c>null</c> to clear the filter and show everything again.
-        /// </param>
+        /// <param name="predicate">Called with each item's file path; return <c>true</c> to keep it visible. Pass
+        /// <c>null</c> to clear the filter and show everything again.</param>
+        /// <returns></returns>
         public void ApplyFilter(Func<string, bool>? predicate)
         {
             if (Border == null || ItemsSource == null) return;

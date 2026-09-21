@@ -9,8 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable EventNeverSubscribedTo.Global
 
-using FileHandler;
-using SlimViews.DataObjects;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,6 +19,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Extended.Extensions;
+using FileHandler;
+using SlimViews.DataObjects;
 using ViewModel;
 
 namespace SlimViews.Tooling

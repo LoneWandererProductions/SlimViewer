@@ -11,6 +11,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 
 namespace Core.MemoryLog
 {
@@ -59,7 +60,7 @@ namespace Core.MemoryLog
             string? message,
             string? libraryName = null,
             Exception? exception = null,
-            Microsoft.Extensions.Logging.EventId? eventId = null, // <-- ADDED THIS
+            EventId? eventId = null, // <-- ADDED THIS
             [CallerMemberName] string callerMethod = "",
             params object[] args);
 

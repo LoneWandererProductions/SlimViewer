@@ -9,6 +9,8 @@
 // ReSharper disable UnusedMemberInSuper.Global
 // ReSharper disable UnusedMember.Global
 
+using Microsoft.Extensions.Logging;
+
 namespace Core.MemoryLog
 {
     /// <summary>
@@ -87,7 +89,7 @@ namespace Core.MemoryLog
         /// Bridges to Microsoft.Extensions.Logging infrastructure.
         /// </summary>
         void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel,
-            Microsoft.Extensions.Logging.EventId eventId,
+            EventId eventId,
             TState state,
             Exception? exception,
             Func<TState, Exception?, string> formatter);

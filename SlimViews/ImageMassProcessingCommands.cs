@@ -6,13 +6,12 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Common.Dialogs;
-using SlimControls;
-using SlimViews.Interfaces;
-using SlimViews.Tooling;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Common.Dialogs;
+using SlimViews.Interfaces;
+using SlimViews.Tooling;
 
 namespace SlimViews
 {

@@ -6,14 +6,13 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using Imaging;
-using Imaging.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
+using Imaging;
+using Imaging.Enums;
 using ViewModel;
 
 namespace Common.Images
@@ -39,11 +38,6 @@ namespace Common.Images
         ///     The bias
         /// </summary>
         private double _bias;
-
-        /// <summary>
-        ///     The cancel command
-        /// </summary>
-        private ICommand? _cancelCommand;
 
         /// <summary>
         ///     The factor

@@ -10,7 +10,6 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Core.MemoryLog;
 using Imaging;
 using SlimViews.Contexts;
@@ -56,7 +55,7 @@ namespace SlimViews
         /// <value>
         /// The history.
         /// </value>
-        public UndoManager<Bitmap> History { get; } = new UndoManager<Bitmap>(5);
+        public UndoManager<Bitmap> History { get; } = new UndoManager<Bitmap>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageHistoryManager"/> class.

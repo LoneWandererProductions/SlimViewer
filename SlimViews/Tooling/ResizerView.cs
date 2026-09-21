@@ -9,10 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global, if we make it private the Property Changed event will not be triggered in the Window
 // ReSharper disable MemberCanBeInternal, must be public, else the View Model won't work
 
-using Common.Dialogs;
-using FileHandler;
-using Imaging;
-using Imaging.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +17,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Common.Dialogs;
 using Extended.Extensions;
+using FileHandler;
+using Imaging;
+using Imaging.Enums;
 using ViewModel;
 
 namespace SlimViews.Tooling

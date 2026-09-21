@@ -6,9 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Drawing;
 using Imaging;
 using SlimControls;
-using System.Drawing;
 
 namespace SlimViews
 {

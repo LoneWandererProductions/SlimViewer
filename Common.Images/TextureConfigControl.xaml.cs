@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Windows;
 using System.Windows.Controls;
 using Imaging.Enums;
 

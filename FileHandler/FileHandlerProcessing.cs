@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -103,7 +104,7 @@ namespace FileHandler
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
             {
-                System.Diagnostics.Trace.WriteLine($"Search failed for {path}: {ex.Message}");
+                Trace.WriteLine($"Search failed for {path}: {ex.Message}");
                 return new List<string>();
             }
         }

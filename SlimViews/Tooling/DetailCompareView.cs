@@ -8,9 +8,6 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
-using Common.Dialogs;
-using Imaging;
-using Imaging.Compare;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -21,6 +18,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Common.Dialogs;
+using Imaging;
+using Imaging.Compare;
 using ViewModel;
 
 namespace SlimViews.Tooling

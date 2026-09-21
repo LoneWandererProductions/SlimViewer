@@ -9,6 +9,7 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
@@ -338,7 +339,7 @@ namespace Core.MemoryLog
         {
             try
             {
-                return System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownLibrary";
+                return Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownLibrary";
             }
             catch
             {

@@ -8,8 +8,8 @@
 
 // ReSharper disable MemberCanBeInternal
 
-using Imaging;
 using System.Windows;
+using Imaging;
 
 namespace SlimViews.Tooling
 {

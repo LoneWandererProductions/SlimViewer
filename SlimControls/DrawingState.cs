@@ -6,12 +6,12 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Imaging.Enums;
 
 namespace SlimControls
 {

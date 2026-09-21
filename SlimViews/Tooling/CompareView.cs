@@ -9,8 +9,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 
-using Imaging;
-using Imaging.Gifs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,8 +19,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
+using Common.Images;
+using Imaging;
 using Imaging.Compare;
+using Imaging.Gifs;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -185,7 +185,7 @@ namespace SlimViews.Tooling
         /// </value>
         public ICommand ThumbImageClicked => _thumbImageClicked ??= new DelegateCommand<object>(param =>
         {
-            if (param is Common.Images.ImageEventArgs args)
+            if (param is ImageEventArgs args)
             {
                 var group = DuplicateGroups.FirstOrDefault(g => g.GroupId == args.SenderTag);
 
@@ -364,10 +364,10 @@ namespace SlimViews.Tooling
                 groupModel.DeleteAllCommand =
                     new DelegateCommand<object>(async _ => await DeleteGroupAsync(groupModel, groupPaths));
                 groupModel.DeleteSelectedCommand =
-                    new DelegateCommand<object>(async (param) =>
+                    new DelegateCommand<object>(async param =>
                         await DeleteSelectedAsync(groupModel, param, groupPaths));
                 groupModel.RenameSelectedCommand =
-                    new DelegateCommand<object>(async (param) =>
+                    new DelegateCommand<object>(async param =>
                         await RenameSelectedAsync(groupModel, param, groupPaths));
                 groupModel.IgnoreGroupCommand =
                     new DelegateCommand<object>(_ => IgnoreGroup(groupModel, groupPaths));

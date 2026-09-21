@@ -6,22 +6,22 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using Common.Dialogs;
-using Common.Images;
-using Extended.Extensions;
-using FileHandler;
-using Imaging;
-using Imaging.Gifs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
+using Common.Dialogs;
+using Common.Images;
+using Extended.Extensions;
+using FileHandler;
+using Imaging;
+using Imaging.Gifs;
 using ViewModel;
 
 namespace SlimViews.Tooling
@@ -415,7 +415,7 @@ namespace SlimViews.Tooling
                         var framePath = Path.Combine(ImageExportPath, $"frame_{i:000}.jpg");
 
                         // Save using System.Drawing.Imaging
-                        frame.Save(framePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        frame.Save(framePath, ImageFormat.Jpeg);
                     }
                 }, token);
 
@@ -564,7 +564,7 @@ namespace SlimViews.Tooling
 
                             // B. Load the Bitmap (System.Drawing)
                             // We explicitly create a new Bitmap from the file
-                            var bmp = new System.Drawing.Bitmap(file);
+                            var bmp = new Bitmap(file);
 
                             // C. Create FrameInfo object matching your definition
                             frameInfoList.Add(new FrameInfo

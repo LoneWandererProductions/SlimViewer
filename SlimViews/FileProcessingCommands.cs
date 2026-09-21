@@ -6,9 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Common.Dialogs;
-using FileHandler;
-using Imaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +14,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using Common.Dialogs;
+using FileHandler;
+using Imaging;
 
 namespace SlimViews
 {

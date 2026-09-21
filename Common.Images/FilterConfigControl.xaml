@@ -111,7 +111,7 @@
 
         <!-- Footer Action Buttons -->
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="💾 Save"  Width="80" Margin="0,0,6,0" FontWeight="SemiBold"
+            <Button Content="💾 Save" Width="80" Margin="0,0,6,0" FontWeight="SemiBold"
                     Command="{Binding SaveCommand}" />
             <Button Content="🔄 Reset" Width="80" Margin="0,0,6,0" Command="{Binding ResetCommand}" />
         </StackPanel>
