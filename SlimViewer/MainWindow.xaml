@@ -140,7 +140,7 @@
                     <MenuItem Header="↪️ Redo" Command="{Binding Commands.Redo}" InputGestureText="Ctrl+Y"
                               ToolTip="Redo the last undone image edit" />
                     <Separator />
-                    <MenuItem Header="🎨 Filter">
+                    <MenuItem Header="🧱 Texture">
                         <MenuItem Header="TextureNoise" Command="{Binding Commands.ApplyTexture}"
                                   CommandParameter="{x:Static slimControls:ViewGuiResources.TextureNoise}"
                                   IsEnabled="{Binding Path=Image.IsImageActive}" />
@@ -177,7 +177,7 @@
                         </MenuItem>
                     </MenuItem>
 
-                    <MenuItem Header="🧱 Texture">
+                    <MenuItem Header="🎨 Filter">
                         <MenuItem Header="Sepia" Command="{Binding Commands.ApplyFilter}"
                                   CommandParameter="{x:Static slimControls:ViewGuiResources.FilterSepia}"
                                   IsEnabled="{Binding Path=Image.IsImageActive}" />

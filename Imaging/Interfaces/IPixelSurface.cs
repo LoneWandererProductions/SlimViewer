@@ -58,7 +58,7 @@ namespace Imaging.Interfaces
         /// Sets the pixels.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
-        void SetPixels(IEnumerable<(int x, int y, Color color)> pixels);
+        void SetPixels(IEnumerable<(int x, int y, Color color)>? pixels);
 
         /// <summary>
         /// Blends the int.
