@@ -130,24 +130,6 @@ namespace Imaging.Compare
             //get greyscale
             using var filtered = _render.FilterImage(bitmap, FiltersType.GrayScale);
 
-            //Get array Map for comparison
-            using var dbmTwo = DirectBitmap.GetInstance(filtered);
-
-            try
-            {
-                var i = -1;
-                for (var y = 0; y < ImageResources.DuplicateSize; y++)
-                for (var x = 0; x < ImageResources.DuplicateSize; x++)
-                {
-                    i++;
-                    var cache = dbmTwo.GetPixel(x, y).R;
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                Trace.WriteLine(ex);
-            }
-
             return new ImageColor { R = r, G = g, B = b, Path = path };
         }
 
