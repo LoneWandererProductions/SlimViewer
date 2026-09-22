@@ -8,7 +8,6 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -136,7 +135,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The image view
         /// </summary>
-        private ImageView? _imageView;
+        private ImageView _imageView;
 
         /// <summary>
         /// Gets or sets the status text.
@@ -242,7 +241,7 @@ namespace SlimViews.Tooling
         internal async Task AsyncInitiate(bool subFolders, string? currentFolder, int similarity = 0,
             ImageView? imageView = null)
         {
-            string[]? folders = string.IsNullOrWhiteSpace(currentFolder)
+            var folders = string.IsNullOrWhiteSpace(currentFolder)
                 ? Array.Empty<string>()
                 : new[] { currentFolder };
 
@@ -257,7 +256,7 @@ namespace SlimViews.Tooling
         /// <param name="folders">The folders to scan, searched together as a single pool.</param>
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
         /// <param name="imageView">The image view.</param>
-        internal async Task AsyncInitiate(bool subFolders, IReadOnlyCollection<string>? folders, int similarity = 0,
+        internal async Task AsyncInitiate(bool subFolders, IReadOnlyCollection<string> folders, int similarity = 0,
             ImageView? imageView = null)
         {
             _imageView = imageView;
@@ -320,10 +319,11 @@ namespace SlimViews.Tooling
         /// <param name="_">Unused command parameter.</param>
         private void NextAction(object _)
         {
-            if (_index >= _rows - 1) return;
-
-            _index++;
-            GenerateView();
+            if (_index < _rows - 1)
+            {
+                _index++;
+                GenerateView();
+            }
         }
 
         /// <summary>
@@ -332,10 +332,11 @@ namespace SlimViews.Tooling
         /// <param name="_">Unused command parameter.</param>
         private void PreviousAction(object _)
         {
-            if (_index <= 0) return;
-
-            _index--;
-            GenerateView();
+            if (_index > 0)
+            {
+                _index--;
+                GenerateView();
+            }
         }
 
         /// <summary>
@@ -420,7 +421,7 @@ namespace SlimViews.Tooling
         /// <param name="groupPaths">The group's raw file paths, as stored in <see cref="_duplicates" />.</param>
         private void RemoveGroupFromMaster(List<string?> groupPaths)
         {
-            _duplicates?.Remove(groupPaths);
+            _ = (_duplicates?.Remove(groupPaths));
 
             if (_duplicates == null || _duplicates.Count == 0)
             {
@@ -444,6 +445,7 @@ namespace SlimViews.Tooling
             for (var i = 0; i < DuplicateGroups.Count; i++)
             {
                 if (!ReferenceEquals(DuplicateGroups[i].SourcePaths, groupPaths)) continue;
+
                 cardIndex = i;
                 break;
             }
@@ -496,7 +498,7 @@ namespace SlimViews.Tooling
                 return;
 
             var dict = Observers[observerIndex];
-            if (dict == null || !dict.ContainsKey(itemId))
+            if (dict?.ContainsKey(itemId) != true)
                 return;
 
             var files = dict.Values.ToList();

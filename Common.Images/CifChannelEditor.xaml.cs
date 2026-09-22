@@ -408,16 +408,6 @@ namespace Common.Images
         }
 
         /// <summary>
-        /// Called when [isolation mode changed].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void OnIsolationModeChanged(object sender, RoutedEventArgs e)
-        {
-            RequestRender();
-        }
-
-        /// <summary>
         /// Handles the Click event of the LoadCif control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -494,9 +484,21 @@ namespace Common.Images
         /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void PaletteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (IsolateCheckBox.IsChecked == true)
+            if (IsIsolationEnabled)
             {
                 RequestRender();
+            }
+        }
+
+        /// <summary>
+        ///     Snaps a global channel offset slider back to 0 on double-click - a quick, discoverable
+        ///     way to undo a single channel without having to hit the full "Reset Image" button.
+        /// </summary>
+        private void OffsetSlider_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Slider slider)
+            {
+                slider.Value = 0;
             }
         }
 
