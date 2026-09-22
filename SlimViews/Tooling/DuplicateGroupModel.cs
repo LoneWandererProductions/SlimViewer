@@ -37,7 +37,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The group identifier
         /// </summary>
-        private string? _groupId;
+        private readonly string? _groupId;
 
         /// <summary>
         /// Gets the group identifier.
@@ -50,6 +50,14 @@ namespace SlimViews.Tooling
             get => _groupId;
             init => SetProperty(ref _groupId, value, nameof(GroupId));
         }
+
+        /// <summary>
+        ///     The raw path list this card was built from - the very same <see cref="List{T}" />
+        ///     instance stored in CompareView's master <c>_duplicates</c> list. Kept purely as an
+        ///     identity key so a single card can be found and swapped out without rebuilding
+        ///     every other card on the page (see CompareView.RemoveGroupFromMaster).
+        /// </summary>
+        internal List<string?>? SourcePaths { get; init; }
 
         /// <summary>
         /// Gets or sets the images.

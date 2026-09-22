@@ -125,7 +125,7 @@ namespace SlimViews
         /// any folder(s) and an exact percentage.
         /// </summary>
         /// <param name="owner">The owner.</param>
-        internal void FindDuplicatesWindow(ImageView owner)
+        internal void FindDuplicatesWindow(ImageView? owner)
         {
             var config = new DuplicateSearchConfig(owner.FileContext.CurrentPath)
             {

@@ -326,8 +326,10 @@ namespace SlimViews
         /// <param name="fileName">Name of the file.</param>
         /// <param name="bmp">The BMP.</param>
         /// <returns>String of Image Information</returns>
-        internal static string BuildImageInformation(string filePath, string? fileName, BitmapImage? bmp)
+        internal static string? BuildImageInformation(string filePath, string? fileName, BitmapImage? bmp)
         {
+            if (bmp == null) return null;
+
             return string.Concat(ImagePath, filePath, ImageName,
                 fileName, ImageHeight, bmp.Height, ImageWidth,
                 bmp.Width,
@@ -374,8 +376,10 @@ namespace SlimViews
         /// <param name="fileName">Name of the file.</param>
         /// <param name="bmp">The BMP.</param>
         /// <returns>String of Image Information with line breaks.</returns>
-        public static string BuildImageInformationLine(string filePath, string fileName, BitmapImage? bmp)
+        public static string? BuildImageInformationLine(string filePath, string fileName, BitmapImage? bmp)
         {
+            if (bmp == null) return null;
+
             return string.Concat(ImagePath, filePath, Environment.NewLine,
                 ImageName, fileName, Environment.NewLine,
                 ImageHeight, bmp.Height, Environment.NewLine,

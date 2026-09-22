@@ -122,7 +122,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Sets the property with an action.
         /// </summary>
-        private void SetField<T>(ref T field, T value, Action updateAction, string propertyName)
+        private void SetField<T>(ref T field, T value, Action? updateAction, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return;
 

@@ -10,6 +10,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using SlimViews;
 
@@ -84,10 +85,32 @@ namespace SlimViewer
         /// <param name="e">The <see cref="System.Windows.Input.KeyEventArgs" /> instance containing the event data.</param>
         private void ThumbFilterBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape || _view == null) return;
+            if (_view == null) return;
 
-            _view.ThumbFilterText = string.Empty;
+            // Enter commits the typed text as the active filter (binding is Explicit now, see
+            // MainWindow.xaml) instead of it firing on every keystroke.
+            if (e.Key == Key.Enter)
+            {
+                ThumbFilterBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key != Key.Escape) return;
+
+            ThumbFilterBox.Text = string.Empty;
+            ThumbFilterBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
             e.Handled = true;
+        }
+
+        /// <summary>
+        ///     Applies the thumbnail filter on demand, mirroring the Enter-key behavior in
+        ///     <see cref="ThumbFilterBox_KeyDown" />, for people who'd rather click than press
+        ///     Enter.
+        /// </summary>
+        private void ThumbFilterSearch_Click(object sender, RoutedEventArgs e)
+        {
+            ThumbFilterBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
         }
 
         /// <inheritdoc />

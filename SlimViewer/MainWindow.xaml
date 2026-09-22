@@ -91,7 +91,14 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="150" />
+                <!--
+                    Was a fixed Width="150", which is what capped the zoom slider next to it at a
+                    small, unchanging size regardless of how much window width was actually free -
+                    on anything wider than a small window, the "*" column (index 3) soaked up all
+                    the extra space and left this one exactly as cramped as on a small window.
+                    Auto lets it size to its (now wider) content instead.
+                -->
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Menu Grid.Column="0" VerticalAlignment="Center">
@@ -344,9 +351,13 @@
 
             <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="🔍" VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="Zoom scale level" />
-                <Slider Width="120"
+                <!-- Widened from 120 to 220 - at 120px each tick was under a percent of range,
+                     making it fiddly to land on a specific zoom level. -->
+                <Slider Width="220"
                         Minimum="0.1"
                         Maximum="5.0"
+                        SmallChange="0.05"
+                        LargeChange="0.25"
                         Value="{Binding ZoomScale, ElementName=ImageControl, Mode=TwoWay}"
                         IsEnabled="{Binding Path=Image.IsImageActive}"
                         ToolTip="Adjust zoom scale factor (10% to 500%)" />
@@ -546,10 +557,20 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0"
                         Visibility="{Binding ThumbnailVisibility}">
                 <TextBlock Text="🔎" VerticalAlignment="Center" Margin="0,0,4,0" Opacity="0.7" />
+                <!--
+                    UpdateSourceTrigger=Explicit on purpose: filtering used to run on every
+                    keystroke, which made it feel erratic on larger folders (each partial term
+                    re-filters a still-loading thumbnail strip). The filter is now only applied
+                    when the user presses Enter/clicks Search (see ThumbFilterBox_KeyDown /
+                    ThumbFilterSearch_Click), or clears on Esc.
+                -->
                 <TextBox x:Name="ThumbFilterBox" Width="160" VerticalAlignment="Center" Padding="4,2"
-                         Text="{Binding ThumbFilterText, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="Quick filter thumbnails by file name (Esc to clear)"
+                         Text="{Binding ThumbFilterText, UpdateSourceTrigger=Explicit}"
+                         ToolTip="Filter thumbnails by file name - Enter or Search to apply, Esc to clear"
                          KeyDown="ThumbFilterBox_KeyDown" />
+                <Button Content="Search" Margin="4,0,0,0" Padding="6,2" VerticalAlignment="Center"
+                        Click="ThumbFilterSearch_Click"
+                        ToolTip="Apply the thumbnail filter (Enter does the same)" />
             </StackPanel>
         </Grid>
 

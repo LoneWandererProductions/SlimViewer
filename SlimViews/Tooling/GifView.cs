@@ -53,7 +53,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Status or error message displayed in the UI.
         /// </summary>
-        private string _information = string.Empty;
+        private string? _information = string.Empty;
 
         /// <summary>
         ///     Base directory for temporary file generation.
@@ -176,7 +176,7 @@ namespace SlimViews.Tooling
         /// <value>
         /// The information.
         /// </value>
-        public string Information
+        public string? Information
         {
             get => _information;
             set => SetProperty(ref _information, value);

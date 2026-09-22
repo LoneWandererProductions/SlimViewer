@@ -110,11 +110,6 @@ namespace SlimViews.Tooling
         private string? _similarity;
 
         /// <summary>
-        ///     The status image
-        /// </summary>
-        private string? _statusImage;
-
-        /// <summary>
         /// The is working
         /// </summary>
         private bool _isWorking;
@@ -203,15 +198,6 @@ namespace SlimViews.Tooling
         {
             get => _pathTwo;
             set => SetProperty(ref _pathTwo, value, nameof(PathTwo));
-        }
-
-        /// <summary>
-        ///     Gets or sets the status image.
-        /// </summary>
-        public string? StatusImage
-        {
-            get => _statusImage;
-            set => SetProperty(ref _statusImage, value, nameof(StatusImage));
         }
 
         /// <summary>
@@ -345,7 +331,7 @@ namespace SlimViews.Tooling
                 _btmTwo = btm;
                 BmpTwo = btm.ToBitmapImage();
 
-                // FIXED: Append information safely to UI thread
+                // Append information safely to UI thread
                 _informationTwo = ViewResources.BuildImageInformationLine(pathObj.FilePath, pathObj.FileName, BmpTwo) +
                                   Environment.NewLine;
                 Application.Current.Dispatcher.Invoke(() =>
@@ -385,7 +371,7 @@ namespace SlimViews.Tooling
         /// <param name="text">The text.</param>
         private static async Task AppendTextAsync(TextBoxBase? textBox, string? text)
         {
-            if (textBox == null) return;
+            if (textBox == null || text == null) return;
 
             var offset = 0;
             while (offset < text.Length)
@@ -470,7 +456,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Opens a file dialog to select an image file.
         /// </summary>
-        private static PathObject OpenFile()
+        private static PathObject? OpenFile()
         {
             return DialogHandler.HandleFileOpen(ViewResources.FileOpen);
         }

@@ -133,7 +133,10 @@ namespace SlimViews.Tooling
             set => SetProperty(ref _selectedImagePath, value, nameof(SelectedImagePath));
         }
 
-        private ImageView _imageView;
+        /// <summary>
+        /// The image view
+        /// </summary>
+        private ImageView? _imageView;
 
         /// <summary>
         /// Gets or sets the status text.
@@ -237,9 +240,9 @@ namespace SlimViews.Tooling
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
         /// <param name="imageView">The image view.</param>
         internal async Task AsyncInitiate(bool subFolders, string? currentFolder, int similarity = 0,
-            ImageView imageView = null)
+            ImageView? imageView = null)
         {
-            var folders = string.IsNullOrWhiteSpace(currentFolder)
+            string[]? folders = string.IsNullOrWhiteSpace(currentFolder)
                 ? Array.Empty<string>()
                 : new[] { currentFolder };
 
@@ -254,8 +257,8 @@ namespace SlimViews.Tooling
         /// <param name="folders">The folders to scan, searched together as a single pool.</param>
         /// <param name="similarity">Similarity threshold in percent. 0 = exact duplicates.</param>
         /// <param name="imageView">The image view.</param>
-        internal async Task AsyncInitiate(bool subFolders, IReadOnlyCollection<string> folders, int similarity = 0,
-            ImageView imageView = null)
+        internal async Task AsyncInitiate(bool subFolders, IReadOnlyCollection<string>? folders, int similarity = 0,
+            ImageView? imageView = null)
         {
             _imageView = imageView;
             IsBusy = true;
@@ -317,11 +320,10 @@ namespace SlimViews.Tooling
         /// <param name="_">Unused command parameter.</param>
         private void NextAction(object _)
         {
-            if (_index < _rows - 1)
-            {
-                _index++;
-                GenerateView();
-            }
+            if (_index >= _rows - 1) return;
+
+            _index++;
+            GenerateView();
         }
 
         /// <summary>
@@ -330,11 +332,10 @@ namespace SlimViews.Tooling
         /// <param name="_">Unused command parameter.</param>
         private void PreviousAction(object _)
         {
-            if (_index > 0)
-            {
-                _index--;
-                GenerateView();
-            }
+            if (_index <= 0) return;
+
+            _index--;
+            GenerateView();
         }
 
         /// <summary>
@@ -354,34 +355,48 @@ namespace SlimViews.Tooling
                 List<string?>? groupPaths = _duplicates.ElementAtOrDefault(baseIndex + i);
                 if (groupPaths == null || !groupPaths.Any()) continue;
 
-                var groupModel = new DuplicateGroupModel
-                {
-                    GroupId = $"Group_{i}",
-                    NewName = Path.GetFileNameWithoutExtension(groupPaths.First())
-                };
-
-                // ---> Bind the UI buttons to the ViewModel logic <---
-                groupModel.DeleteAllCommand =
-                    new DelegateCommand<object>(async _ => await DeleteGroupAsync(groupModel, groupPaths));
-                groupModel.DeleteSelectedCommand =
-                    new DelegateCommand<object>(async param =>
-                        await DeleteSelectedAsync(groupModel, param, groupPaths));
-                groupModel.RenameSelectedCommand =
-                    new DelegateCommand<object>(async param =>
-                        await RenameSelectedAsync(groupModel, param, groupPaths));
-                groupModel.IgnoreGroupCommand =
-                    new DelegateCommand<object>(_ => IgnoreGroup(groupModel, groupPaths));
-
-                var imageDict = new Dictionary<int, string?>();
-                var localId = 0;
-                foreach (var path in groupPaths)
-                {
-                    imageDict.Add(localId++, path);
-                }
-
-                groupModel.Images = imageDict;
-                DuplicateGroups.Add(groupModel);
+                DuplicateGroups.Add(BuildGroupModel(groupPaths, i));
             }
+        }
+
+        /// <summary>
+        ///     Builds a single group card (model + its command bindings) from a raw path list.
+        ///     Pulled out of <see cref="GenerateView" /> so a single card can be (re)built on its
+        ///     own - see <see cref="RemoveGroupFromMaster" /> - without having to rebuild every
+        ///     other card on the page along with it.
+        /// </summary>
+        /// <param name="groupPaths">The group's raw file paths, as stored in <see cref="_duplicates" />.</param>
+        /// <param name="slotHint">Used only to build a human-readable <see cref="DuplicateGroupModel.GroupId" />.</param>
+        private DuplicateGroupModel BuildGroupModel(List<string?> groupPaths, int slotHint)
+        {
+            var groupModel = new DuplicateGroupModel
+            {
+                GroupId = $"Group_{slotHint}",
+                NewName = Path.GetFileNameWithoutExtension(groupPaths.First()),
+                SourcePaths = groupPaths
+            };
+
+            // ---> Bind the UI buttons to the ViewModel logic <---
+            groupModel.DeleteAllCommand =
+                new DelegateCommand<object>(async _ => await DeleteGroupAsync(groupModel, groupPaths));
+            groupModel.DeleteSelectedCommand =
+                new DelegateCommand<object>(async param =>
+                    await DeleteSelectedAsync(groupModel, param, groupPaths));
+            groupModel.RenameSelectedCommand =
+                new DelegateCommand<object>(async param =>
+                    await RenameSelectedAsync(groupModel, param, groupPaths));
+            groupModel.IgnoreGroupCommand =
+                new DelegateCommand<object>(_ => IgnoreGroup(groupModel, groupPaths));
+
+            var imageDict = new Dictionary<int, string?>();
+            var localId = 0;
+            foreach (var path in groupPaths)
+            {
+                imageDict.Add(localId++, path);
+            }
+
+            groupModel.Images = imageDict;
+            return groupModel;
         }
 
         /// <summary>
@@ -419,7 +434,40 @@ namespace SlimViews.Tooling
             _rows = (_duplicates.Count + 9) / 10;
             if (_index > _rows - 1) _index = Math.Max(0, _rows - 1);
 
-            GenerateView();
+            // This used to be a flat call to GenerateView(), which clears and rebuilds all 10
+            // cards on the current page - meaning every group's Thumbnails control reloaded every
+            // image from disk again, just because ONE group was deleted or ignored. With big
+            // images or many groups that's most of what made Compare "take forever" to rebuild.
+            // Instead, find just the affected card and swap it out on its own; every other card
+            // on the page is left completely alone.
+            var cardIndex = -1;
+            for (var i = 0; i < DuplicateGroups.Count; i++)
+            {
+                if (!ReferenceEquals(DuplicateGroups[i].SourcePaths, groupPaths)) continue;
+                cardIndex = i;
+                break;
+            }
+
+            if (cardIndex < 0)
+            {
+                // Couldn't find the card (shouldn't normally happen) - fall back to the safe,
+                // if slower, full rebuild rather than leaving the view out of sync.
+                GenerateView();
+                Status = $"Found {_duplicates.Count} groups of matches.";
+                return;
+            }
+
+            DuplicateGroups.RemoveAt(cardIndex);
+
+            // If the master list still has a group beyond what's currently shown on this page,
+            // slot it in where the removed card was, so the page stays full at up to 10 groups.
+            var baseIndex = _index * 10;
+            var nextGroupPaths = _duplicates.ElementAtOrDefault(baseIndex + DuplicateGroups.Count);
+            if (nextGroupPaths is { Count: > 0 })
+            {
+                DuplicateGroups.Insert(cardIndex, BuildGroupModel(nextGroupPaths, cardIndex));
+            }
+
             Status = $"Found {_duplicates.Count} groups of matches.";
         }
 

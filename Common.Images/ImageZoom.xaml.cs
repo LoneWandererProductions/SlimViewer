@@ -338,6 +338,19 @@ namespace Common.Images
         /// </summary>
         private Point _startPoint;
 
+        /// <summary>
+        ///     Pan-drag origin, captured in <see cref="MainCanvas" /> coordinates (the same space
+        ///     the render-transform's OffsetX/OffsetY live in). Kept separate from
+        ///     <see cref="_startPoint" />, which is deliberately captured in <see cref="BtmImage" />
+        ///     - i.e. unscaled, image-local - coordinates for the drawing tools (Rectangle,
+        ///     Ellipse, FreeForm, Dot). Panning used to reuse <see cref="_startPoint" /> for this,
+        ///     which mixed unscaled image-space coordinates with scaled canvas-space coordinates
+        ///     in the same subtraction - correct only at exactly 100% zoom, and increasingly wrong
+        ///     (erratic drag speed/direction, worse right at the pannable edges where the clamp
+        ///     then fights the miscalculated delta) the further zoom moved from 1.0.
+        /// </summary>
+        private Point _panStartPoint;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="Window" /> class.
@@ -609,10 +622,8 @@ namespace Common.Images
             _mouseDown = true;
             _ = MainCanvas.CaptureMouse();
 
-            // Get the mouse position relative to the image (consistent with panning logic)
-            //var rawPoint = e.GetPosition(BtmImage);
-
-            //_startPoint = e.GetPosition(MainCanvas);
+            // Mouse position in image-local (unscaled) space - used by the drawing tools below,
+            // which all work in image pixel coordinates.
             _startPoint = e.GetPosition(BtmImage);
 
             // Capture the mouse
@@ -623,6 +634,10 @@ namespace Common.Images
             // If this is a pan start, capture origin offsets (in image transform space)
             if (SelectionTool == ImageZoomTools.Move)
             {
+                // Separate drag-origin point in Canvas (scaled) space - see _panStartPoint's
+                // doc comment for why this can't just reuse _startPoint above.
+                _panStartPoint = e.GetPosition(MainCanvas);
+
                 // Capture the current image transform offset as the origin for panning
                 var matrix = BtmImage.RenderTransform.Value;
                 _originPoint = new Point(matrix.OffsetX, matrix.OffsetY);
@@ -721,9 +736,14 @@ namespace Common.Images
                     var transform = (MatrixTransform)BtmImage.RenderTransform;
                     var matrix = transform.Matrix;
 
-                    // 1. Calculate intended new offsets
-                    var newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
-                    var newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
+                    // 1. Calculate intended new offsets. Both sides of each subtraction must be
+                    // in the same coordinate space - currentCanvasPos is in Canvas (scaled)
+                    // space, so the drag origin has to be too (_panStartPoint), not _startPoint
+                    // (image-local/unscaled space, used by the drawing tools instead). Mixing the
+                    // two here used to make panning feel erratic and made it worse the further
+                    // zoom was from 100%.
+                    var newX = _originPoint.X + (currentCanvasPos.X - _panStartPoint.X);
+                    var newY = _originPoint.Y + (currentCanvasPos.Y - _panStartPoint.Y);
 
                     // 2. Boundary Checks
                     var viewWidth = ScrollView.ActualWidth;
