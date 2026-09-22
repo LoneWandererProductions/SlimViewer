@@ -671,10 +671,7 @@ namespace Common.Images
 
             // 2. Identify "Immediate Action" tools (Shapes, Frames)
             // 🔴 REMOVED 'ImageZoomTools.Dot' from this list
-            var isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
-                                SelectionTool == ImageZoomTools.Ellipse ||
-                                SelectionTool == ImageZoomTools.FreeForm ||
-                                SelectionTool == ImageZoomTools.Trace;
+            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.FreeForm or ImageZoomTools.Trace;
 
             if (isDrawingTool)
             {

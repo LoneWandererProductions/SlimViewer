@@ -125,7 +125,7 @@ namespace FileHandler
         private static bool IsFileLocked(IOException exception)
         {
             var errorCode = exception.HResult & 0xFFFF;
-            return errorCode == 32 || errorCode == 33; // 32: Sharing violation, 33: Lock violation
+            return errorCode is 32 or 33; // 32: Sharing violation, 33: Lock violation
         }
     }
 }

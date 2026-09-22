@@ -259,9 +259,7 @@ namespace Common.Images
         private void ColorItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             // Re-render when R, G, or B sliders are moved
-            if (e.PropertyName == nameof(CifColorItem.R) ||
-                e.PropertyName == nameof(CifColorItem.G) ||
-                e.PropertyName == nameof(CifColorItem.B))
+            if (e.PropertyName is nameof(CifColorItem.R) or nameof(CifColorItem.G) or nameof(CifColorItem.B))
             {
                 RequestRender();
                 CheckForColorMerge(sender as CifColorItem);

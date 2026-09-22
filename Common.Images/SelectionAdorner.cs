@@ -238,14 +238,14 @@ namespace Common.Images
                 }
             }
 
-            if ((Tool == ImageZoomTools.FreeForm || Tool == ImageZoomTools.Trace || Tool == ImageZoomTools.Polygon) &&
+            if (Tool is ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon &&
                 FreeFormPoints.Count > 0)
             {
                 var geometry = new StreamGeometry();
                 using (var ctx = geometry.Open())
                 {
                     var p0 = _imageTransform.Transform(FreeFormPoints[0]);
-                    bool isClosed = Tool == ImageZoomTools.Polygon;
+                    var isClosed = Tool == ImageZoomTools.Polygon;
                     ctx.BeginFigure(p0, isClosed, isClosed);
 
                     if (FreeFormPoints.Count > 1)
@@ -281,14 +281,14 @@ namespace Common.Images
             int x = 0, y = 0, width = 0, height = 0;
             var points = new List<Point>();
 
-            if (Tool == ImageZoomTools.FreeForm || Tool == ImageZoomTools.Trace || Tool == ImageZoomTools.Polygon)
+            if (Tool is ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon)
             {
                 if (FreeFormPoints.Count > 0)
                 {
                     points = new List<Point>(FreeFormPoints);
 
                     // Ensure closed loops for multi-point polygon shapes
-                    if (points.Count > 2 && (Tool == ImageZoomTools.Polygon || Tool == ImageZoomTools.FreeForm))
+                    if (points.Count > 2 && Tool is ImageZoomTools.Polygon or ImageZoomTools.FreeForm)
                     {
                         if (points[0] != points[^1])
                         {

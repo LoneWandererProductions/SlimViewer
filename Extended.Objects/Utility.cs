@@ -169,7 +169,7 @@ namespace Extended.Objects
             lock (lst)
             {
                 var index = lst.IndexOf(position);
-                if (index == -1 || index == 0) return lst[^1];
+                if (index is -1 or 0) return lst[^1];
 
                 return lst[index - 1];
             }
