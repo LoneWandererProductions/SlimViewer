@@ -6,6 +6,13 @@
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global, well we will use it
+// ReSharper disable PossibleNullReferenceException, well this one should be quite impossible
+// ReSharper disable UnusedAutoPropertyAccessor.Global, we use it
+// ReSharper disable MemberCanBePrivate.Global, we will use it
+// ReSharper disable EventNeverSubscribedTo.Global
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +20,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
-// ReSharper disable UnusedMember.Global, well we will use it
-// ReSharper disable PossibleNullReferenceException, well this one should be quite impossible
-// ReSharper disable UnusedAutoPropertyAccessor.Global, we use it
-// ReSharper disable MemberCanBePrivate.Global, we will use it
 
 namespace Common.Images
 {
@@ -52,8 +54,9 @@ namespace Common.Images
         /// </summary>
         public ColorSelection()
         {
+            // Ensure UI elements exist
             InitializeComponent();
-            Loaded += (s, e) => Initiate(); // Ensure UI elements exist
+            Loaded += (_, _) => Initiate();
         }
 
         /// <inheritdoc />
@@ -73,7 +76,7 @@ namespace Common.Images
         public string StartColor
         {
             get => (string)GetValue(StartColorProperty);
-            set { SetValue(StartColorProperty, value); }
+            set => SetValue(StartColorProperty, value);
         }
 
         /// <summary>
@@ -105,7 +108,7 @@ namespace Common.Images
             var properties = typeof(Colors).GetProperties();
             _colorDct = properties.ToDictionary(
                 p => p.Name,
-                p => (Color)p.GetValue(null, null)
+                p => (Color)p.GetValue(null, null)!
             );
 
             CmbColor.ItemsSource = properties;
@@ -125,8 +128,8 @@ namespace Common.Images
             {
                 if (CmbColor?.SelectedItem is not PropertyInfo property) return;
 
-                var selectedColor = (Color)property.GetValue(null, null);
-                StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
+                var selectedColor = (Color)property.GetValue(null, null)!;
+                if (_colorDct != null) StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
                 ColorChanged?.Invoke(this, StartColor);
             }
             catch (Exception ex) when (ex is ArgumentException or TargetException or TargetException
