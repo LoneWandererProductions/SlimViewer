@@ -23,23 +23,25 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="border"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="3"
-                        Padding="{TemplateBinding Padding}">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <!-- Hover-Zustand -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="{DynamicResource HoverBrush}" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource ControlBorderBrush}" />
+                                <Setter TargetName="border" Property="BorderBrush"
+                                        Value="{DynamicResource ControlBorderBrush}" />
                             </Trigger>
                             <!-- Ausgewählter Zustand (Active Tool / Shape) -->
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentBorderBrush}" />
+                                <Setter TargetName="border" Property="BorderBrush"
+                                        Value="{DynamicResource AccentBorderBrush}" />
                                 <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}" />
                             </Trigger>
                             <!-- Deaktivierter Zustand -->

@@ -318,7 +318,8 @@ namespace SlimViews
         /// on why <see cref="SelectedFrameAction"/>/<see cref="SelectedPointAction"/>
         /// need this instead of the fire-and-forget one.
         /// </summary>
-        internal Task CommitImageChangeAsync(Bitmap? newGdiBitmap) => HistoryManager.CommitImageChangeAsync(newGdiBitmap);
+        internal Task CommitImageChangeAsync(Bitmap? newGdiBitmap) =>
+            HistoryManager.CommitImageChangeAsync(newGdiBitmap);
 
         // --- 3. INITIALIZATION ---
 

@@ -14,7 +14,7 @@ namespace Common.Images
     /// <summary>
     /// Configuration UserControl for Image Filters
     /// </summary>
-    public partial class FilterConfigControl : UserControl
+    public partial class FilterConfigControl
     {
         /// <summary>
         /// The view model

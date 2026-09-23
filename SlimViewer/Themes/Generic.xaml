@@ -920,39 +920,41 @@
                         <!-- Custom Radio Outer Ring + Inner Bullet -->
                         <Grid Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
                             <Ellipse x:Name="radioButtonBorder"
-                                 Width="16"
-                                 Height="16"
-                                 Fill="{TemplateBinding Background}"
-                                 Stroke="{StaticResource BorderBrush}"
-                                 StrokeThickness="1" />
+                                     Width="16"
+                                     Height="16"
+                                     Fill="{TemplateBinding Background}"
+                                     Stroke="{StaticResource BorderBrush}"
+                                     StrokeThickness="1" />
                             <Ellipse x:Name="radioButtonGlyph"
-                                 Width="8"
-                                 Height="8"
-                                 Fill="{StaticResource AccentBrush}"
-                                 Visibility="Collapsed"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center" />
+                                     Width="8"
+                                     Height="8"
+                                     Fill="{StaticResource AccentBrush}"
+                                     Visibility="Collapsed"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
                         </Grid>
 
                         <!-- Text Label -->
                         <ContentPresenter Grid.Column="1"
-                                      Focusable="False"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True" />
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True" />
                     </Grid>
 
                     <ControlTemplate.Triggers>
                         <!-- Checked State -->
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="radioButtonGlyph" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource AccentBrush}" />
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource AccentBrush}" />
                         </Trigger>
 
                         <!-- Hover State -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource TextMutedBrush}" />
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource TextMutedBrush}" />
                         </Trigger>
 
                         <!-- Hover + Checked State -->
@@ -961,13 +963,16 @@
                                 <Condition Property="IsMouseOver" Value="True" />
                                 <Condition Property="IsChecked" Value="True" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource AccentBrush}" />
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource AccentBrush}" />
                         </MultiTrigger>
 
                         <!-- Disabled State -->
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource BorderSubtleBrush}" />
-                            <Setter TargetName="radioButtonGlyph" Property="Fill" Value="{StaticResource TextMutedBrush}" />
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource BorderSubtleBrush}" />
+                            <Setter TargetName="radioButtonGlyph" Property="Fill"
+                                    Value="{StaticResource TextMutedBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
                             <Setter Property="Cursor" Value="Arrow" />
                         </Trigger>
@@ -976,7 +981,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="ListBoxItem">
         <Setter Property="Padding" Value="4,2" />
         <Style.Triggers>

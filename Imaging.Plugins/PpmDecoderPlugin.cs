@@ -239,7 +239,7 @@ namespace Imaging.Plugins
                         var idx = x * 3;
                         rgbRow[idx] = bgrRow[idx + 2]; // Red
                         rgbRow[idx + 1] = bgrRow[idx + 1]; // Green
-                        rgbRow[idx + 2] = bgrRow[idx];     // Blue
+                        rgbRow[idx + 2] = bgrRow[idx]; // Blue
                     }
 
                     fileStream.Write(rgbRow, 0, rowBytes);
