@@ -653,6 +653,7 @@ namespace Common.Images
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
                 case ImageZoomTools.FreeForm:
+                case ImageZoomTools.Polygon:
                     break;
                 case ImageZoomTools.Dot:
                     SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
@@ -687,7 +688,7 @@ namespace Common.Images
             }
 
             // 2. Identify "Immediate Action" tools (Shapes, Frames)
-            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.FreeForm or ImageZoomTools.Trace;
+            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon;
 
             if (isDrawingTool)
             {
@@ -764,6 +765,7 @@ namespace Common.Images
                     break;
 
                 case ImageZoomTools.FreeForm:
+                case ImageZoomTools.Polygon:
                     SelectionAdorner?.AddFreeFormPoint(mousePos);
                     break;
             }

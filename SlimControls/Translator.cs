@@ -49,6 +49,7 @@ namespace SlimControls
                 ImageZoomTools.Rectangle => MaskShape.Rectangle,
                 ImageZoomTools.Ellipse => MaskShape.Circle,
                 ImageZoomTools.FreeForm => MaskShape.Polygon,
+                ImageZoomTools.Polygon => MaskShape.Polygon,
                 _ => MaskShape.Rectangle
             };
         }

@@ -97,6 +97,32 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Same swap as <see cref="CommitImageChange"/>, but awaitable.
+        /// </summary>
+        /// <remarks>
+        /// Use this from callers that can await (e.g. the tool-selection handlers in
+        /// ImageView) instead of <see cref="CommitImageChange"/>. Firing the swap and
+        /// moving on immediately let a second tool action start reading/writing
+        /// <see cref="ImageContext.Bitmap"/> - which most pixel operations mutate
+        /// in place via <c>Graphics.FromImage</c> - while the first swap's background
+        /// clone/dispose/WPF-conversion was still in flight on another thread. GDI+
+        /// bitmaps aren't thread-safe, so that race could throw ("Object is currently
+        /// in use elsewhere") or silently corrupt the image; because the async
+        /// commands have no exception handler wired up, that failure was invisible -
+        /// the tool would just appear to stop doing anything after the first edit.
+        /// Awaiting this closes that window: the command that triggered the edit
+        /// stays disabled until the swap has actually finished.
+        /// </remarks>
+        /// <param name="newGdiBitmap">The new image, per the ownership rules of <see cref="CommitImageChange"/>.</param>
+        internal Task CommitImageChangeAsync(Bitmap? newGdiBitmap)
+        {
+            if (newGdiBitmap == null) return Task.CompletedTask;
+
+            var owned = (Bitmap)newGdiBitmap.Clone();
+            return GuardedReplaceAsync(owned);
+        }
+
+        /// <summary>
         /// Undoes the last action.
         /// </summary>
         public async Task UndoAsync()

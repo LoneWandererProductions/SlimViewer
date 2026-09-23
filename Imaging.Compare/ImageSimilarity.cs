@@ -20,7 +20,7 @@ using FileHandler;
 namespace Imaging.Compare
 {
     /// <summary>
-    /// Compaes images if they are similar enough.
+    /// Compares images if they are similar enough.
     /// </summary>
     internal static class ImageSimilarity
     {

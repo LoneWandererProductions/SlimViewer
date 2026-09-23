@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
  * FILE:        ShapeType.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Supported Shapes
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -13,6 +13,7 @@ namespace SlimControls
         None,
         Rectangle,
         Ellipse,
-        Freeform
+        Freeform,
+        Polygon
     }
 }

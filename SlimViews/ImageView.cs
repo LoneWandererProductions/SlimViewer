@@ -313,6 +313,13 @@ namespace SlimViews
         /// <param name="newGdiBitmap">The new GDI bitmap.</param>
         internal void CommitImageChange(Bitmap? newGdiBitmap) => HistoryManager.CommitImageChange(newGdiBitmap);
 
+        /// <summary>
+        /// Awaitable version of <see cref="CommitImageChange"/> - see remarks there
+        /// on why <see cref="SelectedFrameAction"/>/<see cref="SelectedPointAction"/>
+        /// need this instead of the fire-and-forget one.
+        /// </summary>
+        internal Task CommitImageChangeAsync(Bitmap? newGdiBitmap) => HistoryManager.CommitImageChangeAsync(newGdiBitmap);
+
         // --- 3. INITIALIZATION ---
 
         /// <summary>
@@ -320,7 +327,8 @@ namespace SlimViews
         /// </summary>
         public ImageView()
         {
-            HistoryManager = new ImageHistoryManager(Image);
+            HistoryManager = new ImageHistoryManager(Image,
+                onError: ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(ImageHistoryManager)));
             Commands = new ImageViewCommands(this);
             Initialize();
         }
@@ -404,6 +412,7 @@ namespace SlimViews
                     ShapeType.Rectangle => ImageZoomTools.Rectangle,
                     ShapeType.Ellipse => ImageZoomTools.Ellipse,
                     ShapeType.Freeform => ImageZoomTools.FreeForm,
+                    ShapeType.Polygon => ImageZoomTools.Polygon,
                     _ => ImageZoomTools.Move
                 },
                 DrawTool.Move => ImageZoomTools.Move,
@@ -432,6 +441,7 @@ namespace SlimViews
                 var size = (int)MyDrawingState.BrushSize;
 
                 // Hop off the UI thread so the app doesn't freeze!
+                Bitmap? updatedBitmap = null;
                 await Task.Run(() =>
                 {
                     lock (_drawLock) // Prevent crashes from rapid clicking
@@ -440,12 +450,17 @@ namespace SlimViews
                         SaveUndoState();
 
                         // Draw the color (or transparent pixels) onto the bitmap
-                        var updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, size);
-
-                        // Push the update back to the main UI thread
-                        Application.Current.Dispatcher.Invoke(() => CommitImageChange(updatedBitmap));
+                        updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, size);
                     }
                 });
+
+                // Awaited (not fire-and-forget): keeps the command disabled until the
+                // swap has actually landed, so a second stroke can't start reading/
+                // writing the live bitmap while this one is still being committed.
+                if (updatedBitmap != null)
+                {
+                    await CommitImageChangeAsync(updatedBitmap);
+                }
             }
             // 2. Color Picker (Eyedropper) Logic
             else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)
@@ -473,6 +488,7 @@ namespace SlimViews
             var filterName = MyDrawingState.Filter.FilterName;
 
             //Hop off the UI thread
+            Bitmap? newBitmap = null;
             await Task.Run(() =>
             {
                 lock (_drawLock)
@@ -480,7 +496,7 @@ namespace SlimViews
                     // Heavy memory clone in the background
                     SaveUndoState();
 
-                    var newBitmap = Image.Bitmap;
+                    newBitmap = Image.Bitmap;
 
                     if (tool == DrawTool.Eraser)
                     {
@@ -518,11 +534,20 @@ namespace SlimViews
                                 break;
                         }
                     }
-
-                    // Push back to UI
-                    Application.Current.Dispatcher.Invoke(() => CommitImageChange(newBitmap));
                 }
             });
+
+            // Awaited (not fire-and-forget): see CommitImageChangeAsync's remarks.
+            // Without this, the command re-enabled itself - and let you start a new
+            // selection - before the previous edit had actually been swapped into
+            // ImageContext, so two edits could race on the same live GDI+ bitmap.
+            // That race throws or corrupts silently (no onException handler was
+            // wired up on this command), which is exactly what "first edit works,
+            // everything after it quietly does nothing" looks like from the outside.
+            if (newBitmap != null)
+            {
+                await CommitImageChangeAsync(newBitmap);
+            }
         }
 
         /// <summary>
@@ -710,12 +735,12 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void NextAction(object obj)
         {
-            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
+            if (FileContext.Observer == null || FileContext.Observer.Any()) return;
 
             ChangeImage(Utility.GetNextElement(FileContext.CurrentId, GetNavigableKeys()));
             // Drive the thumbnail highlight/scroll from FileContext.CurrentId (now updated by ChangeImage)
             // instead of Thumbnails' own internal click-tracked state, so it can never drift out of sync.
-            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
+            UiState.Thumb?.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -725,11 +750,11 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void PreviousAction(object obj)
         {
-            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
+            if (FileContext.Observer == null || FileContext.Observer.Any()) return;
 
             ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, GetNavigableKeys()));
             // See NextAction: keep the thumbnail highlight/scroll anchored to the real current id.
-            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
+            UiState.Thumb?.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -794,9 +819,11 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void ClearAction(object obj)
         {
-            if (!FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
+            if (FileContext.Observer == null) return;
 
-            UiState.Thumb.RemoveSingleItem(FileContext.CurrentId);
+            if (FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
+
+            UiState.Thumb?.RemoveSingleItem(FileContext.CurrentId);
             if (Count > 0) Count--;
 
             Image.Clear();
@@ -916,7 +943,7 @@ namespace SlimViews
         internal void ExportClipboardAction(object? obj)
         {
             // 1. Ensure we have an image to copy
-            if (Image?.BitmapImage is BitmapSource bitmap)
+            if (Image.BitmapImage is BitmapSource bitmap)
             {
                 try
                 {
@@ -939,6 +966,8 @@ namespace SlimViews
         /// <param name="id">The identifier.</param>
         public void ChangeImage(int id)
         {
+            if (FileContext.Observer == null) return;
+
             if (!FileContext.Observer.TryGetValue(id, out var path) || !File.Exists(path))
             {
                 _ = RefreshActionAsync(nameof(ChangeImage));

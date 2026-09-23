@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-#nullable enable
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -445,8 +444,10 @@ namespace SlimViews
             ToggleFilterConfig = new DelegateCommand<object>(owner.ToggleFilterConfigAction, CanRun);
             ToggleTextureConfig = new DelegateCommand<object>(owner.ToggleTextureConfigAction, CanRun);
 
-            SelectedPoint = new AsyncDelegateCommand<Point>(owner.SelectedPointAction, CanRun);
-            SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun);
+            SelectedPoint = new AsyncDelegateCommand<Point>(owner.SelectedPointAction, CanRun,
+                ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(SelectedPoint)));
+            SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun,
+                ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(SelectedFrame)));
 
             // ---- UI / direct owner commands ----
             // AsyncDelegateCommand (not DelegateCommand) matters here: it disables

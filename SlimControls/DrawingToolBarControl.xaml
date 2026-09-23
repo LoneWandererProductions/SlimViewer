@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:images="clr-namespace:Common.Images;assembly=Common.Images"
              xmlns:converters="clr-namespace:Common.Converter;assembly=Common.Converter"
-             xmlns:local="clr-namespace:SlimControls"
              x:Name="RootToolbar">
 
     <UserControl.Resources>
@@ -127,6 +126,10 @@
                 <RadioButton Content="〰️ Freeform" GroupName="ShapeGroup" Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Draw a custom freeform shape"
                              IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Freeform}" />
+
+                <RadioButton Content="⬠ Polygon" GroupName="ShapeGroup" Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Draw a closed polygon selection"
+                             IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Polygon}" />
             </StackPanel>
 
             <!-- 4. AREA MODES & DYNAMIC OPTIONS -->
