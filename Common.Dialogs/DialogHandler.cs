@@ -58,6 +58,7 @@ namespace Common.Dialogs
             }
 
             var browser = new FolderBrowser(folder);
+            browser.Topmost = true;
             _ = browser.ShowDialog();
 
             return browser.Root;

@@ -9,8 +9,9 @@
         <converters:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis" />
 
-        <!-- Compact Icon RadioButton / Toggle Style -->
+        <!-- Dynamic Theme-Aware ToolRadioButtonStyle -->
         <Style x:Key="ToolRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="1" />
@@ -22,21 +23,29 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="3"
-                                Padding="{TemplateBinding Padding}">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="3"
+                        Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
+                            <!-- Hover-Zustand -->
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#E5E5E5" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="#CCCCCC" />
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource HoverBrush}" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource ControlBorderBrush}" />
                             </Trigger>
+                            <!-- Ausgewählter Zustand (Active Tool / Shape) -->
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#CCE8FF" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="#99D1FF" />
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentBorderBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}" />
+                            </Trigger>
+                            <!-- Deaktivierter Zustand -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="Transparent" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

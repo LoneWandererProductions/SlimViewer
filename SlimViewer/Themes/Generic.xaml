@@ -894,16 +894,89 @@
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
     </Style>
 
-    <Style TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-    </Style>
-
     <Style TargetType="ListBox">
         <Setter Property="Background" Value="{StaticResource PanelBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
     </Style>
 
+    <!-- Style for RadioButton -->
+    <Style TargetType="RadioButton">
+        <Setter Property="Background" Value="{StaticResource InputBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="2,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Custom Radio Outer Ring + Inner Bullet -->
+                        <Grid Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
+                            <Ellipse x:Name="radioButtonBorder"
+                                 Width="16"
+                                 Height="16"
+                                 Fill="{TemplateBinding Background}"
+                                 Stroke="{StaticResource BorderBrush}"
+                                 StrokeThickness="1" />
+                            <Ellipse x:Name="radioButtonGlyph"
+                                 Width="8"
+                                 Height="8"
+                                 Fill="{StaticResource AccentBrush}"
+                                 Visibility="Collapsed"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center" />
+                        </Grid>
+
+                        <!-- Text Label -->
+                        <ContentPresenter Grid.Column="1"
+                                      Focusable="False"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True" />
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Checked State -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="radioButtonGlyph" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource AccentBrush}" />
+                        </Trigger>
+
+                        <!-- Hover State -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource TextMutedBrush}" />
+                        </Trigger>
+
+                        <!-- Hover + Checked State -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource AccentBrush}" />
+                        </MultiTrigger>
+
+                        <!-- Disabled State -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="radioButtonBorder" Property="Stroke" Value="{StaticResource BorderSubtleBrush}" />
+                            <Setter TargetName="radioButtonGlyph" Property="Fill" Value="{StaticResource TextMutedBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style TargetType="ListBoxItem">
         <Setter Property="Padding" Value="4,2" />
         <Style.Triggers>
