@@ -389,8 +389,9 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Action to compute the difference between the two images.
+        /// Action to compute the difference between the two images.
         /// </summary>
+        /// <param name="obj">The object.</param>
         private void DifferenceAction(object obj)
         {
             if (_btmOne == null || _btmTwo == null) return;

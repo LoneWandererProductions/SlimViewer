@@ -199,6 +199,7 @@
                                               ToolTip="Scan/delete/rename status (pulsing = busy, steady = ready)" />
                         <TextBlock Text="ℹ️ " VerticalAlignment="Center" FontSize="11" />
                         <TextBlock Text="{Binding Status}" Foreground="#CCCCCC" FontSize="11"
+                                   TextTrimming="CharacterEllipsis"
                                    VerticalAlignment="Center" ToolTip="Comparison status and match counts" />
                     </StackPanel>
                 </Border>
