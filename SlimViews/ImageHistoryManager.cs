@@ -196,7 +196,7 @@ namespace SlimViews
             // there's never more than one of these in flight at once.
             var newWpfImage = await Task.Run(() =>
             {
-                var wpfImg = newBitmap.ToBitmapImage();
+                var wpfImg = newBitmap.ToBitmapSource();
                 if (wpfImg is { CanFreeze: true, IsFrozen: false })
                 {
                     wpfImg.Freeze();

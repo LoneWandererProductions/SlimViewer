@@ -28,7 +28,7 @@ namespace SlimViews.Contexts
         /// <summary>
         /// The bitmap image
         /// </summary>
-        private BitmapImage? _bitmapImage;
+        private BitmapSource? _bitmapImage;
 
         /// <summary>
         /// The GIF path
@@ -119,7 +119,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The bitmap image.
         /// </value>
-        public BitmapImage? BitmapImage
+        public BitmapSource? BitmapImage
         {
             get => _bitmapImage;
             set

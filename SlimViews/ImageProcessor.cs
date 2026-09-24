@@ -153,6 +153,20 @@ namespace SlimViews
         }
 
         /// <summary>
+        ///     Draws a batch of pencil/eraser points in place, connecting them with the brush.
+        /// </summary>
+        /// <param name="btm">The bitmap (modified in place).</param>
+        /// <param name="points">The points of this batch.</param>
+        /// <param name="previous">Last point of the previous batch of the same stroke, or null at stroke start.</param>
+        /// <param name="color">The colour (Transparent erases).</param>
+        /// <param name="radius">The brush radius.</param>
+        internal static Bitmap? DrawStroke(Bitmap? btm, IReadOnlyList<Point> points, Point? previous, Color color,
+            int radius)
+        {
+            return btm == null ? null : Render.DrawStroke(btm, points, previous, color, radius);
+        }
+
+        /// <summary>
         ///     Gets the color.
         /// </summary>
         /// <param name="btm">The bitmap.</param>

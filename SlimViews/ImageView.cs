@@ -413,6 +413,11 @@ namespace SlimViews
         }
 
         /// <summary>
+        /// Last point of the previous pencil/eraser batch of the current stroke; null between strokes.
+        /// </summary>
+        private System.Drawing.Point? _lastStrokePoint;
+
+        /// <summary>
         /// Action triggered when a Dot-tool gesture (pencil/eraser drag, or a color-pick
         /// click) has one or more points ready to apply.
         /// </summary>
@@ -444,6 +449,16 @@ namespace SlimViews
                     points[i] = new System.Drawing.Point((int)wPoints[i].X, (int)wPoints[i].Y);
                 }
 
+                // Where in the drag are we? Handlers that get a plain list (no StrokeBatch) treat
+                // every call as its own one-batch stroke, i.e. the old behaviour.
+                var stroke = wPoints as StrokeBatch;
+                var isFirst = stroke?.IsFirst ?? true;
+                var isLast = stroke?.IsLast ?? true;
+
+                // Connect this batch to the previous one so batch boundaries don't leave gaps.
+                System.Drawing.Point? previous = isFirst ? null : _lastStrokePoint;
+                _lastStrokePoint = isLast ? null : points[^1];
+
                 // The queue clones the current bitmap once, hands the clone to
                 // this function, and commits whatever it returns - all as one
                 // uninterruptible step. Every point in the batch is stamped onto
@@ -451,24 +466,12 @@ namespace SlimViews
                 // clone/commit, not one per dab. Awaiting keeps the command
                 // disabled until that has actually finished, so the next batch
                 // can't start before this one has landed.
-                await EditQueue.SubmitAsync(bitmap =>
-                {
-                    var current = bitmap;
-                    foreach (var point in points)
-                    {
-                        var next = ImageProcessor.SetPixel(current, point, color, size);
-                        if (next == null) continue;
-
-                        if (!ReferenceEquals(next, current))
-                        {
-                            current.Dispose();
-                        }
-
-                        current = next;
-                    }
-
-                    return current;
-                });
+                // The stroke is drawn in place on the queue's private clone (one LockBits, no per-dab
+                // image copies), and only the first batch of a stroke pushes an undo state - so a
+                // whole drag is ONE undo step instead of one per flush.
+                await EditQueue.SubmitAsync(
+                    bitmap => ImageProcessor.DrawStroke(bitmap, points, previous, color, size),
+                    recordUndo: isFirst);
             }
             // 2. Color Picker (Eyedropper) Logic
             else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)

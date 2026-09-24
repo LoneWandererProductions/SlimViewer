@@ -326,7 +326,7 @@ namespace SlimViews
         /// <param name="fileName">Name of the file.</param>
         /// <param name="bmp">The BMP.</param>
         /// <returns>String of Image Information</returns>
-        internal static string? BuildImageInformation(string filePath, string? fileName, BitmapImage? bmp)
+        internal static string? BuildImageInformation(string filePath, string? fileName, BitmapSource? bmp)
         {
             if (bmp == null) return null;
 
@@ -376,7 +376,7 @@ namespace SlimViews
         /// <param name="fileName">Name of the file.</param>
         /// <param name="bmp">The BMP.</param>
         /// <returns>String of Image Information with line breaks.</returns>
-        public static string? BuildImageInformationLine(string filePath, string fileName, BitmapImage? bmp)
+        public static string? BuildImageInformationLine(string filePath, string fileName, BitmapSource? bmp)
         {
             if (bmp == null) return null;
 

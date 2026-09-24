@@ -237,6 +237,18 @@ namespace Common.Images
                 {
                     control.BtmImage.StopGif(); // Stop any running GIF
 
+                    // A pencil/eraser stroke lands as a same-sized replacement image. That's an edit in
+                    // place, not "a different image": keep zoom and pan exactly where the user has them
+                    // (otherwise drawing while zoomed in jumps the view back to 100% on every flush).
+                    if (e.OldValue is BitmapSource oldSource
+                        && oldSource.PixelWidth == newSource.PixelWidth
+                        && oldSource.PixelHeight == newSource.PixelHeight
+                        && DateTime.UtcNow - control._lastStrokeFlush < StrokeSwapWindow)
+                    {
+                        control.BtmImage.Source = newSource;
+                        return;
+                    }
+
                     // Reset zoom/pan before swapping in the new image - unless the user has asked
                     // to keep it locked (e.g. paging through a folder of equal-sized scans, where
                     // landing on the same zoomed-in spot on every page is exactly the point).
@@ -369,6 +381,17 @@ namespace Common.Images
         ///     fast stroke feel like it was lagging behind the cursor instead of following it.
         /// </summary>
         private DateTime _lastStrokeFlush = DateTime.MinValue;
+
+        /// <summary>
+        ///     True once the current drag has submitted its first batch (see <see cref="StrokeBatch.IsFirst" />).
+        /// </summary>
+        private bool _strokeHasFlushed;
+
+        /// <summary>
+        ///     A stroke's result is swapped in as a new <see cref="ImageSource" /> of identical size. Within
+        ///     this window after the last flush that swap is an in-place edit and must not reset zoom/pan.
+        /// </summary>
+        private static readonly TimeSpan StrokeSwapWindow = TimeSpan.FromSeconds(2);
 
         private static readonly TimeSpan StrokeFlushInterval = TimeSpan.FromMilliseconds(25);
 
@@ -673,6 +696,7 @@ namespace Common.Images
                     break;
                 case ImageZoomTools.Dot:
                     _strokeBuffer.Clear();
+                    _strokeHasFlushed = false;
                     SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
                     break;
                 default:
@@ -844,17 +868,21 @@ namespace Common.Images
         ///     </para>
         /// </remarks>
         /// <returns><c>true</c> if a batch was actually submitted.</returns>
-        private bool FlushStroke()
+        private bool FlushStroke(bool isLast = false)
         {
             if (_strokeBuffer.Count == 0) return true;
             if (SelectedPointCommand?.CanExecute(null) != true) return false;
 
-            var batch = _strokeBuffer.ToArray();
+            var points = _strokeBuffer.ToArray();
             _strokeBuffer.Clear();
             _lastStrokeFlush = DateTime.UtcNow;
 
-            SafeExecuteCommand(SelectedPointCommand, batch);
-            SelectedPoint?.Invoke(batch[^1]);
+            var isFirst = !_strokeHasFlushed;
+            _strokeHasFlushed = !isLast;
+
+            // A StrokeBatch is still an IReadOnlyList<Point>, so existing handlers keep working.
+            SafeExecuteCommand(SelectedPointCommand, new StrokeBatch(points, isFirst, isLast));
+            SelectedPoint?.Invoke(points[^1]);
             return true;
         }
 
@@ -875,7 +903,7 @@ namespace Common.Images
         private async Task FlushStrokeOnReleaseAsync()
         {
             var attempts = 0;
-            while (!FlushStroke() && attempts++ < 40)
+            while (!FlushStroke(isLast: true) && attempts++ < 40)
             {
                 await Task.Delay(10);
             }

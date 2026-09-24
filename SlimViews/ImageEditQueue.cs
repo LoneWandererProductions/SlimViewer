@@ -56,8 +56,8 @@ namespace SlimViews
         /// <summary>
         /// The channel
         /// </summary>
-        private readonly Channel<Func<Bitmap, Bitmap?>> _channel =
-            Channel.CreateUnbounded<Func<Bitmap, Bitmap?>>(new UnboundedChannelOptions
+        private readonly Channel<(Func<Bitmap, Bitmap?> Job, bool RecordUndo)> _channel =
+            Channel.CreateUnbounded<(Func<Bitmap, Bitmap?> Job, bool RecordUndo)>(new UnboundedChannelOptions
             {
                 SingleReader = true,
                 SingleWriter = false
@@ -112,11 +112,16 @@ namespace SlimViews
         /// if <paramref name="edit"/> returned <see langword="null"/>. Faults with
         /// whatever <paramref name="edit"/> threw if it threw.
         /// </returns>
-        public Task<bool> SubmitAsync(Func<Bitmap, Bitmap?> edit)
+        /// <param name="recordUndo">
+        /// <see langword="false"/> to apply the edit without pushing a new undo state - used for the
+        /// 2nd..nth batch of one pencil/eraser stroke, so a whole stroke is a single undo step instead
+        /// of one per flush (which also used to push real history out of the 5-deep undo buffer).
+        /// </param>
+        public Task<bool> SubmitAsync(Func<Bitmap, Bitmap?> edit, bool recordUndo = true)
         {
             var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-            var accepted = _channel.Writer.TryWrite(bitmap =>
+            Func<Bitmap, Bitmap?> job = bitmap =>
             {
                 try
                 {
@@ -129,7 +134,9 @@ namespace SlimViews
                     completion.SetException(ex);
                     throw;
                 }
-            });
+            };
+
+            var accepted = _channel.Writer.TryWrite((job, recordUndo));
 
             if (!accepted)
             {
@@ -148,7 +155,7 @@ namespace SlimViews
         /// </summary>
         private async Task RunAsync()
         {
-            await foreach (var job in _channel.Reader.ReadAllAsync().ConfigureAwait(true))
+            await foreach (var (job, recordUndo) in _channel.Reader.ReadAllAsync().ConfigureAwait(true))
             {
                 try
                 {
@@ -156,7 +163,10 @@ namespace SlimViews
                     if (current == null) continue;
 
                     // Snapshot for undo *before* the edit touches anything.
-                    _history.SaveUndoState();
+                    if (recordUndo)
+                    {
+                        _history.SaveUndoState();
+                    }
 
                     // The edit's own private copy. Whatever the job does to this
                     // - draw on it in place, hand back a different object entirely
