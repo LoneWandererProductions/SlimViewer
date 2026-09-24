@@ -7,7 +7,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents
+using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
+
+namespace Imaging.Objects.Commands
 {
     /// <summary>Moves a layer in the stack.</summary>
     public sealed class MoveLayerCommand : IDocumentCommand

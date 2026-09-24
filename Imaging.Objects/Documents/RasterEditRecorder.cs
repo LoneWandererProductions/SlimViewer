@@ -7,11 +7,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Objects.Commands;
+
 namespace Imaging.Objects.Documents
 {
-    /// <summary>One tile of a raster patch: pixels before and after an edit (tight rows, clipped at the edges).</summary>
-    internal readonly record struct TilePatch(int Tx, int Ty, int Width, int Height, byte[] Before, byte[] After);
-
     /// <summary>
     ///     Records a pixel edit. Usage: call <see cref="Touch" /> with the area you are about to change
     ///     <b>before</b> writing to it (as often as you like), do the drawing, then <see cref="Commit" /> and hand the

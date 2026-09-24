@@ -7,13 +7,16 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents
+using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
+
+namespace Imaging.Objects.Commands
 {
     /// <summary>
     /// Removes a layer. The command keeps it alive so undo can put it back.
     /// </summary>
-    /// <seealso cref="Imaging.Objects.Documents.IDocumentCommand" />
-    /// <seealso cref="System.IDisposable" />
+    /// <seealso cref="IDocumentCommand" />
+    /// <seealso cref="IDisposable" />
     public sealed class RemoveLayerCommand : IDocumentCommand, IDisposable
     {
         private readonly Guid _layerId;

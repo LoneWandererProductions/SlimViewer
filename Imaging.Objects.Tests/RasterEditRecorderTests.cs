@@ -122,7 +122,8 @@ namespace Imaging.Objects.Tests
                 history.Record(recorder.Commit()!);
                 history.Undo();
 
-                Assert.IsTrue(TestSupport.SamePixels(layer, original), "Undo must restore the state before the FIRST touch.");
+                Assert.IsTrue(TestSupport.SamePixels(layer, original),
+                    "Undo must restore the state before the FIRST touch.");
             }
         }
 

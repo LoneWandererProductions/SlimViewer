@@ -10,11 +10,6 @@
 namespace Imaging.Objects.Documents
 {
     /// <summary>
-    ///     A point in image space with sub-pixel precision.
-    /// </summary>
-    public readonly record struct PointD(double X, double Y);
-
-    /// <summary>
     ///     An integer pixel rectangle. Used for dirty regions and raster patches.
     /// </summary>
     public readonly record struct PixelRect(int X, int Y, int Width, int Height)

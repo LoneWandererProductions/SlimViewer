@@ -15,7 +15,8 @@ namespace Imaging.Objects.Tests
     [TestClass]
     public sealed class ShapeTests
     {
-        private static ImmutableArray<PointD> Triangle => ImmutableArray.Create(new PointD(2, 2), new PointD(12, 4), new PointD(6, 9));
+        private static ImmutableArray<PointD> Triangle =>
+            ImmutableArray.Create(new PointD(2, 2), new PointD(12, 4), new PointD(6, 9));
 
         [TestMethod]
         public void RectBounds_IncludeStrokeAndAntiAliasing()

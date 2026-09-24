@@ -7,21 +7,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Objects.Interfaces;
+
 namespace Imaging.Objects.Documents
 {
-    /// <summary>
-    ///     Turns shapes into pixels. Implemented next to the WPF/GDI code (for example with a DrawingVisual and
-    ///     RenderTargetBitmap); the document model only knows this interface.
-    /// </summary>
-    public interface IShapeRasterizer
-    {
-        /// <summary>
-        ///     Draws <paramref name="shapes" /> (bottom to top) into <paramref name="target" />.
-        ///     The target is fully transparent, straight-alpha BGRA and as large as the document.
-        /// </summary>
-        void Rasterize(IReadOnlyList<Shape> shapes, UnmanagedImageBuffer target);
-    }
-
     /// <summary>
     ///     Renders a <see cref="Document" /> to pixels.
     /// </summary>
@@ -58,7 +47,8 @@ namespace Imaging.Objects.Documents
                             break;
 
                         case ShapeLayer shapes when shapes.Shapes.Count > 0:
-                            if (rasterizer is null) throw new InvalidOperationException(ImageResource.ErrorNoShapeRasterizer);
+                            if (rasterizer is null)
+                                throw new InvalidOperationException(ImageResource.ErrorNoShapeRasterizer);
 
                             using (var scratch = new UnmanagedImageBuffer(document.Width, document.Height))
                             {

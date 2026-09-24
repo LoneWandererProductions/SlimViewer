@@ -256,8 +256,8 @@
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
                                     <!-- R Slider -->
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                        Value="{Binding R, UpdateSourceTrigger=PropertyChanged}"
-                                        Margin="6,0" />
+                                            Value="{Binding R, UpdateSourceTrigger=PropertyChanged}"
+                                            Margin="6,0" />
                                     <TextBlock Grid.Column="2" Text="{Binding R}" VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
@@ -272,8 +272,8 @@
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
                                     <!-- G Slider -->
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                        Value="{Binding G, UpdateSourceTrigger=PropertyChanged}"
-                                        Margin="6,0" />
+                                            Value="{Binding G, UpdateSourceTrigger=PropertyChanged}"
+                                            Margin="6,0" />
                                     <TextBlock Grid.Column="2" Text="{Binding G}" VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
@@ -288,8 +288,8 @@
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
                                     <!-- B Slider -->
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                        Value="{Binding B, UpdateSourceTrigger=PropertyChanged}"
-                                        Margin="6,0" />
+                                            Value="{Binding B, UpdateSourceTrigger=PropertyChanged}"
+                                            Margin="6,0" />
                                     <TextBlock Grid.Column="2" Text="{Binding B}" VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>

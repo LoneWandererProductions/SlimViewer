@@ -5,6 +5,7 @@
  * PURPOSE:     Commands and the undo/redo stack.
  */
 
+using Imaging.Objects.Commands;
 using Imaging.Objects.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -85,7 +86,8 @@ namespace Imaging.Objects.Tests
             var layer = new ShapeLayer("a");
             history.Execute(new AddLayerCommand(layer));
 
-            history.Execute(new SetLayerPropertiesCommand(layer.Id, new LayerProperties("renamed", false, 0.25, BlendMode.Normal)));
+            history.Execute(new SetLayerPropertiesCommand(layer.Id,
+                new LayerProperties("renamed", false, 0.25, BlendMode.Normal)));
             Assert.AreEqual("renamed", layer.Name);
             Assert.IsFalse(layer.Visible);
             Assert.AreEqual(0.25, layer.Opacity, 0.0001);
@@ -317,8 +319,10 @@ namespace Imaging.Objects.Tests
             history.Execute(new RemoveLayerCommand(victim.Id));
             Assert.IsFalse(victim.IsDisposed, "The remove is still the newest step.");
 
-            history.Execute(new SetLayerPropertiesCommand(keep.Id, new LayerProperties("x", true, 1, BlendMode.Normal)));
-            history.Execute(new SetLayerPropertiesCommand(keep.Id, new LayerProperties("y", true, 1, BlendMode.Normal)));
+            history.Execute(new SetLayerPropertiesCommand(keep.Id,
+                new LayerProperties("x", true, 1, BlendMode.Normal)));
+            history.Execute(new SetLayerPropertiesCommand(keep.Id,
+                new LayerProperties("y", true, 1, BlendMode.Normal)));
 
             Assert.IsTrue(victim.IsDisposed);
         }

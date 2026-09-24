@@ -7,7 +7,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents
+using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
+
+namespace Imaging.Objects.Commands
 {
     /// <summary>
     ///     Replaces a shape by a changed copy with the same id: move, resize, restyle. The dirty region covers

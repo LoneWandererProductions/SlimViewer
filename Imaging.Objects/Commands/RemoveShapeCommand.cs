@@ -7,7 +7,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents
+using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
+
+namespace Imaging.Objects.Commands
 {
     /// <summary>Removes a shape from a shape layer.</summary>
     public sealed class RemoveShapeCommand : IDocumentCommand

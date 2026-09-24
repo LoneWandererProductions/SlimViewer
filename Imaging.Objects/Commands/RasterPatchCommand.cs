@@ -7,7 +7,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents
+using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
+
+namespace Imaging.Objects.Commands
 {
     /// <summary>
     ///     Pixel edit stored as tile patches. Created by <see cref="RasterEditRecorder.Commit" />; the pixels are
@@ -67,8 +70,8 @@ namespace Imaging.Objects.Documents
 
             for (var y = 0; y < height; y++)
             {
-                var offset = ((((ty * RasterEditRecorder.TileSize) + y) * layer.Width) +
-                              (tx * RasterEditRecorder.TileSize)) * bpp;
+                var offset = ((ty * RasterEditRecorder.TileSize + y) * layer.Width +
+                              tx * RasterEditRecorder.TileSize) * bpp;
 
                 pixels.AsSpan(y * width * bpp, width * bpp).CopyTo(target.Slice(offset, width * bpp));
             }

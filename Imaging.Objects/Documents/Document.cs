@@ -11,67 +11,6 @@ using System.Drawing;
 
 namespace Imaging.Objects.Documents
 {
-    /// <summary>What happened to a document.</summary>
-    public enum DocumentChangeKind
-    {
-        /// <summary>A layer was inserted.</summary>
-        LayerAdded,
-
-        /// <summary>A layer was removed.</summary>
-        LayerRemoved,
-
-        /// <summary>The stacking order changed.</summary>
-        LayerMoved,
-
-        /// <summary>Name, visibility, opacity or blend mode changed.</summary>
-        LayerPropertiesChanged,
-
-        /// <summary>Shapes were added, removed or replaced.</summary>
-        ShapesChanged,
-
-        /// <summary>Pixels of a raster layer changed.</summary>
-        PixelsChanged
-    }
-
-    /// <summary>
-    ///     Change notification. <see cref="Region" /> is the affected area in document coordinates, so a view can
-    ///     redraw only that (structural changes report the whole document).
-    /// </summary>
-    public sealed class DocumentChangedEventArgs : EventArgs
-    {
-        /// <summary>Initializes a new instance of the <see cref="DocumentChangedEventArgs" /> class.</summary>
-        public DocumentChangedEventArgs(DocumentChangeKind kind, Guid layerId, PixelRect region)
-        {
-            Kind = kind;
-            LayerId = layerId;
-            Region = region;
-        }
-
-        /// <summary>Gets the kind of change.</summary>
-        public DocumentChangeKind Kind { get; }
-
-        /// <summary>Gets the layer concerned.</summary>
-        public Guid LayerId { get; }
-
-        /// <summary>Gets the affected region.</summary>
-        public PixelRect Region { get; }
-    }
-
-    internal static class DocumentLimits
-    {
-        /// <summary>
-        ///     UnmanagedImageBuffer computes its size in 32-bit ints, so a pixel buffer must stay below 2 GiB.
-        /// </summary>
-        internal static void EnsureValidSize(int width, int height)
-        {
-            if (width <= 0 || height <= 0 || (long)width * height * UnmanagedImageBuffer.BytesPerPixel > int.MaxValue)
-            {
-                throw new ArgumentOutOfRangeException(nameof(width),
-                    string.Format(ImageResource.ErrorInvalidDocumentSize, width, height));
-            }
-        }
-    }
-
     /// <summary>
     ///     A layered image. The mutating methods are public so commands living in other assemblies can use them,
     ///     but they bypass undo: application code should go through <see cref="DocumentHistory" />.
@@ -165,7 +104,8 @@ namespace Imaging.Objects.Documents
             ArgumentOutOfRangeException.ThrowIfNegative(index);
             ArgumentOutOfRangeException.ThrowIfGreaterThan(index, _layers.Count);
 
-            if (IndexOf(layer.Id) >= 0) throw new ArgumentException(string.Format(ImageResource.ErrorLayerExists, layer.Id));
+            if (IndexOf(layer.Id) >= 0)
+                throw new ArgumentException(string.Format(ImageResource.ErrorLayerExists, layer.Id));
 
             if (layer is RasterLayer raster && (raster.Width != Width || raster.Height != Height))
             {

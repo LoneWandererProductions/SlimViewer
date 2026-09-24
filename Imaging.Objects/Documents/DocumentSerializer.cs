@@ -8,6 +8,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Objects.Interfaces;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -65,7 +66,8 @@ namespace Imaging.Objects.Documents
             var codecs = new List<IRasterCodec> { writeCodec };
             foreach (var known in new IRasterCodec[] { new PngRasterCodec(), new RawBgraCodec() })
             {
-                if (!codecs.Exists(c => string.Equals(c.Extension, known.Extension, StringComparison.OrdinalIgnoreCase)))
+                if (!codecs.Exists(c =>
+                        string.Equals(c.Extension, known.Extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     codecs.Add(known);
                 }
@@ -320,7 +322,8 @@ namespace Imaging.Objects.Documents
             var extension = Path.GetExtension(file);
             var codec = _readCodecs.FirstOrDefault(c =>
                             string.Equals(c.Extension, extension, StringComparison.OrdinalIgnoreCase)) ??
-                        throw new DocumentFormatException($"Layer {item.Id} uses the unsupported pixel format '{extension}'.");
+                        throw new DocumentFormatException(
+                            $"Layer {item.Id} uses the unsupported pixel format '{extension}'.");
 
             using var stream = entry.Open();
             var pixels = codec.Read(stream, width, height);

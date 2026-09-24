@@ -10,7 +10,9 @@ using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
+using Imaging.Objects.Commands;
 using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Imaging.Objects.Tests
@@ -39,9 +41,13 @@ namespace Imaging.Objects.Tests
             overlay.Pixels.SetPixel(3, 4, 1, 2, 3, 4);
 
             var ink = new ShapeLayer("Ink") { Opacity = 0.75 };
-            ink.Insert(0, new RectShape(1, 2, 10, 8) { Fill = new SolidFill(0xFFFF0000), Stroke = new StrokeSpec(0xFF00FF00, 2) });
+            ink.Insert(0,
+                new RectShape(1, 2, 10, 8)
+                    { Fill = new SolidFill(0xFFFF0000), Stroke = new StrokeSpec(0xFF00FF00, 2) });
             ink.Insert(1, new EllipseShape(5, 5, 6, 6) { Fill = new TextureFill("Cloud") });
-            ink.Insert(2, new PolygonShape(ImmutableArray.Create(new PointD(1, 1), new PointD(9, 1), new PointD(5, 8))) { Fill = new FilterFill("Sepia") });
+            ink.Insert(2,
+                new PolygonShape(ImmutableArray.Create(new PointD(1, 1), new PointD(9, 1), new PointD(5, 8)))
+                    { Fill = new FilterFill("Sepia") });
             ink.Insert(3, new PolylineShape(ImmutableArray.Create(new PointD(0, 0), new PointD(3.5, 2.25))));
             ink.Insert(4, new LineShape(new PointD(0, 0), new PointD(36, 22)));
 
@@ -123,8 +129,12 @@ namespace Imaging.Objects.Tests
             }
 
             Assert.AreEqual(photoId, loaded.Layers[0].Id);
-            Assert.IsTrue(((RasterLayer)loaded.Layers[0]).Pixels.BufferSpan.SequenceEqual(((RasterLayer)original.Layers[0]).Pixels.BufferSpan));
-            Assert.IsTrue(((RasterLayer)loaded.Layers[1]).Pixels.BufferSpan.SequenceEqual(((RasterLayer)original.Layers[1]).Pixels.BufferSpan));
+            Assert.IsTrue(
+                ((RasterLayer)loaded.Layers[0]).Pixels.BufferSpan.SequenceEqual(((RasterLayer)original.Layers[0]).Pixels
+                    .BufferSpan));
+            Assert.IsTrue(
+                ((RasterLayer)loaded.Layers[1]).Pixels.BufferSpan.SequenceEqual(((RasterLayer)original.Layers[1]).Pixels
+                    .BufferSpan));
 
             var inkA = (ShapeLayer)original.Layers[2];
             var inkB = (ShapeLayer)loaded.Layers[2];
@@ -215,7 +225,8 @@ namespace Imaging.Objects.Tests
         {
             var serializer = new DocumentSerializer(new RawBgraCodec());
 
-            TestSupport.Throws<DocumentFormatException>(() => serializer.Load(new MemoryStream(Encoding.UTF8.GetBytes("hello, I am not a zip"))));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                serializer.Load(new MemoryStream(Encoding.UTF8.GetBytes("hello, I am not a zip"))));
         }
 
         [TestMethod]
@@ -236,7 +247,8 @@ namespace Imaging.Objects.Tests
         {
             var bytes = ContainerWith("{ this is not json");
 
-            TestSupport.Throws<DocumentFormatException>(() => new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
         }
 
         [TestMethod]
@@ -244,7 +256,8 @@ namespace Imaging.Objects.Tests
         {
             var bytes = ContainerWith("{\"format\":\"other\",\"version\":1,\"width\":1,\"height\":1,\"layers\":[]}");
 
-            TestSupport.Throws<DocumentFormatException>(() => new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
         }
 
         [TestMethod]
@@ -268,7 +281,8 @@ namespace Imaging.Objects.Tests
         {
             var bytes = ContainerWith("{\"format\":\"slimdoc\",\"version\":1,\"width\":0,\"height\":5,\"layers\":[]}");
 
-            TestSupport.Throws<DocumentFormatException>(() => new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
         }
 
         [TestMethod]
@@ -292,7 +306,8 @@ namespace Imaging.Objects.Tests
 
             var bytes = ContainerWith(json, (file, RawPixels(5, 5)));
 
-            TestSupport.Throws<DocumentFormatException>(() => new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
         }
 
         [TestMethod]
@@ -306,7 +321,8 @@ namespace Imaging.Objects.Tests
 
             var bytes = ContainerWith(json, (file, pixels.AsSpan(0, pixels.Length / 2).ToArray()));
 
-            TestSupport.Throws<DocumentFormatException>(() => new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(bytes)));
         }
 
         [TestMethod]
@@ -317,7 +333,8 @@ namespace Imaging.Objects.Tests
                        $"{{\"type\":\"raster\",\"id\":\"{id}\",\"name\":\"a\",\"file\":\"../evil.bgra\"}}]}}";
 
             TestSupport.Throws<DocumentFormatException>(() =>
-                new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(ContainerWith(json, ("../evil.bgra", RawPixels(4, 4))))));
+                new DocumentSerializer(new RawBgraCodec()).Load(
+                    new MemoryStream(ContainerWith(json, ("../evil.bgra", RawPixels(4, 4))))));
         }
 
         [TestMethod]
@@ -330,8 +347,10 @@ namespace Imaging.Objects.Tests
                                $"{{\"type\":\"shape\",\"id\":\"{id}\",\"name\":\"a\",\"blend\":\"Multiply\"}}]}}";
             var serializer = new DocumentSerializer(new RawBgraCodec());
 
-            TestSupport.Throws<DocumentFormatException>(() => serializer.Load(new MemoryStream(ContainerWith(unknownType))));
-            TestSupport.Throws<DocumentFormatException>(() => serializer.Load(new MemoryStream(ContainerWith(unknownBlend))));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                serializer.Load(new MemoryStream(ContainerWith(unknownType))));
+            TestSupport.Throws<DocumentFormatException>(() =>
+                serializer.Load(new MemoryStream(ContainerWith(unknownBlend))));
         }
 
         [TestMethod]
@@ -339,7 +358,8 @@ namespace Imaging.Objects.Tests
         {
             var id = Guid.NewGuid();
             var layer = $"{{\"type\":\"shape\",\"id\":\"{id}\",\"name\":\"a\"}}";
-            var json = $"{{\"format\":\"slimdoc\",\"version\":1,\"width\":4,\"height\":4,\"layers\":[{layer},{layer}]}}";
+            var json =
+                $"{{\"format\":\"slimdoc\",\"version\":1,\"width\":4,\"height\":4,\"layers\":[{layer},{layer}]}}";
 
             TestSupport.Throws<DocumentFormatException>(() =>
                 new DocumentSerializer(new RawBgraCodec()).Load(new MemoryStream(ContainerWith(json))));

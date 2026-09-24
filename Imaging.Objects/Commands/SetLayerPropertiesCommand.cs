@@ -7,7 +7,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents
+using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
+
+namespace Imaging.Objects.Commands
 {
     /// <summary>
     ///     Changes name, visibility, opacity and/or blend mode. For a slider, execute one command when the drag ends,
