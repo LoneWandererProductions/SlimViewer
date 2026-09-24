@@ -273,8 +273,8 @@ namespace SlimViews.Tooling
                 // UI Feedback: Let the user know exactly what kind of search is running
                 var folderLabel = folders.Count == 1 ? "folder" : $"folders: {folders.Count}";
                 Status = similarity == 0
-                    ? $"Scanning {folderLabel} for exact duplicates..."
-                    : $"Scanning {folderLabel} for images with {similarity}% similarity...";
+                    ? $"Scanning {folderLabel} for duplicates..."
+                    : $"Scanning {folderLabel} for {similarity}% similarity...";
 
                 _duplicates = await Task.Run(() =>
                 {

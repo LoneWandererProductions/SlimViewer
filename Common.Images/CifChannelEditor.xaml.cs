@@ -67,6 +67,11 @@ namespace Common.Images
         public ObservableCollection<CifColorItem> PaletteItems { get; } = new();
 
         /// <summary>
+        /// The current selection
+        /// </summary>
+        private List<CifColorItem> _currentSelection = new();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CifChannelEditor"/> class.
         /// </summary>
         public CifChannelEditor()
@@ -239,7 +244,6 @@ namespace Common.Images
         /// <param name="cif">The cif.</param>
         private void PopulatePalette(Cif cif)
         {
-            // Unsubscribe from previous items
             foreach (var item in PaletteItems)
             {
                 item.PropertyChanged -= ColorItem_PropertyChanged;
@@ -248,9 +252,13 @@ namespace Common.Images
             PaletteItems.Clear();
 
             var index = 0;
-            foreach (var colorKey in cif.CifImage.Keys)
+
+            if (cif == null || cif.CifImage == null) return;
+
+            foreach (var kvp in cif.CifImage)
             {
-                var newItem = new CifColorItem(colorKey, index++);
+                var count = System.Linq.Enumerable.Count(kvp.Value);
+                var newItem = new CifColorItem(kvp.Key, index++, count);
                 newItem.PropertyChanged += ColorItem_PropertyChanged;
                 PaletteItems.Add(newItem);
             }
@@ -265,28 +273,34 @@ namespace Common.Images
         {
             if (e.PropertyName is nameof(CifColorItem.R) or nameof(CifColorItem.G) or nameof(CifColorItem.B))
             {
-                // Sync the R, G, or B value to all other selected items in the ListBox
-                if (!_isSyncingMultiselect && sender is CifColorItem changedItem &&
-                    PaletteListBox?.SelectedItems.Contains(changedItem) == true)
+                if (!_isSyncingMultiselect)
                 {
-                    _isSyncingMultiselect = true;
-                    foreach (CifColorItem item in PaletteListBox.SelectedItems)
+                    if (sender is CifColorItem changedItem && _currentSelection.Contains(changedItem))
                     {
-                        if (item == changedItem) continue;
+                        _isSyncingMultiselect = true;
 
-                        if (e.PropertyName == nameof(CifColorItem.R)) item.R = changedItem.R;
-                        else if (e.PropertyName == nameof(CifColorItem.G)) item.G = changedItem.G;
-                        else if (e.PropertyName == nameof(CifColorItem.B)) item.B = changedItem.B;
+                        foreach (var item in _currentSelection)
+                        {
+                            if (item == changedItem) continue;
+
+                            if (e.PropertyName == nameof(CifColorItem.R)) item.R = changedItem.R;
+                            else if (e.PropertyName == nameof(CifColorItem.G)) item.G = changedItem.G;
+                            else if (e.PropertyName == nameof(CifColorItem.B)) item.B = changedItem.B;
+                        }
+
+                        _isSyncingMultiselect = false;
                     }
 
-                    _isSyncingMultiselect = false;
+                    RequestRender();
+                    CheckForColorMerge(sender as CifColorItem);
                 }
-
-                RequestRender();
-                CheckForColorMerge(sender as CifColorItem);
             }
         }
 
+        /// <summary>
+        /// Checks for color merge.
+        /// </summary>
+        /// <param name="changedItem">The changed item.</param>
         private void CheckForColorMerge(CifColorItem? changedItem)
         {
             if (changedItem == null || CifSource == null) return;
@@ -512,6 +526,8 @@ namespace Common.Images
         /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void PaletteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            _currentSelection = PaletteListBox.SelectedItems.Cast<CifColorItem>().ToList();
+
             if (IsIsolationEnabled)
             {
                 RequestRender();
@@ -519,9 +535,11 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Snaps a global channel offset slider back to 0 on double-click - a quick, discoverable
-        ///     way to undo a single channel without having to hit the full "Reset Image" button.
+        /// Snaps a global channel offset slider back to 0 on double-click - a quick, discoverable
+        /// way to undo a single channel without having to hit the full "Reset Image" button.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
         private void OffsetSlider_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is Slider slider)

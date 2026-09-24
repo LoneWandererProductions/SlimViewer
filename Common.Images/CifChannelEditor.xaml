@@ -254,9 +254,10 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="R" Foreground="#FFE06C6C"
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <!-- R Slider -->
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding R, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                                            Margin="6,0" />
+                                        Value="{Binding R, UpdateSourceTrigger=PropertyChanged}"
+                                        Margin="6,0" />
                                     <TextBlock Grid.Column="2" Text="{Binding R}" VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
@@ -269,9 +270,10 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="G" Foreground="#FF7CC47C"
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <!-- G Slider -->
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding G, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                                            Margin="6,0" />
+                                        Value="{Binding G, UpdateSourceTrigger=PropertyChanged}"
+                                        Margin="6,0" />
                                     <TextBlock Grid.Column="2" Text="{Binding G}" VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
@@ -284,9 +286,10 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="B" Foreground="#FF6C9CE0"
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <!-- B Slider -->
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding B, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                                            Margin="6,0" />
+                                        Value="{Binding B, UpdateSourceTrigger=PropertyChanged}"
+                                        Margin="6,0" />
                                     <TextBlock Grid.Column="2" Text="{Binding B}" VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
