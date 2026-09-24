@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimViews
  * FILE:        ImageProcessingCommands.cs
@@ -7,7 +7,6 @@
  */
 
 using System.Drawing;
-using Imaging;
 using SlimControls;
 
 namespace SlimViews
@@ -15,6 +14,22 @@ namespace SlimViews
     /// <summary>
     ///     Provides command-based access to various image processing operations.
     /// </summary>
+    /// <remarks>
+    ///     Every method here submits through <see cref="ImageView.EditQueue"/>
+    ///     instead of calling <c>SaveUndoState</c>/<c>CommitImageChange</c>
+    ///     directly. That used to mean each whole-image operation (Filter,
+    ///     Texture, Brighten, ...) raced independently against every other one -
+    ///     including against a canvas tool mid-drag - because nothing serialized
+    ///     "read the current bitmap, edit it, commit it" as a single step. Routing
+    ///     through the same queue that the canvas tools use puts every mutation
+    ///     of the image, regardless of where it came from, through one ordered
+    ///     pipeline. The submissions here are fire-and-forget (these commands are
+    ///     synchronous <c>ICommand</c>s, not awaited by their callers), but that's
+    ///     safe now: ordering and copy-on-write safety come from the queue itself,
+    ///     not from the caller awaiting it, and <see cref="ImageEditQueue"/> still
+    ///     reports a failure via its <c>onError</c> callback even when nobody
+    ///     awaits the returned task.
+    /// </remarks>
     internal class ImageProcessingCommands
     {
         /// <summary>
@@ -27,11 +42,8 @@ namespace SlimViews
             if (owner?.Image.Bitmap == null || string.IsNullOrWhiteSpace(filterName))
                 return;
 
-            owner.SaveUndoState();
-
             var filter = Translator.GetFilterFromString(filterName);
-            using var btm = ImageProcessor.Filter(owner.Image.Bitmap, filter);
-            owner.CommitImageChange(btm);
+            _ = owner.EditQueue.SubmitAsync(bitmap => ImageProcessor.Filter(bitmap, filter));
         }
 
         /// <summary>
@@ -44,12 +56,8 @@ namespace SlimViews
             if (owner?.Image.Bitmap == null || string.IsNullOrWhiteSpace(textureName))
                 return;
 
-            owner.SaveUndoState();
-
             var texture = Translator.GetTextureFromString(textureName);
-            using var btm = ImageProcessor.Texture(owner.Image.Bitmap, texture);
-
-            owner.CommitImageChange(btm);
+            _ = owner.EditQueue.SubmitAsync(bitmap => ImageProcessor.Texture(bitmap, texture));
         }
 
         /// <summary>
@@ -62,11 +70,7 @@ namespace SlimViews
             if (owner?.Image.Bitmap == null)
                 return;
 
-            owner.SaveUndoState();
-
-            using var btm = ImageProcessor.Brighten(owner.Image.Bitmap);
-
-            owner.CommitImageChange(btm);
+            _ = owner.EditQueue.SubmitAsync(ImageProcessor.Brighten);
         }
 
         /// <summary>
@@ -79,11 +83,7 @@ namespace SlimViews
             if (owner?.Image.Bitmap == null)
                 return;
 
-            owner.SaveUndoState();
-
-            using var btm = ImageProcessor.Darken(owner.Image.Bitmap);
-
-            owner.CommitImageChange(btm);
+            _ = owner.EditQueue.SubmitAsync(ImageProcessor.Darken);
         }
 
         /// <summary>
@@ -96,16 +96,16 @@ namespace SlimViews
             if (owner?.Image.Bitmap == null)
                 return;
 
-            // Create a new bitmap based on the original
-            var original = owner.Image.Bitmap;
-
-            using var clone = (Bitmap)original.Clone();
-            clone.RotateFlip(RotateFlipType.RotateNoneFlipX);
-
-            owner.Image.Bitmap = clone;
-            owner.Image.BitmapImage = clone.ToBitmapImage();
+            // Previously bypassed SaveUndoState/CommitImageChange entirely (it set
+            // Image.Bitmap and Image.BitmapImage directly), so Mirror had no undo
+            // support and could itself race a concurrent edit. Routing it through
+            // the queue like everything else fixes both at once.
+            _ = owner.EditQueue.SubmitAsync(bitmap =>
+            {
+                bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                return bitmap;
+            });
         }
-
 
         /// <summary>
         ///     Pixelates the owner's image based on the view's pixel width.
@@ -124,11 +124,7 @@ namespace SlimViews
                 pixelWidth = result;
             }
 
-            owner.SaveUndoState();
-
-            using var btm = ImageProcessor.Pixelate(owner.Image.Bitmap, pixelWidth);
-
-            owner.CommitImageChange(btm);
+            _ = owner.EditQueue.SubmitAsync(bitmap => ImageProcessor.Pixelate(bitmap, pixelWidth));
         }
 
         /// <summary>
@@ -141,10 +137,7 @@ namespace SlimViews
             if (owner?.Image.Bitmap == null)
                 return;
 
-            owner.SaveUndoState();
-
-            var btm = ImageProcessor.RotateImage(owner.Image.Bitmap, -90);
-            owner.CommitImageChange(btm);
+            _ = owner.EditQueue.SubmitAsync(bitmap => ImageProcessor.RotateImage(bitmap, -90));
         }
 
         /// <summary>
@@ -157,10 +150,7 @@ namespace SlimViews
             if (owner?.Image.Bitmap == null)
                 return;
 
-            owner.SaveUndoState();
-
-            var btm = ImageProcessor.RotateImage(owner.Image.Bitmap, 90);
-            owner.CommitImageChange(btm);
+            _ = owner.EditQueue.SubmitAsync(bitmap => ImageProcessor.RotateImage(bitmap, 90));
         }
     }
 }

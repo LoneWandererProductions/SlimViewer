@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Windows.Controls;
 using Imaging.Enums;
 
 namespace Common.Images

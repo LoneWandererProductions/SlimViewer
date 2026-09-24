@@ -74,46 +74,18 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Commits the image change from tools or filters.
-        /// </summary>
-        /// <param name="newGdiBitmap">
-        /// The new image. Ownership stays with the caller: if you call this from a
-        /// <c>using var btm = ...;</c> block (as ApplyFilter/ApplyTexture do), that's
-        /// fine - this method takes its own copy before returning, specifically so
-        /// your <c>using</c> disposing <paramref name="newGdiBitmap"/> the instant this
-        /// call returns can never race the background conversion below.
-        /// </param>
-        internal void CommitImageChange(Bitmap? newGdiBitmap)
-        {
-            if (newGdiBitmap == null) return;
-
-            var owned = (Bitmap)newGdiBitmap.Clone();
-
-            // Fire-and-forget is intentional here: this method is called from
-            // synchronous, non-awaited call sites (ApplyFilter, ApplyTexture, ...).
-            // Errors are caught and reported inside GuardedReplaceAsync, so nothing
-            // here becomes an unobserved task exception.
-            _ = GuardedReplaceAsync(owned);
-        }
-
-        /// <summary>
-        /// Same swap as <see cref="CommitImageChange"/>, but awaitable.
+        /// Clones <paramref name="newGdiBitmap"/> and swaps it into
+        /// <see cref="ImageContext.Bitmap"/>/<see cref="ImageContext.BitmapImage"/>.
         /// </summary>
         /// <remarks>
-        /// Use this from callers that can await (e.g. the tool-selection handlers in
-        /// ImageView) instead of <see cref="CommitImageChange"/>. Firing the swap and
-        /// moving on immediately let a second tool action start reading/writing
-        /// <see cref="ImageContext.Bitmap"/> - which most pixel operations mutate
-        /// in place via <c>Graphics.FromImage</c> - while the first swap's background
-        /// clone/dispose/WPF-conversion was still in flight on another thread. GDI+
-        /// bitmaps aren't thread-safe, so that race could throw ("Object is currently
-        /// in use elsewhere") or silently corrupt the image; because the async
-        /// commands have no exception handler wired up, that failure was invisible -
-        /// the tool would just appear to stop doing anything after the first edit.
-        /// Awaiting this closes that window: the command that triggered the edit
-        /// stays disabled until the swap has actually finished.
+        /// The only caller is <see cref="ImageEditQueue"/>, which already
+        /// guarantees at most one edit is in flight at a time and always awaits
+        /// this before letting the next one start - see that class's remarks for
+        /// why that matters (GDI+ bitmaps aren't thread-safe, and a bitmap swap
+        /// that isn't awaited before the next edit begins is exactly how two
+        /// edits used to end up touching the same live bitmap at once).
         /// </remarks>
-        /// <param name="newGdiBitmap">The new image, per the ownership rules of <see cref="CommitImageChange"/>.</param>
+        /// <param name="newGdiBitmap">The new image. The caller retains ownership of it.</param>
         internal Task CommitImageChangeAsync(Bitmap? newGdiBitmap)
         {
             if (newGdiBitmap == null) return Task.CompletedTask;
@@ -188,10 +160,10 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Takes <see cref="_gate"/> and performs the swap on behalf of
-        /// <see cref="CommitImageChange"/>, which - unlike Undo/Redo - is called from
-        /// synchronous call sites that can't await it directly.
+        /// Takes <see cref="_gate" /> and performs the swap on behalf of
+        /// <see cref="CommitImageChangeAsync" />.
         /// </summary>
+        /// <param name="ownedBitmap">The owned bitmap.</param>
         private async Task GuardedReplaceAsync(Bitmap ownedBitmap)
         {
             await _gate.WaitAsync().ConfigureAwait(true);
@@ -225,7 +197,7 @@ namespace SlimViews
             var newWpfImage = await Task.Run(() =>
             {
                 var wpfImg = newBitmap.ToBitmapImage();
-                if (wpfImg.CanFreeze && !wpfImg.IsFrozen)
+                if (wpfImg is { CanFreeze: true, IsFrozen: false })
                 {
                     wpfImg.Freeze();
                 }

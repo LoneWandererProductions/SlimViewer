@@ -99,6 +99,18 @@ namespace SlimViews
         public ImageHistoryManager HistoryManager { get; }
 
         /// <summary>
+        /// Serializes every bitmap edit - canvas tools and whole-image menu
+        /// commands alike - so they apply strictly one at a time, each against
+        /// its own private copy of the image. See <see cref="ImageEditQueue"/>'s
+        /// remarks for the race this replaces (a bare lock plus a fire-and-forget
+        /// commit, which still let two edits touch the same live bitmap at once).
+        /// </summary>
+        /// <value>
+        /// The edit queue.
+        /// </value>
+        public ImageEditQueue EditQueue { get; }
+
+        /// <summary>
         /// Global Key Bindings.
         /// </summary>
         /// <value>
@@ -107,11 +119,6 @@ namespace SlimViews
         public Dictionary<Tuple<ModifierKeys, Key>, ICommand> CommandBindings { get; set; }
 
         // --- 2. UI BINDING PROPERTIES (Proxies to Contexts) ---
-
-        /// <summary>
-        /// The draw lock
-        /// </summary>
-        private readonly object _drawLock = new();
 
         /// <summary>
         /// Incremented every time a new image load starts (thumbnail click, Open,
@@ -302,25 +309,6 @@ namespace SlimViews
         /// </summary>
         public void ClearHistory() => HistoryManager.ClearHistory();
 
-        /// <summary>
-        /// Saves the state of the undo.
-        /// </summary>
-        internal void SaveUndoState() => HistoryManager.SaveUndoState();
-
-        /// <summary>
-        /// Commits the image change.
-        /// </summary>
-        /// <param name="newGdiBitmap">The new GDI bitmap.</param>
-        internal void CommitImageChange(Bitmap? newGdiBitmap) => HistoryManager.CommitImageChange(newGdiBitmap);
-
-        /// <summary>
-        /// Awaitable version of <see cref="CommitImageChange"/> - see remarks there
-        /// on why <see cref="SelectedFrameAction"/>/<see cref="SelectedPointAction"/>
-        /// need this instead of the fire-and-forget one.
-        /// </summary>
-        internal Task CommitImageChangeAsync(Bitmap? newGdiBitmap) =>
-            HistoryManager.CommitImageChangeAsync(newGdiBitmap);
-
         // --- 3. INITIALIZATION ---
 
         /// <summary>
@@ -328,8 +316,11 @@ namespace SlimViews
         /// </summary>
         public ImageView()
         {
-            HistoryManager = new ImageHistoryManager(Image,
-                onError: ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(ImageHistoryManager)));
+            void ReportImageError(Exception ex) =>
+                Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(ImageEditQueue));
+
+            HistoryManager = new ImageHistoryManager(Image, onError: ReportImageError);
+            EditQueue = new ImageEditQueue(HistoryManager, Image, ReportImageError);
             Commands = new ImageViewCommands(this);
             Initialize();
         }
@@ -422,14 +413,20 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Action triggered when a point is clicked (Pencil drawing, Color picking).
+        /// Action triggered when a Dot-tool gesture (pencil/eraser drag, or a color-pick
+        /// click) has one or more points ready to apply.
         /// </summary>
-        /// <param name="wPoint">The w point.</param>
-        internal async Task SelectedPointAction(Point wPoint)
+        /// <param name="wPoints">
+        /// The points to apply, in order. For pencil/eraser this is typically more than
+        /// one - <see cref="Common.Images.ImageZoom"/> batches everything a drag
+        /// accumulated since its last flush, rather than calling this once per mouse-move
+        /// sample. See <see cref="Common.Images.ImageZoom.FlushStroke"/>'s remarks for why:
+        /// submitting (and therefore cloning/committing) once per point is what made a
+        /// drag feel sluggish rather than like a continuous stroke.
+        /// </param>
+        internal async Task SelectedPointAction(IReadOnlyList<Point> wPoints)
         {
-            if (Image.Bitmap == null) return;
-
-            var point = new System.Drawing.Point((int)wPoint.X, (int)wPoint.Y);
+            if (Image.Bitmap == null || wPoints.Count == 0) return;
 
             // 1. Pencil & Eraser Logic
             if (MyDrawingState.ActiveTool is DrawTool.Pencil or DrawTool.Eraser)
@@ -441,31 +438,43 @@ namespace SlimViews
                 var color = isEraser ? Color.Transparent : ColorTranslator.FromHtml(MyDrawingState.BrushColor);
                 var size = (int)MyDrawingState.BrushSize;
 
-                // Hop off the UI thread so the app doesn't freeze!
-                Bitmap? updatedBitmap = null;
-                await Task.Run(() =>
+                var points = new System.Drawing.Point[wPoints.Count];
+                for (var i = 0; i < wPoints.Count; i++)
                 {
-                    lock (_drawLock) // Prevent crashes from rapid clicking
-                    {
-                        // Heavy memory clone happens in the background!
-                        SaveUndoState();
-
-                        // Draw the color (or transparent pixels) onto the bitmap
-                        updatedBitmap = ImageProcessor.SetPixel(Image.Bitmap, point, color, size);
-                    }
-                });
-
-                // Awaited (not fire-and-forget): keeps the command disabled until the
-                // swap has actually landed, so a second stroke can't start reading/
-                // writing the live bitmap while this one is still being committed.
-                if (updatedBitmap != null)
-                {
-                    await CommitImageChangeAsync(updatedBitmap);
+                    points[i] = new System.Drawing.Point((int)wPoints[i].X, (int)wPoints[i].Y);
                 }
+
+                // The queue clones the current bitmap once, hands the clone to
+                // this function, and commits whatever it returns - all as one
+                // uninterruptible step. Every point in the batch is stamped onto
+                // that SAME clone, so a whole drag's worth of dabs costs one
+                // clone/commit, not one per dab. Awaiting keeps the command
+                // disabled until that has actually finished, so the next batch
+                // can't start before this one has landed.
+                await EditQueue.SubmitAsync(bitmap =>
+                {
+                    var current = bitmap;
+                    foreach (var point in points)
+                    {
+                        var next = ImageProcessor.SetPixel(current, point, color, size);
+                        if (next == null) continue;
+
+                        if (!ReferenceEquals(next, current))
+                        {
+                            current.Dispose();
+                        }
+
+                        current = next;
+                    }
+
+                    return current;
+                });
             }
             // 2. Color Picker (Eyedropper) Logic
             else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)
             {
+                var lastPoint = wPoints[^1];
+                var point = new System.Drawing.Point((int)lastPoint.X, (int)lastPoint.Y);
                 var pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, radius: 1);
                 var pickedColor = Color.FromArgb(pickedHsv.A, pickedHsv.R, pickedHsv.G, pickedHsv.B);
                 MyDrawingState.BrushColor = ColorTranslator.ToHtml(pickedColor);
@@ -488,67 +497,40 @@ namespace SlimViews
             var texName = MyDrawingState.Texture.TextureName;
             var filterName = MyDrawingState.Filter.FilterName;
 
-            //Hop off the UI thread
-            Bitmap? newBitmap = null;
-            await Task.Run(() =>
+            // The function below runs against the queue's own private clone, not
+            // Image.Bitmap directly - see ImageEditQueue's remarks for why that
+            // matters. Awaiting SubmitAsync (rather than the old fire-and-forget
+            // commit) is what keeps the command disabled until this edit has
+            // actually landed, so a second selection can't start racing it.
+            await EditQueue.SubmitAsync(bitmap =>
             {
-                lock (_drawLock)
+                if (tool == DrawTool.Eraser)
                 {
-                    // Heavy memory clone in the background
-                    SaveUndoState();
-
-                    newBitmap = Image.Bitmap;
-
-                    if (tool == DrawTool.Eraser)
-                    {
-                        newBitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
-                    }
-                    else if (tool == DrawTool.Shape)
-                    {
-                        switch (mode)
-                        {
-                            case AreaMode.Fill:
-                                var color = ColorTranslator.FromHtml(fillColor);
-                                newBitmap = ImageProcessor.FillArea(Image.Bitmap, frame, color);
-                                break;
-
-                            case AreaMode.Texture:
-                                if (!string.IsNullOrEmpty(texName) &&
-                                    Enum.TryParse(texName, true, out TextureType texEnum))
-                                {
-                                    newBitmap = ImageProcessor.FillTexture(Image.Bitmap, frame, texEnum);
-                                }
-
-                                break;
-
-                            case AreaMode.Filter:
-                                if (!string.IsNullOrEmpty(filterName) &&
-                                    Enum.TryParse(filterName, true, out FiltersType filterEnum))
-                                {
-                                    newBitmap = ImageProcessor.FillFilter(Image.Bitmap, frame, filterEnum);
-                                }
-
-                                break;
-
-                            case AreaMode.Erase:
-                                newBitmap = ImageProcessor.EraseImage(frame, Image.Bitmap);
-                                break;
-                        }
-                    }
+                    return ImageProcessor.EraseImage(frame, bitmap);
                 }
-            });
 
-            // Awaited (not fire-and-forget): see CommitImageChangeAsync's remarks.
-            // Without this, the command re-enabled itself - and let you start a new
-            // selection - before the previous edit had actually been swapped into
-            // ImageContext, so two edits could race on the same live GDI+ bitmap.
-            // That race throws or corrupts silently (no onException handler was
-            // wired up on this command), which is exactly what "first edit works,
-            // everything after it quietly does nothing" looks like from the outside.
-            if (newBitmap != null)
-            {
-                await CommitImageChangeAsync(newBitmap);
-            }
+                if (tool != DrawTool.Shape)
+                {
+                    return null;
+                }
+
+                return mode switch
+                {
+                    AreaMode.Fill => ImageProcessor.FillArea(bitmap, frame, ColorTranslator.FromHtml(fillColor)),
+
+                    AreaMode.Texture when Enum.TryParse(texName, true, out TextureType texEnum) =>
+                        ImageProcessor.FillTexture(bitmap, frame, texEnum),
+
+                    AreaMode.Filter when Enum.TryParse(filterName, true, out FiltersType filterEnum) =>
+                        ImageProcessor.FillFilter(bitmap, frame, filterEnum),
+
+                    AreaMode.Erase => ImageProcessor.EraseImage(frame, bitmap),
+
+                    // Texture/Filter with an unrecognized name: leave the image
+                    // untouched, same as the previous behavior.
+                    _ => null
+                };
+            });
         }
 
         /// <summary>
@@ -736,12 +718,12 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void NextAction(object obj)
         {
-            if (FileContext.Observer == null || FileContext.Observer.Any()) return;
+            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
             ChangeImage(Utility.GetNextElement(FileContext.CurrentId, GetNavigableKeys()));
             // Drive the thumbnail highlight/scroll from FileContext.CurrentId (now updated by ChangeImage)
             // instead of Thumbnails' own internal click-tracked state, so it can never drift out of sync.
-            UiState.Thumb?.SelectAndCenter(FileContext.CurrentId);
+            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -751,11 +733,11 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void PreviousAction(object obj)
         {
-            if (FileContext.Observer == null || FileContext.Observer.Any()) return;
+            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
 
             ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, GetNavigableKeys()));
             // See NextAction: keep the thumbnail highlight/scroll anchored to the real current id.
-            UiState.Thumb?.SelectAndCenter(FileContext.CurrentId);
+            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -820,11 +802,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void ClearAction(object obj)
         {
-            if (FileContext.Observer == null) return;
+            if (!FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
 
-            if (FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
-
-            UiState.Thumb?.RemoveSingleItem(FileContext.CurrentId);
+            UiState.Thumb.RemoveSingleItem(FileContext.CurrentId);
             if (Count > 0) Count--;
 
             Image.Clear();
@@ -944,7 +924,7 @@ namespace SlimViews
         internal void ExportClipboardAction(object? obj)
         {
             // 1. Ensure we have an image to copy
-            if (Image.BitmapImage is BitmapSource bitmap)
+            if (Image?.BitmapImage is BitmapSource bitmap)
             {
                 try
                 {
@@ -967,8 +947,6 @@ namespace SlimViews
         /// <param name="id">The identifier.</param>
         public void ChangeImage(int id)
         {
-            if (FileContext.Observer == null) return;
-
             if (!FileContext.Observer.TryGetValue(id, out var path) || !File.Exists(path))
             {
                 _ = RefreshActionAsync(nameof(ChangeImage));

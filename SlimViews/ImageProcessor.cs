@@ -438,9 +438,19 @@ namespace SlimViews
         /// <returns>Changed bitmap or in case of error the original</returns>
         internal static Bitmap? EraseImage(SelectionFrame frame, Bitmap? btm)
         {
+            if (btm == null) return null;
+
             try
             {
-                btm = Render.EraseRectangle(btm, frame.X, frame.Y, frame.Height, frame.Width);
+                var erasedBtm = Render.EraseRectangle(btm, frame.X, frame.Y, frame.Width, frame.Height);
+
+                // If EraseRectangle returns a NEW Bitmap instance, dispose the old one to prevent handle leaks
+                if (!ReferenceEquals(erasedBtm, btm))
+                {
+                    btm.Dispose();
+                }
+
+                return erasedBtm;
             }
             catch (ArgumentNullException ex)
             {

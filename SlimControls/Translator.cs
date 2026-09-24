@@ -42,17 +42,15 @@ namespace SlimControls
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns></returns>
-        public static MaskShape MapCodeToTool(ImageZoomTools code)
-        {
-            return code switch
-            {
-                ImageZoomTools.Rectangle => MaskShape.Rectangle,
-                ImageZoomTools.Ellipse => MaskShape.Circle,
-                ImageZoomTools.FreeForm => MaskShape.Polygon,
-                ImageZoomTools.Polygon => MaskShape.Polygon,
-                _ => MaskShape.Rectangle
-            };
-        }
+        /// <remarks>
+        ///     Delegates to <see cref="GestureCatalog"/> rather than maintaining its
+        ///     own switch: a gesture's mask shape used to be decided independently
+        ///     here and in <see cref="Common.Images.ImageZoom"/>'s mouse handling,
+        ///     and the two could disagree (as happened with the Polygon tool, which
+        ///     fell back to <see cref="MaskShape.Rectangle"/> here even once it drew
+        ///     correctly on screen). There is now exactly one place that decides it.
+        /// </remarks>
+        public static MaskShape MapCodeToTool(ImageZoomTools code) => GestureCatalog.MaskShapeFor(code);
 
         /// <summary>
         ///     Gets the filter from string.

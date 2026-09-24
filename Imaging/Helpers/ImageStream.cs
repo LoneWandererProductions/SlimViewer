@@ -4,8 +4,7 @@
  * FILE:        ImageStream.cs
  * PURPOSE:     Does all the leg work for the Image operations
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
- * SOURCE:      https://lodev.org/cgtutor/floodfill.html
- *              https://www.csharphelper.com/howtos/howto_colorize2.html
+ * SOURCE:      https://www.csharphelper.com/howtos/howto_colorize2.html
  */
 
 // ReSharper disable MemberCanBeInternal
@@ -18,7 +17,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -665,7 +663,7 @@ namespace Imaging.Helpers
             }
 
             //use our new Format
-            var dbm = DirectBitmap.GetInstance(image);
+            using var dbm = DirectBitmap.GetInstance(image);
             return dbm.GetPixel(point.X, point.Y);
         }
 
@@ -703,10 +701,16 @@ namespace Imaging.Helpers
                 return GetPixel(image, point);
             }
 
+            // Same full-image-per-point trap the radius SetPixel overload had:
+            // one DirectBitmap for the whole averaging sample instead of one
+            // (leaked, on top of it) GetPixel() call per sampled pixel.
+            using var dbm = DirectBitmap.GetInstance(image);
+
             int redSum = 0, greenSum = 0, blueSum = 0;
 
-            foreach (var color in points.Select(pointSingle => GetPixel(image, pointSingle)))
+            foreach (var circlePoint in points)
             {
+                var color = dbm.GetPixel(circlePoint.X, circlePoint.Y);
                 redSum += color.R;
                 greenSum += color.G;
                 blueSum += color.B;
@@ -725,7 +729,7 @@ namespace Imaging.Helpers
         ///     The changed image as Bitmap
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        internal static Bitmap? SetPixel(Bitmap? image, Point point, Color color)
+        internal static Bitmap SetPixel(Bitmap? image, Point point, Color color)
         {
             ImageHelper.ValidateImage(nameof(SetPixel), image);
 
@@ -782,7 +786,22 @@ namespace Imaging.Helpers
 
             var points = ImageHelper.GetCirclePoints(point, radius, image!.Height, image.Width);
 
-            return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
+            // One full-image round trip for the whole brush stamp, not one per
+            // pixel in the circle. DirectBitmap.GetInstance/ToBitmap each copy the
+            // *entire* image; the previous implementation paid that cost once per
+            // point via Aggregate(image, (b, p) => SetPixel(b, p, color)) calling
+            // the single-pixel overload below - O(radius^2 x image size) for one
+            // dab. A brush radius of even a few pixels made a single click
+            // noticeably slow, and a drag (many dabs per second) compounded that
+            // on every stroke - this is what "pencil feels sluggish, no real
+            // strokes possible" actually was.
+            using var dbm = DirectBitmap.GetInstance(image);
+            foreach (var circlePoint in points)
+            {
+                dbm.SetPixel(circlePoint.X, circlePoint.Y, color);
+            }
+
+            return dbm.ToBitmap();
         }
 
         /// <summary>

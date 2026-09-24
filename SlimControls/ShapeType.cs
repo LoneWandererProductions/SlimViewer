@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
  * FILE:        ShapeType.cs
- * PURPOSE:     Supported Shapes
+ * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

@@ -3,22 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:images="clr-namespace:Common.Images;assembly=Common.Images"
              xmlns:converters="clr-namespace:Common.Converter;assembly=Common.Converter"
+             xmlns:local="clr-namespace:SlimControls"
              x:Name="RootToolbar">
 
     <UserControl.Resources>
         <converters:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis" />
 
-        <!-- Dynamic Theme-Aware ToolRadioButtonStyle -->
+        <!-- THEME-COMPATIBLE RADIOBUTTON STYLE -->
         <Style x:Key="ToolRadioButtonStyle" TargetType="RadioButton">
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSubtleBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Padding" Value="6,3" />
             <Setter Property="Margin" Value="1,0" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
@@ -28,26 +30,25 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="3"
                                 Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
                         </Border>
+
                         <ControlTemplate.Triggers>
-                            <!-- Hover-Zustand -->
+                            <!-- Hover -->
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{DynamicResource HoverBrush}" />
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{StaticResource HoverBrush}" />
                                 <Setter TargetName="border" Property="BorderBrush"
-                                        Value="{DynamicResource ControlBorderBrush}" />
+                                        Value="{StaticResource BorderBrush}" />
                             </Trigger>
-                            <!-- Ausgewählter Zustand (Active Tool / Shape) -->
+
+                            <!-- Checked -->
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}" />
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{StaticResource SurfaceBrush}" />
                                 <Setter TargetName="border" Property="BorderBrush"
-                                        Value="{DynamicResource AccentBorderBrush}" />
-                                <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}" />
-                            </Trigger>
-                            <!-- Deaktivierter Zustand -->
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="Transparent" />
-                                <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+                                        Value="{StaticResource AccentBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -55,159 +56,261 @@
             </Setter>
         </Style>
 
-        <!-- Updated for WrapPanel compatibility: Added explicit Height -->
+        <!-- THEME-COMPATIBLE SEPARATOR -->
         <Style x:Key="VerticalSeparatorStyle" TargetType="Rectangle">
             <Setter Property="Width" Value="1" />
             <Setter Property="Height" Value="20" />
             <Setter Property="Margin" Value="6,2" />
-            <Setter Property="Fill" Value="#D0D0D0" />
+            <Setter Property="Fill" Value="{StaticResource BorderSubtleBrush}" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
     </UserControl.Resources>
 
-    <!-- ScrollViewer now allows vertical expansion when wrapped -->
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <WrapPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,2">
 
-            <!-- 1. PRIMARY DRAW TOOLS -->
+            <!-- PRIMARY TOOLS -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <RadioButton Content="✏️ Pencil" GroupName="ToolGroup" Style="{StaticResource ToolRadioButtonStyle}"
+                <RadioButton Content="✏️ Pencil" GroupName="ToolGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Draw freehand lines"
-                             IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Pencil}" />
+                             IsChecked="{Binding Path=ToolState.ActiveTool,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Pencil}" />
 
-                <RadioButton Content="🧹 Eraser" GroupName="ToolGroup" Style="{StaticResource ToolRadioButtonStyle}"
+                <RadioButton Content="🧹 Eraser" GroupName="ToolGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Erase parts of the image"
-                             IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Eraser}" />
+                             IsChecked="{Binding Path=ToolState.ActiveTool,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Eraser}" />
 
-                <RadioButton Content="🧪 Picker" GroupName="ToolGroup" Style="{StaticResource ToolRadioButtonStyle}"
+                <RadioButton Content="🧪 Picker" GroupName="ToolGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Pick a color from the image"
-                             IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=ColorPicker}" />
+                             IsChecked="{Binding Path=ToolState.ActiveTool,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=ColorPicker}" />
 
-                <RadioButton Content="✋ Move" GroupName="ToolGroup" Style="{StaticResource ToolRadioButtonStyle}"
+                <RadioButton Content="✋ Move" GroupName="ToolGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Move or pan the canvas"
-                             IsChecked="{Binding Path=ToolState.ActiveTool, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Move}" />
+                             IsChecked="{Binding Path=ToolState.ActiveTool,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Move}" />
             </StackPanel>
 
             <Rectangle Style="{StaticResource VerticalSeparatorStyle}" />
 
-            <!-- 2. BRUSH ADJUSTMENTS (COLOR, SIZE, OPACITY) -->
+            <!-- BRUSH SETTINGS -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <images:ColorSelection
-                    StartColor="{Binding Path=ToolState.BrushColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                    Width="26" Height="22" Margin="2,0,6,0" VerticalAlignment="Center"
+                    StartColor="{Binding Path=ToolState.BrushColor,
+                                 RelativeSource={RelativeSource AncestorType=UserControl},
+                                 Mode=TwoWay}"
+                    Width="26" Height="22" Margin="2,0,6,0"
+                    VerticalAlignment="Center"
                     ToolTip="Select primary brush color" />
 
-                <!-- Brush Size Slider -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0"
-                            ToolTip="Adjust brush size">
-                    <TextBlock Text="🖌️" VerticalAlignment="Center" Margin="0,0,2,0" FontSize="11" />
-                    <Slider Minimum="1" Maximum="50" Width="70" VerticalAlignment="Center"
-                            Value="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
+                <!-- Brush Size -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                    <TextBlock Text="🖌️" VerticalAlignment="Center"
+                               Margin="0,0,2,0" FontSize="11"
+                               Foreground="{StaticResource TextPrimaryBrush}" />
+
+                    <Slider Minimum="1" Maximum="50" Width="70"
+                            Value="{Binding Path=ToolState.BrushSize,
+                                    RelativeSource={RelativeSource AncestorType=UserControl},
+                                    Mode=TwoWay}" />
+
                     <TextBlock
-                        Text="{Binding Path=ToolState.BrushSize, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:F0}px}"
-                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="24"
-                        Foreground="{DynamicResource TextSecondaryBrush}" />
+                        Text="{Binding Path=ToolState.BrushSize,
+                                              RelativeSource={RelativeSource AncestorType=UserControl},
+                                              StringFormat={}{0:F0}px}"
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0"
+                        Width="24" Foreground="{StaticResource TextSecondaryBrush}" />
                 </StackPanel>
 
-                <!-- Brush Opacity Slider -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" ToolTip="Adjust brush opacity">
-                    <TextBlock Text="💧" VerticalAlignment="Center" Margin="0,0,2,0" FontSize="11" />
-                    <Slider Minimum="0.1" Maximum="1.0" TickFrequency="0.1" IsSnapToTickEnabled="True" Width="60"
-                            VerticalAlignment="Center"
-                            Value="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
+                <!-- Brush Opacity -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="💧" VerticalAlignment="Center"
+                               Margin="0,0,2,0" FontSize="11"
+                               Foreground="{StaticResource TextPrimaryBrush}" />
+
+                    <Slider Minimum="0.1" Maximum="1.0" TickFrequency="0.1"
+                            IsSnapToTickEnabled="True" Width="60"
+                            Value="{Binding Path=ToolState.BrushOpacity,
+                                    RelativeSource={RelativeSource AncestorType=UserControl},
+                                    Mode=TwoWay}" />
+
                     <TextBlock
-                        Text="{Binding Path=ToolState.BrushOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:P0}}"
-                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0" Width="28"
-                        Foreground="{DynamicResource TextSecondaryBrush}" />
+                        Text="{Binding Path=ToolState.BrushOpacity,
+                                              RelativeSource={RelativeSource AncestorType=UserControl},
+                                              StringFormat={}{0:P0}}"
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0"
+                        Width="28" Foreground="{StaticResource TextSecondaryBrush}" />
                 </StackPanel>
             </StackPanel>
 
             <Rectangle Style="{StaticResource VerticalSeparatorStyle}" />
 
-            <!-- 3. SHAPES -->
+            <!-- SHAPES -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <RadioButton Content="▭ Rect" GroupName="ShapeGroup" Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Draw a rectangle or square"
-                             IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Rectangle}" />
+                <RadioButton Content="▭ Rect" GroupName="ShapeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Draw a rectangle"
+                             IsChecked="{Binding Path=ToolState.SelectedShape,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Rectangle}" />
 
-                <RadioButton Content="⭕ Ellipse" GroupName="ShapeGroup" Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Draw an ellipse or circle"
-                             IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ellipse}" />
+                <RadioButton Content="⭕ Ellipse" GroupName="ShapeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Draw an ellipse"
+                             IsChecked="{Binding Path=ToolState.SelectedShape,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Ellipse}" />
 
-                <RadioButton Content="〰️ Freeform" GroupName="ShapeGroup" Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Draw a custom freeform shape"
-                             IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Freeform}" />
+                <RadioButton Content="〰️ Freeform" GroupName="ShapeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Draw freeform"
+                             IsChecked="{Binding Path=ToolState.SelectedShape,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Freeform}" />
 
-                <RadioButton Content="⬠ Polygon" GroupName="ShapeGroup" Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Draw a closed polygon selection"
-                             IsChecked="{Binding Path=ToolState.SelectedShape, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Polygon}" />
+                <RadioButton Content="⬠ Polygon" GroupName="ShapeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Draw polygon"
+                             IsChecked="{Binding Path=ToolState.SelectedShape,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Polygon}" />
             </StackPanel>
 
-            <!-- 4. AREA MODES & DYNAMIC OPTIONS -->
+            <!-- AREA MODES -->
             <WrapPanel Orientation="Horizontal" VerticalAlignment="Center"
-                       IsEnabled="{Binding Path=ToolState.AreAreaModesEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                       Visibility="{Binding Path=ToolState.AreAreaModesEnabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
+                       IsEnabled="{Binding Path=ToolState.AreAreaModesEnabled,
+                                   RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       Visibility="{Binding Path=ToolState.AreAreaModesEnabled,
+                                   RelativeSource={RelativeSource AncestorType=UserControl},
+                                   Converter={StaticResource BoolToVis}}">
 
                 <Rectangle Style="{StaticResource VerticalSeparatorStyle}" />
 
-                <RadioButton Content="🪣 Fill" GroupName="AreaModeGroup" Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Fill shape with solid color"
-                             IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Fill}" />
+                <RadioButton Content="🪣 Fill" GroupName="AreaModeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Fill shape"
+                             IsChecked="{Binding Path=ToolState.ActiveAreaMode,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Fill}" />
 
                 <RadioButton Content="🧱 Texture" GroupName="AreaModeGroup"
                              Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Fill shape with pattern or texture"
-                             IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Texture}" />
+                             ToolTip="Texture fill"
+                             IsChecked="{Binding Path=ToolState.ActiveAreaMode,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Texture}" />
 
                 <RadioButton Content="🪄 Filter" GroupName="AreaModeGroup"
                              Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Apply image filter to selected shape area"
-                             IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Filter}" />
+                             ToolTip="Apply filter"
+                             IsChecked="{Binding Path=ToolState.ActiveAreaMode,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Filter}" />
 
-                <RadioButton Content="✂️ Clear" GroupName="AreaModeGroup" Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Erase contents within selected shape"
-                             IsChecked="{Binding Path=ToolState.ActiveAreaMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Erase}" />
+                <RadioButton Content="✂️ Clear" GroupName="AreaModeGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Clear area"
+                             IsChecked="{Binding Path=ToolState.ActiveAreaMode,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Erase}" />
 
                 <Rectangle Style="{StaticResource VerticalSeparatorStyle}" />
 
-                <!-- DYNAMIC CONTEXT OPTIONS -->
+                <!-- DYNAMIC OPTIONS -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <!-- Fill Option -->
+
+                    <!-- Fill -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
-                                Visibility="{Binding Path=ToolState.Fill.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Color:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11"
-                                   FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                Visibility="{Binding Path=ToolState.Fill.Enabled,
+                                             RelativeSource={RelativeSource AncestorType=UserControl},
+                                             Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="Color:" Margin="2,0,4,0" FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+
                         <images:ColorSelection
-                            StartColor="{Binding Path=ToolState.Fill.Color, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                            Width="26" Height="22" VerticalAlignment="Center" ToolTip="Select shape fill color" />
+                            StartColor="{Binding Path=ToolState.Fill.Color,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay}"
+                            Width="26" Height="22" />
                     </StackPanel>
 
-                    <!-- Texture Option -->
+                    <!-- Texture -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
-                                Visibility="{Binding Path=ToolState.Texture.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Pattern:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11"
-                                   FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                Visibility="{Binding Path=ToolState.Texture.Enabled,
+                                             RelativeSource={RelativeSource AncestorType=UserControl},
+                                             Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="Pattern:" Margin="2,0,4,0" FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+
                         <ComboBox
-                            ItemsSource="{Binding Path=ToolState.Textures, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            SelectedItem="{Binding Path=ToolState.Texture.TextureName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                            Width="120" FontSize="11" VerticalContentAlignment="Center" Padding="4,2"
-                            ToolTip="Select texture pattern" />
+                            ItemsSource="{Binding Path=ToolState.Textures,
+                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            SelectedItem="{Binding Path=ToolState.Texture.TextureName,
+                                                 RelativeSource={RelativeSource AncestorType=UserControl},
+                                                 Mode=TwoWay}"
+                            Width="120" FontSize="11"
+                            Foreground="{StaticResource TextPrimaryBrush}"
+                            Background="{StaticResource InputBrush}"
+                            BorderBrush="{StaticResource BorderBrush}" />
                     </StackPanel>
 
-                    <!-- Filter Option -->
+                    <!-- Filter -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
-                                Visibility="{Binding Path=ToolState.Filter.Enabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="Effect:" VerticalAlignment="Center" Margin="2,0,4,0" FontSize="11"
-                                   FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                Visibility="{Binding Path=ToolState.Filter.Enabled,
+                                             RelativeSource={RelativeSource AncestorType=UserControl},
+                                             Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="Effect:" Margin="2,0,4,0" FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+
                         <ComboBox
-                            ItemsSource="{Binding Path=ToolState.Filters, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            SelectedItem="{Binding Path=ToolState.Filter.FilterName, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                            Width="120" FontSize="11" VerticalContentAlignment="Center" Padding="4,2"
-                            ToolTip="Select image filter to apply" />
+                            ItemsSource="{Binding Path=ToolState.Filters,
+                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            SelectedItem="{Binding Path=ToolState.Filter.FilterName,
+                                                 RelativeSource={RelativeSource AncestorType=UserControl},
+                                                 Mode=TwoWay}"
+                            Width="120" FontSize="11"
+                            Foreground="{StaticResource TextPrimaryBrush}"
+                            Background="{StaticResource InputBrush}"
+                            BorderBrush="{StaticResource BorderBrush}" />
                     </StackPanel>
                 </StackPanel>
             </WrapPanel>
-
         </WrapPanel>
     </ScrollViewer>
 </UserControl>

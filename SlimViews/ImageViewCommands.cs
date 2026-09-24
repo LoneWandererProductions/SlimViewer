@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -444,7 +445,7 @@ namespace SlimViews
             ToggleFilterConfig = new DelegateCommand<object>(owner.ToggleFilterConfigAction, CanRun);
             ToggleTextureConfig = new DelegateCommand<object>(owner.ToggleTextureConfigAction, CanRun);
 
-            SelectedPoint = new AsyncDelegateCommand<Point>(owner.SelectedPointAction, CanRun,
+            SelectedPoint = new AsyncDelegateCommand<IReadOnlyList<Point>>(owner.SelectedPointAction, CanRun,
                 ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(SelectedPoint)));
             SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun,
                 ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(SelectedFrame)));
