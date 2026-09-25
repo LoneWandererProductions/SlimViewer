@@ -37,7 +37,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The group identifier
         /// </summary>
-        private string? _groupId;
+        private readonly string? _groupId;
 
         /// <summary>
         /// Gets the group identifier.

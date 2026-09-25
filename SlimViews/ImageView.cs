@@ -273,7 +273,7 @@ namespace SlimViews
         /// <summary>
         /// The similarity
         /// </summary>
-        private int _similarity;
+        private readonly int _similarity;
 
         /// <summary>
         /// Gets or sets the similarity.
@@ -317,7 +317,7 @@ namespace SlimViews
         public ImageView()
         {
             void ReportImageError(Exception ex) =>
-                Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(ImageEditQueue));
+                DialogHandler.ErrorDialog(ex.ToString(), nameof(ImageEditQueue));
 
             HistoryManager = new ImageHistoryManager(Image, onError: ReportImageError);
             EditQueue = new ImageEditQueue(HistoryManager, Image, ReportImageError);
@@ -481,7 +481,7 @@ namespace SlimViews
                 var pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, radius: 1);
                 var pickedColor = Color.FromArgb(pickedHsv.A, pickedHsv.R, pickedHsv.G, pickedHsv.B);
                 //tell our UI which color we picked
-                UiState?.Picker?.SetColors(pickedHsv.R, pickedHsv.G, pickedHsv.B, pickedHsv.A);
+                UiState.Picker?.SetColors(pickedHsv.R, pickedHsv.G, pickedHsv.B, pickedHsv.A);
                 MyDrawingState.BrushColor = ColorTranslator.ToHtml(pickedColor);
             }
         }
@@ -622,7 +622,7 @@ namespace SlimViews
             {
                 var term = _thumbFilterText.Trim();
                 UiState.Thumb.ApplyFilter(path =>
-                    Path.GetFileName(path)?.Contains(term, StringComparison.OrdinalIgnoreCase) == true);
+                    Path.GetFileName(path).Contains(term, StringComparison.OrdinalIgnoreCase));
             }
 
             OnPropertyChanged(nameof(ThumbFilterHasNoMatches));
@@ -633,15 +633,15 @@ namespace SlimViews
         /// when a filter is active and actually matches something, otherwise every id - so arrow
         /// key/button navigation never lands on a thumbnail the filter is hiding.
         /// </summary>
-        private List<int> GetNavigableKeys()
+        private List<int>? GetNavigableKeys()
         {
             if (!string.IsNullOrWhiteSpace(_thumbFilterText) && UiState.Thumb is { })
             {
                 var visible = UiState.Thumb.GetVisibleIds();
-                if (visible.Count > 0) return visible;
+                if (visible is { Count: > 0 }) return visible;
             }
 
-            return FileContext.Observer.Keys.ToList();
+            return FileContext.Observer?.Keys.ToList();
         }
 
         /// <summary>
@@ -728,7 +728,7 @@ namespace SlimViews
             ChangeImage(Utility.GetNextElement(FileContext.CurrentId, GetNavigableKeys()));
             // Drive the thumbnail highlight/scroll from FileContext.CurrentId (now updated by ChangeImage)
             // instead of Thumbnails' own internal click-tracked state, so it can never drift out of sync.
-            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
+            UiState.Thumb?.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -742,7 +742,7 @@ namespace SlimViews
 
             ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, GetNavigableKeys()));
             // See NextAction: keep the thumbnail highlight/scroll anchored to the real current id.
-            UiState.Thumb.SelectAndCenter(FileContext.CurrentId);
+            UiState.Thumb?.SelectAndCenter(FileContext.CurrentId);
             NavigationLogic();
         }
 
@@ -787,7 +787,7 @@ namespace SlimViews
             FileContext.Clear();
 
             // 2. Reset local UI-only state
-            Image?.Clear();
+            Image.Clear();
             ClearHistory();
 
             // 3. Reload if directory exists
@@ -807,9 +807,9 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void ClearAction(object obj)
         {
-            if (!FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
+            if (FileContext.Observer != null && !FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
 
-            UiState.Thumb.RemoveSingleItem(FileContext.CurrentId);
+            UiState.Thumb?.RemoveSingleItem(FileContext.CurrentId);
             if (Count > 0) Count--;
 
             Image.Clear();
@@ -919,7 +919,10 @@ namespace SlimViews
         /// Exports the string action.
         /// </summary>
         /// <param name="obj">The object.</param>
-        internal void ExportStringAction(object obj) => ImageProcessor.ExportString(Image.Bitmap);
+        internal void ExportStringAction(object obj)
+        {
+            if (Image.Bitmap != null) ImageProcessor.ExportString(Image.Bitmap);
+        }
 
 
         /// <summary>
@@ -929,7 +932,7 @@ namespace SlimViews
         internal void ExportClipboardAction(object? obj)
         {
             // 1. Ensure we have an image to copy
-            if (Image?.BitmapImage is BitmapSource bitmap)
+            if (Image.BitmapImage is { } bitmap)
             {
                 try
                 {
@@ -1065,7 +1068,7 @@ namespace SlimViews
                 {
                     // If you are in "SubFolder" mode, don't reload if the new folder
                     // is just a child of the current path.
-                    var isSubfolder = folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
+                    var isSubfolder = FileContext.CurrentPath != null && folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
 
                     if (!UiState.UseSubFolders || !isSubfolder)
                     {

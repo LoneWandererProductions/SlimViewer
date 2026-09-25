@@ -1008,7 +1008,7 @@ namespace Common.Images
         ///     Next/Previous navigation consistent with what's actually on screen while a filter is
         ///     active, instead of stepping through items the user can't even see.
         /// </summary>
-        public List<int> GetVisibleIds()
+        public List<int>? GetVisibleIds()
         {
             if (Border == null) return
             []

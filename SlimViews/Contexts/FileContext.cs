@@ -41,7 +41,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The observer.
         /// </value>
-        public Dictionary<int, string>? Observer
+        public Dictionary<int, string?>? Observer
         {
             get => _observer;
             set
@@ -75,7 +75,7 @@ namespace SlimViews.Contexts
         /// <value>
         /// The files.
         /// </value>
-        internal List<string>? Files { get; set; } =  [];
+        internal List<string?> Files { get; set; } =  [];
 
         /// <summary>
         /// Gets or sets the current identifier.

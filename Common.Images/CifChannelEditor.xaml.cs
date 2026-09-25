@@ -267,7 +267,7 @@ namespace Common.Images
 
             foreach (var kvp in cif.CifImage)
             {
-                var count = System.Linq.Enumerable.Count(kvp.Value);
+                var count = Enumerable.Count(kvp.Value);
                 var newItem = new CifColorItem(kvp.Key, index++, count);
                 newItem.PropertyChanged += ColorItem_PropertyChanged;
                 PaletteItems.Add(newItem);
