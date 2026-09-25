@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Tests
  * FILE:        DocumentTests.cs
@@ -18,6 +18,9 @@ namespace Imaging.Objects.Tests
     [TestClass]
     public sealed class DocumentTests
     {
+        /// <summary>
+        /// Creates new document has no layers.
+        /// </summary>
         [TestMethod]
         public void NewDocument_HasNoLayers()
         {
@@ -28,6 +31,9 @@ namespace Imaging.Objects.Tests
             Assert.AreEqual(0, document.Layers.Count);
         }
 
+        /// <summary>
+        /// Invalids the sizes are rejected.
+        /// </summary>
         [TestMethod]
         public void InvalidSizes_AreRejected()
         {
@@ -38,6 +44,9 @@ namespace Imaging.Objects.Tests
             TestSupport.Throws<ArgumentOutOfRangeException>(() => new Document(40000, 40000));
         }
 
+        /// <summary>
+        /// Inserts the layer keeps bottom to top order.
+        /// </summary>
         [TestMethod]
         public void InsertLayer_KeepsBottomToTopOrder()
         {
@@ -57,6 +66,9 @@ namespace Imaging.Objects.Tests
             Assert.AreEqual(1, document.IndexOf(middle.Id));
         }
 
+        /// <summary>
+        /// Inserts the layer rejects wrong sized raster layer.
+        /// </summary>
         [TestMethod]
         public void InsertLayer_RejectsWrongSizedRasterLayer()
         {
@@ -67,6 +79,9 @@ namespace Imaging.Objects.Tests
             Assert.AreEqual(0, document.Layers.Count);
         }
 
+        /// <summary>
+        /// Inserts the index of the layer rejects duplicate identifier and bad.
+        /// </summary>
         [TestMethod]
         public void InsertLayer_RejectsDuplicateIdAndBadIndex()
         {
@@ -79,6 +94,9 @@ namespace Imaging.Objects.Tests
             TestSupport.Throws<ArgumentOutOfRangeException>(() => document.InsertLayer(-1, new ShapeLayer("c")));
         }
 
+        /// <summary>
+        /// Removes the layer returns layer and index and unknown identifier throws.
+        /// </summary>
         [TestMethod]
         public void RemoveLayer_ReturnsLayerAndIndex_AndUnknownIdThrows()
         {
@@ -96,6 +114,9 @@ namespace Imaging.Objects.Tests
             TestSupport.Throws<KeyNotFoundException>(() => document.RemoveLayer(Guid.NewGuid(), out _));
         }
 
+        /// <summary>
+        /// Moves the layer changes order.
+        /// </summary>
         [TestMethod]
         public void MoveLayer_ChangesOrder()
         {
@@ -115,6 +136,9 @@ namespace Imaging.Objects.Tests
             TestSupport.Throws<ArgumentOutOfRangeException>(() => document.MoveLayer(a.Id, 3));
         }
 
+        /// <summary>
+        /// Changeds the is raised for structural changes.
+        /// </summary>
         [TestMethod]
         public void Changed_IsRaisedForStructuralChanges()
         {
@@ -137,6 +161,9 @@ namespace Imaging.Objects.Tests
                 kinds);
         }
 
+        /// <summary>
+        /// Froms the buffer creates background layer and takes ownership.
+        /// </summary>
         [TestMethod]
         public void FromBuffer_CreatesBackgroundLayerAndTakesOwnership()
         {
@@ -153,6 +180,9 @@ namespace Imaging.Objects.Tests
             Assert.AreSame(buffer, background.Pixels);
         }
 
+        /// <summary>
+        /// Froms the bitmap copies pixels.
+        /// </summary>
         [TestMethod]
         public void FromBitmap_CopiesPixels()
         {
@@ -173,6 +203,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(layer, 0, 0), (30, 20, 10, 40), 0);
         }
 
+        /// <summary>
+        /// Disposes the releases raster layers.
+        /// </summary>
         [TestMethod]
         public void Dispose_ReleasesRasterLayers()
         {
@@ -186,6 +219,9 @@ namespace Imaging.Objects.Tests
             Assert.AreEqual(0, document.Layers.Count);
         }
 
+        /// <summary>
+        /// Creates new rasterlayer_istransparent.
+        /// </summary>
         [TestMethod]
         public void NewRasterLayer_IsTransparent()
         {
@@ -194,12 +230,14 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(layer, 1, 1), (0, 0, 0, 0), 0);
         }
 
+        /// <summary>
+        /// Opacities the is clamped.
+        /// </summary>
         [TestMethod]
         public void Opacity_IsClamped()
         {
-            var layer = new ShapeLayer("a");
+            var layer = new ShapeLayer("a") { Opacity = 2 };
 
-            layer.Opacity = 2;
             Assert.AreEqual(1d, layer.Opacity, 0.0001);
             layer.Opacity = -1;
             Assert.AreEqual(0d, layer.Opacity, 0.0001);

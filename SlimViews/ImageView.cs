@@ -1068,7 +1068,8 @@ namespace SlimViews
                 {
                     // If you are in "SubFolder" mode, don't reload if the new folder
                     // is just a child of the current path.
-                    var isSubfolder = FileContext.CurrentPath != null && folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
+                    var isSubfolder = FileContext.CurrentPath != null &&
+                                      folder.StartsWith(FileContext.CurrentPath, StringComparison.OrdinalIgnoreCase);
 
                     if (!UiState.UseSubFolders || !isSubfolder)
                     {

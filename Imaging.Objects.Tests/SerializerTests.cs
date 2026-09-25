@@ -56,11 +56,15 @@ namespace Imaging.Objects.Tests
             var ink = new ShapeLayer("Ink") { Opacity = 0.75 };
             ink.Insert(0,
                 new RectShape(1, 2, 10, 8)
-                    { Fill = new SolidFill(0xFFFF0000), Stroke = new StrokeSpec(0xFF00FF00, 2) });
+                {
+                    Fill = new SolidFill(0xFFFF0000), Stroke = new StrokeSpec(0xFF00FF00, 2)
+                });
             ink.Insert(1, new EllipseShape(5, 5, 6, 6) { Fill = new TextureFill("Cloud") });
             ink.Insert(2,
                 new PolygonShape(ImmutableArray.Create(new PointD(1, 1), new PointD(9, 1), new PointD(5, 8)))
-                    { Fill = new FilterFill("Sepia") });
+                {
+                    Fill = new FilterFill("Sepia")
+                });
             ink.Insert(3, new PolylineShape(ImmutableArray.Create(new PointD(0, 0), new PointD(3.5, 2.25))));
             ink.Insert(4, new LineShape(new PointD(0, 0), new PointD(36, 22)));
 

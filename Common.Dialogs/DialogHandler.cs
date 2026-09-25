@@ -57,8 +57,7 @@ namespace Common.Dialogs
                 folder = Directory.GetCurrentDirectory();
             }
 
-            var browser = new FolderBrowser(folder);
-            browser.Topmost = true;
+            var browser = new FolderBrowser(folder) { Topmost = true };
             _ = browser.ShowDialog();
 
             return browser.Root;
@@ -88,7 +87,7 @@ namespace Common.Dialogs
             var dispatcher = Application.Current?.Dispatcher;
 
             // Redirect background thread calls safely to the main UI thread
-            if (dispatcher is { } && !dispatcher.CheckAccess())
+            if (dispatcher?.CheckAccess() == false)
             {
                 dispatcher.BeginInvoke(new Action(() => ErrorDialog(message, source, details, title)));
                 return;
@@ -157,11 +156,7 @@ namespace Common.Dialogs
                 folder = Directory.GetCurrentDirectory();
             }
 
-            var openFile = new OpenFileDialog
-            {
-                Filter = NormalizeFilter(appendage),
-                InitialDirectory = folder
-            };
+            var openFile = new OpenFileDialog { Filter = NormalizeFilter(appendage), InitialDirectory = folder };
 
             if (openFile.ShowDialog() != true)
             {
@@ -186,9 +181,7 @@ namespace Common.Dialogs
 
             var openFile = new OpenFileDialog
             {
-                Filter = NormalizeFilter(appendage),
-                InitialDirectory = folder,
-                Multiselect = true
+                Filter = NormalizeFilter(appendage), InitialDirectory = folder, Multiselect = true
             };
 
             if (openFile.ShowDialog() != true)
@@ -216,9 +209,7 @@ namespace Common.Dialogs
 
             var saveFile = new SaveFileDialog
             {
-                Filter = NormalizeFilter(appendage),
-                InitialDirectory = folder,
-                OverwritePrompt = true
+                Filter = NormalizeFilter(appendage), InitialDirectory = folder, OverwritePrompt = true
             };
 
             if (saveFile.ShowDialog() != true)

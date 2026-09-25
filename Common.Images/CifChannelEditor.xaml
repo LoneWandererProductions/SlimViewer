@@ -47,7 +47,7 @@
             squeezed into a 320px-wide side panel - three buttons say the same thing more plainly
             and match the rest of the app's action-button footers.
         -->
-        <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource SidePanelCardStyle}"
+        <Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Style="{StaticResource SidePanelCardStyle}"
                 Padding="8" Margin="0,0,0,12">
             <StackPanel Orientation="Horizontal">
                 <Button Content="📂 Load CIF..." Padding="8,4" Margin="0,0,6,0" Click="LoadCif_Click"

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents
  * FILE:        DocumentSerializer.cs
@@ -283,7 +283,7 @@ namespace Imaging.Objects.Documents
                     var shapes = new ShapeLayer(item.Id, item.Name);
                     foreach (var shape in item.Shapes ?? new List<Shape>())
                     {
-                        if (shape is null || !shape.IsValid())
+                        if (shape?.IsValid() != true)
                         {
                             throw new DocumentFormatException($"Layer {item.Id} contains an invalid shape.");
                         }

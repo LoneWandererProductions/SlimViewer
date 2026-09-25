@@ -89,13 +89,10 @@ namespace Common.Images
         {
             [ImageZoomTools.Rectangle] = new GestureBehavior(
                 ImageZoomTools.Rectangle, SelectionShape.Box, CapturesFrameOnMouseUp: true, MaskShape.Rectangle),
-
             [ImageZoomTools.Ellipse] = new GestureBehavior(
                 ImageZoomTools.Ellipse, SelectionShape.Box, CapturesFrameOnMouseUp: true, MaskShape.Circle),
-
             [ImageZoomTools.FreeForm] = new GestureBehavior(
                 ImageZoomTools.FreeForm, SelectionShape.Freeform, CapturesFrameOnMouseUp: true, MaskShape.Polygon),
-
             [ImageZoomTools.Polygon] = new GestureBehavior(
                 ImageZoomTools.Polygon, SelectionShape.Freeform, CapturesFrameOnMouseUp: true, MaskShape.Polygon),
 

@@ -53,10 +53,8 @@ namespace Imaging.Objects.Tests
             Shape[] shapes =
             {
                 new LineShape(new PointD(0, 0), new PointD(1, 1)) { Fill = fill },
-                new RectShape(0, 0, 4, 4) { Fill = fill },
-                new EllipseShape(0, 0, 4, 4) { Fill = fill },
-                new PolygonShape(Triangle) { Fill = fill },
-                new PolylineShape(Triangle) { Fill = fill }
+                new RectShape(0, 0, 4, 4) { Fill = fill }, new EllipseShape(0, 0, 4, 4) { Fill = fill },
+                new PolygonShape(Triangle) { Fill = fill }, new PolylineShape(Triangle) { Fill = fill }
             };
 
             foreach (var shape in shapes)
@@ -101,11 +99,13 @@ namespace Imaging.Objects.Tests
         {
             Shape[] shapes =
             {
-                new LineShape(new PointD(1.5, 2.5), new PointD(10, 20)) { Stroke = new StrokeSpec(0x80FF0000, 3.5) },
+                new LineShape(new PointD(1.5, 2.5), new PointD(10, 20))
+                {
+                    Stroke = new StrokeSpec(0x80FF0000, 3.5)
+                },
                 new RectShape(1, 2, 3, 4) { Fill = new SolidFill(0xFF00FF00) },
                 new EllipseShape(5, 6, 7, 8) { Fill = new TextureFill("Cloud") },
-                new PolygonShape(Triangle) { Fill = new FilterFill("Sepia") },
-                new PolylineShape(Triangle)
+                new PolygonShape(Triangle) { Fill = new FilterFill("Sepia") }, new PolylineShape(Triangle)
             };
 
             foreach (var shape in shapes)

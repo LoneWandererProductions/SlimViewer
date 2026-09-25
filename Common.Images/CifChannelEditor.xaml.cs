@@ -252,7 +252,7 @@ namespace Common.Images
         /// Populates the palette.
         /// </summary>
         /// <param name="cif">The cif.</param>
-        private void PopulatePalette(Cif cif)
+        private void PopulatePalette(Cif? cif)
         {
             foreach (var item in PaletteItems)
             {
@@ -263,11 +263,11 @@ namespace Common.Images
 
             var index = 0;
 
-            if (cif == null || cif.CifImage == null) return;
+            if (cif?.CifImage == null) return;
 
             foreach (var kvp in cif.CifImage)
             {
-                var count = Enumerable.Count(kvp.Value);
+                var count = kvp.Value.Count();
                 var newItem = new CifColorItem(kvp.Key, index++, count);
                 newItem.PropertyChanged += ColorItem_PropertyChanged;
                 PaletteItems.Add(newItem);
@@ -398,7 +398,7 @@ namespace Common.Images
             IReadOnlyDictionary<SystemDrawingColor, SystemDrawingColor> activePalette,
             CancellationToken token)
         {
-            if (cif == null || cif.CifImage == null) return null;
+            if (cif?.CifImage == null) return null;
 
             var totalPixels = cif.PixelCount;
             var buffer = new int[totalPixels];
@@ -450,7 +450,7 @@ namespace Common.Images
         private void LoadCif_Click(object sender, RoutedEventArgs e)
         {
             var target = DialogHandler.HandleFileOpen(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
+            if (string.IsNullOrEmpty(target?.FilePath)) return;
 
             var cif = _customFormat.GetCif(target.FilePath);
             if (cif == null) return;
@@ -468,7 +468,7 @@ namespace Common.Images
             if (CifSource == null) return;
 
             var target = DialogHandler.HandleFileSave(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
+            if (string.IsNullOrEmpty(target?.FilePath)) return;
 
             using var bitmap = CifSource.GetImage();
             if (bitmap is { })
@@ -493,7 +493,7 @@ namespace Common.Images
             if (CifSource == null || _writeableBitmap == null) return;
 
             var target = DialogHandler.HandleFileSave(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
+            if (string.IsNullOrEmpty(target?.FilePath)) return;
 
             var dir = Path.GetDirectoryName(target.FilePath) ?? string.Empty;
             var file = Path.GetFileNameWithoutExtension(target.FilePath);
