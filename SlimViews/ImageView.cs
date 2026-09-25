@@ -633,7 +633,7 @@ namespace SlimViews
         /// </summary>
         private List<int> GetNavigableKeys()
         {
-            if (!string.IsNullOrWhiteSpace(_thumbFilterText) && UiState.Thumb != null)
+            if (!string.IsNullOrWhiteSpace(_thumbFilterText) && UiState.Thumb is { })
             {
                 var visible = UiState.Thumb.GetVisibleIds();
                 if (visible.Count > 0) return visible;
@@ -662,7 +662,7 @@ namespace SlimViews
                 UiState.TextureConfigVisibility = Visibility.Collapsed;
 
                 // If an image is already loaded, convert it immediately
-                if (Image.Bitmap != null)
+                if (Image.Bitmap is { })
                 {
                     Image.ActiveCif = new Cif(Image.Bitmap, Image.CustomImageFormat);
                 }
@@ -756,7 +756,7 @@ namespace SlimViews
             SlimViewerRegister.MainSimilarity = Similarity;
             SlimViewerRegister.MainAutoClean = AutoClean;
 
-            if (UiState.ImageZoomControl != null)
+            if (UiState.ImageZoomControl is { })
                 SlimViewerRegister.MainAutoPlayGif = UiState.ImageZoomControl.AutoplayGifImage;
 
             // 2. Extract the updated Config object from the Register
@@ -992,7 +992,7 @@ namespace SlimViews
             if (!CanLoadFile(filePath)) return;
 
             // Filter out nulls if your files list contains them, or pass as-is if FileContext expects it
-            UpdateImageState(targetPath: filePath, newFiles: files.Where(f => f != null)!, customInfo: info);
+            UpdateImageState(targetPath: filePath, newFiles: files.Where(f => f is { })!, customInfo: info);
         }
 
         /// <summary>
@@ -1034,7 +1034,7 @@ namespace SlimViews
             // ==========================================
             // PHASE 1: Update File Context & Thumbnails
             // ==========================================
-            if (newFiles != null)
+            if (newFiles is { })
             {
                 FileContext.Files = newFiles.ToList();
                 Count = FileContext.Files.Count;
@@ -1059,7 +1059,7 @@ namespace SlimViews
                 // If we didn't get an explicit list of files, check if the folder changed
                 var folder = Path.GetDirectoryName(targetPath);
 
-                if (folder != null && folder != FileContext.CurrentPath)
+                if (folder is { } && folder != FileContext.CurrentPath)
                 {
                     // If you are in "SubFolder" mode, don't reload if the new folder
                     // is just a child of the current path.
@@ -1191,7 +1191,7 @@ namespace SlimViews
                     Image.Bitmap = bmp;
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
 
-                    if (Image.Bitmap != null && UiState.CifEditorVisibility == Visibility.Visible)
+                    if (Image.Bitmap is { } && UiState.CifEditorVisibility == Visibility.Visible)
                     {
                         // Convert to CIF automatically because the panel is open
                         Image.ActiveCif = new Cif(Image.Bitmap, Image.CustomImageFormat);
@@ -1257,7 +1257,7 @@ namespace SlimViews
             // the new one. Reset the backing field directly (not the property) - there's nothing
             // to un-filter yet since the thumb strip is about to be rebuilt from scratch anyway,
             // this is just here to keep the filter textbox's bound Text visually cleared.
-            if (_thumbFilterText != null)
+            if (_thumbFilterText is { })
             {
                 _thumbFilterText = null;
                 OnPropertyChanged(nameof(ThumbFilterText));

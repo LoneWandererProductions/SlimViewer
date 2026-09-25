@@ -1,15 +1,22 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging.Objects.Documents;
- * FILE:        EllipseShape.cs
- * PURPOSE:     Your file purpose here
+ * PROJECT:     Imaging.Objects.Shapes
+ * FILE:        RectShape.cs
+ * PURPOSE:     Ther Rectangle Shape.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents;
+using Imaging.Objects.Documents;
 
-/// <summary>An axis-aligned ellipse, described by its bounding box (like a selection frame).</summary>
-public sealed record EllipseShape(double X, double Y, double Width, double Height) : Shape
+namespace Imaging.Objects.Shapes;
+
+/// <summary>
+/// An axis-aligned rectangle.
+/// </summary>
+/// <seealso cref="Imaging.Objects.Shapes.Shape" />
+/// <seealso cref="System.IEquatable&lt;Imaging.Objects.Shapes.Shape&gt;" />
+/// <seealso cref="System.IEquatable&lt;Imaging.Objects.Shapes.RectShape&gt;" />
+public sealed record RectShape(double X, double Y, double Width, double Height) : Shape
 {
     /// <inheritdoc />
     public override PixelRect GetBounds()

@@ -69,7 +69,7 @@ namespace DataFormatter
             {
                 var parts = DataHelper.GetParts(lst[i], separator).ConvertAll(s => s.Trim());
                 var obj = converter(parts);
-                if (obj != null)
+                if (obj is { })
                 {
                     result.Add(obj);
                 }

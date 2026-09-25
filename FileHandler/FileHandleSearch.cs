@@ -133,7 +133,7 @@ namespace FileHandler
             if (files == null || files.Count == 0)
                 return new List<FileDetails>();
 
-            return files.Select(GetFileDetails).Where(f => f != null).ToList()!;
+            return files.Select(GetFileDetails).Where(f => f is { }).ToList()!;
         }
 
         /// <summary>

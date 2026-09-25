@@ -143,9 +143,9 @@ namespace SlimViews.Tooling
             OpenOneCommand = new DelegateCommand<object>(OpenOneAction, _ => !IsWorking);
             OpenTwoCommand = new DelegateCommand<object>(OpenTwoAction, _ => !IsWorking);
             DifferenceCommand =
-                new DelegateCommand<object>(DifferenceAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
+                new DelegateCommand<object>(DifferenceAction, _ => _btmOne is { } && _btmTwo is { } && !IsWorking);
             ExportCommand =
-                new DelegateCommand<object>(ExportAction, _ => _btmOne != null && _btmTwo != null && !IsWorking);
+                new DelegateCommand<object>(ExportAction, _ => _btmOne is { } && _btmTwo is { } && !IsWorking);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace SlimViews.Tooling
                 Compare();
 
                 var text = await ComputeText(btm);
-                if (TxtBoxColorInformation != null)
+                if (TxtBoxColorInformation is { })
                 {
                     await AppendTextAsync(TxtBoxColorInformation, text);
                 }
@@ -343,7 +343,7 @@ namespace SlimViews.Tooling
                 Compare();
 
                 var text = await ComputeText(btm);
-                if (TxtBoxColorInformation != null)
+                if (TxtBoxColorInformation is { })
                 {
                     await AppendTextAsync(TxtBoxColorInformation, text);
                 }

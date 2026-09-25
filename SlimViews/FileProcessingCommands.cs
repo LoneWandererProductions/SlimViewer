@@ -97,7 +97,7 @@ namespace SlimViews
             // Only release the viewer if the image currently on screen is actually one of the
             // files we're about to delete - otherwise there's no lock to release and no reason
             // to blank the preview out from under the user.
-            var isCurrentImageAffected = owner.FileContext.FilePath != null &&
+            var isCurrentImageAffected = owner.FileContext.FilePath is { } &&
                                          paths.Any(p => string.Equals(p, owner.FileContext.FilePath,
                                              StringComparison.OrdinalIgnoreCase));
 
@@ -137,7 +137,7 @@ namespace SlimViews
                             var match = owner.FileContext.Observer?.FirstOrDefault(x =>
                                 string.Equals(x.Value, path, StringComparison.OrdinalIgnoreCase));
 
-                            if (match?.Value != null)
+                            if (match?.Value is { })
                             {
                                 owner.UiState.Thumb?.RemoveSingleItem(match.Value.Key);
                                 if (owner.Count > 0) owner.Count--;
@@ -384,7 +384,7 @@ namespace SlimViews
 
             var resultPath = await RenameAsync(owner, oldPath, newPath, isSilent: false);
 
-            if (resultPath != null)
+            if (resultPath is { })
             {
                 // Reload the view with the new name
                 owner.GenerateView(resultPath);
@@ -425,7 +425,7 @@ namespace SlimViews
                     // change any pixel data, so the existing thumbnail cell needs no visual refresh,
                     // and there's no need for a full folder rescan / thumb view rebuild.
                     var match = owner.FileContext.Observer?.FirstOrDefault(x => x.Value == sourcePath);
-                    if (match?.Value != null)
+                    if (match?.Value is { })
                     {
                         owner.FileContext.Observer[match.Value.Key] = targetPath;
                     }

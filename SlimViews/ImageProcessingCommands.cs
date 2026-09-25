@@ -119,7 +119,7 @@ namespace SlimViews
 
             var pixelWidth = 2;
 
-            if (parameter != null && int.TryParse(parameter.ToString(), out var result))
+            if (parameter is { } && int.TryParse(parameter.ToString(), out var result))
             {
                 pixelWidth = result;
             }

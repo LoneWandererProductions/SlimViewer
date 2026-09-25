@@ -13,6 +13,7 @@ using System.Text.Json;
 using Imaging.Objects.Commands;
 using Imaging.Objects.Documents;
 using Imaging.Objects.Interfaces;
+using Imaging.Objects.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Imaging.Objects.Tests
@@ -20,10 +21,22 @@ namespace Imaging.Objects.Tests
     [TestClass]
     public sealed class SerializerTests
     {
+        /// <summary>
+        /// The width
+        /// </summary>
         private const int Width = 37;
 
+        /// <summary>
+        /// The height
+        /// </summary>
         private const int Height = 23;
 
+        /// <summary>
+        /// Builds the sample document.
+        /// </summary>
+        /// <param name="photoId">The photo identifier.</param>
+        /// <param name="inkId">The ink identifier.</param>
+        /// <returns></returns>
         private static Document BuildSampleDocument(out Guid photoId, out Guid inkId)
         {
             var document = new Document(Width, Height);
@@ -103,6 +116,9 @@ namespace Imaging.Objects.Tests
             return stream.ToArray();
         }
 
+        /// <summary>
+        /// Rounds the trip preserves structure settings pixels and shapes.
+        /// </summary>
         [TestMethod]
         public void RoundTrip_PreservesStructureSettingsPixelsAndShapes()
         {
@@ -147,6 +163,9 @@ namespace Imaging.Objects.Tests
             }
         }
 
+        /// <summary>
+        /// Loadeds the document flattens like the original.
+        /// </summary>
         [TestMethod]
         public void LoadedDocument_FlattensLikeTheOriginal()
         {
@@ -161,6 +180,9 @@ namespace Imaging.Objects.Tests
             Assert.IsTrue(a.BufferSpan.SequenceEqual(b.BufferSpan));
         }
 
+        /// <summary>
+        /// Loadeds the document is fully editable.
+        /// </summary>
         [TestMethod]
         public void LoadedDocument_IsFullyEditable()
         {

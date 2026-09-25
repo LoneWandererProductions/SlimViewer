@@ -299,7 +299,7 @@ namespace Imaging.Compare
         private static List<List<string>> Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
         {
             return duplicateGroups.Select(group =>
-                    (from element in @group where Translator[element.Id] != null select Translator[element.Id])
+                    (from element in @group where Translator[element.Id] is { } select Translator[element.Id])
                     .ToList())
                 .ToList();
         }

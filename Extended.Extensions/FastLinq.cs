@@ -165,7 +165,7 @@ namespace Extended.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyFast<T>(this List<T>? list)
         {
-            return list != null && list.Count != 0;
+            return list is { } && list.Count != 0;
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace Extended.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyFast<T>(this T[]? array)
         {
-            return array != null && array.Length != 0;
+            return array is { } && array.Length != 0;
         }
 
         /// <summary>

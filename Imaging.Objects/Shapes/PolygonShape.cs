@@ -1,16 +1,22 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging.Objects.Documents;
+ * PROJECT:     Imaging.Objects.Shapes
  * FILE:        PolygonShape.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     The Polygon Shape.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Objects.Documents;
 using System.Collections.Immutable;
 
-namespace Imaging.Objects.Documents;
+namespace Imaging.Objects.Shapes;
 
-/// <summary>A closed polygon with at least three points.</summary>
+/// <summary>
+/// A closed polygon with at least three points.
+/// </summary>
+/// <seealso cref="Imaging.Objects.Shapes.Shape" />
+/// <seealso cref="System.IEquatable&lt;Imaging.Objects.Shapes.Shape&gt;" />
+/// <seealso cref="System.IEquatable&lt;Imaging.Objects.Shapes.PolygonShape&gt;" />
 public sealed record PolygonShape(ImmutableArray<PointD> Points) : Shape
 {
     /// <inheritdoc />

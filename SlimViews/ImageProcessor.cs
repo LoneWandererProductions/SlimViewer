@@ -211,7 +211,7 @@ namespace SlimViews
                 ShowError(ex.ToString(), nameof(GenerateExportAsync));
             }
 
-            if (difference != null)
+            if (difference is { })
             {
                 var pngPath = Path.ChangeExtension(pathObj.FilePath, ImagingResources.PngExt);
                 _ = SaveImage(pngPath, ImagingResources.PngExt, difference);
@@ -323,7 +323,7 @@ namespace SlimViews
             // extension not in the switch below threw, full stop, regardless of what plugins were
             // loaded.
             if (ImageDecoderPluginRegistry.Instance.TryGetEncoder(extension, out var encoderPlugin) &&
-                encoderPlugin != null)
+                encoderPlugin is { })
             {
                 encoderPlugin.Encode(bitmap, path);
                 return true;

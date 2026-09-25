@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Objects.Shapes;
+
 namespace Imaging.Objects.Documents;
 
 /// <summary>

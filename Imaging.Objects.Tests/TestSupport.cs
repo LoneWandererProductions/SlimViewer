@@ -8,6 +8,7 @@
 using Imaging.Objects;
 using Imaging.Objects.Documents;
 using Imaging.Objects.Interfaces;
+using Imaging.Objects.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Imaging.Objects.Tests

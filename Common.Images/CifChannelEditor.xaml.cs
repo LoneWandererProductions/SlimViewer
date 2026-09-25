@@ -59,6 +59,16 @@ namespace Common.Images
         private bool _isSyncingMultiselect;
 
         /// <summary>
+        /// The is updating sliders
+        /// </summary>
+        private bool _isUpdatingSliders;
+
+        /// <summary>
+        /// The is bulk updating
+        /// </summary>
+        private bool _isBulkUpdating;
+
+        /// <summary>
         /// Gets the palette items.
         /// </summary>
         /// <value>
@@ -265,35 +275,18 @@ namespace Common.Images
         }
 
         /// <summary>
-        /// Colors the item property changed.
+        /// Reacts to changes in individual CifColorItems.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
         private void ColorItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (_isBulkUpdating) return;
+
             if (e.PropertyName is nameof(CifColorItem.R) or nameof(CifColorItem.G) or nameof(CifColorItem.B))
             {
-                if (!_isSyncingMultiselect)
-                {
-                    if (sender is CifColorItem changedItem && _currentSelection.Contains(changedItem))
-                    {
-                        _isSyncingMultiselect = true;
-
-                        foreach (var item in _currentSelection)
-                        {
-                            if (item == changedItem) continue;
-
-                            if (e.PropertyName == nameof(CifColorItem.R)) item.R = changedItem.R;
-                            else if (e.PropertyName == nameof(CifColorItem.G)) item.G = changedItem.G;
-                            else if (e.PropertyName == nameof(CifColorItem.B)) item.B = changedItem.B;
-                        }
-
-                        _isSyncingMultiselect = false;
-                    }
-
-                    RequestRender();
-                    CheckForColorMerge(sender as CifColorItem);
-                }
+                RequestRender();
+                CheckForColorMerge(sender as CifColorItem);
             }
         }
 
@@ -313,7 +306,7 @@ namespace Common.Images
                 p.G == changedItem.G &&
                 p.B == changedItem.B);
 
-            if (match != null)
+            if (match is { })
             {
                 // Note: To implement a full merge, you would need a method in your Cif class
                 // that remaps the pixel indices from changedItem.SourceColor to match.SourceColor.
@@ -478,7 +471,7 @@ namespace Common.Images
             if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
 
             using var bitmap = CifSource.GetImage();
-            if (bitmap != null)
+            if (bitmap is { })
             {
                 if (CifSource.Compressed)
                     _customFormat.GenerateCifCompressedFromBitmap(bitmap, target.FilePath);
@@ -528,6 +521,18 @@ namespace Common.Images
         {
             _currentSelection = PaletteListBox.SelectedItems.Cast<CifColorItem>().ToList();
 
+            // Bei neuer Auswahl die Slider auf die Werte der primär gewählten Farbe setzen
+            if (SelectedPaletteItem != null)
+            {
+                _isUpdatingSliders = true;
+                EditRSlider.Value = SelectedPaletteItem.R;
+                EditGSlider.Value = SelectedPaletteItem.G;
+                EditBSlider.Value = SelectedPaletteItem.B;
+                _isUpdatingSliders = false;
+
+                UpdatePreviewColor();
+            }
+
             if (IsIsolationEnabled)
             {
                 RequestRender();
@@ -571,6 +576,63 @@ namespace Common.Images
             }
 
             RequestRender();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ApplyColorEdit control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        private void ApplyColorEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentSelection.Count == 0) return;
+
+            var r = (byte)EditRSlider.Value;
+            var g = (byte)EditGSlider.Value;
+            var b = (byte)EditBSlider.Value;
+
+            _isBulkUpdating = true;
+
+            foreach (var item in _currentSelection)
+            {
+                item.R = r;
+                item.G = g;
+                item.B = b;
+            }
+
+            _isBulkUpdating = false;
+
+            RequestRender();
+
+            foreach (var item in _currentSelection.ToList())
+            {
+                CheckForColorMerge(item);
+            }
+        }
+
+        /// <summary>
+        /// Handles the ValueChanged event of the EditSlider control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.RoutedPropertyChangedEventArgs{double}"/> instance containing the event data.</param>
+        /// <returns></returns>
+        private void EditSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_isUpdatingSliders) return;
+            UpdatePreviewColor();
+        }
+
+        /// <summary>
+        /// Updates the color of the preview.
+        /// </summary>
+        /// <returns></returns>
+        private void UpdatePreviewColor()
+        {
+            if (PreviewBrush == null) return;
+            var r = (byte)EditRSlider.Value;
+            var g = (byte)EditGSlider.Value;
+            var b = (byte)EditBSlider.Value;
+            PreviewBrush.Color = System.Windows.Media.Color.FromRgb(r, g, b);
         }
     }
 }

@@ -78,7 +78,7 @@ namespace Imaging.Cifs
                 throw new ArgumentNullException(nameof(image), CifResources.ErrorImage);
             }
 
-            if (imageFormat != null)
+            if (imageFormat is { })
             {
                 ImageFormat = imageFormat;
             }
@@ -108,7 +108,7 @@ namespace Imaging.Cifs
         /// <param name="imageFormat">The custom image format.</param>
         public Cif(ICustomImageFormat? imageFormat = null)
         {
-            if (imageFormat != null)
+            if (imageFormat is { })
             {
                 ImageFormat = imageFormat;
             }

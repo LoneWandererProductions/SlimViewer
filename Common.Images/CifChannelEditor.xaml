@@ -225,27 +225,29 @@
 
                         <!-- Selected Color Editor -->
                         <Border Margin="0,10,0,0" Padding="8" BorderThickness="1"
-                                BorderBrush="{StaticResource BorderSubtleBrush}"
-                                Background="{StaticResource InputBrush}" CornerRadius="4"
-                                Visibility="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverter}}">
-                            <StackPanel
-                                DataContext="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        BorderBrush="{StaticResource BorderSubtleBrush}"
+        Background="{StaticResource InputBrush}" CornerRadius="4"
+        Visibility="{Binding Path=SelectedPaletteItem,
+                     RelativeSource={RelativeSource AncestorType=UserControl},
+                     Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel>
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Edit Selected Color" FontWeight="SemiBold"
-                                               VerticalAlignment="Center" />
-                                    <!-- Live preview of the color as edited, not just three separate numbers. -->
+                       VerticalAlignment="Center" />
+                                    <!-- Vorschau-Box der neu eingestellten Farbe -->
                                     <Border Grid.Column="1" Width="24" Height="24" CornerRadius="3"
-                                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                                         <Border.Background>
-                                            <SolidColorBrush Color="{Binding DisplayColor}" />
+                                            <SolidColorBrush x:Name="PreviewBrush" Color="Black" />
                                         </Border.Background>
                                     </Border>
                                 </Grid>
 
+                                <!-- R Slider -->
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="16" />
@@ -253,15 +255,14 @@
                                         <ColumnDefinition Width="32" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="R" Foreground="#FFE06C6C"
-                                               VerticalAlignment="Center" FontWeight="SemiBold" />
-                                    <!-- R Slider -->
-                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding R, UpdateSourceTrigger=PropertyChanged}"
-                                            Margin="6,0" />
-                                    <TextBlock Grid.Column="2" Text="{Binding R}" VerticalAlignment="Center"
-                                               FontFamily="Consolas" />
+                       VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <Slider Grid.Column="1" x:Name="EditRSlider" Minimum="0" Maximum="255"
+                    ValueChanged="EditSlider_ValueChanged" Margin="6,0" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Value, ElementName=EditRSlider, StringFormat={}{0:0}}" VerticalAlignment="Center"
+                       FontFamily="Consolas" />
                                 </Grid>
 
+                                <!-- G Slider -->
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="16" />
@@ -269,15 +270,14 @@
                                         <ColumnDefinition Width="32" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="G" Foreground="#FF7CC47C"
-                                               VerticalAlignment="Center" FontWeight="SemiBold" />
-                                    <!-- G Slider -->
-                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding G, UpdateSourceTrigger=PropertyChanged}"
-                                            Margin="6,0" />
-                                    <TextBlock Grid.Column="2" Text="{Binding G}" VerticalAlignment="Center"
-                                               FontFamily="Consolas" />
+                       VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <Slider Grid.Column="1" x:Name="EditGSlider" Minimum="0" Maximum="255"
+                    ValueChanged="EditSlider_ValueChanged" Margin="6,0" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Value, ElementName=EditGSlider, StringFormat={}{0:0}}" VerticalAlignment="Center"
+                       FontFamily="Consolas" />
                                 </Grid>
 
+                                <!-- B Slider -->
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="16" />
@@ -285,14 +285,16 @@
                                         <ColumnDefinition Width="32" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="B" Foreground="#FF6C9CE0"
-                                               VerticalAlignment="Center" FontWeight="SemiBold" />
-                                    <!-- B Slider -->
-                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding B, UpdateSourceTrigger=PropertyChanged}"
-                                            Margin="6,0" />
-                                    <TextBlock Grid.Column="2" Text="{Binding B}" VerticalAlignment="Center"
-                                               FontFamily="Consolas" />
+                                       VerticalAlignment="Center" FontWeight="SemiBold" />
+                                                    <Slider Grid.Column="1" x:Name="EditBSlider" Minimum="0" Maximum="255"
+                                    ValueChanged="EditSlider_ValueChanged" Margin="6,0" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding Value, ElementName=EditBSlider, StringFormat={}{0:0}}" VerticalAlignment="Center"
+                                       FontFamily="Consolas" />
                                 </Grid>
+
+                                <Button Content="✅ Apply" Click="ApplyColorEdit_Click" Margin="0,8,0,0"
+                                    Padding="6,4" HorizontalAlignment="Stretch"
+                                    ToolTip="Applies the selected RGB values to all selected colors" />
                             </StackPanel>
                         </Border>
 

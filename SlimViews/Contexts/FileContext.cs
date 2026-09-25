@@ -108,7 +108,7 @@ namespace SlimViews.Contexts
         /// <returns>
         ///   <c>true</c> if [is key in observer] [the specified key]; otherwise, <c>false</c>.
         /// </returns>
-        internal bool IsKeyInObserver(int key) => Observer != null && Observer.ContainsKey(key);
+        internal bool IsKeyInObserver(int key) => Observer is { } && Observer.ContainsKey(key);
 
         /// <summary>
         /// Gets or sets the file path.

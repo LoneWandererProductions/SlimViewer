@@ -191,7 +191,7 @@ namespace SlimViews.Tooling
             {
                 var group = DuplicateGroups.FirstOrDefault(g => g.GroupId == args.SenderTag);
 
-                if (group != null && group.Images.TryGetValue(args.Id, out var path))
+                if (group is { } && group.Images.TryGetValue(args.Id, out var path))
                 {
                     if (File.Exists(path))
                     {
@@ -407,7 +407,7 @@ namespace SlimViews.Tooling
         /// </summary>
         /// <param name="paths">The file paths making up the group.</param>
         private static string GetGroupSignature(IEnumerable<string?> paths) =>
-            string.Join("|", paths.Where(p => p != null).OrderBy(p => p, StringComparer.OrdinalIgnoreCase));
+            string.Join("|", paths.Where(p => p is { }).OrderBy(p => p, StringComparer.OrdinalIgnoreCase));
 
         /// <summary>
         ///     Removes a whole raw group from <see cref="_duplicates" /> (e.g. once it's fully
@@ -685,7 +685,7 @@ namespace SlimViews.Tooling
                             await _imageView.Commands.FileService.RenameAsync(_imageView, sourcePath, targetPath,
                                 isSilent: true);
 
-                        if (newPath != null)
+                        if (newPath is { })
                         {
                             updatedImages[key] = newPath;
                             anySuccess = true;
@@ -784,7 +784,7 @@ namespace SlimViews.Tooling
         {
             // Look through all groups to find which one contains this image
             var group = DuplicateGroups.FirstOrDefault(g => g.Images.Values.Contains(path));
-            if (group != null)
+            if (group is { })
             {
                 // Find the key (ID) for this path to get the matching score
                 var key = group.Images.FirstOrDefault(x => x.Value == path).Key;

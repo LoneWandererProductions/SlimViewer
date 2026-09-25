@@ -6,7 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Objects.Documents;
+using Imaging.Objects.Shapes;
 
 namespace Imaging.Objects.Interfaces;
 

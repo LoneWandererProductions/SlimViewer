@@ -10,8 +10,9 @@
 namespace Imaging.Objects.Documents
 {
     /// <summary>
-    ///     An integer pixel rectangle. Used for dirty regions and raster patches.
+    /// An integer pixel rectangle. Used for dirty regions and raster patches.
     /// </summary>
+    /// <seealso cref="System.IEquatable&lt;Imaging.Objects.Documents.PixelRect&gt;" />
     public readonly record struct PixelRect(int X, int Y, int Width, int Height)
     {
         /// <summary>Gets the empty rectangle.</summary>

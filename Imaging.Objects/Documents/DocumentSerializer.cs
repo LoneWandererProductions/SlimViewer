@@ -9,6 +9,7 @@
  */
 
 using Imaging.Objects.Interfaces;
+using Imaging.Objects.Shapes;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;

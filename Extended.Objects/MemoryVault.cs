@@ -179,7 +179,7 @@ namespace Extended.Objects
 
             // Increment total bytes atomically (Symmetrical with DecrementMemory)
             var itemSize = vaultItem.DataSize + (vaultItem.Description?.Length * 2 ?? 0);
-            if (vaultItem.AdditionalMetadata != null)
+            if (vaultItem.AdditionalMetadata is { })
             {
                 itemSize += vaultItem.AdditionalMetadata.Count * 64;
             }
@@ -374,7 +374,7 @@ namespace Extended.Objects
                 // Note: Deserialize directly to VaultItem<TU?> so it perfectly matches the dictionary
                 var item = JsonSerializer.Deserialize<VaultItem<TU?>>(json);
 
-                if (item != null)
+                if (item is { })
                 {
                     // The deserializer already populated CreationDate, ExpiryDate, and AdditionalMetadata.
                     // Just insert the fully reconstructed item directly!
@@ -436,7 +436,7 @@ namespace Extended.Objects
         {
             var size = item.DataSize + (item.Description?.Length * 2 ?? 0);
             // Add additional metadata estimate if it exists
-            if (item.AdditionalMetadata != null) size += item.AdditionalMetadata.Count * 64;
+            if (item.AdditionalMetadata is { }) size += item.AdditionalMetadata.Count * 64;
 
             Interlocked.Add(ref _totalBytes, -size);
         }

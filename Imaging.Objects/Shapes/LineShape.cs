@@ -1,14 +1,21 @@
 /*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging.Objects.Documents;
+ * PROJECT:     Imaging.Objects.Shapes
  * FILE:        LineShape.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     The Line shape.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents;
+using Imaging.Objects.Documents;
 
-/// <summary>A straight line. Open, so <see cref="Shape.Fill" /> is ignored.</summary>
+namespace Imaging.Objects.Shapes;
+
+/// <summary>
+/// A straight line. Open, so <see cref="Shape.Fill" /> is ignored.
+/// </summary>
+/// <seealso cref="Imaging.Objects.Shapes.Shape" />
+/// <seealso cref="System.IEquatable&lt;Imaging.Objects.Shapes.Shape&gt;" />
+/// <seealso cref="System.IEquatable&lt;Imaging.Objects.Shapes.LineShape&gt;" />
 public sealed record LineShape(PointD From, PointD To) : Shape
 {
     /// <inheritdoc />

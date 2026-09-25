@@ -126,7 +126,7 @@ namespace SlimViews
                 try
                 {
                     var result = edit(bitmap);
-                    completion.SetResult(result != null);
+                    completion.SetResult(result is { });
                     return result;
                 }
                 catch (Exception ex)
@@ -175,7 +175,7 @@ namespace SlimViews
 
                     var result = job(privateCopy);
 
-                    if (result != null)
+                    if (result is { })
                     {
                         await _history.CommitImageChangeAsync(result).ConfigureAwait(true);
                     }

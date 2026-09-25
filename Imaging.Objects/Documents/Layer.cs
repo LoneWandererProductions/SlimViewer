@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents;
  * FILE:        Layer.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     The Layer Data Structure.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

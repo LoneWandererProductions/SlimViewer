@@ -625,7 +625,7 @@ namespace Common.Images
                 return;
 
             // If we already have an adorner instance, keep reusing it and update its mode
-            if (SelectionAdorner != null)
+            if (SelectionAdorner is { })
             {
                 SelectionAdorner.Tool = tool;
                 SelectionAdorner.ClearFreeFormPoints();
@@ -635,7 +635,7 @@ namespace Common.Images
 
             // Defensive: check whether one already exists in the layer (someone might have added it externally)
             var adorners = adornerLayer.GetAdorners(BtmImage);
-            if (adorners != null)
+            if (adorners is { })
             {
                 foreach (var a in adorners)
                 {
@@ -692,7 +692,7 @@ namespace Common.Images
                 case ImageZoomTools.Move:
                     break;
                 case ImageZoomTools.Trace:
-                    if (SelectionAdorner != null) SelectionAdorner.IsTracing = true;
+                    if (SelectionAdorner is { }) SelectionAdorner.IsTracing = true;
                     break;
                 case ImageZoomTools.Dot:
                     _strokeBuffer.Clear();
@@ -972,7 +972,7 @@ namespace Common.Images
             }
 
             // 2. If we are idle, Right Click means "I am finished selecting"
-            if (SelectionAdorner != null)
+            if (SelectionAdorner is { })
             {
                 // Get all collected frames
                 var frames = SelectionAdorner.GetCommittedFrames();
@@ -1072,7 +1072,7 @@ namespace Common.Images
                     SelectedFrame = null;
                     SelectedPoint = null;
 
-                    if (SelectedPoint != null)
+                    if (SelectedPoint is { })
                     {
                         foreach (var d in SelectedPoint.GetInvocationList())
                         {
@@ -1081,14 +1081,14 @@ namespace Common.Images
                     }
 
                     // Dispose image resources
-                    if (BtmImage != null)
+                    if (BtmImage is { })
                     {
                         BtmImage.StopGif(); // Stop the timer and clear internal states safely
 
                         try
                         {
                             var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-                            if (SelectionAdorner != null) adornerLayer?.Remove(SelectionAdorner);
+                            if (SelectionAdorner is { }) adornerLayer?.Remove(SelectionAdorner);
                         }
                         catch
                         {

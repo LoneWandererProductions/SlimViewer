@@ -153,7 +153,7 @@ namespace SlimViews
         /// </summary>
         internal void SaveUndoState()
         {
-            if (_imageContext.Bitmap != null)
+            if (_imageContext.Bitmap is { })
             {
                 History.RecordState((Bitmap)_imageContext.Bitmap.Clone());
             }

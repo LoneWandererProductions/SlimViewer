@@ -42,7 +42,7 @@ namespace Extended.Objects
             // Use UtcNow for all internal calculations to ensure consistency
             CreationDate = DateTime.UtcNow;
 
-            if (expiryTime != null)
+            if (expiryTime is { })
             {
                 HasExpireTime = true;
                 try
