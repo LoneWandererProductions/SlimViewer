@@ -480,6 +480,8 @@ namespace SlimViews
                 var point = new System.Drawing.Point((int)lastPoint.X, (int)lastPoint.Y);
                 var pickedHsv = ImageProcessor.GetPixel(Image.Bitmap, point, radius: 1);
                 var pickedColor = Color.FromArgb(pickedHsv.A, pickedHsv.R, pickedHsv.G, pickedHsv.B);
+                //tell our UI which color we picked
+                UiState?.Picker?.SetColors(pickedHsv.R, pickedHsv.G, pickedHsv.B, pickedHsv.A);
                 MyDrawingState.BrushColor = ColorTranslator.ToHtml(pickedColor);
             }
         }

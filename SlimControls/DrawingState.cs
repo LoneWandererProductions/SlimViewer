@@ -53,7 +53,6 @@ namespace SlimControls
         /// </summary>
         private bool _areAreaModesEnabled;
 
-
         /// <summary>
         /// The brush color
         /// </summary>
@@ -218,7 +217,6 @@ namespace SlimControls
         /// </value>
         public IEnumerable<FiltersType> Filters => Enum.GetValues(typeof(FiltersType)).Cast<FiltersType>();
 
-
         // Sub-states (These hold the data for the specific modes)
 
         /// <summary>
@@ -252,7 +250,6 @@ namespace SlimControls
         /// The erase.
         /// </value>
         public EraseSettings Erase { get; } = new();
-
 
         /// <summary>
         /// LOGIC HUB: This determines what is active based on the current selection

@@ -6,13 +6,15 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Common.Images;
+using Core.MemoryLog;
+using Imaging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Common.Images;
-using Imaging;
 using ViewModel;
 
 namespace SlimViews
@@ -446,9 +448,11 @@ namespace SlimViews
             ToggleTextureConfig = new DelegateCommand<object>(owner.ToggleTextureConfigAction, CanRun);
 
             SelectedPoint = new AsyncDelegateCommand<IReadOnlyList<Point>>(owner.SelectedPointAction, CanRun,
-                ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(SelectedPoint)));
+                ex => InMemoryLogger.Instance.Log(Core.MemoryLog.LogLevel.Warning, "Error in SelectedPoint",
+                    libraryName: nameof(SelectedPoint), exception: ex));
             SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun,
-                ex => Common.Dialogs.DialogHandler.ErrorDialog(ex.ToString(), nameof(SelectedFrame)));
+                ex => InMemoryLogger.Instance.Log(Core.MemoryLog.LogLevel.Warning, "Error in SelectedFrame",
+                    libraryName: nameof(SelectedFrame), exception: ex));
 
             // ---- UI / direct owner commands ----
             // AsyncDelegateCommand (not DelegateCommand) matters here: it disables
