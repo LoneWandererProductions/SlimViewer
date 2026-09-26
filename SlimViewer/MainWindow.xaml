@@ -413,6 +413,7 @@
                               Background="{DynamicResource WindowBackgroundBrush}"
                               ImageSource="{Binding Image.BitmapImage}"
                               ImagePath="{Binding Image.GifPath}"
+                              LayeredDocument="{Binding Layers.Document}"
                               SelectionTool="{Binding ImageZoomTool}"
                               SelectedFrameCommand="{Binding Commands.SelectedFrame}"
                               SelectedPointCommand="{Binding Commands.SelectedPoint}" />

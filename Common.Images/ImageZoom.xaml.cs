@@ -187,6 +187,7 @@ namespace Common.Images
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                     OnZoomScaleChanged));
 
+
         /// <summary>
         ///      The selected multi-frames command property
         /// </summary>
@@ -428,12 +429,14 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Wraps an <see cref="UnmanagedImageBuffer" /> (straight-alpha BGRA, the pixel format every raster
-        ///     layer and <see cref="DocumentRenderer.Flatten" />'s result already use) directly into a frozen
-        ///     <see cref="WriteableBitmap" /> - one pixel copy via <see cref="WriteableBitmap.WritePixels(Int32Rect,IntPtr,int,int)" />,
-        ///     no GDI+ involved at all (unlike the Bitmap-based <c>ToBitmapSource</c> extension used for the
-        ///     single-image path, this never needs a <c>System.Drawing.Bitmap</c> in between).
+        /// Wraps an <see cref="UnmanagedImageBuffer" /> (straight-alpha BGRA, the pixel format every raster
+        /// layer and <see cref="DocumentRenderer.Flatten" />'s result already use) directly into a frozen
+        /// <see cref="WriteableBitmap" /> - one pixel copy via <see cref="WriteableBitmap.WritePixels(Int32Rect,IntPtr,int,int)" />,
+        /// no GDI+ involved at all (unlike the Bitmap-based <c>ToBitmapSource</c> extension used for the
+        /// single-image path, this never needs a <c>System.Drawing.Bitmap</c> in between).
         /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns>A WriteableBitmap.</returns>
         private static WriteableBitmap ToBitmapSource(UnmanagedImageBuffer buffer)
         {
             var bitmap = new WriteableBitmap(buffer.Width, buffer.Height, 96, 96, PixelFormats.Bgra32, null);

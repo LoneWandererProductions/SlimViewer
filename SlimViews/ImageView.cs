@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -33,6 +34,8 @@ using Imaging;
 using Imaging.Cifs;
 using Imaging.Enums;
 using Imaging.Gifs;
+using Imaging.Objects.Documents;
+using Imaging.Objects.Shapes;
 using SlimControls;
 using SlimViews.Contexts;
 using ViewModel;
@@ -96,6 +99,90 @@ namespace SlimViews
         /// <value>
         /// The history manager.
         /// </value>
+        private LayerDocumentController? _layers;
+
+        /// <summary>
+        /// Gets the layered document controller for the currently open image, or null when the image is
+        /// still a single flat bitmap (the common case: opening a file never creates one). Once non-null,
+        /// pencil/eraser strokes, shape tools, and fill/texture/filter all target the active layer instead
+        /// of <see cref="Contexts.ImageContext.Bitmap"/> directly, and Save flattens the document. Bind
+        /// <c>ImageZoom.LayeredDocument</c> to <c>Layers.Document</c> to display it (see MainWindow.xaml);
+        /// once <see cref="Layers"/> is set, ImageZoom handles rendering on its own from then on, including
+        /// picking up every subsequent edit - nothing further needs to be pushed to it from here. Turn it on
+        /// with <see cref="EnableLayers"/> (for example from a "Layers" panel's own "Enable" button).
+        /// </summary>
+        public LayerDocumentController? Layers
+        {
+            get => _layers;
+            private set
+            {
+                _layers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Turns the currently open single bitmap into a layered document (one "Background" raster layer,
+        /// pixel-identical to what was on screen) and switches editing over to it. Calling this again while
+        /// already enabled does nothing.
+        /// </summary>
+        public void EnableLayers()
+        {
+            if (Layers is not null || Image.Bitmap is null) return;
+
+            var controller = LayerDocumentController.FromBitmap(Image.Bitmap);
+            controller.DocumentChanged += (_, _) => RefreshFromLayers();
+            Layers = controller;
+        }
+
+        /// <summary>
+        /// Drops the layered document (after flattening it into <see cref="Contexts.ImageContext.Bitmap"/>, so
+        /// nothing visible changes) and returns to single-bitmap editing. The layer history is discarded;
+        /// this is meant for "I don't need layers for this image after all", not a reversible action.
+        /// </summary>
+        public void DisableLayers()
+        {
+            if (Layers is null) return;
+
+            var controller = Layers;
+            Layers = null;
+
+            Image.Bitmap = controller.Flatten();
+            Image.BitmapImage = Image.Bitmap?.ToBitmapSource();
+            controller.Dispose();
+        }
+
+        /// <summary>
+        /// Discards any layered document for the image that is about to be replaced, without touching
+        /// <see cref="Contexts.ImageContext"/> - callers that load a new image set <see cref="Contexts.ImageContext.Bitmap"/>
+        /// themselves right after. A leftover controller from the previous image must not silently keep
+        /// intercepting strokes/shapes/undo for a file that no longer matches it.
+        /// </summary>
+        private void ResetLayers()
+        {
+            if (Layers is null) return;
+
+            Layers.Dispose();
+            Layers = null;
+        }
+
+        /// <summary>
+        /// Re-flattens <see cref="Layers"/> and pushes the result to <see cref="Contexts.ImageContext"/> so
+        /// anything still reading <c>Image.Bitmap</c>/<c>Image.BitmapImage</c> directly (Save, Compare, the
+        /// whole-image filter menu, ...) sees the current, edited state. <see cref="Common.Images.ImageZoom"/>
+        /// itself does not need this - its <c>LayeredDocument</c> binding re-flattens on its own from
+        /// <see cref="LayerDocumentController.Document"/>'s own change notification - but everything else in
+        /// this class that was written against a single bitmap still expects one to exist.
+        /// </summary>
+        private void RefreshFromLayers()
+        {
+            if (Layers is null) return;
+
+            var flattened = Layers.Flatten();
+            Image.Bitmap = flattened; // disposes the previous flattened bitmap, see ImageContext.Bitmap's setter
+            Image.BitmapImage = flattened.ToBitmapSource();
+        }
+
         public ImageHistoryManager HistoryManager { get; }
 
         /// <summary>
@@ -297,12 +384,32 @@ namespace SlimViews
         /// <summary>
         /// Undoes this instance.
         /// </summary>
-        public Task UndoAsync() => HistoryManager.UndoAsync();
+        public async Task UndoAsync()
+        {
+            if (Layers is not null)
+            {
+                Layers.Undo();
+                RefreshFromLayers();
+                return;
+            }
+
+            await HistoryManager.UndoAsync();
+        }
 
         /// <summary>
         /// Redoes this instance.
         /// </summary>
-        public Task RedoAsync() => HistoryManager.RedoAsync();
+        public async Task RedoAsync()
+        {
+            if (Layers is not null)
+            {
+                Layers.Redo();
+                RefreshFromLayers();
+                return;
+            }
+
+            await HistoryManager.RedoAsync();
+        }
 
         /// <summary>
         /// Clears the history.
@@ -466,12 +573,22 @@ namespace SlimViews
                 // clone/commit, not one per dab. Awaiting keeps the command
                 // disabled until that has actually finished, so the next batch
                 // can't start before this one has landed.
-                // The stroke is drawn in place on the queue's private clone (one LockBits, no per-dab
-                // image copies), and only the first batch of a stroke pushes an undo state - so a
-                // whole drag is ONE undo step instead of one per flush.
-                await EditQueue.SubmitAsync(
-                    bitmap => ImageProcessor.DrawStroke(bitmap, points, previous, color, size),
-                    recordUndo: isFirst);
+                if (Layers is not null)
+                {
+                    // Layered document open: draw straight onto the active raster layer (a no-op if the
+                    // active layer is a shape layer) instead of the single EditQueue-managed bitmap below.
+                    await Layers.DrawStrokeAsync(points, previous, color, size, isFirst, isLast).ConfigureAwait(true);
+                    RefreshFromLayers();
+                }
+                else
+                {
+                    // The stroke is drawn in place on the queue's private clone (one LockBits, no per-dab
+                    // image copies), and only the first batch of a stroke pushes an undo state - so a
+                    // whole drag is ONE undo step instead of one per flush.
+                    await EditQueue.SubmitAsync(
+                        bitmap => ImageProcessor.DrawStroke(bitmap, points, previous, color, size),
+                        recordUndo: isFirst);
+                }
             }
             // 2. Color Picker (Eyedropper) Logic
             else if (MyDrawingState.ActiveTool == DrawTool.ColorPicker)
@@ -502,41 +619,139 @@ namespace SlimViews
             var texName = MyDrawingState.Texture.TextureName;
             var filterName = MyDrawingState.Filter.FilterName;
 
+            if (Layers is not null && tool == DrawTool.Shape &&
+                Layers.ActiveLayerId is { } activeId && Layers.Document.FindLayer(activeId) is ShapeLayer)
+            {
+                // A shape layer is active: keep the geometry as data (see Imaging.Objects.Shapes.Shape)
+                // instead of baking it into pixels, so it stays movable/restylable and is only rasterized
+                // when the document is flattened for display or export.
+                var shape = BuildShapeFromFrame(frame, mode, fillColor, texName, filterName);
+                if (shape is null) return;
+
+                Layers.AddShape(shape);
+                RefreshFromLayers();
+                return;
+            }
+
+            if (Layers is not null)
+            {
+                // Layered document open but the active layer is raster (or this is the eraser/erase-mode,
+                // which always acts on pixels): run the same fill/texture/filter/erase op the single-image
+                // path below uses, against just the active layer, as one undo step.
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        Layers.ApplyToActiveRasterLayer(
+                            bitmap => ApplyFrameEdit(bitmap, frame, tool, mode, fillColor, texName, filterName),
+                            DescribeFrameEdit(tool, mode));
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Active layer is a shape layer and the tool wasn't Shape (e.g. Eraser while a shape
+                        // layer is selected): nothing sensible to do, same as the previous single-image
+                        // behavior for an unrecognized combination.
+                    }
+                }).ConfigureAwait(true);
+
+                RefreshFromLayers();
+                return;
+            }
+
             // The function below runs against the queue's own private clone, not
             // Image.Bitmap directly - see ImageEditQueue's remarks for why that
             // matters. Awaiting SubmitAsync (rather than the old fire-and-forget
             // commit) is what keeps the command disabled until this edit has
             // actually landed, so a second selection can't start racing it.
-            await EditQueue.SubmitAsync(bitmap =>
-            {
-                if (tool == DrawTool.Eraser)
-                {
-                    return ImageProcessor.EraseImage(frame, bitmap);
-                }
-
-                if (tool != DrawTool.Shape)
-                {
-                    return null;
-                }
-
-                return mode switch
-                {
-                    AreaMode.Fill => ImageProcessor.FillArea(bitmap, frame, ColorTranslator.FromHtml(fillColor)),
-
-                    AreaMode.Texture when Enum.TryParse(texName, true, out TextureType texEnum) =>
-                        ImageProcessor.FillTexture(bitmap, frame, texEnum),
-
-                    AreaMode.Filter when Enum.TryParse(filterName, true, out FiltersType filterEnum) =>
-                        ImageProcessor.FillFilter(bitmap, frame, filterEnum),
-
-                    AreaMode.Erase => ImageProcessor.EraseImage(frame, bitmap),
-
-                    // Texture/Filter with an unrecognized name: leave the image
-                    // untouched, same as the previous behavior.
-                    _ => null
-                };
-            });
+            await EditQueue.SubmitAsync(bitmap => ApplyFrameEdit(bitmap, frame, tool, mode, fillColor, texName, filterName));
         }
+
+        /// <summary>
+        /// The single-bitmap fill/texture/filter/erase logic <see cref="SelectedFrameAction"/> used to inline;
+        /// factored out so the layered path above can run the exact same edit against just the active layer.
+        /// </summary>
+        private static Bitmap? ApplyFrameEdit(Bitmap bitmap, SelectionFrame frame, DrawTool tool, AreaMode mode,
+            string fillColor, string texName, string filterName)
+        {
+            if (tool == DrawTool.Eraser)
+            {
+                return ImageProcessor.EraseImage(frame, bitmap);
+            }
+
+            if (tool != DrawTool.Shape)
+            {
+                return null;
+            }
+
+            return mode switch
+            {
+                AreaMode.Fill => ImageProcessor.FillArea(bitmap, frame, ColorTranslator.FromHtml(fillColor)),
+
+                AreaMode.Texture when Enum.TryParse(texName, true, out TextureType texEnum) =>
+                    ImageProcessor.FillTexture(bitmap, frame, texEnum),
+
+                AreaMode.Filter when Enum.TryParse(filterName, true, out FiltersType filterEnum) =>
+                    ImageProcessor.FillFilter(bitmap, frame, filterEnum),
+
+                AreaMode.Erase => ImageProcessor.EraseImage(frame, bitmap),
+
+                // Texture/Filter with an unrecognized name: leave the image
+                // untouched, same as the previous behavior.
+                _ => null
+            };
+        }
+
+        private static string DescribeFrameEdit(DrawTool tool, AreaMode mode) =>
+            tool == DrawTool.Eraser ? "Erase" : mode switch
+            {
+                AreaMode.Fill => "Fill",
+                AreaMode.Texture => "Texture",
+                AreaMode.Filter => "Filter",
+                AreaMode.Erase => "Erase",
+                _ => "Edit layer"
+            };
+
+        /// <summary>
+        /// Turns a completed shape gesture into an <see cref="Shape"/> record for the active shape layer.
+        /// Mirrors <see cref="ApplyFrameEdit"/>'s mode handling, but produces data instead of pixels. Returns
+        /// null for a gesture that has no shape-layer equivalent (currently: FreeForm, which stays a
+        /// destructive-only tool since a hand-drawn stroke isn't one of the closed shape kinds).
+        /// </summary>
+        private static Shape? BuildShapeFromFrame(SelectionFrame frame, AreaMode mode, string fillColor,
+            string texName, string filterName)
+        {
+            var fill = BuildFillFromMode(mode, fillColor, texName, filterName);
+            var stroke = new StrokeSpec(unchecked((uint)ColorTranslator.FromHtml(fillColor).ToArgb()), 1.0);
+
+            switch (frame.Tool)
+            {
+                case ImageZoomTools.Rectangle:
+                    return new RectShape(frame.X, frame.Y, frame.Width, frame.Height) { Fill = fill, Stroke = stroke };
+
+                case ImageZoomTools.Ellipse:
+                    return new EllipseShape(frame.X, frame.Y, frame.Width, frame.Height) { Fill = fill, Stroke = stroke };
+
+                case ImageZoomTools.Polygon when frame.Points is { Count: >= 3 }:
+                    return new PolygonShape(frame.Points.Select(p => new PointD(p.X, p.Y)).ToImmutableArray())
+                        { Fill = fill, Stroke = stroke };
+
+                case ImageZoomTools.Trace when frame.Points is { Count: >= 2 }:
+                    return new PolylineShape(frame.Points.Select(p => new PointD(p.X, p.Y)).ToImmutableArray())
+                        { Stroke = stroke };
+
+                default:
+                    return null;
+            }
+        }
+
+        private static FillSpec BuildFillFromMode(AreaMode mode, string fillColor, string texName, string filterName) =>
+            mode switch
+            {
+                AreaMode.Fill => new SolidFill(unchecked((uint)ColorTranslator.FromHtml(fillColor).ToArgb())),
+                AreaMode.Texture when !string.IsNullOrWhiteSpace(texName) => new TextureFill(texName),
+                AreaMode.Filter when !string.IsNullOrWhiteSpace(filterName) => new FilterFill(filterName),
+                _ => FillSpec.None
+            };
 
         /// <summary>
         /// Syncs the Color Picker selection back to the Drawing State.
@@ -877,6 +1092,7 @@ namespace SlimViews
             if (Image.ActiveCif == null) return;
 
             // Continue with existing render logic
+            ResetLayers();
             Image.Bitmap = Image.CustomImageFormat?.GetImageFromCif(FileContext.FilePath);
             if (Image.Bitmap == null) return;
 
@@ -1193,6 +1409,7 @@ namespace SlimViews
                     // image would only actually appear after opening a second, different image
                     // (because by then GifPath is already null, so re-assigning null is a no-op
                     // and the handler never fires again). Clearing GifPath first avoids the clobber.
+                    ResetLayers();
                     Image.GifPath = null;
                     Image.Bitmap = bmp;
                     Image.BitmapImage = Image.BitmapSource; // Trigger UI update via ImageSource binding
