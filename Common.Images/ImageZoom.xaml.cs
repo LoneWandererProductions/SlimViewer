@@ -346,7 +346,8 @@ namespace Common.Images
         /// </summary>
         public IShapeRasterizer? ShapeRasterizer { get; set; }
 
-        private static void OnLayeredDocumentPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void OnLayeredDocumentPropertyChanged(DependencyObject sender,
+            DependencyPropertyChangedEventArgs e)
         {
             if (sender is not ImageZoom control) return;
 

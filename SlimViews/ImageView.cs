@@ -663,7 +663,8 @@ namespace SlimViews
             // matters. Awaiting SubmitAsync (rather than the old fire-and-forget
             // commit) is what keeps the command disabled until this edit has
             // actually landed, so a second selection can't start racing it.
-            await EditQueue.SubmitAsync(bitmap => ApplyFrameEdit(bitmap, frame, tool, mode, fillColor, texName, filterName));
+            await EditQueue.SubmitAsync(bitmap =>
+                ApplyFrameEdit(bitmap, frame, tool, mode, fillColor, texName, filterName));
         }
 
         /// <summary>
@@ -702,14 +703,16 @@ namespace SlimViews
         }
 
         private static string DescribeFrameEdit(DrawTool tool, AreaMode mode) =>
-            tool == DrawTool.Eraser ? "Erase" : mode switch
-            {
-                AreaMode.Fill => "Fill",
-                AreaMode.Texture => "Texture",
-                AreaMode.Filter => "Filter",
-                AreaMode.Erase => "Erase",
-                _ => "Edit layer"
-            };
+            tool == DrawTool.Eraser
+                ? "Erase"
+                : mode switch
+                {
+                    AreaMode.Fill => "Fill",
+                    AreaMode.Texture => "Texture",
+                    AreaMode.Filter => "Filter",
+                    AreaMode.Erase => "Erase",
+                    _ => "Edit layer"
+                };
 
         /// <summary>
         /// Turns a completed shape gesture into an <see cref="Shape"/> record for the active shape layer.
@@ -729,7 +732,8 @@ namespace SlimViews
                     return new RectShape(frame.X, frame.Y, frame.Width, frame.Height) { Fill = fill, Stroke = stroke };
 
                 case ImageZoomTools.Ellipse:
-                    return new EllipseShape(frame.X, frame.Y, frame.Width, frame.Height) { Fill = fill, Stroke = stroke };
+                    return new EllipseShape(frame.X, frame.Y, frame.Width, frame.Height)
+                        { Fill = fill, Stroke = stroke };
 
                 case ImageZoomTools.Polygon when frame.Points is { Count: >= 3 }:
                     return new PolygonShape(frame.Points.Select(p => new PointD(p.X, p.Y)).ToImmutableArray())

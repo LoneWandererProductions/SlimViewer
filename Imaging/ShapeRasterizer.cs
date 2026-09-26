@@ -70,7 +70,8 @@ namespace Imaging
 
             // GDI+ needs a System.Drawing.Bitmap. This one is a *view* over the target's own memory - see
             // UnmanagedImageBuffer.Buffer - so every draw call below lands directly in the buffer, no copy back.
-            using var bitmap = new Bitmap(target.Width, target.Height, target.Width * UnmanagedImageBuffer.BytesPerPixel,
+            using var bitmap = new Bitmap(target.Width, target.Height,
+                target.Width * UnmanagedImageBuffer.BytesPerPixel,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb, target.Buffer);
 
             foreach (var shape in shapes)
@@ -89,7 +90,8 @@ namespace Imaging
             switch (shape)
             {
                 case LineShape line:
-                    DrawStroke(bitmap, shape, g => g.DrawLine(StrokePen(shape.Stroke), ToPoint(line.From), ToPoint(line.To)));
+                    DrawStroke(bitmap, shape,
+                        g => g.DrawLine(StrokePen(shape.Stroke), ToPoint(line.From), ToPoint(line.To)));
                     break;
 
                 case PolylineShape polyline when polyline.Points.Length > 1:
@@ -107,9 +109,11 @@ namespace Imaging
 
                 case EllipseShape ellipse:
                     FillArea(bitmap, shape.Fill, MaskShape.Circle,
-                        TopLeft(ellipse.X, ellipse.Y, ellipse.Width, ellipse.Height), Size(ellipse.Width, ellipse.Height), null);
+                        TopLeft(ellipse.X, ellipse.Y, ellipse.Width, ellipse.Height),
+                        Size(ellipse.Width, ellipse.Height), null);
                     DrawStroke(bitmap, shape, g => g.DrawEllipse(StrokePen(shape.Stroke),
-                        (float)Math.Min(ellipse.X, ellipse.X + ellipse.Width), (float)Math.Min(ellipse.Y, ellipse.Y + ellipse.Height),
+                        (float)Math.Min(ellipse.X, ellipse.X + ellipse.Width),
+                        (float)Math.Min(ellipse.Y, ellipse.Y + ellipse.Height),
                         (float)Math.Abs(ellipse.Width), (float)Math.Abs(ellipse.Height)));
                     break;
 
@@ -174,7 +178,8 @@ namespace Imaging
                 case FilterFill filterFill:
                     if (Enum.TryParse<FiltersType>(filterFill.Name, ignoreCase: true, out var filterType))
                     {
-                        _render.FilterImageArea(bitmap, size.Width, size.Height, filterType, mask, (object?)polygon, start);
+                        _render.FilterImageArea(bitmap, size.Width, size.Height, filterType, mask, (object?)polygon,
+                            start);
                     }
 
                     return;

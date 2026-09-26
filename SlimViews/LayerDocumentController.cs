@@ -188,7 +188,8 @@ namespace SlimViews
                     _strokeLayerId = layerId;
                 }
 
-                var dirty = StrokeBounds(points, previous, radius).Intersect(new PixelRect(0, 0, layer.Width, layer.Height));
+                var dirty = StrokeBounds(points, previous, radius)
+                    .Intersect(new PixelRect(0, 0, layer.Width, layer.Height));
                 if (!dirty.IsEmpty) _strokeRecorder.Touch(dirty);
 
                 using (var view = ViewOf(layer))
