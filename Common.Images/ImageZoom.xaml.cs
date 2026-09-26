@@ -95,6 +95,9 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Objects;
+using Imaging.Objects.Documents;
+using Imaging.Objects.Interfaces;
 
 namespace Common.Images
 {
@@ -304,6 +307,146 @@ namespace Common.Images
             }
         }
 
+        /// <summary>
+        ///     A third, optional content mode alongside <see cref="ImagePath" /> (files, including GIFs) and
+        ///     <see cref="ImageSource" /> (a single in-memory bitmap): a layered <see cref="Document" />, kept
+        ///     as data (raster layers plus shapes - see <c>Imaging.Objects.Shapes</c>) and only ever turned
+        ///     into pixels here, for display. Setting this does not touch the file system or your document
+        ///     model's own undo/save - ImageZoom only ever *reads* the document (via <see cref="Document.Changed" />)
+        ///     and flattens it into the same <see cref="Imaging.Gifs.ImageGif" /> this control has always used;
+        ///     there is no second visual tree, no per-layer compositing, and no new tool/adorner code path.
+        ///     Whoever owns the document (undo, layer add/remove, drawing onto the active layer, etc.) keeps
+        ///     doing so exactly as before; ImageZoom just needs to be told to look at it.
+        /// </summary>
+        public static readonly DependencyProperty LayeredDocumentProperty = DependencyProperty.Register(
+            nameof(LayeredDocument),
+            typeof(Document),
+            typeof(ImageZoom),
+            new PropertyMetadata(null, OnLayeredDocumentPropertyChanged));
+
+        /// <summary>
+        ///     Gets or sets the layered document to display, or null to go back to whatever
+        ///     <see cref="ImageSource" />/<see cref="ImagePath" /> is currently set to (setting this to null
+        ///     does not restore the previous ImageSource/ImagePath value automatically - set one of those too
+        ///     if that is what you want to show instead).
+        /// </summary>
+        public Document? LayeredDocument
+        {
+            get => (Document?)GetValue(LayeredDocumentProperty);
+            set => SetValue(LayeredDocumentProperty, value);
+        }
+
+        /// <summary>
+        ///     Rasterizer used to flatten any shape layers of <see cref="LayeredDocument" /> for display. Not a
+        ///     dependency property - it is a rendering collaborator, not content, so it does not belong in the
+        ///     "which of ImagePath/ImageSource/LayeredDocument is showing" set above. Leave it null for a
+        ///     document that only has raster layers; <see cref="DocumentRenderer.Flatten" /> will throw its own
+        ///     clear error if a visible shape layer with shapes turns up and no rasterizer was ever set.
+        /// </summary>
+        public IShapeRasterizer? ShapeRasterizer { get; set; }
+
+        private static void OnLayeredDocumentPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is not ImageZoom control) return;
+
+            if (e.OldValue is Document oldDocument)
+            {
+                oldDocument.Changed -= control.OnLayeredDocumentChanged;
+            }
+
+            if (e.NewValue is Document newDocument)
+            {
+                newDocument.Changed += control.OnLayeredDocumentChanged;
+
+                // A brand new document being attached is "a different image", exactly like assigning a new
+                // ImageSource - so it resets zoom/pan the same way (respecting LockZoom the same way too).
+                control.RefreshLayeredDocument(resetZoom: !control.LockZoom);
+            }
+            else
+            {
+                control.BtmImage.StopGif();
+                control.BtmImage.Source = null;
+            }
+        }
+
+        /// <summary>
+        ///     Handles <see cref="Document.Changed" /> for the attached <see cref="LayeredDocument" />: an edit
+        ///     to a layer (a stroke, a shape added, a layer's opacity changed, ...) re-flattens and redraws.
+        /// </summary>
+        private void OnLayeredDocumentChanged(object? sender, DocumentChangedEventArgs e)
+        {
+            if (_disposed) return;
+
+            // Document.Changed can be raised off the UI thread (e.g. a controller drawing a stroke on a
+            // background task) - marshal over before touching any DependencyObject.
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(new Action(() => OnLayeredDocumentChanged(sender, e)));
+                return;
+            }
+
+            // Re-flattening the SAME document is always "this image was edited", never "a different image
+            // was opened" - so, unlike ImageSource's stroke-timing heuristic above, zoom/pan is simply never
+            // reset here; there is no ambiguity to resolve.
+            RefreshLayeredDocument(resetZoom: false);
+        }
+
+        /// <summary>
+        ///     Flattens <see cref="LayeredDocument" /> and pushes the result into <see cref="BtmImage" />,
+        ///     mirroring what <see cref="OnImageSourcePropertyChanged" /> does for a plain <see cref="ImageSource" />
+        ///     (stop any running GIF, push the bitmap, keep canvas size and the selection adorner's transform
+        ///     in sync) but driven by <paramref name="resetZoom" /> directly instead of re-deriving it from
+        ///     old/new bitmap sizes - a live document's canvas size does not change from one flatten to the next.
+        /// </summary>
+        private void RefreshLayeredDocument(bool resetZoom)
+        {
+            var document = LayeredDocument;
+            if (document is null) return;
+
+            using var flattened = DocumentRenderer.Flatten(document, ShapeRasterizer);
+            var newSource = ToBitmapSource(flattened);
+
+            BtmImage.StopGif();
+
+            if (!resetZoom || LockZoom)
+            {
+                BtmImage.Source = newSource;
+
+                var scale = BtmImage.RenderTransform is MatrixTransform mt ? mt.Matrix.M11 : 1.0;
+                MainCanvas.Width = Math.Max(newSource.Width * scale, ScrollView.ActualWidth);
+                MainCanvas.Height = Math.Max(newSource.Height * scale, ScrollView.ActualHeight);
+            }
+            else
+            {
+                ResetTransforms(resetZoom: true);
+                BtmImage.Source = newSource;
+                MainCanvas.Height = newSource.Height;
+                MainCanvas.Width = newSource.Width;
+            }
+
+            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+        }
+
+        /// <summary>
+        ///     Wraps an <see cref="UnmanagedImageBuffer" /> (straight-alpha BGRA, the pixel format every raster
+        ///     layer and <see cref="DocumentRenderer.Flatten" />'s result already use) directly into a frozen
+        ///     <see cref="WriteableBitmap" /> - one pixel copy via <see cref="WriteableBitmap.WritePixels(Int32Rect,IntPtr,int,int)" />,
+        ///     no GDI+ involved at all (unlike the Bitmap-based <c>ToBitmapSource</c> extension used for the
+        ///     single-image path, this never needs a <c>System.Drawing.Bitmap</c> in between).
+        /// </summary>
+        private static WriteableBitmap ToBitmapSource(UnmanagedImageBuffer buffer)
+        {
+            var bitmap = new WriteableBitmap(buffer.Width, buffer.Height, 96, 96, PixelFormats.Bgra32, null);
+
+            bitmap.WritePixels(
+                new Int32Rect(0, 0, buffer.Width, buffer.Height),
+                buffer.Buffer,
+                buffer.Width * buffer.Height * UnmanagedImageBuffer.BytesPerPixel,
+                buffer.Width * UnmanagedImageBuffer.BytesPerPixel);
+
+            bitmap.Freeze();
+            return bitmap;
+        }
 
         /// <summary>
         ///     The image clicked command property
@@ -1069,6 +1212,14 @@ namespace Common.Images
                 if (disposing)
                 {
                     // Managed resource cleanup
+
+                    // Unsubscribe from the attached document (if any) - it's owned by whoever set
+                    // LayeredDocument, not by this control, and must outlive it.
+                    if (LayeredDocument is { } document)
+                    {
+                        document.Changed -= OnLayeredDocumentChanged;
+                    }
+
                     SelectedFrame = null;
                     SelectedPoint = null;
 
