@@ -33,14 +33,37 @@ namespace SlimViews
     /// </summary>
     public sealed class LayerDocumentController : IDisposable
     {
+        /// <summary>
+        /// The gate
+        /// </summary>
         private readonly SemaphoreSlim _gate = new(1, 1);
 
+        /// <summary>
+        /// The rasterizer
+        /// </summary>
         private readonly IShapeRasterizer _rasterizer;
 
+        /// <summary>
+        /// The stroke layer identifier
+        /// </summary>
         private Guid _strokeLayerId;
 
+        /// <summary>
+        /// The stroke recorder
+        /// </summary>
         private RasterEditRecorder? _strokeRecorder;
 
+        /// <summary>
+        /// The active layer identifier
+        /// </summary>
+        private Guid? _activeLayerId;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LayerDocumentController"/> class.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="rasterizer">The rasterizer.</param>
+        /// <param name="undoLimit">The undo limit.</param>
         private LayerDocumentController(Document document, IShapeRasterizer rasterizer, int undoLimit)
         {
             Document = document;
@@ -53,14 +76,38 @@ namespace SlimViews
             History.Changed += (_, e) => HistoryChanged?.Invoke(this, e);
         }
 
-        /// <summary>Gets the document. Treat as read-only from the outside; edit through this controller instead.</summary>
+        /// <summary>
+        /// Gets the document. Treat as read-only from the outside; edit through this controller instead.
+        /// </summary>
+        /// <value>
+        /// The document.
+        /// </value>
         public Document Document { get; }
 
-        /// <summary>Gets the undo/redo stack.</summary>
+        /// <summary>
+        /// Gets the undo/redo stack.
+        /// </summary>
+        /// <value>
+        /// The history.
+        /// </value>
         public DocumentHistory History { get; }
 
-        /// <summary>Gets the layer new strokes and shapes are added to, or null if the document has none.</summary>
-        public Guid? ActiveLayerId { get; private set; }
+        /// <summary>
+        /// Gets the layer new strokes and shapes are added to, or null if the document has none.
+        /// </summary>
+        /// <value>
+        /// The active layer identifier.
+        /// </value>
+        public Guid? ActiveLayerId
+        {
+            get => _activeLayerId;
+            private set
+            {
+                if (_activeLayerId == value) return;
+                _activeLayerId = value;
+                ActiveLayerChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         /// <summary>
         ///     Raised for every change to the document: structural edits, layer property changes, shape edits,
@@ -73,7 +120,23 @@ namespace SlimViews
         /// <summary>Raised whenever CanUndo/CanRedo/IsDirty may have changed.</summary>
         public event EventHandler? HistoryChanged;
 
-        /// <summary>Creates a controller for a brand new document with one background raster layer (the bitmap is copied).</summary>
+        /// <summary>
+        ///     Raised whenever <see cref="ActiveLayerId" /> changes, including as a side effect of another
+        ///     operation - <see cref="RemoveLayer" /> reassigning it to a neighbour, <see cref="AddRasterLayer" />/
+        ///     <see cref="AddShapeLayer" />/<see cref="DuplicateLayer" /> making the new layer active - and not
+        ///     just from a direct <see cref="SetActiveLayer" /> call. A Layers panel should subscribe to this to
+        ///     keep its selection highlight in sync instead of polling <see cref="ActiveLayerId" />.
+        /// </summary>
+        public event EventHandler? ActiveLayerChanged;
+
+        /// <summary>
+        /// Creates a controller for a brand new document with one background raster layer (the bitmap is copied).
+        /// </summary>
+        /// <param name="bitmap">The bitmap.</param>
+        /// <param name="backgroundName">Name of the background.</param>
+        /// <param name="undoLimit">The undo limit.</param>
+        /// <param name="rasterizer">The rasterizer.</param>
+        /// <returns>A new LayerDocumentController.</returns>
         public static LayerDocumentController FromBitmap(Bitmap bitmap, string backgroundName = "Background",
             int undoLimit = 50, IShapeRasterizer? rasterizer = null)
         {
@@ -81,7 +144,14 @@ namespace SlimViews
                 rasterizer ?? new ShapeRasterizer(), undoLimit);
         }
 
-        /// <summary>Creates a controller around an existing document (for example one returned by <see cref="Load" />).</summary>
+        /// <summary>
+        /// Creates a controller around an existing document (for example one returned by <see cref="Load" />).
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="undoLimit">The undo limit.</param>
+        /// <param name="rasterizer">The rasterizer.</param>
+        /// <returns>A new LayerDocumentController.</returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public static LayerDocumentController FromDocument(Document document, int undoLimit = 50,
             IShapeRasterizer? rasterizer = null)
         {
@@ -89,20 +159,33 @@ namespace SlimViews
             return new LayerDocumentController(document, rasterizer ?? new ShapeRasterizer(), undoLimit);
         }
 
-        /// <summary>Loads a .slimdoc file into a new controller.</summary>
+        /// <summary>
+        /// Loads a .slimdoc file into a new controller.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="undoLimit">The undo limit.</param>
+        /// <param name="rasterizer">The rasterizer.</param>
+        /// <returns>A new LayerDocumentController.</returns>
         public static LayerDocumentController Load(string path, int undoLimit = 50, IShapeRasterizer? rasterizer = null)
         {
             return FromDocument(new DocumentSerializer().Load(path), undoLimit, rasterizer);
         }
 
-        /// <summary>Saves the document as a .slimdoc file (see <see cref="DocumentSerializer" />) and marks history clean.</summary>
+        /// <summary>
+        /// Saves the document as a .slimdoc file (see <see cref="DocumentSerializer" />) and marks history clean.
+        /// </summary>
+        /// <param name="path">The path.</param>
         public void Save(string path)
         {
             new DocumentSerializer().Save(Document, path);
             History.MarkClean();
         }
 
-        /// <summary>Adds a raster layer on top, makes it active, and returns its id.</summary>
+        /// <summary>
+        /// Adds a raster layer on top, makes it active, and returns its id.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>The Guid of the Layer.</returns>
         public Guid AddRasterLayer(string name = "Layer")
         {
             var layer = new RasterLayer(Document.Width, Document.Height, name);
@@ -111,7 +194,11 @@ namespace SlimViews
             return layer.Id;
         }
 
-        /// <summary>Adds a shape layer on top, makes it active, and returns its id.</summary>
+        /// <summary>
+        /// Adds a shape layer on top, makes it active, and returns its id.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>The Guid of the Layer.</returns>
         public Guid AddShapeLayer(string name = "Shapes")
         {
             var layer = new ShapeLayer(name);
@@ -120,7 +207,12 @@ namespace SlimViews
             return layer.Id;
         }
 
-        /// <summary>Duplicates a layer, placing the copy directly above the original and making it active.</summary>
+        /// <summary>
+        /// Duplicates a layer, placing the copy directly above the original and making it active.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <returns>The Guid of the Layer.</returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Layer {layerId} not found.</exception>
         public Guid DuplicateLayer(Guid layerId)
         {
             var index = Document.IndexOf(layerId);
@@ -132,7 +224,10 @@ namespace SlimViews
             return copy.Id;
         }
 
-        /// <summary>Removes a layer. If it was active, the layer that ends up in its place becomes active (if any).</summary>
+        /// <summary>
+        /// Removes a layer. If it was active, the layer that ends up in its place becomes active (if any).
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
         public void RemoveLayer(Guid layerId)
         {
             var index = Document.IndexOf(layerId);
@@ -144,19 +239,31 @@ namespace SlimViews
             ActiveLayerId = count == 0 ? null : Document.Layers[Math.Min(index, count - 1)].Id;
         }
 
-        /// <summary>Moves a layer to a new stacking position.</summary>
+        /// <summary>
+        /// Moves a layer to a new stacking position.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <param name="newIndex">The new index.</param>
         public void MoveLayer(Guid layerId, int newIndex)
         {
             History.Execute(new MoveLayerCommand(layerId, newIndex));
         }
 
-        /// <summary>Changes name, visibility, opacity and/or blend mode of a layer.</summary>
+        /// <summary>
+        /// Changes name, visibility, opacity and/or blend mode of a layer.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <param name="properties">The properties.</param>
         public void SetLayerProperties(Guid layerId, LayerProperties properties)
         {
             History.Execute(new SetLayerPropertiesCommand(layerId, properties));
         }
 
-        /// <summary>Makes an existing layer the active one (the target of new strokes and shapes).</summary>
+        /// <summary>
+        /// Makes an existing layer the active one (the target of new strokes and shapes).
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Layer {layerId} not found.</exception>
         public void SetActiveLayer(Guid layerId)
         {
             if (Document.FindLayer(layerId) is null) throw new KeyNotFoundException($"Layer {layerId} not found.");
@@ -164,12 +271,19 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Draws one flushed batch of a pencil/eraser drag onto the active raster layer, connecting it to the
-        ///     previous batch. Does nothing if the active layer is missing or is a shape layer (a caller that
-        ///     wants that to be an error can check <see cref="ActiveLayerId" /> and its layer's type itself).
-        ///     Undo/redo must not be called while a stroke is in progress (between a call with
-        ///     <paramref name="isFirstBatch" /> true and one with <paramref name="isLastBatch" /> true).
+        /// Draws one flushed batch of a pencil/eraser drag onto the active raster layer, connecting it to the
+        /// previous batch. Does nothing if the active layer is missing or is a shape layer (a caller that
+        /// wants that to be an error can check <see cref="ActiveLayerId" /> and its layer's type itself).
+        /// Undo/redo must not be called while a stroke is in progress (between a call with
+        /// <paramref name="isFirstBatch" /> true and one with <paramref name="isLastBatch" /> true).
         /// </summary>
+        /// <param name="points">The points.</param>
+        /// <param name="previous">The previous.</param>
+        /// <param name="color">The color.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="isFirstBatch">if set to <c>true</c> [is first batch].</param>
+        /// <param name="isLastBatch">if set to <c>true</c> [is last batch].</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public async Task DrawStrokeAsync(IReadOnlyList<Point> points, Point? previous, Color color, int radius,
             bool isFirstBatch, bool isLastBatch)
         {
@@ -213,11 +327,15 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Runs an in-place pixel edit (fill, texture, filter, frame-based erase - anything that mutates a
-        ///     whole Bitmap and hands the same reference back, the way <c>ImageProcessor.FillArea</c> and
-        ///     friends do) against the active raster layer instead of a whole flattened image. The edit is one
-        ///     undo step covering every pixel it touched.
+        /// Runs an in-place pixel edit (fill, texture, filter, frame-based erase - anything that mutates a
+        /// whole Bitmap and hands the same reference back, the way <c>ImageProcessor.FillArea</c> and
+        /// friends do) against the active raster layer instead of a whole flattened image. The edit is one
+        /// undo step covering every pixel it touched.
         /// </summary>
+        /// <param name="edit">The edit.</param>
+        /// <param name="description">The description.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.InvalidOperationException">The active layer is not a raster layer.</exception>
         /// <exception cref="InvalidOperationException">The active layer is not a raster layer.</exception>
         public void ApplyToActiveRasterLayer(Action<Bitmap> edit, string description = "Edit layer")
         {
@@ -242,19 +360,28 @@ namespace SlimViews
             Document.Raise(DocumentChangeKind.PixelsChanged, layerId, new PixelRect(0, 0, layer.Width, layer.Height));
         }
 
-        /// <summary>Adds a shape to the active shape layer.</summary>
+        /// <summary>
+        /// Adds a shape to the active shape layer.
+        /// </summary>
+        /// <param name="shape">The shape.</param>
         public void AddShape(Shape shape)
         {
             History.Execute(new AddShapeCommand(ActiveShapeLayerId(), shape));
         }
 
-        /// <summary>Replaces a shape on the active shape layer by a changed copy with the same id.</summary>
+        /// <summary>
+        /// Replaces a shape on the active shape layer by a changed copy with the same id.
+        /// </summary>
+        /// <param name="shape">The shape.</param>
         public void ReplaceShape(Shape shape)
         {
             History.Execute(new ReplaceShapeCommand(ActiveShapeLayerId(), shape));
         }
 
-        /// <summary>Removes a shape from the active shape layer.</summary>
+        /// <summary>
+        /// Removes a shape from the active shape layer.
+        /// </summary>
+        /// <param name="shapeId">The shape identifier.</param>
         public void RemoveShape(Guid shapeId)
         {
             History.Execute(new RemoveShapeCommand(ActiveShapeLayerId(), shapeId));
@@ -272,23 +399,42 @@ namespace SlimViews
             return buffer.ToBitmap();
         }
 
-        /// <summary>Gets a value indicating whether there is something to undo.</summary>
+        /// <summary>
+        /// Gets a value indicating whether there is something to undo.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance can undo; otherwise, <c>false</c>.
+        /// </value>
         public bool CanUndo => History.CanUndo;
 
-        /// <summary>Gets a value indicating whether there is something to redo.</summary>
+        /// <summary>
+        /// Gets a value indicating whether there is something to redo.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance can redo; otherwise, <c>false</c>.
+        /// </value>
         public bool CanRedo => History.CanRedo;
 
-        /// <summary>Gets a value indicating whether the document differs from its last saved state.</summary>
+        /// <summary>
+        /// Gets a value indicating whether the document differs from its last saved state.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is dirty; otherwise, <c>false</c>.
+        /// </value>
         public bool IsDirty => History.IsDirty;
 
-        /// <summary>Undoes the last step. Throws if a stroke is currently in progress.</summary>
+        /// <summary>
+        /// Undoes the last step. Throws if a stroke is currently in progress.
+        /// </summary>
         public void Undo()
         {
             EnsureNoStrokeInProgress();
             History.Undo();
         }
 
-        /// <summary>Redoes the last undone step. Throws if a stroke is currently in progress.</summary>
+        /// <summary>
+        /// Redoes the last undone step. Throws if a stroke is currently in progress.
+        /// </summary>
         public void Redo()
         {
             EnsureNoStrokeInProgress();
@@ -304,6 +450,11 @@ namespace SlimViews
             _gate.Dispose();
         }
 
+        /// <summary>
+        /// Actives the shape layer identifier.
+        /// </summary>
+        /// <returns>The Guid of the Layer.</returns>
+        /// <exception cref="System.InvalidOperationException">The active layer is not a shape layer.</exception>
         private Guid ActiveShapeLayerId()
         {
             if (ActiveLayerId is not { } id || Document.FindLayer(id) is not ShapeLayer)
@@ -314,6 +465,10 @@ namespace SlimViews
             return id;
         }
 
+        /// <summary>
+        /// Ensures the no stroke in progress.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">Cannot undo/redo while a stroke is being drawn.</exception>
         private void EnsureNoStrokeInProgress()
         {
             if (_strokeRecorder is not null)
@@ -322,14 +477,25 @@ namespace SlimViews
             }
         }
 
-        /// <summary>Builds a Bitmap that is a live view over a raster layer's own memory - drawing on it writes straight
-        /// into the layer, with no copy in either direction. Disposing it only releases the GDI+ handle.</summary>
+        /// <summary>
+        /// Builds a Bitmap that is a live view over a raster layer's own memory - drawing on it writes straight
+        /// into the layer, with no copy in either direction. Disposing it only releases the GDI+ handle.
+        /// </summary>
+        /// <param name="layer">The layer.</param>
+        /// <returns>Bitmap of the layer.</returns>
         private static Bitmap ViewOf(RasterLayer layer)
         {
             return new Bitmap(layer.Width, layer.Height, layer.Width * UnmanagedImageBuffer.BytesPerPixel,
                 PixelFormat.Format32bppArgb, layer.Pixels.Buffer);
         }
 
+        /// <summary>
+        /// Strokes the bounds.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <param name="previous">The previous.</param>
+        /// <param name="radius">The radius.</param>
+        /// <returns>The Pixel Rectangle.</returns>
         private static PixelRect StrokeBounds(IReadOnlyList<Point> points, Point? previous, int radius)
         {
             var minX = int.MaxValue;

@@ -453,6 +453,11 @@
                                 Value="Visible">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
+                            <DataTrigger
+                                Binding="{Binding DataContext.UiState.LayersVisibility, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Value="Visible">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
@@ -468,6 +473,11 @@
                 <!-- 3. Texture Configuration Control -->
                 <images:TextureConfigControl
                     Visibility="{Binding DataContext.UiState.TextureConfigVisibility, RelativeSource={RelativeSource AncestorType=Window}}" />
+
+                <!-- 4. Layers Panel (Advanced Edit Mode) -->
+                <slimviews:LayersPanel Controller="{Binding Layers}"
+                                       EnableLayersCommand="{Binding Commands.EnableLayers}"
+                                       Visibility="{Binding DataContext.UiState.LayersVisibility, RelativeSource={RelativeSource AncestorType=Window}}" />
             </Grid>
 
             <!-- ================================================================= -->
@@ -523,6 +533,22 @@
                             </Style>
                         </ToggleButton.Style>
                         <TextBlock Text="🧱" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </ToggleButton>
+
+                    <!-- Layers Panel Toggle Button (Advanced Edit Mode) -->
+                    <ToggleButton Command="{Binding Commands.ToggleLayersPanel}" ToolTip="Layers (Advanced Edit Mode)"
+                                  Margin="2" Padding="6,8" Width="36" Height="36">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                                <Setter Property="IsChecked" Value="False" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding UiState.LayersVisibility}" Value="Visible">
+                                        <Setter Property="IsChecked" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                        <TextBlock Text="🗂️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </ToggleButton>
 
                 </StackPanel>

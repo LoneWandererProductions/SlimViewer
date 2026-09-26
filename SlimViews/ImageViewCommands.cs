@@ -274,6 +274,32 @@ namespace SlimViews
         public ICommand ToggleTextureConfig { get; }
 
         /// <summary>
+        /// Gets the toggle layers panel command (the "Advanced Edit Mode" layer stack sidebar).
+        /// </summary>
+        /// <value>
+        /// The toggle layers panel.
+        /// </value>
+        public ICommand ToggleLayersPanel { get; }
+
+        /// <summary>
+        /// Gets the command that turns the current single bitmap into a layered document. See
+        /// <see cref="ImageView.EnableLayers"/> - a no-op if layers are already enabled or nothing is open.
+        /// </summary>
+        /// <value>
+        /// The enable layers command.
+        /// </value>
+        public ICommand EnableLayers { get; }
+
+        /// <summary>
+        /// Gets the command that flattens and discards the current layered document. See
+        /// <see cref="ImageView.DisableLayers"/>.
+        /// </summary>
+        /// <value>
+        /// The disable layers command.
+        /// </value>
+        public ICommand DisableLayers { get; }
+
+        /// <summary>
         /// Gets the GIF window.
         /// </summary>
         /// <value>
@@ -446,6 +472,9 @@ namespace SlimViews
             ToggleCifEditor = new DelegateCommand<object>(owner.ToggleCifEditorAction, CanRun);
             ToggleFilterConfig = new DelegateCommand<object>(owner.ToggleFilterConfigAction, CanRun);
             ToggleTextureConfig = new DelegateCommand<object>(owner.ToggleTextureConfigAction, CanRun);
+            ToggleLayersPanel = new DelegateCommand<object>(owner.ToggleLayersPanelAction, CanRun);
+            EnableLayers = new DelegateCommand<object>(_ => owner.EnableLayers(), CanRun);
+            DisableLayers = new DelegateCommand<object>(_ => owner.DisableLayers(), CanRun);
 
             SelectedPoint = new AsyncDelegateCommand<IReadOnlyList<Point>>(owner.SelectedPointAction, CanRun,
                 ex => InMemoryLogger.Instance.Log(Core.MemoryLog.LogLevel.Warning, "Error in SelectedPoint",

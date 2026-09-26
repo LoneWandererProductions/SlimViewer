@@ -1,0 +1,162 @@
+<UserControl x:Class="SlimViews.LayersPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converter="clr-namespace:Common.Converter;assembly=Common.Converter"
+             mc:Ignorable="d"
+             d:DesignWidth="260"
+             Background="{DynamicResource WindowBackgroundBrush}"
+             Foreground="{DynamicResource TextPrimaryBrush}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Plain (Collapse when null) and inverted (Collapse when NOT null) variants - the converter
+                 itself ignores ConverterParameter, so each variant needs its own instance/key. -->
+            <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverterInverse" Invert="True" />
+
+            <converter:ActiveToColorConverter x:Key="ActiveToColorConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="🗂️" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Layers" Style="{StaticResource SidePanelTitleStyle}" />
+        </StackPanel>
+
+        <!-- No layered document yet: offer to turn the current image into one -->
+        <Border Grid.Row="2" Style="{StaticResource SidePanelCardStyle}"
+                Visibility="{Binding Controller, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverterInverse}}">
+            <StackPanel>
+                <TextBlock Text="This image is a single flat bitmap. Turn it into a layered document to use layers."
+                           TextWrapping="Wrap" Style="{StaticResource ParameterLabelStyle}" Margin="0,0,0,8" />
+                <Button Content="➕ Enable Layers"
+                        Command="{Binding EnableLayersCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Padding="6,4" HorizontalAlignment="Left"
+                        ToolTip="Convert the current image into a one-layer document (non-destructive: it looks identical until you add more layers)" />
+            </StackPanel>
+        </Border>
+
+        <!-- Layer stack toolbar -->
+        <Border Grid.Row="2" Style="{StaticResource SidePanelCardStyle}" Padding="6"
+                Visibility="{Binding Controller, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="🖼️+" ToolTip="Add a new raster (pixel) layer on top" Padding="6,3" Margin="0,0,3,0"
+                        Click="AddRasterLayer_Click" />
+                <Button Content="🔺+" ToolTip="Add a new shape layer on top" Padding="6,3" Margin="0,0,3,0"
+                        Click="AddShapeLayer_Click" />
+                <Button Content="📄" ToolTip="Duplicate the selected layer" Padding="6,3" Margin="0,0,3,0"
+                        Click="DuplicateLayer_Click" />
+                <Button Content="🗑️" ToolTip="Delete the selected layer" Padding="6,3" Margin="0,0,3,0"
+                        Click="RemoveLayer_Click" />
+                <Button Content="⬆️" ToolTip="Move the selected layer up (towards the top/front)" Padding="6,3"
+                        Margin="0,0,3,0" Click="MoveLayerUp_Click" />
+                <Button Content="⬇️" ToolTip="Move the selected layer down (towards the bottom/back)" Padding="6,3"
+                        Click="MoveLayerDown_Click" />
+            </StackPanel>
+        </Border>
+
+        <!-- Layer list, top of stack shown first -->
+        <ListBox Grid.Row="4" x:Name="LayerList"
+                  ItemsSource="{Binding Rows, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                  SelectionChanged="LayerList_SelectionChanged"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Background="Transparent" BorderThickness="0"
+                  Visibility="{Binding Controller, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverter}}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0,0,0,6" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!--
+                        IsActive drives the highlight border rather than ListBoxItem.IsSelected directly:
+                        the two are kept in sync in code-behind (LayerList_SelectionChanged and
+                        RebuildRows/OnActiveLayerChanged), but IsActive is the thing that is actually true
+                        across the whole app (it also gates which layer the drawing tools paint onto), so
+                        the visual highlight should track it even if selection and active layer are ever
+                        allowed to diverge later.
+                    -->
+                    <Border Style="{StaticResource SidePanelCardStyle}" Margin="0" Padding="6"
+                            BorderBrush="{Binding IsActive, Converter={StaticResource ActiveToColorConverter}}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Visibility toggle -->
+                            <CheckBox Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
+                                      IsChecked="{Binding IsVisible}" VerticalAlignment="Top" Margin="0,2,6,0"
+                                      ToolTip="Show/hide this layer" />
+
+                            <!-- Thumbnail (raster layers) or kind icon (shape layers) -->
+                            <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Width="40" Height="40"
+                                    Background="{DynamicResource WindowBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}" BorderThickness="1"
+                                    Margin="0,0,8,0" VerticalAlignment="Top">
+                                <Grid>
+                                    <Image Source="{Binding Thumbnail}" Stretch="Uniform"
+                                           Visibility="{Binding Thumbnail, Converter={StaticResource NullToVisibilityConverter}}" />
+                                    <TextBlock Text="🔺" FontSize="16" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding Thumbnail, Converter={StaticResource NullToVisibilityConverterInverse}}" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Name -->
+                            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
+                                     BorderThickness="0" Background="Transparent" Padding="0" Margin="0,0,0,4"
+                                     ToolTip="Layer name - Tab or click away to rename" />
+
+                            <!-- Opacity: UpdateSourceTrigger=Explicit, committed once per drag on PreviewMouseUp
+                                 (see LayersPanel.xaml.cs), so dragging never floods undo history with one
+                                 SetLayerPropertiesCommand per tick. -->
+                            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                                <TextBlock Text="Opacity" Style="{StaticResource ParameterLabelStyle}" Width="46" />
+                                <Slider x:Name="OpacitySlider" Width="90" Minimum="0" Maximum="1"
+                                        Value="{Binding Opacity, UpdateSourceTrigger=Explicit}"
+                                        PreviewMouseUp="OpacitySlider_PreviewMouseUp" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Opacity, StringFormat={}{0:P0}}" Margin="6,0,0,0"
+                                           VerticalAlignment="Center" Style="{StaticResource ParameterLabelStyle}" />
+                            </StackPanel>
+
+                            <!-- Blend mode: only Normal exists today, but the picker needs no further work
+                                 once more are added (see LayerRowViewModel.Blend). -->
+                            <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+                                <TextBlock Text="Blend" Style="{StaticResource ParameterLabelStyle}" Width="46" />
+                                <ComboBox Width="90"
+                                          ItemsSource="{Binding BlendModes, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                          SelectedItem="{Binding Blend}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

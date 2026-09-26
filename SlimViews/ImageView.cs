@@ -881,11 +881,39 @@ namespace SlimViews
                 UiState.CifEditorVisibility = Visibility.Visible;
                 UiState.FilterConfigVisibility = Visibility.Collapsed;
                 UiState.TextureConfigVisibility = Visibility.Collapsed;
+                UiState.LayersVisibility = Visibility.Collapsed;
 
                 // If an image is already loaded, convert it immediately
                 if (Image.Bitmap is { })
                 {
                     Image.ActiveCif = new Cif(Image.Bitmap, Image.CustomImageFormat);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Toggles the Layers panel (Advanced Edit Mode's layer stack sidebar), closing the other sidebar
+        /// tools the same way <see cref="ToggleCifEditorAction"/>/<see cref="ToggleFilterConfigAction"/>/
+        /// <see cref="ToggleTextureConfigAction"/> close each other - only one sidebar tool occupies
+        /// SidebarContainer at a time (see MainWindow.xaml).
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        internal void ToggleLayersPanelAction(object obj)
+        {
+            if (UiState.LayersVisibility == Visibility.Visible)
+            {
+                UiState.LayersVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                UiState.LayersVisibility = Visibility.Visible;
+                UiState.FilterConfigVisibility = Visibility.Collapsed;
+                UiState.TextureConfigVisibility = Visibility.Collapsed;
+
+                if (UiState.CifEditorVisibility == Visibility.Visible)
+                {
+                    UiState.CifEditorVisibility = Visibility.Collapsed;
+                    Image.ActiveCif = null;
                 }
             }
         }
@@ -900,6 +928,7 @@ namespace SlimViews
             {
                 UiState.FilterConfigVisibility = Visibility.Visible;
                 UiState.TextureConfigVisibility = Visibility.Collapsed;
+                UiState.LayersVisibility = Visibility.Collapsed;
 
                 if (UiState.CifEditorVisibility == Visibility.Visible)
                 {
@@ -923,6 +952,7 @@ namespace SlimViews
             {
                 UiState.TextureConfigVisibility = Visibility.Visible;
                 UiState.FilterConfigVisibility = Visibility.Collapsed;
+                UiState.LayersVisibility = Visibility.Collapsed;
 
                 if (UiState.CifEditorVisibility == Visibility.Visible)
                 {

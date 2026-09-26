@@ -49,6 +49,11 @@ namespace SlimViews.Contexts
         private Visibility _textureConfigVisibility = Visibility.Collapsed;
 
         /// <summary>
+        /// The layers panel visibility
+        /// </summary>
+        private Visibility _layersVisibility = Visibility.Collapsed;
+
+        /// <summary>
         /// Gets or sets the visibility of the CifChannelEditor panel.
         /// </summary>
         /// <value>
@@ -93,6 +98,22 @@ namespace SlimViews.Contexts
             {
                 _textureConfigVisibility = value;
                 OnPropertyChanged(nameof(TextureConfigVisibility));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the visibility of the Layers panel (the layer stack sidebar used by Advanced Edit Mode).
+        /// </summary>
+        /// <value>
+        /// The layers panel visibility.
+        /// </value>
+        public Visibility LayersVisibility
+        {
+            get => _layersVisibility;
+            set
+            {
+                _layersVisibility = value;
+                OnPropertyChanged(nameof(LayersVisibility));
             }
         }
 
