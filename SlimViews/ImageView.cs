@@ -24,7 +24,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using Common.Dialogs;
 using Common.Images;
 using Extended.Extensions;
@@ -182,7 +181,7 @@ namespace SlimViews
         private void UpdateActiveLayerGating()
         {
             var isRaster = Layers is null
-                || Layers.ActiveLayerId is { } id && Layers.Document.FindLayer(id) is RasterLayer;
+                           || Layers.ActiveLayerId is { } id && Layers.Document.FindLayer(id) is RasterLayer;
 
             MyDrawingState.IsActiveLayerRaster = isRaster;
 

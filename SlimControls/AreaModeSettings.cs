@@ -15,7 +15,6 @@
  */
 
 using System.ComponentModel;
-using Imaging.Enums;
 
 namespace SlimControls
 {
@@ -27,6 +26,9 @@ namespace SlimControls
     /// </summary>
     public abstract class AreaModeSettings : INotifyPropertyChanged
     {
+        /// <summary>
+        /// The owner
+        /// </summary>
         private readonly DrawingState _owner;
 
         /// <summary>
@@ -43,7 +45,12 @@ namespace SlimControls
             _owner.PropertyChanged += OnOwnerPropertyChanged;
         }
 
-        /// <summary>Gets the area mode this settings object represents.</summary>
+        /// <summary>
+        /// Gets the area mode this settings object represents.
+        /// </summary>
+        /// <value>
+        /// The mode.
+        /// </value>
         public AreaMode Mode { get; }
 
         /// <summary>
@@ -56,12 +63,20 @@ namespace SlimControls
         /// <inheritdoc />
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        /// <summary>
+        /// Called when [owner property changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
         private void OnOwnerPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(DrawingState.ActiveAreaMode)) OnPropertyChanged(nameof(Enabled));
         }
 
-        /// <summary>Raises <see cref="PropertyChanged" /> for the named property.</summary>
+        /// <summary>
+        /// Raises <see cref="PropertyChanged" /> for the named property.
+        /// </summary>
+        /// <param name="name">The name.</param>
         protected void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

@@ -44,11 +44,11 @@ namespace Common.Images
             // why this must be a separate point from _startPoint (image-local/unscaled space, used by
             // the drawing tools instead). Mixing the two here used to make panning feel erratic, worse
             // the further zoom was from 100%.
-            _owner._panStartPoint = context.CanvasPosition;
+            _owner.PanStartPoint = context.CanvasPosition;
 
             // Capture the current image transform offset as the origin for panning.
             var matrix = _owner.BtmImage.RenderTransform.Value;
-            _owner._originPoint = new Point(matrix.OffsetX, matrix.OffsetY);
+            _owner.OriginPoint = new Point(matrix.OffsetX, matrix.OffsetY);
         }
 
         /// <inheritdoc />
@@ -61,8 +61,8 @@ namespace Common.Images
             // 1. Calculate intended new offsets. Both sides of each subtraction must be in the same
             // coordinate space - currentCanvasPos is in Canvas (scaled) space, so the drag origin has
             // to be too (_panStartPoint), not _startPoint (image-local/unscaled space).
-            var newX = _owner._originPoint.X + (currentCanvasPos.X - _owner._panStartPoint.X);
-            var newY = _owner._originPoint.Y + (currentCanvasPos.Y - _owner._panStartPoint.Y);
+            var newX = _owner.OriginPoint.X + (currentCanvasPos.X - _owner.PanStartPoint.X);
+            var newY = _owner.OriginPoint.Y + (currentCanvasPos.Y - _owner.PanStartPoint.Y);
 
             // 2. Boundary Checks
             var viewWidth = _owner.ScrollView.ActualWidth;

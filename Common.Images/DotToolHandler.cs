@@ -55,8 +55,8 @@ namespace Common.Images
         /// <inheritdoc />
         public void OnMouseDown(ToolContext context)
         {
-            _owner._strokeBuffer.Clear();
-            _owner._strokeHasFlushed = false;
+            _owner.StrokeBuffer.Clear();
+            _owner.StrokeHasFlushed = false;
 
             // Was SelectionAdorner.UpdateSelection(_startPoint, _startPoint) - the adorner transformed
             // and stored both ends itself; now the handler converts the point (via the adorner's still-
@@ -70,8 +70,8 @@ namespace Common.Images
         {
             // Dragging the pencil/eraser is buffered and throttled (see FlushStroke) rather than
             // submitted on every move event, since each flush is a real image edit.
-            _owner._strokeBuffer.Add(context.ImagePosition);
-            if (DateTime.UtcNow - _owner._lastStrokeFlush >= StrokeFlushInterval)
+            _owner.StrokeBuffer.Add(context.ImagePosition);
+            if (DateTime.UtcNow - _owner.LastStrokeFlush >= StrokeFlushInterval)
             {
                 _owner.FlushStroke();
             }
@@ -91,7 +91,7 @@ namespace Common.Images
 
             // Use the actual release position, not the stale mouse-down position: a drag that ends
             // somewhere else used to always paint only the point where the drag started.
-            _owner._strokeBuffer.Add(context.ImagePosition);
+            _owner.StrokeBuffer.Add(context.ImagePosition);
 
             // Reliable: retries briefly rather than dropping the stroke's tail if a previous flush is
             // still in flight.
@@ -102,8 +102,8 @@ namespace Common.Images
         public void Reset()
         {
             _previewPoint = null;
-            _owner._strokeBuffer.Clear();
-            _owner._strokeHasFlushed = false;
+            _owner.StrokeBuffer.Clear();
+            _owner.StrokeHasFlushed = false;
         }
     }
 }

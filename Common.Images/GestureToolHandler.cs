@@ -105,7 +105,7 @@ namespace Common.Images
                     // owned UpdateSelection did (it re-transformed _startPoint on every move too) -
                     // deliberately not cached, so a zoom change mid-drag is picked up the same way it
                     // always was.
-                    _start = adorner.ToImageSpace(_owner._startPoint);
+                    _start = adorner.ToImageSpace(_owner.StartPoint);
                     _end = adorner.ToImageSpace(context.ImagePosition);
                     RecomputeCurrentFrame();
                     adorner.InvalidateVisual();

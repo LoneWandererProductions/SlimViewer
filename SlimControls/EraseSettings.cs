@@ -9,14 +9,17 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Enums;
-
 namespace SlimControls
 {
-    /// <summary>Settings for the "✂️ Clear" area mode.</summary>
+    /// <summary>
+    /// Settings for the "✂️ Clear" area mode.
+    /// </summary>
+    /// <seealso cref="SlimControls.AreaModeSettings" />
     public sealed class EraseSettings : AreaModeSettings
     {
-        /// <summary>Initializes a new instance of the <see cref="EraseSettings" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EraseSettings" /> class.
+        /// </summary>
         /// <param name="owner">The <see cref="DrawingState" /> this settings object belongs to.</param>
         public EraseSettings(DrawingState owner) : base(owner, AreaMode.Erase)
         {

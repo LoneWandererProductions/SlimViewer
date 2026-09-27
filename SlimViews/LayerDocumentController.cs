@@ -104,6 +104,7 @@ namespace SlimViews
             private set
             {
                 if (_activeLayerId == value) return;
+
                 _activeLayerId = value;
                 ActiveLayerChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -124,7 +125,7 @@ namespace SlimViews
 
         /// <summary>
         ///     Raised whenever <see cref="ActiveLayerId" /> changes, including as a side effect of another
-        ///     operation - <see cref="RemoveLayer" /> reassigning it to a neighbour, <see cref="AddRasterLayer" />/
+        ///     operation - <see cref="RemoveLayer" /> reassigning it to a neighbor, <see cref="AddRasterLayer" />/
         ///     <see cref="AddShapeLayer" />/<see cref="DuplicateLayer" /> making the new layer active - and not
         ///     just from a direct <see cref="SetActiveLayer" /> call. A Layers panel should subscribe to this to
         ///     keep its selection highlight in sync instead of polling <see cref="ActiveLayerId" />.
@@ -194,7 +195,6 @@ namespace SlimViews
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>Guid of Layer.</returns>
-
         public Guid AddShapeLayer(string name = "Shapes")
         {
             var layer = new ShapeLayer(name);
@@ -263,6 +263,7 @@ namespace SlimViews
         public void SetActiveLayer(Guid layerId)
         {
             if (Document.FindLayer(layerId) is null) throw new KeyNotFoundException($"Layer {layerId} not found.");
+
             ActiveLayerId = layerId;
         }
 
@@ -389,7 +390,7 @@ namespace SlimViews
         /// <see cref="Common.Images.ImageZoom" />'s <c>LayeredDocument</c> property flattens the same way,
         /// directly from <see cref="Document" />, and does not need this method itself.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Combined Bitmap of the image.</returns>
         public Bitmap Flatten()
         {
             using var buffer = DocumentRenderer.Flatten(Document, _rasterizer);

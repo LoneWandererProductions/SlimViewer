@@ -73,11 +73,11 @@
 
         <!-- Layer list, top of stack shown first -->
         <ListBox Grid.Row="4" x:Name="LayerList"
-                  ItemsSource="{Binding Rows, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                  SelectionChanged="LayerList_SelectionChanged"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  Background="Transparent" BorderThickness="0"
-                  Visibility="{Binding Controller, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverter}}">
+                 ItemsSource="{Binding Rows, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                 SelectionChanged="LayerList_SelectionChanged"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 Background="Transparent" BorderThickness="0"
+                 Visibility="{Binding Controller, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverter}}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0" />

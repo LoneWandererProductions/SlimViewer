@@ -16,7 +16,6 @@ using System.Drawing;
 using System.Windows.Media.Imaging;
 using Imaging;
 using Imaging.Objects.Documents;
-using SlimViews;
 using ViewModel;
 
 namespace SlimViews.DataObjects
@@ -62,6 +61,7 @@ namespace SlimViews.DataObjects
             set
             {
                 if (_layer.Name == value) return;
+
                 _controller.SetLayerProperties(Id, _layer.Properties with { Name = value });
             }
         }
@@ -73,6 +73,7 @@ namespace SlimViews.DataObjects
             set
             {
                 if (_layer.Visible == value) return;
+
                 _controller.SetLayerProperties(Id, _layer.Properties with { Visible = value });
             }
         }
@@ -88,6 +89,7 @@ namespace SlimViews.DataObjects
             set
             {
                 if (Math.Abs(_layer.Opacity - value) < 0.001) return;
+
                 _controller.SetLayerProperties(Id, _layer.Properties with { Opacity = value });
             }
         }
@@ -102,6 +104,7 @@ namespace SlimViews.DataObjects
             set
             {
                 if (_layer.Blend == value) return;
+
                 _controller.SetLayerProperties(Id, _layer.Properties with { Blend = value });
             }
         }

@@ -7,13 +7,17 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Enums;
-
 namespace SlimControls
 {
-    /// <summary>Settings for the "🪄 Filter" area mode.</summary>
+    /// <summary>
+    /// Settings for the "🪄 Filter" area mode.
+    /// </summary>
+    /// <seealso cref="SlimControls.AreaModeSettings" />
     public sealed class FilterSettings : AreaModeSettings
     {
+        /// <summary>
+        /// The filter name
+        /// </summary>
         private string? _filterName;
 
         /// <summary>Initializes a new instance of the <see cref="FilterSettings" /> class.</summary>
@@ -22,13 +26,19 @@ namespace SlimControls
         {
         }
 
-        /// <summary>Gets or sets the name of the selected filter effect (see <see cref="DrawingState.Filters" />).</summary>
+        /// <summary>
+        /// Gets or sets the name of the selected filter effect (see <see cref="DrawingState.Filters" />).
+        /// </summary>
+        /// <value>
+        /// The name of the filter.
+        /// </value>
         public string? FilterName
         {
             get => _filterName;
             set
             {
                 if (_filterName == value) return;
+
                 _filterName = value;
                 OnPropertyChanged(nameof(FilterName));
             }
