@@ -9,6 +9,7 @@
     <UserControl.Resources>
         <converters:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converters:FractionToPercentConverter x:Key="FractionToPercent" />
 
         <!-- THEME-COMPATIBLE RADIOBUTTON STYLE -->
         <Style x:Key="ToolRadioButtonStyle" TargetType="RadioButton">
@@ -73,7 +74,9 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <RadioButton Content="✏️ Pencil" GroupName="ToolGroup"
                              Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Draw freehand lines"
+                             ToolTip="Draw freehand lines (needs a raster layer active, when Advanced Edit Mode is on)"
+                             IsEnabled="{Binding Path=ToolState.IsActiveLayerRaster,
+                                         RelativeSource={RelativeSource AncestorType=UserControl}}"
                              IsChecked="{Binding Path=ToolState.ActiveTool,
                                          RelativeSource={RelativeSource AncestorType=UserControl},
                                          Mode=TwoWay,
@@ -82,7 +85,9 @@
 
                 <RadioButton Content="🧹 Eraser" GroupName="ToolGroup"
                              Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Erase parts of the image"
+                             ToolTip="Erase parts of the image (needs a raster layer active, when Advanced Edit Mode is on)"
+                             IsEnabled="{Binding Path=ToolState.IsActiveLayerRaster,
+                                         RelativeSource={RelativeSource AncestorType=UserControl}}"
                              IsChecked="{Binding Path=ToolState.ActiveTool,
                                          RelativeSource={RelativeSource AncestorType=UserControl},
                                          Mode=TwoWay,
@@ -106,6 +111,15 @@
                                          Mode=TwoWay,
                                          Converter={StaticResource EnumToBoolConverter},
                                          ConverterParameter=Move}" />
+
+                <RadioButton Content="🔺 Shape" GroupName="ToolGroup"
+                             Style="{StaticResource ToolRadioButtonStyle}"
+                             ToolTip="Draw a shape - pick which one below"
+                             IsChecked="{Binding Path=ToolState.ActiveTool,
+                                         RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Mode=TwoWay,
+                                         Converter={StaticResource EnumToBoolConverter},
+                                         ConverterParameter=Shape}" />
             </StackPanel>
 
             <Rectangle Style="{StaticResource VerticalSeparatorStyle}" />
@@ -131,12 +145,19 @@
                                     RelativeSource={RelativeSource AncestorType=UserControl},
                                     Mode=TwoWay}" />
 
-                    <TextBlock
+                    <!-- Editable, not just a display - types an exact value (1-50), clamped by
+                         DrawingState.BrushSize itself so this can't be used to bypass the slider's range. -->
+                    <TextBox
                         Text="{Binding Path=ToolState.BrushSize,
-                                              RelativeSource={RelativeSource AncestorType=UserControl},
-                                              StringFormat={}{0:F0}px}"
-                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0"
-                        Width="24" Foreground="{StaticResource TextSecondaryBrush}" />
+                                       RelativeSource={RelativeSource AncestorType=UserControl},
+                                       Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat={}{0:F0}}"
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,2,0"
+                        Width="26" TextAlignment="Right"
+                        Background="{StaticResource InputBrush}" Foreground="{StaticResource TextPrimaryBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        ToolTip="Type an exact brush size (1-50px)" />
+                    <TextBlock Text="px" VerticalAlignment="Center" FontSize="10"
+                               Foreground="{StaticResource TextSecondaryBrush}" />
                 </StackPanel>
 
                 <!-- Brush Opacity -->
@@ -151,19 +172,36 @@
                                     RelativeSource={RelativeSource AncestorType=UserControl},
                                     Mode=TwoWay}" />
 
-                    <TextBlock
+                    <!-- Editable, as a whole-number percentage (10-100) - see FractionToPercentConverter;
+                         clamped by DrawingState.BrushOpacity itself, same reasoning as Brush Size above. -->
+                    <TextBox
                         Text="{Binding Path=ToolState.BrushOpacity,
-                                              RelativeSource={RelativeSource AncestorType=UserControl},
-                                              StringFormat={}{0:P0}}"
-                        VerticalAlignment="Center" FontSize="10" Margin="4,0,0,0"
-                        Width="28" Foreground="{StaticResource TextSecondaryBrush}" />
+                                       RelativeSource={RelativeSource AncestorType=UserControl},
+                                       Mode=TwoWay, UpdateSourceTrigger=LostFocus,
+                                       Converter={StaticResource FractionToPercent}}"
+                        VerticalAlignment="Center" FontSize="10" Margin="4,0,2,0"
+                        Width="26" TextAlignment="Right"
+                        Background="{StaticResource InputBrush}" Foreground="{StaticResource TextPrimaryBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        ToolTip="Type an exact brush opacity (10-100%)" />
+                    <TextBlock Text="%" VerticalAlignment="Center" FontSize="10"
+                               Foreground="{StaticResource TextSecondaryBrush}" />
                 </StackPanel>
             </StackPanel>
 
             <Rectangle Style="{StaticResource VerticalSeparatorStyle}" />
 
-            <!-- SHAPES -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <!-- SHAPES (only meaningful once the Shape tool itself is active - see DrawingState.SelectedShape's
+                 remarks on why this is no longer inferred from clicking one of these) -->
+            <WrapPanel Orientation="Horizontal" VerticalAlignment="Center"
+                       IsEnabled="{Binding Path=ToolState.IsShapeToolActive,
+                                   RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       Visibility="{Binding Path=ToolState.IsShapeToolActive,
+                                   RelativeSource={RelativeSource AncestorType=UserControl},
+                                   Converter={StaticResource BoolToVis}}">
+
+                <Rectangle Style="{StaticResource VerticalSeparatorStyle}" />
+
                 <RadioButton Content="▭ Rect" GroupName="ShapeGroup"
                              Style="{StaticResource ToolRadioButtonStyle}"
                              ToolTip="Draw a rectangle"
@@ -199,13 +237,22 @@
                                          Mode=TwoWay,
                                          Converter={StaticResource EnumToBoolConverter},
                                          ConverterParameter=Polygon}" />
-            </StackPanel>
+
+                <!-- Independent of the area-mode picker below: that chooses WHAT fills a shape, this
+                     chooses WHETHER it's filled at all. Unchecked = outline only (Fill = FillSpec.None),
+                     regardless of Fill/Texture/Filter selection - see DrawingState.ShapeFilled's remarks. -->
+                <CheckBox Content="🪣 Fill" Margin="10,0,0,0" VerticalAlignment="Center"
+                          ToolTip="Fill the shape's interior. Unchecked draws just the outline."
+                          IsChecked="{Binding Path=ToolState.ShapeFilled,
+                                      RelativeSource={RelativeSource AncestorType=UserControl},
+                                      Mode=TwoWay}" />
+            </WrapPanel>
 
             <!-- AREA MODES -->
             <WrapPanel Orientation="Horizontal" VerticalAlignment="Center"
-                       IsEnabled="{Binding Path=ToolState.AreAreaModesEnabled,
+                       IsEnabled="{Binding Path=ToolState.IsShapeToolActive,
                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
-                       Visibility="{Binding Path=ToolState.AreAreaModesEnabled,
+                       Visibility="{Binding Path=ToolState.IsShapeToolActive,
                                    RelativeSource={RelativeSource AncestorType=UserControl},
                                    Converter={StaticResource BoolToVis}}">
 
@@ -240,7 +287,9 @@
 
                 <RadioButton Content="✂️ Clear" GroupName="AreaModeGroup"
                              Style="{StaticResource ToolRadioButtonStyle}"
-                             ToolTip="Clear area"
+                             ToolTip="Clear area (needs a raster layer active, when Advanced Edit Mode is on)"
+                             IsEnabled="{Binding Path=ToolState.IsActiveLayerRaster,
+                                         RelativeSource={RelativeSource AncestorType=UserControl}}"
                              IsChecked="{Binding Path=ToolState.ActiveAreaMode,
                                          RelativeSource={RelativeSource AncestorType=UserControl},
                                          Mode=TwoWay,

@@ -95,6 +95,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Common.Images.Interfaces;
 using Imaging.Objects;
 using Imaging.Objects.Documents;
 using Imaging.Objects.Interfaces;
@@ -346,6 +347,11 @@ namespace Common.Images
         /// </summary>
         public IShapeRasterizer? ShapeRasterizer { get; set; }
 
+        /// <summary>
+        /// Called when [layered document property changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void OnLayeredDocumentPropertyChanged(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
@@ -453,7 +459,7 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     The image clicked command property
+        /// The image clicked command property
         /// </summary>
         public static readonly DependencyProperty SelectedPointCommandProperty = DependencyProperty.Register(
             nameof(SelectedPointCommand), typeof(ICommand), typeof(ImageZoom), new PropertyMetadata(null));
@@ -491,12 +497,12 @@ namespace Common.Images
         /// <summary>
         ///     The origin Point.
         /// </summary>
-        private Point _originPoint;
+        internal Point _originPoint;
 
         /// <summary>
         ///     The mouse down position
         /// </summary>
-        private Point _startPoint;
+        internal Point _startPoint;
 
         /// <summary>
         ///     Pan-drag origin, captured in <see cref="MainCanvas" /> coordinates (the same space
@@ -509,7 +515,7 @@ namespace Common.Images
         ///     (erratic drag speed/direction, worse right at the pannable edges where the clamp
         ///     then fights the miscalculated delta) the further zoom moved from 1.0.
         /// </summary>
-        private Point _panStartPoint;
+        internal Point _panStartPoint;
 
         /// <summary>
         ///     Points accumulated for the <see cref="ImageZoomTools.Dot" /> tool (pencil,
@@ -517,7 +523,7 @@ namespace Common.Images
         ///     are always appended here, never dropped, and every accumulated point is
         ///     eventually included in some flush - see <see cref="FlushStroke" />.
         /// </summary>
-        private readonly List<Point> _strokeBuffer = new();
+        internal readonly List<Point> _strokeBuffer = new();
 
         /// <summary>
         ///     When <see cref="_strokeBuffer" /> was last flushed. Used to throttle how
@@ -527,12 +533,12 @@ namespace Common.Images
         ///     event, rather than batching the points seen between flushes, is what made a
         ///     fast stroke feel like it was lagging behind the cursor instead of following it.
         /// </summary>
-        private DateTime _lastStrokeFlush = DateTime.MinValue;
+        internal DateTime _lastStrokeFlush = DateTime.MinValue;
 
         /// <summary>
         ///     True once the current drag has submitted its first batch (see <see cref="StrokeBatch.IsFirst" />).
         /// </summary>
-        private bool _strokeHasFlushed;
+        internal bool _strokeHasFlushed;
 
         /// <summary>
         ///     A stroke's result is swapped in as a new <see cref="ImageSource" /> of identical size. Within
@@ -540,7 +546,44 @@ namespace Common.Images
         /// </summary>
         private static readonly TimeSpan StrokeSwapWindow = TimeSpan.FromSeconds(2);
 
-        private static readonly TimeSpan StrokeFlushInterval = TimeSpan.FromMilliseconds(25);
+        /// <summary>
+        /// The move handler field
+        /// </summary>
+        internal IToolHandler? _moveHandlerField;
+
+        /// <summary>
+        /// Gets the move handler.
+        /// </summary>
+        /// <value>
+        /// The move handler.
+        /// </value>
+        internal IToolHandler _moveHandler => _moveHandlerField ??= new MoveToolHandler(this);
+
+        /// <summary>
+        /// The dot handler field
+        /// </summary>
+        private IToolHandler? _dotHandlerField;
+
+        /// <summary>
+        /// Gets the dot handler.
+        /// </summary>
+        /// <value>
+        /// The dot handler.
+        /// </value>
+        internal IToolHandler _dotHandler => _dotHandlerField ??= new DotToolHandler(this);
+
+        /// <summary>
+        /// The gesture handler field
+        /// </summary>
+        private IToolHandler? _gestureHandlerField;
+
+        /// <summary>
+        /// Gets the gesture handler.
+        /// </summary>
+        /// <value>
+        /// The gesture handler.
+        /// </value>
+        internal IToolHandler _gestureHandler => _gestureHandlerField ??= new GestureToolHandler(this);
 
         /// <inheritdoc />
         /// <summary>
@@ -561,7 +604,7 @@ namespace Common.Images
         /// <summary>
         ///     The selection adorner
         /// </summary>
-        private SelectionAdorner? SelectionAdorner { get; set; }
+        internal SelectionAdorner? SelectionAdorner { get; set; }
 
         /// <summary>
         ///     Gets or sets the image clicked command.
@@ -677,6 +720,15 @@ namespace Common.Images
         public event DelegatePoint? SelectedPoint;
 
         /// <summary>
+        /// Raises the selected frame.
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        public void RaiseSelectedFrame(SelectionFrame frame) // Typ ggf. anpassen
+        {
+            SelectedFrame?.Invoke(frame);
+        }
+
+        /// <summary>
         ///     Called when [selection tool changed].
         /// </summary>
         /// <param name="d">The d.</param>
@@ -698,7 +750,9 @@ namespace Common.Images
             }
 
             control.SelectionAdorner.Tool = newTool; // Update the tool in the adorner
-            control.SelectionAdorner.ClearFreeFormPoints(); // Reset any existing free-form points if applicable
+            var handler = control.ResolveHandler(newTool);
+            control.SelectionAdorner.Source = handler as IPreviewSource;
+            handler?.Reset(); // Reset any existing in-progress gesture state if applicable
         }
 
         /// <summary>
@@ -771,11 +825,14 @@ namespace Common.Images
             if (adornerLayer == null)
                 return;
 
+            var handler = ResolveHandler(tool);
+
             // If we already have an adorner instance, keep reusing it and update its mode
             if (SelectionAdorner is { })
             {
                 SelectionAdorner.Tool = tool;
-                SelectionAdorner.ClearFreeFormPoints();
+                SelectionAdorner.Source = handler as IPreviewSource;
+                handler?.Reset();
                 SelectionAdorner.UpdateImageTransform(BtmImage.RenderTransform);
                 return;
             }
@@ -790,7 +847,8 @@ namespace Common.Images
                     {
                         SelectionAdorner = existing;
                         SelectionAdorner.Tool = tool;
-                        SelectionAdorner.ClearFreeFormPoints();
+                        SelectionAdorner.Source = handler as IPreviewSource;
+                        handler?.Reset();
                         SelectionAdorner.UpdateImageTransform(BtmImage.RenderTransform);
                         return;
                     }
@@ -798,7 +856,7 @@ namespace Common.Images
             }
 
             // Otherwise create and add a fresh one
-            SelectionAdorner = new SelectionAdorner(BtmImage, tool);
+            SelectionAdorner = new SelectionAdorner(BtmImage, tool) { Source = handler as IPreviewSource };
             adornerLayer.Add(SelectionAdorner);
         }
 
@@ -817,43 +875,12 @@ namespace Common.Images
             // which all work in image pixel coordinates.
             _startPoint = e.GetPosition(BtmImage);
 
-            // Capture the mouse
-            _ = MainCanvas.CaptureMouse();
-
             AttachAdorner(SelectionTool);
 
-            // If this is a pan start, capture origin offsets (in image transform space)
-            if (SelectionTool == ImageZoomTools.Move)
-            {
-                // Separate drag-origin point in Canvas (scaled) space - see _panStartPoint's
-                // doc comment for why this can't just reuse _startPoint above.
-                _panStartPoint = e.GetPosition(MainCanvas);
-
-                // Capture the current image transform offset as the origin for panning
-                var matrix = BtmImage.RenderTransform.Value;
-                _originPoint = new Point(matrix.OffsetX, matrix.OffsetY);
-            }
-
-            switch (SelectionTool)
-            {
-                case ImageZoomTools.Move:
-                    break;
-                case ImageZoomTools.Trace:
-                    if (SelectionAdorner is { }) SelectionAdorner.IsTracing = true;
-                    break;
-                case ImageZoomTools.Dot:
-                    _strokeBuffer.Clear();
-                    _strokeHasFlushed = false;
-                    SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
-                    break;
-                default:
-                    // Any other registered shape gesture (Rectangle, Ellipse,
-                    // FreeForm, Polygon, ...) needs no extra mouse-down setup beyond
-                    // the AttachAdorner call above - only an *unregistered* tool
-                    // falls all the way through and is ignored.
-                    if (!GestureCatalog.TryGet(SelectionTool, out _)) return;
-                    break;
-            }
+            // Dispatches to whichever IToolHandler owns the current tool (see ResolveHandler and
+            // ImageZoom.ToolHandlers.cs) instead of a switch(SelectionTool) here - this method used to be
+            // that switch itself.
+            ResolveHandler(SelectionTool)?.OnMouseDown(new ToolContext(_startPoint, e.GetPosition(MainCanvas)));
         }
 
         /// <summary>
@@ -868,49 +895,7 @@ namespace Common.Images
 
             if (SelectionAdorner == null) return;
 
-            // 🔴 1. NEW: Handle Point-based tools (Pencil, Color Picker) explicitly
-            if (SelectionTool == ImageZoomTools.Dot)
-            {
-                SelectionAdorner.CaptureAndClear(); // Clear the red dot visual
-
-                // Use the actual release position, not the stale mouse-down
-                // _startPoint: a drag that ends somewhere else used to always
-                // paint only the point where the drag *started*.
-                _strokeBuffer.Add(e.GetPosition(BtmImage));
-                _ = FlushStrokeOnReleaseAsync(); // reliable: retries briefly rather than dropping the stroke's tail if a previous flush is still in flight
-
-                return; // Exit early!
-            }
-
-            // 2. Identify "Immediate Action" tools (Shapes, Frames). Driven by the
-            // catalog rather than a hand-written list here: this is exactly the
-            // list Polygon was previously missing from, which silently meant its
-            // selections were drawn on screen but never committed to an edit.
-            var isDrawingTool = GestureCatalog.TryGet(SelectionTool, out var behavior) &&
-                                behavior.CapturesFrameOnMouseUp;
-
-            if (isDrawingTool)
-            {
-                // 3. Capture the data AND Clear the visuals immediately
-                var frame = SelectionAdorner.CaptureAndClear();
-
-                // 4. Validation: Ensure we actually drew something substantial
-                var isValid = (frame.Width > 0 && frame.Height > 0) ||
-                              frame.Points is { Count: > 0 };
-
-                if (isValid)
-                {
-                    // 5. Fire the Command to the ViewModel (Update the Bitmap)
-                    SafeExecuteCommand(SelectedFrameCommand, frame);
-
-                    // 6. Fire the Event (if anything else is listening)
-                    SelectedFrame?.Invoke(frame);
-                }
-            }
-            else if (SelectionTool == ImageZoomTools.Move)
-            {
-                // Just release capture, do nothing else
-            }
+            ResolveHandler(SelectionTool)?.OnMouseUp(new ToolContext(e.GetPosition(BtmImage), e.GetPosition(MainCanvas)));
         }
 
         /// <summary>
@@ -922,77 +907,25 @@ namespace Common.Images
         {
             if (!_mouseDown) return;
 
-            var mousePos = e.GetPosition(BtmImage);
-
-            switch (SelectionTool)
-            {
-                case ImageZoomTools.Move:
-                {
-                    var currentCanvasPos = e.GetPosition(MainCanvas);
-                    var transform = (MatrixTransform)BtmImage.RenderTransform;
-                    var matrix = transform.Matrix;
-
-                    // 1. Calculate intended new offsets. Both sides of each subtraction must be
-                    // in the same coordinate space - currentCanvasPos is in Canvas (scaled)
-                    // space, so the drag origin has to be too (_panStartPoint), not _startPoint
-                    // (image-local/unscaled space, used by the drawing tools instead). Mixing the
-                    // two here used to make panning feel erratic and made it worse the further
-                    // zoom was from 100%.
-                    var newX = _originPoint.X + (currentCanvasPos.X - _panStartPoint.X);
-                    var newY = _originPoint.Y + (currentCanvasPos.Y - _panStartPoint.Y);
-
-                    // 2. Boundary Checks
-                    var viewWidth = ScrollView.ActualWidth;
-                    var viewHeight = ScrollView.ActualHeight;
-                    var tWidth = BtmImage.ActualWidth * matrix.M11;
-                    var tHeight = BtmImage.ActualHeight * matrix.M22;
-
-                    // 3. Clamp panning only if image is larger than view
-                    if (tWidth > viewWidth)
-                        matrix.OffsetX = Math.Max(Math.Min(newX, 0), viewWidth - tWidth);
-                    if (tHeight > viewHeight)
-                        matrix.OffsetY = Math.Max(Math.Min(newY, 0), viewHeight - tHeight);
-
-                    BtmImage.RenderTransform = new MatrixTransform(matrix);
-                    SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-                    break;
-                }
-
-                case ImageZoomTools.Dot:
-                    // This case was missing entirely before: dragging the pencil
-                    // or eraser produced no MouseMove handling at all, so only
-                    // the single point from MouseDown/MouseUp ever got painted -
-                    // dragging looked identical to a single click. Buffered and
-                    // throttled (see FlushStroke) rather than submitted on every
-                    // move event, since each flush is a real image edit.
-                    _strokeBuffer.Add(mousePos);
-                    if (DateTime.UtcNow - _lastStrokeFlush >= StrokeFlushInterval)
-                    {
-                        FlushStroke();
-                    }
-
-                    break;
-
-                default:
-                    if (GestureCatalog.TryGet(SelectionTool, out var behavior))
-                    {
-                        switch (behavior.MouseMoveShape)
-                        {
-                            case SelectionShape.Box:
-                                SelectionAdorner?.UpdateSelection(_startPoint, mousePos);
-                                break;
-                            case SelectionShape.Freeform:
-                                SelectionAdorner?.AddFreeFormPoint(mousePos);
-                                break;
-                            case SelectionShape.None:
-                                // Bespoke tool (e.g. Trace) - drives itself, nothing to do here.
-                                break;
-                        }
-                    }
-
-                    break;
-            }
+            ResolveHandler(SelectionTool)?.OnMouseMove(new ToolContext(e.GetPosition(BtmImage), e.GetPosition(MainCanvas)));
         }
+
+        /// <summary>
+        ///     Resolves which handler owns a given tool. <see cref="ImageZoomTools.Move" /> and
+        ///     <see cref="ImageZoomTools.Dot" /> each get their own handler; every tool registered in
+        ///     <see cref="GestureCatalog" /> (Rectangle, Ellipse, FreeForm, Polygon, Trace) shares
+        ///     <see cref="_gestureHandler" />, since <see cref="GestureCatalog" /> is exactly what already
+        ///     lets one class serve all of them without a class-per-tool switch reappearing here instead.
+        ///     Null for a tool that is neither of those and not registered - i.e. nothing to dispatch to,
+        ///     matching the old code's defensive "unregistered tool falls through and is ignored".
+        /// </summary>
+        internal IToolHandler? ResolveHandler(ImageZoomTools tool) => tool switch
+        {
+            ImageZoomTools.Move => _moveHandler,
+            ImageZoomTools.Dot => _dotHandler,
+            _ when GestureCatalog.TryGet(tool, out _) => _gestureHandler,
+            _ => null
+        };
 
         /// <summary>
         ///     Submits every point accumulated in <see cref="_strokeBuffer" /> since the
@@ -1015,7 +948,7 @@ namespace Common.Images
         ///     </para>
         /// </remarks>
         /// <returns><c>true</c> if a batch was actually submitted.</returns>
-        private bool FlushStroke(bool isLast = false)
+        internal bool FlushStroke(bool isLast = false)
         {
             if (_strokeBuffer.Count == 0) return true;
             if (SelectedPointCommand?.CanExecute(null) != true) return false;
@@ -1047,7 +980,7 @@ namespace Common.Images
         ///     ~400ms so a genuinely stuck command can't hang the UI thread's event
         ///     handling indefinitely.
         /// </remarks>
-        private async Task FlushStrokeOnReleaseAsync()
+        internal async Task FlushStrokeOnReleaseAsync()
         {
             var attempts = 0;
             while (!FlushStroke(isLast: true) && attempts++ < 40)
@@ -1121,8 +1054,9 @@ namespace Common.Images
             // 2. If we are idle, Right Click means "I am finished selecting"
             if (SelectionAdorner is { })
             {
-                // Get all collected frames
-                var frames = SelectionAdorner.GetCommittedFrames();
+                // Get all collected frames. GetCommittedFrames lives on GestureToolHandler now (it's the
+                // only handler that supports multi-select), not on the adorner - see ImageZoom.ToolHandlers.cs.
+                var frames = (_gestureHandler as GestureToolHandler)?.GetCommittedFrames() ?? new List<SelectionFrame>();
 
                 if (frames.Count > 0)
                 {
@@ -1302,7 +1236,7 @@ namespace Common.Images
         /// </summary>
         /// <param name="cmd">The command to execute.</param>
         /// <param name="parameter">The parameter to pass.</param>
-        private static void SafeExecuteCommand(ICommand? cmd, object? parameter)
+        internal static void SafeExecuteCommand(ICommand? cmd, object? parameter)
         {
             if (cmd == null) return;
 

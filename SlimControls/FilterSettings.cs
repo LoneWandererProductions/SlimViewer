@@ -2,33 +2,36 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
  * FILE:        FilterSettings.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Settings for the Filter area mode - which filter effect to apply. See AreaModeSettings for
+ *              what Enabled means and why it is no longer stored here.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.ComponentModel;
+using Imaging.Enums;
 
 namespace SlimControls
 {
-    public class FilterSettings : INotifyPropertyChanged
+    /// <summary>Settings for the "🪄 Filter" area mode.</summary>
+    public sealed class FilterSettings : AreaModeSettings
     {
-        private bool _enabled;
+        private string? _filterName;
 
-        public bool Enabled
+        /// <summary>Initializes a new instance of the <see cref="FilterSettings" /> class.</summary>
+        /// <param name="owner">The <see cref="DrawingState" /> this settings object belongs to.</param>
+        public FilterSettings(DrawingState owner) : base(owner, AreaMode.Filter)
         {
-            get => _enabled;
-            set
-            {
-                _enabled = value;
-                OnPropertyChanged(nameof(Enabled));
-            }
         }
 
-        public string FilterName { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        /// <summary>Gets or sets the name of the selected filter effect (see <see cref="DrawingState.Filters" />).</summary>
+        public string? FilterName
+        {
+            get => _filterName;
+            set
+            {
+                if (_filterName == value) return;
+                _filterName = value;
+                OnPropertyChanged(nameof(FilterName));
+            }
+        }
     }
 }

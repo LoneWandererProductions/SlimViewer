@@ -132,7 +132,9 @@ namespace SlimViews
 
             var controller = LayerDocumentController.FromBitmap(Image.Bitmap);
             controller.DocumentChanged += (_, _) => RefreshFromLayers();
+            controller.ActiveLayerChanged += (_, _) => UpdateActiveLayerGating();
             Layers = controller;
+            UpdateActiveLayerGating();
         }
 
         /// <summary>
@@ -146,6 +148,7 @@ namespace SlimViews
 
             var controller = Layers;
             Layers = null;
+            UpdateActiveLayerGating();
 
             Image.Bitmap = controller.Flatten();
             Image.BitmapImage = Image.Bitmap?.ToBitmapSource();
@@ -164,6 +167,43 @@ namespace SlimViews
 
             Layers.Dispose();
             Layers = null;
+            UpdateActiveLayerGating();
+        }
+
+        /// <summary>
+        /// Recomputes <see cref="DrawingState.IsActiveLayerRaster"/> from the current <see cref="Layers"/>
+        /// state: true (fully enabled) with no layered document open, since single-bitmap editing has no
+        /// "active layer" restriction at all; otherwise true only while the active layer is a
+        /// <see cref="RasterLayer"/>. Called once whenever layers are turned on/off and every time
+        /// <see cref="LayerDocumentController.ActiveLayerChanged"/> fires - which covers a user picking a
+        /// different layer in the Layers panel as well as the active layer changing as a side effect of
+        /// another edit (e.g. <see cref="LayerDocumentController.RemoveLayer"/> reassigning it).
+        /// </summary>
+        private void UpdateActiveLayerGating()
+        {
+            var isRaster = Layers is null
+                || Layers.ActiveLayerId is { } id && Layers.Document.FindLayer(id) is RasterLayer;
+
+            MyDrawingState.IsActiveLayerRaster = isRaster;
+
+            if (isRaster) return;
+
+            // The active layer just became (or already was, e.g. right after EnableLayers on an image whose
+            // very first layer somehow is not raster) a shape layer while a pixel-only tool/mode was
+            // selected. Disabling the toolbar button (see DrawingToolBarControl.xaml) only stops the user
+            // from switching TO it - it does not un-select a tool that was already active, and the canvas
+            // itself has no gating of its own, so a stroke would otherwise silently do nothing (Pencil/
+            // Eraser, via DrawStrokeAsync) or throw and get swallowed (Clear, via ApplyToActiveRasterLayer -
+            // see SelectedFrameAction's catch). Switch away from both so neither can happen.
+            if (MyDrawingState.ActiveTool is DrawTool.Pencil or DrawTool.Eraser)
+            {
+                MyDrawingState.ActiveTool = DrawTool.Move;
+            }
+
+            if (MyDrawingState.ActiveAreaMode == AreaMode.Erase)
+            {
+                MyDrawingState.ActiveAreaMode = AreaMode.Fill;
+            }
         }
 
         /// <summary>
@@ -618,6 +658,7 @@ namespace SlimViews
             var fillColor = MyDrawingState.Fill.Color;
             var texName = MyDrawingState.Texture.TextureName;
             var filterName = MyDrawingState.Filter.FilterName;
+            var filled = MyDrawingState.ShapeFilled;
 
             if (Layers is not null && tool == DrawTool.Shape &&
                 Layers.ActiveLayerId is { } activeId && Layers.Document.FindLayer(activeId) is ShapeLayer)
@@ -625,7 +666,7 @@ namespace SlimViews
                 // A shape layer is active: keep the geometry as data (see Imaging.Objects.Shapes.Shape)
                 // instead of baking it into pixels, so it stays movable/restylable and is only rasterized
                 // when the document is flattened for display or export.
-                var shape = BuildShapeFromFrame(frame, mode, fillColor, texName, filterName);
+                var shape = BuildShapeFromFrame(frame, mode, fillColor, texName, filterName, filled);
                 if (shape is null) return;
 
                 Layers.AddShape(shape);
@@ -720,10 +761,16 @@ namespace SlimViews
         /// null for a gesture that has no shape-layer equivalent (currently: FreeForm, which stays a
         /// destructive-only tool since a hand-drawn stroke isn't one of the closed shape kinds).
         /// </summary>
+        /// <param name="filled">
+        /// Whether the shape's interior should be filled at all - see <see cref="DrawingState.ShapeFilled"/>.
+        /// When <c>false</c>, <paramref name="mode"/>/<paramref name="fillColor"/>/<paramref name="texName"/>/
+        /// <paramref name="filterName"/> are ignored and the shape is stroke-only, same as the open shapes
+        /// (Trace/Polyline) always are.
+        /// </param>
         private static Shape? BuildShapeFromFrame(SelectionFrame frame, AreaMode mode, string fillColor,
-            string texName, string filterName)
+            string texName, string filterName, bool filled)
         {
-            var fill = BuildFillFromMode(mode, fillColor, texName, filterName);
+            var fill = filled ? BuildFillFromMode(mode, fillColor, texName, filterName) : FillSpec.None;
             var stroke = new StrokeSpec(unchecked((uint)ColorTranslator.FromHtml(fillColor).ToArgb()), 1.0);
 
             switch (frame.Tool)

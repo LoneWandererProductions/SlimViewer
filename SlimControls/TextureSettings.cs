@@ -2,33 +2,36 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
  * FILE:        TextureSettings.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Settings for the Texture area mode - which texture pattern to fill with. See
+ *              AreaModeSettings for what Enabled means and why it is no longer stored here.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.ComponentModel;
+using Imaging.Enums;
 
 namespace SlimControls
 {
-    public class TextureSettings : INotifyPropertyChanged
+    /// <summary>Settings for the "🧱 Texture" area mode.</summary>
+    public sealed class TextureSettings : AreaModeSettings
     {
-        private bool _enabled;
+        private string? _textureName;
 
-        public bool Enabled
+        /// <summary>Initializes a new instance of the <see cref="TextureSettings" /> class.</summary>
+        /// <param name="owner">The <see cref="DrawingState" /> this settings object belongs to.</param>
+        public TextureSettings(DrawingState owner) : base(owner, AreaMode.Texture)
         {
-            get => _enabled;
-            set
-            {
-                _enabled = value;
-                OnPropertyChanged(nameof(Enabled));
-            }
         }
 
-        public string TextureName { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        /// <summary>Gets or sets the name of the selected texture pattern (see <see cref="DrawingState.Textures" />).</summary>
+        public string? TextureName
+        {
+            get => _textureName;
+            set
+            {
+                if (_textureName == value) return;
+                _textureName = value;
+                OnPropertyChanged(nameof(TextureName));
+            }
+        }
     }
 }

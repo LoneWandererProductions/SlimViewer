@@ -2,33 +2,36 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
  * FILE:        FillSettings.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Settings for the Fill area mode - a single flat fill color. See AreaModeSettings for what
+ *              Enabled means and why it is no longer stored here.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.ComponentModel;
+using Imaging.Enums;
 
 namespace SlimControls
 {
-    public class FillSettings : INotifyPropertyChanged
+    /// <summary>Settings for the "🪣 Fill" area mode.</summary>
+    public sealed class FillSettings : AreaModeSettings
     {
-        private bool _enabled;
+        private string _color = "#FFFFFF";
 
-        public bool Enabled
+        /// <summary>Initializes a new instance of the <see cref="FillSettings" /> class.</summary>
+        /// <param name="owner">The <see cref="DrawingState" /> this settings object belongs to.</param>
+        public FillSettings(DrawingState owner) : base(owner, AreaMode.Fill)
         {
-            get => _enabled;
-            set
-            {
-                _enabled = value;
-                OnPropertyChanged(nameof(Enabled));
-            }
         }
 
-        public string Color { get; set; } = "#FFFFFF";
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        /// <summary>Gets or sets the fill color, as a hex string (e.g. "#FFFFFF") - matches DrawingState.BrushColor's convention.</summary>
+        public string Color
+        {
+            get => _color;
+            set
+            {
+                if (_color == value) return;
+                _color = value;
+                OnPropertyChanged(nameof(Color));
+            }
+        }
     }
 }

@@ -2,31 +2,24 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     SlimControls
  * FILE:        EraseSettings.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Settings for the "Clear area" (Erase) area mode. It needs no payload beyond Enabled -
+ *              clearing an area takes no color/pattern/effect - so this class exists only to give that
+ *              mode a place in DrawingState.Erase, matching the shape of Fill/Texture/Filter. See
+ *              AreaModeSettings for what Enabled means and why it is no longer stored here.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.ComponentModel;
+using Imaging.Enums;
 
 namespace SlimControls
 {
-    public class EraseSettings : INotifyPropertyChanged
+    /// <summary>Settings for the "✂️ Clear" area mode.</summary>
+    public sealed class EraseSettings : AreaModeSettings
     {
-        private bool _enabled;
-
-        public bool Enabled
+        /// <summary>Initializes a new instance of the <see cref="EraseSettings" /> class.</summary>
+        /// <param name="owner">The <see cref="DrawingState" /> this settings object belongs to.</param>
+        public EraseSettings(DrawingState owner) : base(owner, AreaMode.Erase)
         {
-            get => _enabled;
-            set
-            {
-                _enabled = value;
-                OnPropertyChanged(nameof(Enabled));
-            }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

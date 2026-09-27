@@ -51,7 +51,7 @@ namespace SlimControls
         /// <summary>
         /// The are area modes enabled
         /// </summary>
-        private bool _areAreaModesEnabled;
+        private bool _isShapeToolActive;
 
         /// <summary>
         /// The brush color
@@ -64,17 +64,31 @@ namespace SlimControls
         private double _brushOpacity = 1.0;
 
         /// <summary>
-        /// Gets or sets a value indicating whether [are area modes enabled].
+        /// The is active layer raster
+        /// </summary>
+        private bool _isActiveLayerRaster = true;
+
+        /// <summary>
+        /// The shape filled
+        /// </summary>
+        private bool _shapeFilled = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Shape tool is the active tool. Gates the visibility
+        /// of both the shape-type picker (Rect/Ellipse/Freeform/Polygon) and the area-mode picker (Fill/
+        /// Texture/Filter/Clear) in the toolbar - both only mean anything while drawing a shape. Named for
+        /// what it means rather than "AreAreaModesEnabled": it now does double duty for the shape-type
+        /// picker too, and a name describing only the older of its two uses would be actively misleading.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [are area modes enabled]; otherwise, <c>false</c>.
+        ///   <c>true</c> if the active tool is <see cref="DrawTool.Shape" />; otherwise, <c>false</c>.
         /// </value>
-        public bool AreAreaModesEnabled
+        public bool IsShapeToolActive
         {
-            get => _areAreaModesEnabled;
+            get => _isShapeToolActive;
             set
             {
-                _areAreaModesEnabled = value;
+                _isShapeToolActive = value;
                 OnPropertyChanged();
             }
         }
@@ -122,14 +136,19 @@ namespace SlimControls
                 if (_activeAreaMode == value) return;
 
                 _activeAreaMode = value;
-                UpdateSubStates();
                 OnPropertyChanged();
                 OnToolOrModeChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the selected shape.
+        /// Gets or sets which shape a "🔺 Shape" tool stroke draws (Rectangle/Ellipse/Freeform/Polygon).
+        /// Independent of <see cref="ActiveTool" /> - selecting a shape type no longer implicitly switches
+        /// the active tool to <see cref="DrawTool.Shape" /> (it used to; see the type's own remarks in
+        /// source control history for why that was a problem). The shape-type picker in the toolbar is only
+        /// shown while <see cref="ActiveTool" /> is already <see cref="DrawTool.Shape" /> - gated by
+        /// <see cref="IsShapeToolActive" />, the same flag that gates the area-mode picker - exactly
+        /// mirroring how <see cref="ActiveAreaMode" /> is already independent of <see cref="ActiveTool" />.
         /// </summary>
         /// <value>
         /// The selected shape.
@@ -142,17 +161,39 @@ namespace SlimControls
                 if (_selectedShape == value) return;
 
                 _selectedShape = value;
-
-                // FIX: When user picks a shape, automatically switch the Active Tool
-                ActiveTool = DrawTool.Shape;
-
                 OnPropertyChanged();
                 OnToolOrModeChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the size of the brush.
+        /// Gets or sets whether a newly-drawn shape (Rect/Ellipse/Polygon) is filled. When <c>false</c>, the
+        /// shape is stroke-only (outline) regardless of <see cref="ActiveAreaMode" />/<see cref="Fill" />/
+        /// <see cref="Texture" />/<see cref="Filter" /> - those choose *what* fills a shape, this chooses
+        /// *whether* it is filled at all, which is why it is a separate, independent flag rather than a
+        /// fifth <see cref="AreaMode" /> value. Ignored by open shapes (line/freeform), which were never
+        /// fillable in the first place. Defaults to <c>true</c> so existing behavior (every new shape is
+        /// filled per the current area mode) is unchanged until the toolbar's "Fill" checkbox is unchecked.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if new shapes are filled; <c>false</c> for outline-only.
+        /// </value>
+        public bool ShapeFilled
+        {
+            get => _shapeFilled;
+            set
+            {
+                if (_shapeFilled == value) return;
+
+                _shapeFilled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the size of the brush. Clamped to [1, 50] - the same range the toolbar's slider
+        /// already enforces by construction; clamping here too means typing a value directly (see
+        /// DrawingToolBarControl's numeric entry box) can't bypass it.
         /// </summary>
         /// <value>
         /// The size of the brush.
@@ -162,6 +203,9 @@ namespace SlimControls
             get => _brushSize;
             set
             {
+                value = Math.Clamp(value, 1, 50);
+                if (Math.Abs(_brushSize - value) < 0.001) return;
+
                 _brushSize = value;
                 OnPropertyChanged();
             }
@@ -184,7 +228,8 @@ namespace SlimControls
         }
 
         /// <summary>
-        /// Gets or sets the brush opacity.
+        /// Gets or sets the brush opacity. Clamped to [0.1, 1.0], matching the toolbar slider's own range -
+        /// see <see cref="BrushSize" />'s remarks on why clamping happens here too, not just in the slider.
         /// </summary>
         /// <value>
         /// The brush opacity.
@@ -194,9 +239,34 @@ namespace SlimControls
             get => _brushOpacity;
             set
             {
+                value = Math.Clamp(value, 0.1, 1.0);
                 if (Math.Abs(_brushOpacity - value) < 0.01) return;
 
                 _brushOpacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the currently active layer can take pixel edits (a raster
+        /// layer, or no layered document at all - see remarks). Pencil, Eraser and the "Clear" area mode all
+        /// end up calling <c>LayerDocumentController.ApplyToActiveRasterLayer</c>/<c>DrawStrokeAsync</c>,
+        /// which are no-ops or throw when the active layer is a shape layer; the toolbar binds this to those
+        /// tools' <c>IsEnabled</c> so that mismatch is visible and unclickable instead of silently doing
+        /// nothing (Pencil/Eraser) or being caught and swallowed (Clear) further down.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the active layer accepts pixel edits, or there is no layered document (single-
+        ///   bitmap editing, where this restriction does not apply); otherwise <c>false</c>.
+        /// </value>
+        public bool IsActiveLayerRaster
+        {
+            get => _isActiveLayerRaster;
+            set
+            {
+                if (_isActiveLayerRaster == value) return;
+
+                _isActiveLayerRaster = value;
                 OnPropertyChanged();
             }
         }
@@ -225,7 +295,7 @@ namespace SlimControls
         /// <value>
         /// The fill.
         /// </value>
-        public FillSettings Fill { get; } = new();
+        public FillSettings Fill { get; }
 
         /// <summary>
         /// Gets the texture.
@@ -233,7 +303,7 @@ namespace SlimControls
         /// <value>
         /// The texture.
         /// </value>
-        public TextureSettings Texture { get; } = new();
+        public TextureSettings Texture { get; }
 
         /// <summary>
         /// Gets the filter.
@@ -241,7 +311,7 @@ namespace SlimControls
         /// <value>
         /// The filter.
         /// </value>
-        public FilterSettings Filter { get; } = new();
+        public FilterSettings Filter { get; }
 
         /// <summary>
         /// Gets the erase.
@@ -249,44 +319,32 @@ namespace SlimControls
         /// <value>
         /// The erase.
         /// </value>
-        public EraseSettings Erase { get; } = new();
+        public EraseSettings Erase { get; }
 
         /// <summary>
-        /// LOGIC HUB: This determines what is active based on the current selection
-        /// Updates the sub states.
+        /// Initializes a new instance of the <see cref="DrawingState" /> class. Constructs the four area-mode
+        /// settings objects with a back-reference to this instance, so each can compute its own
+        /// <see cref="AreaModeSettings.Enabled" /> from <see cref="ActiveAreaMode" /> directly (see
+        /// AreaModeSettings' own remarks) instead of <see cref="UpdateSubStates" /> having to set all four
+        /// by hand.
+        /// </summary>
+        public DrawingState()
+        {
+            Fill = new FillSettings(this);
+            Texture = new TextureSettings(this);
+            Filter = new FilterSettings(this);
+            Erase = new EraseSettings(this);
+        }
+
+        /// <summary>
+        /// Re-derives <see cref="IsShapeToolActive" /> from <see cref="ActiveTool" />. Called whenever the
+        /// active tool changes; the four area-mode settings objects re-derive their own
+        /// <see cref="AreaModeSettings.Enabled" /> independently (see that class), so there is nothing else
+        /// left for this method to do.
         /// </summary>
         private void UpdateSubStates()
         {
-            // 1. Check if the Active Tool is "Simple"
-            var isSimpleTool =
-                ActiveTool is DrawTool.Pencil or DrawTool.Eraser or DrawTool.Move or DrawTool.ColorPicker;
-
-            // 2. Main Switch: Enable/Disable the entire Mode group
-            AreAreaModesEnabled = !isSimpleTool;
-
-            // 3. Sub-Switches: Handle specific option panels
-            if (isSimpleTool)
-            {
-                // Simple tools have no sub-options
-                Fill.Enabled = false;
-                Texture.Enabled = false;
-                Filter.Enabled = false;
-                Erase.Enabled = false;
-            }
-            else
-            {
-                // Complex tools show the panel matching the current Mode
-                Fill.Enabled = ActiveAreaMode == AreaMode.Fill;
-                Texture.Enabled = ActiveAreaMode == AreaMode.Texture;
-                Filter.Enabled = ActiveAreaMode == AreaMode.Filter;
-                Erase.Enabled = ActiveAreaMode == AreaMode.Erase;
-            }
-
-            // 4. Notify UI to refresh visibility
-            OnPropertyChanged(nameof(Fill));
-            OnPropertyChanged(nameof(Texture));
-            OnPropertyChanged(nameof(Filter));
-            OnPropertyChanged(nameof(Erase));
+            IsShapeToolActive = ActiveTool == DrawTool.Shape;
         }
 
         /// <summary>

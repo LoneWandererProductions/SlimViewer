@@ -110,14 +110,16 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Raised for every change to the document: structural edits, layer property changes, shape edits,
-        ///     and pixel edits (including one raise per flushed batch of a still-in-progress stroke, so a live
-        ///     view - such as <see cref="Common.Images.ImageZoom" />'s <c>LayeredDocument</c> - can redraw
-        ///     before the stroke is committed to history).
+        /// Raised for every change to the document: structural edits, layer property changes, shape edits,
+        /// and pixel edits (including one raise per flushed batch of a still-in-progress stroke, so a live
+        /// view - such as <see cref="Common.Images.ImageZoom" />'s <c>LayeredDocument</c> - can redraw
+        /// before the stroke is committed to history).
         /// </summary>
         public event EventHandler<DocumentChangedEventArgs>? DocumentChanged;
 
-        /// <summary>Raised whenever CanUndo/CanRedo/IsDirty may have changed.</summary>
+        /// <summary>
+        /// Raised whenever CanUndo/CanRedo/IsDirty may have changed.
+        /// </summary>
         public event EventHandler? HistoryChanged;
 
         /// <summary>
@@ -129,14 +131,7 @@ namespace SlimViews
         /// </summary>
         public event EventHandler? ActiveLayerChanged;
 
-        /// <summary>
-        /// Creates a controller for a brand new document with one background raster layer (the bitmap is copied).
-        /// </summary>
-        /// <param name="bitmap">The bitmap.</param>
-        /// <param name="backgroundName">Name of the background.</param>
-        /// <param name="undoLimit">The undo limit.</param>
-        /// <param name="rasterizer">The rasterizer.</param>
-        /// <returns>A new LayerDocumentController.</returns>
+        /// <summary>Creates a controller for a brand new document with one background raster layer (the bitmap is copied).</summary>
         public static LayerDocumentController FromBitmap(Bitmap bitmap, string backgroundName = "Background",
             int undoLimit = 50, IShapeRasterizer? rasterizer = null)
         {
@@ -150,7 +145,7 @@ namespace SlimViews
         /// <param name="document">The document.</param>
         /// <param name="undoLimit">The undo limit.</param>
         /// <param name="rasterizer">The rasterizer.</param>
-        /// <returns>A new LayerDocumentController.</returns>
+        /// <returns>A new Layer Controller.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
         public static LayerDocumentController FromDocument(Document document, int undoLimit = 50,
             IShapeRasterizer? rasterizer = null)
@@ -165,7 +160,7 @@ namespace SlimViews
         /// <param name="path">The path.</param>
         /// <param name="undoLimit">The undo limit.</param>
         /// <param name="rasterizer">The rasterizer.</param>
-        /// <returns>A new LayerDocumentController.</returns>
+        /// <returns>A new Layer Controller.</returns>
         public static LayerDocumentController Load(string path, int undoLimit = 50, IShapeRasterizer? rasterizer = null)
         {
             return FromDocument(new DocumentSerializer().Load(path), undoLimit, rasterizer);
@@ -185,7 +180,7 @@ namespace SlimViews
         /// Adds a raster layer on top, makes it active, and returns its id.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <returns>The Guid of the Layer.</returns>
+        /// <returns>Guid of Layer.</returns>
         public Guid AddRasterLayer(string name = "Layer")
         {
             var layer = new RasterLayer(Document.Width, Document.Height, name);
@@ -198,7 +193,8 @@ namespace SlimViews
         /// Adds a shape layer on top, makes it active, and returns its id.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <returns>The Guid of the Layer.</returns>
+        /// <returns>Guid of Layer.</returns>
+
         public Guid AddShapeLayer(string name = "Shapes")
         {
             var layer = new ShapeLayer(name);
@@ -211,7 +207,7 @@ namespace SlimViews
         /// Duplicates a layer, placing the copy directly above the original and making it active.
         /// </summary>
         /// <param name="layerId">The layer identifier.</param>
-        /// <returns>The Guid of the Layer.</returns>
+        /// <returns>Guid of Layer.</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">Layer {layerId} not found.</exception>
         public Guid DuplicateLayer(Guid layerId)
         {
@@ -388,11 +384,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Composites every visible layer into a new bitmap (the caller owns and must dispose it).
-        ///     This is what should be pushed to the display and used for "flatten and save as PNG/JPEG".
-        ///     <see cref="Common.Images.ImageZoom" />'s <c>LayeredDocument</c> property flattens the same way,
-        ///     directly from <see cref="Document" />, and does not need this method itself.
+        /// Composites every visible layer into a new bitmap (the caller owns and must dispose it).
+        /// This is what should be pushed to the display and used for "flatten and save as PNG/JPEG".
+        /// <see cref="Common.Images.ImageZoom" />'s <c>LayeredDocument</c> property flattens the same way,
+        /// directly from <see cref="Document" />, and does not need this method itself.
         /// </summary>
+        /// <returns></returns>
         public Bitmap Flatten()
         {
             using var buffer = DocumentRenderer.Flatten(Document, _rasterizer);
@@ -453,7 +450,7 @@ namespace SlimViews
         /// <summary>
         /// Actives the shape layer identifier.
         /// </summary>
-        /// <returns>The Guid of the Layer.</returns>
+        /// <returns>Guid of Layer.</returns>
         /// <exception cref="System.InvalidOperationException">The active layer is not a shape layer.</exception>
         private Guid ActiveShapeLayerId()
         {
@@ -482,7 +479,7 @@ namespace SlimViews
         /// into the layer, with no copy in either direction. Disposing it only releases the GDI+ handle.
         /// </summary>
         /// <param name="layer">The layer.</param>
-        /// <returns>Bitmap of the layer.</returns>
+        /// <returns>Bitmap of the Current Image.</returns>
         private static Bitmap ViewOf(RasterLayer layer)
         {
             return new Bitmap(layer.Width, layer.Height, layer.Width * UnmanagedImageBuffer.BytesPerPixel,
@@ -490,12 +487,12 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Strokes the bounds.
+        /// Stroke bounds.
         /// </summary>
         /// <param name="points">The points.</param>
         /// <param name="previous">The previous.</param>
         /// <param name="radius">The radius.</param>
-        /// <returns>The Pixel Rectangle.</returns>
+        /// <returns>Rectangle Bound.</returns>
         private static PixelRect StrokeBounds(IReadOnlyList<Point> points, Point? previous, int radius)
         {
             var minX = int.MaxValue;
