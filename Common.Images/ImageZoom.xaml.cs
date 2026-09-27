@@ -14,28 +14,48 @@
 /*
  * TODO — ImageZoom & SelectionAdorner Architecture Roadmap
  * --------------------------------------------------------
- * CURRENT STATUS: Functional "Monolithic" Pattern.
- * NEXT STEP: Refactor to "State/Strategy" Pattern (IToolHandler).
+ * CURRENT STATUS: "State/Strategy" pattern (IToolHandler) landed - see MoveToolHandler.cs,
+ * DotToolHandler.cs, GestureToolHandler.cs, ToolContext.cs, Interfaces/IToolHandler.cs,
+ * Interfaces/IPreviewSource.cs. SelectionAdorner.cs is now visualization-only.
+ * NEXT STEP: see the open items below - transform pipeline (3) and extended toolset (6) are
+ * the two sections nothing here has touched yet.
  *
  * 1. INPUT / EVENT SYSTEM
  * -----------------------
- * [ ] Move input handling (mouse down/move/up) completely into ImageZoom
- * (currently shared/delegated to Adorner)
- * [ ] Add a unified input dispatcher that forwards events to the current tool
- * [ ] Implement ToolContext to carry image transforms, image size, modifiers (Ctrl/Shift)
+ * [x] Move input handling (mouse down/move/up) completely into ImageZoom
+ * (Done: Canvas_MouseDown/Move/Up compute a ToolContext and dispatch to the resolved
+ * IToolHandler; the adorner has no mouse-event code of its own left at all)
+ * [x] Add a unified input dispatcher that forwards events to the current tool
+ * (Done via ResolveHandler(SelectionTool), replacing the three switch(SelectionTool) statements)
+ * [~] Implement ToolContext to carry image transforms, image size, modifiers (Ctrl/Shift)
+ * (ToolContext exists and is what OnMouseDown/Move/Up now take, but only carries
+ * ImagePosition/CanvasPosition so far - transforms/size/modifiers can be added to it later
+ * without touching IToolHandler's signature or any handler body)
  *
  *
  * 2. TOOL SYSTEM REFINEMENT (The "Switch Statement" Refactor)
  * -----------------------------------------------------------
- * [ ] Introduce IToolHandler interface:
- * - OnMouseDown / OnMouseMove / OnMouseUp
- * - RenderOverlay(DrawingContext dc)
- * - GetFrame() / Reset()
+ * [~] Introduce IToolHandler interface:
+ * - OnMouseDown / OnMouseMove / OnMouseUp [x]
+ * - RenderOverlay(DrawingContext dc) [ ] - not done as named; instead SelectionAdorner.OnRender
+ * pulls read-only preview data from the active handler via IPreviewSource, rather than the
+ * handler pushing draw calls itself. Same goal (adorner doesn't own the data), different shape -
+ * a better fit for one shared adorner drawing several tools' state than per-tool render methods.
+ * - GetFrame() / Reset() - Reset() [x]; GetFrame() not a named interface member, but
+ * GestureToolHandler's own CaptureAndClear/GetCommittedFrames serve the same purpose informally.
  *
- * [ ] Convert Rectangle, Ellipse, Dot, Trace, FreeForm into dedicated tool classes
+ * [~] Convert Rectangle, Ellipse, Dot, Trace, FreeForm into dedicated tool classes
  * (e.g., RectangleTool.cs, FreeFormTool.cs) to remove the massive switch statements.
- * [ ] Add ToolState / ToolSession object to store points, frame, geometry
- * [ ] Decouple selection logic from the adorner (Adorner should only DRAW, not hold data)
+ * (The switch statements ARE gone. Deliberately not 1:1 with the list, though: Rectangle,
+ * Ellipse, FreeForm, Polygon and Trace share one GestureToolHandler, driven by the existing
+ * GestureCatalog data table, instead of five near-identical classes - splitting them further
+ * would have quietly reintroduced the duplication GestureCatalog already solved once. Dot got
+ * its own DotToolHandler; Move its own MoveToolHandler.)
+ * [x] Add ToolState / ToolSession object to store points, frame, geometry
+ * (No separate ToolSession class - DotToolHandler/GestureToolHandler ARE that object, each
+ * owning exactly the points/frame data its own gesture needs)
+ * [x] Decouple selection logic from the adorner (Adorner should only DRAW, not hold data)
+ * (Done - see section 4, same underlying change)
  *
  *
  * 3. TRANSFORM PIPELINE
@@ -48,20 +68,29 @@
  * - InputTransform   (screen → image/pixel space)
  * [-] Update SelectionFrame to always use pixel-space coordinates
  * (Currently handled via conversion in ImageProcessor.FillArea, but Frame itself stores WPF Points)
+ * (Untouched by the IToolHandler/adorner work - MoveToolHandler still does the same manual
+ * matrix math it always did, and SelectionAdorner.ToImageSpace/_imageTransform is still one
+ * Transform used in both directions rather than two independently-stored ones)
  *
  *
  * 4. ADORNER IMPROVEMENTS
  * ------------------------
- * [ ] Restrict adorner to visualization-only duties (View)
- * [ ] Let adorner read data from current IToolHandler instead of owning the Point Lists
+ * [x] Restrict adorner to visualization-only duties (View)
+ * (Done - SelectionAdorner now holds only the image transform and Source; OnRender is its
+ * only real method)
+ * [x] Let adorner read data from current IToolHandler instead of owning the Point Lists
+ * (Done via IPreviewSource/SelectionAdorner.Source, set by ImageZoom in AttachAdorner/
+ * OnSelectionToolChanged whenever the active tool changes)
  * [ ] Add double-buffering or DrawingVisual for smoother overlay drawing (optional)
  *
  *
  * 5. IMAGE OPERATIONS (COMPLETED / INTEGRATED)
  * --------------------------------------------
  * [x] Integrate DirectBitmapImage operations (Done via ImageProcessor & ImageView)
- * [x] Add selection commit logic (Done via SelectionAdorner.CaptureAndClear & Canvas_MouseUp)
- * [x] Support FreeForm Polygon filling (Done via auto-close logic in CaptureAndClear)
+ * [x] Add selection commit logic (Done via GestureToolHandler's private CaptureAndClear,
+ * called from its own OnMouseUp - moved off SelectionAdorner along with the rest of section 4)
+ * [x] Support FreeForm Polygon filling (Done via auto-close logic in RecomputeCurrentFrame,
+ * GestureToolHandler's version of the old UpdateCurrentSelectionFrame)
  * [ ] Add support for brush size/hardness visualization in the Adorner
  * [ ] Add pixel-snapping modes (whole pixel alignment when zoomed)
  *
@@ -72,19 +101,27 @@
  * [ ] Magic-wand / flood-fill selection (using existing flood-fill helper)
  * [ ] Text tool (typed overlay rendered to bitmap)
  * [ ] Stamp/cloning tool
- * [ ] Multi-layer support (background, overlay layers)
+ * [~] Multi-layer support (background, overlay layers), partly done when the correct data-type is loaded.
+ * [ ] KNOWN GAP (found during the adorner refactor, not fixed there - a behavior change, not a
+ * data-ownership move): Trace never actually accumulates points. Its GestureCatalog entry uses
+ * SelectionShape.None ("bespoke, drives itself"), but nothing feeds OnMouseMove points into it -
+ * the old SelectionAdorner.IsTracing flag looked like it was meant to be that connection and was
+ * set in three places, but nothing ever read it, so it was dropped rather than carried forward.
+ * Likely fix: give Trace SelectionShape. Freeform in GestureCatalog instead of None.
  *
  *
  * 7. PERFORMANCE & ARCHITECTURE
  * ------------------------------
  * [ ] Add invalidate throttling (Redraw only when needed)
- * [x] Clear "Ghost Frames" immediately after drawing (Done via CaptureAndClear)
+ * [x] Clear "Ghost Frames" immediately after drawing (Done via GestureToolHandler's private
+ * CaptureAndClear - see section 5's note on where this moved to)
  * [ ] Add high-DPI support for Zoom + PixelGrid alignment
  * [ ] Allow async pixel operations for large fills
  *
  * END TODO LIST
  */
 
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections.Generic;
@@ -378,9 +415,11 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Handles <see cref="Document.Changed" /> for the attached <see cref="LayeredDocument" />: an edit
-        ///     to a layer (a stroke, a shape added, a layer's opacity changed, ...) re-flattens and redraws.
+        /// Handles <see cref="Document.Changed" /> for the attached <see cref="LayeredDocument" />: an edit
+        /// to a layer (a stroke, a shape added, a layer's opacity changed, ...) re-flattens and redraws.
         /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DocumentChangedEventArgs"/> instance containing the event data.</param>
         private void OnLayeredDocumentChanged(object? sender, DocumentChangedEventArgs e)
         {
             if (_disposed) return;
@@ -400,12 +439,13 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Flattens <see cref="LayeredDocument" /> and pushes the result into <see cref="BtmImage" />,
-        ///     mirroring what <see cref="OnImageSourcePropertyChanged" /> does for a plain <see cref="ImageSource" />
-        ///     (stop any running GIF, push the bitmap, keep canvas size and the selection adorner's transform
-        ///     in sync) but driven by <paramref name="resetZoom" /> directly instead of re-deriving it from
-        ///     old/new bitmap sizes - a live document's canvas size does not change from one flatten to the next.
+        /// Flattens <see cref="LayeredDocument" /> and pushes the result into <see cref="BtmImage" />,
+        /// mirroring what <see cref="OnImageSourcePropertyChanged" /> does for a plain <see cref="ImageSource" />
+        /// (stop any running GIF, push the bitmap, keep canvas size and the selection adorner's transform
+        /// in sync) but driven by <paramref name="resetZoom" /> directly instead of re-deriving it from
+        /// old/new bitmap sizes - a live document's canvas size does not change from one flatten to the next.
         /// </summary>
+        /// <param name="resetZoom">if set to <c>true</c> [reset zoom].</param>
         private void RefreshLayeredDocument(bool resetZoom)
         {
             var document = LayeredDocument;
@@ -953,7 +993,7 @@ namespace Common.Images
         internal bool FlushStroke(bool isLast = false)
         {
             if (StrokeBuffer.Count == 0) return true;
-            if (SelectedPointCommand?.CanExecute(null) != true) return false;
+            if (SelectedPointCommand.CanExecute(null) != true) return false;
 
             var points = StrokeBuffer.ToArray();
             StrokeBuffer.Clear();
