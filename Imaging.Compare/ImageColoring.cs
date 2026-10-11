@@ -73,7 +73,7 @@ namespace Imaging.Compare
         /// <exception cref="OutOfMemoryException">Out of Memory</exception>
         /// <exception cref="ArgumentException">Wrong Argument</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        private static List<ImageColor> GetSortedColorValues(IReadOnlyCollection<string?> imagePaths)
+        private static List<ImageColor> GetSortedColorValues(IReadOnlyCollection<string?>? imagePaths)
         {
             var imagePathsAndGrayValues = new List<ImageColor>(imagePaths.Count);
 

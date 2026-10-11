@@ -114,7 +114,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="source">A collection of file or folder paths.</param>
         /// <returns>The shortest path, or null if <paramref name="source"/> is empty.</returns>
-        internal static string? SearchRoot(IReadOnlyCollection<string?> source)
+        internal static string? SearchRoot(IReadOnlyCollection<string?>? source)
         {
             if (source == null || source.Count == 0)
                 return null;

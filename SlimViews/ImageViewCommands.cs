@@ -63,6 +63,14 @@ namespace SlimViews
         public ICommand OpenCbz { get; }
 
         /// <summary>
+        /// Gets or sets the generate atlas.
+        /// </summary>
+        /// <value>
+        /// The generate atlas.
+        /// </value>
+        public ICommand GenerateAtlas { get; set; }
+
+        /// <summary>
         /// Gets the open.
         /// </summary>
         /// <value>
@@ -455,6 +463,7 @@ namespace SlimViews
             // ---- UI / direct owner commands ----
             Close = new DelegateCommand<object>(owner.CloseAction, CanRun);
             OpenCbz = new DelegateCommand<object>(owner.OpenCbzAction, CanRun);
+            GenerateAtlas = new DelegateCommand<object>(owner.GenerateAtlasAction, CanRun);
             Open = new DelegateCommand<object>(owner.OpenAction, CanRun);
             Refresh = new AsyncDelegateCommand<string>(owner.RefreshActionAsync, CanRun);
             Folder = new DelegateCommand<object>(owner.FolderAction, CanRun);

@@ -11,6 +11,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;

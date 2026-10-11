@@ -62,7 +62,7 @@ namespace SlimViews
         /// <param name="obj">Unused parameter (reserved for future use).</param>
         internal void ConvertCif(ImageView? owner, object obj)
         {
-            if (owner?.Image?.Bitmap == null)
+            if (owner?.Image.Bitmap == null)
                 return;
 
             var pathObj = DialogHandler.HandleFileOpen(ViewResources.FileOpen, owner.FileContext.CurrentPath);

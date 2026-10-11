@@ -118,7 +118,7 @@ namespace SlimViews
         ///     Gets the configuration.
         /// </summary>
         /// <returns>Config File</returns>
-        public static Config GetConfig()
+        public static Config? GetConfig()
         {
             if (!File.Exists(Path)) return new Config();
 

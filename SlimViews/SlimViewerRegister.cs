@@ -151,7 +151,7 @@ namespace SlimViews
         ///     Sets the register.
         /// </summary>
         /// <param name="obj">The object.</param>
-        public static void SetRegister(Config obj)
+        public static void SetRegister(Config? obj)
         {
             GifCleanUp = obj.GifCleanUp;
             MainAutoPlayGif = obj.MainAutoPlayGif;

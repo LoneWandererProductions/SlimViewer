@@ -86,70 +86,135 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Converts a GIF to images and saves them to the specified export path.
+        /// Generates a texture atlas from all images in a specified folder (capped at 200 files), 
+        /// handles varying image sizes, and saves it automatically inside the source folder.
         /// </summary>
-        /// <param name="gifPath">The path of the GIF file.</param>
-        /// <param name="imageExport">The target path for converted images.</param>
-        internal static async Task ConvertGifActionAsync(string gifPath, string imageExport)
+        /// <param name="folderPath">The folder containing the source images.</param>
+        /// <returns>True if the texture atlas was successfully generated and saved; otherwise, false.</returns>
+        internal static bool GenerateTextureAtlas(string? folderPath)
         {
-            var images = await Render.SplitGif(gifPath);
+            if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
+                return false;
 
-            foreach (var image in images)
+            // 1. Gather all image file paths using FileHandleSearch[cite: 1]
+            var files = FileHandleSearch.GetFilesByExtensionFullPath(folderPath, ImagingResources.Appendix, false);
+            if (files.IsNullOrEmpty())
             {
-                using (image) // Disposes the frame once the loop iteration finishes
+                Trace.WriteLine("No images found in the specified folder for texture atlas generation.");
+                return false;
+            }
+
+            if (files.Count > 300)
+            {
+                files = files.Take(200).ToList();
+            }
+
+            var bitmaps = new List<Bitmap>();
+            const int maxTileSize = 512; // Safety threshold to prevent GDI+ canvas allocation crashes
+
+            foreach (var file in files)
+            {
+                if (File.Exists(file))
                 {
                     try
                     {
-                        var fileName = $"frame{ImagingResources.JpgExt}";
-                        var fullPath = Path.Combine(imageExport, fileName);
+                        var bmp = new Bitmap(file);
+                        // Validate dimensions immediately to prevent GDI+ ArgumentExceptions
+                        if (bmp.Width > 0 && bmp.Height > 0)
+                        {
+                            // If the image is too large, scale it down to protect the atlas canvas size
+                            if (bmp.Width > maxTileSize || bmp.Height > maxTileSize)
+                            {
+                                var scaledBmp = Resize(bmp, maxTileSize, maxTileSize);
+                                bmp.Dispose(); // Dispose original large bitmap
 
-                        var success = SaveImage(fullPath, ImagingResources.JpgExt, image);
-                        if (!success) ShowError(ViewResources.ErrorCouldNotSaveFile);
+                                if (scaledBmp is { Width: > 0, Height: > 0 })
+                                {
+                                    bitmaps.Add(scaledBmp);
+                                }
+                            }
+                            else
+                            {
+                                bitmaps.Add(bmp);
+                            }
+                        }
+                        else
+                        {
+                            bmp.Dispose();
+                        }
                     }
-                    catch (Exception ex) when (ex is ArgumentException or IOException or ExternalException)
+                    catch (Exception ex) when (ex is ArgumentException or IOException)
                     {
                         Trace.WriteLine(ex);
-                        ShowError(ex.ToString(), nameof(ConvertGifAction));
                     }
                 }
             }
-        }
 
-        /// <summary>
-        ///     Converts images in a folder to a GIF.
-        /// </summary>
-        /// <param name="folder">The source folder.</param>
-        /// <param name="gifPath">The target path for the GIF.</param>
-        /// <returns>The path to the newly created GIF file.</returns>
-        internal static string ConvertToGifAction(string folder, string gifPath)
-        {
-            var targetGifPath = Path.Combine(gifPath, ViewResources.NewGif);
-            Render.CreateGif(folder, targetGifPath);
-            return targetGifPath;
-        }
+            // Safeguard cleanup if any invalid ones slipped through
+            bitmaps.RemoveAll(b => b.Width <= 0 || b.Height <= 0);
 
-        /// <summary>
-        ///     Converts a list of image paths to a GIF.
-        /// </summary>
-        /// <param name="images">The paths of the images.</param>
-        /// <param name="filePath">The target file path for the GIF.</param>
-        internal static void ConvertGifAction(List<string> images, string filePath)
-        {
-            Render.CreateGif(images, filePath);
-        }
+            if (bitmaps.Count == 0)
+                return false;
 
-        /// <summary>
-        ///     Sets the pixel.
-        /// </summary>
-        /// <param name="btm">The bitmap.</param>
-        /// <param name="point">The point.</param>
-        /// <param name="color">The color.</param>
-        /// <param name="radius">The optional radius.</param>
-        internal static Bitmap? SetPixel(Bitmap? btm, Point point, Color color, int radius = 1)
-        {
-            if (btm == null) return null;
+            try
+            {
+                // 2. Account for different sizes by finding maximum dimensions
+                var cellWidth = bitmaps.Max(b => b.Width);
+                var cellHeight = bitmaps.Max(b => b.Height);
 
-            return Render.SetPixel(btm, point, color, radius);
+                if (cellWidth <= 0 || cellHeight <= 0)
+                    return false;
+
+                // Define a grid layout (maximum of 4 columns per row)
+                var columns = Math.Min(bitmaps.Count, 4);
+                var rows = (int)Math.Ceiling((double)bitmaps.Count / columns);
+
+                var atlasWidth = columns * cellWidth;
+                var atlasHeight = rows * cellHeight;
+
+                // 3. Create the master atlas canvas safely
+                using var atlasBitmap = new Bitmap(atlasWidth, atlasHeight);
+                using (var graph = Graphics.FromImage(atlasBitmap))
+                {
+                    // Clear background with transparency
+                    graph.Clear(Color.Transparent);
+
+                    // High-quality rendering settings
+                    graph.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    graph.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                    for (var i = 0; i < bitmaps.Count; i++)
+                    {
+                        var col = i % columns;
+                        var row = i / columns;
+
+                        // Center smaller images neatly within their grid cell slot
+                        var x = (col * cellWidth) + (cellWidth - bitmaps[i].Width) / 2;
+                        var y = (row * cellHeight) + (cellHeight - bitmaps[i].Height) / 2;
+
+                        // Draw the individual image safely onto the atlas canvas
+                        graph.DrawImage(bitmaps[i], x, y, bitmaps[i].Width, bitmaps[i].Height);
+                    }
+                }
+
+                // 4. Automatically build output path and save using SaveImage[cite: 3]
+                var outputPath = Path.Combine(folderPath, "TextureAtlas");
+                return SaveImage(outputPath, ImagingResources.PngExt, atlasBitmap);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException or ExternalException)
+            {
+                Trace.WriteLine(ex);
+                ShowError(ex.ToString(), nameof(GenerateTextureAtlas));
+                return false;
+            }
+            finally
+            {
+                // 5. Clean up individual source bitmaps from memory
+                foreach (var bmp in bitmaps)
+                {
+                    bmp.Dispose();
+                }
+            }
         }
 
         /// <summary>
@@ -181,8 +246,14 @@ namespace SlimViews
         }
 
         /// <summary>
-        ///     Asynchronously generates an export file with specified information and an optional difference bitmap.
+        /// Asynchronously generates an export file with specified information and an optional difference bitmap.
         /// </summary>
+        /// <param name="informationOne">The information one.</param>
+        /// <param name="informationTwo">The information two.</param>
+        /// <param name="colorOne">The color one.</param>
+        /// <param name="colorTwo">The color two.</param>
+        /// <param name="similarity">The similarity.</param>
+        /// <param name="difference">The difference.</param>
         internal static async Task GenerateExportAsync(string? informationOne, string? informationTwo, string? colorOne,
             string? colorTwo, string? similarity, Bitmap? difference)
         {

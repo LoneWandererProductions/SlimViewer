@@ -15,6 +15,7 @@ using System;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using Imaging;
+using Imaging.Objects.Commands;
 using Imaging.Objects.Documents;
 using ViewModel;
 
@@ -30,14 +31,31 @@ namespace SlimViews.DataObjects
     /// </summary>
     public sealed class LayerRowViewModel : ViewModelBase
     {
-        /// <summary>Thumbnail edge length in device-independent pixels. Cheap to regenerate; not cached to disk.</summary>
+        /// <summary>
+        /// Thumbnail edge length in device-independent pixels. Cheap to regenerate; not cached to disk.
+        /// </summary>
         private const int ThumbnailSize = 48;
 
+        /// <summary>
+        /// The controller
+        /// </summary>
         private readonly LayerDocumentController _controller;
 
+        /// <summary>
+        /// The layer
+        /// </summary>
         private readonly Layer _layer;
 
-        /// <summary>Initializes a new instance wrapping <paramref name="layer" />; renders the initial thumbnail.</summary>
+        /// <summary>
+        /// Initializes a new instance wrapping <paramref name="layer" />; renders the initial thumbnail.
+        /// </summary>
+        /// <param name="controller">The controller.</param>
+        /// <param name="layer">The layer.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// controller
+        /// or
+        /// layer
+        /// </exception>
         public LayerRowViewModel(LayerDocumentController controller, Layer layer)
         {
             _controller = controller ?? throw new ArgumentNullException(nameof(controller));
@@ -45,16 +63,27 @@ namespace SlimViews.DataObjects
             RefreshThumbnail();
         }
 
-        /// <summary>Gets the stable identity of the wrapped layer.</summary>
+        /// <summary>
+        /// Gets the stable identity of the wrapped layer.
+        /// </summary>
+        /// <value>
+        /// The identifier.
+        /// </value>
         public Guid Id => _layer.Id;
 
-        /// <summary>Gets a short, human-readable label for the layer's kind (used for an icon/tooltip).</summary>
+        /// <summary>
+        /// Gets a short, human-readable label for the layer's kind (used for an icon/tooltip).
+        /// </summary>
         public string Kind => _layer is RasterLayer ? "🖼️ Raster" : "🔺 Shapes";
 
-        /// <summary>Gets a value indicating whether the wrapped layer can take pencil/eraser strokes.</summary>
+        /// <summary>
+        /// Gets a value indicating whether the wrapped layer can take pencil/eraser strokes.
+        /// </summary>
         public bool IsRaster => _layer is RasterLayer;
 
-        /// <summary>Gets or sets the display name. Setting commits an undoable <see cref="SetLayerPropertiesCommand" />.</summary>
+        /// <summary>
+        /// Gets or sets the display name. Setting commits an undoable <see cref="SetLayerPropertiesCommand" />.
+        /// </summary>
         public string Name
         {
             get => _layer.Name;
@@ -66,7 +95,12 @@ namespace SlimViews.DataObjects
             }
         }
 
-        /// <summary>Gets or sets whether the layer takes part in rendering.</summary>
+        /// <summary>
+        /// Gets or sets whether the layer takes part in rendering.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is visible; otherwise, <c>false</c>.
+        /// </value>
         public bool IsVisible
         {
             get => _layer.Visible;
@@ -95,9 +129,12 @@ namespace SlimViews.DataObjects
         }
 
         /// <summary>
-        ///     Gets or sets the blend mode. Only <see cref="BlendMode.Normal" /> exists today - the picker is
-        ///     wired up so nothing further needs touching in this file once more modes land.
+        /// Gets or sets the blend mode. Only <see cref="BlendMode.Normal" /> exists today - the picker is
+        /// wired up so nothing further needs touching in this file once more modes land.
         /// </summary>
+        /// <value>
+        /// The blend.
+        /// </value>
         public BlendMode Blend
         {
             get => _layer.Blend;
@@ -110,11 +147,14 @@ namespace SlimViews.DataObjects
         }
 
         /// <summary>
-        ///     Gets or sets whether this is the layer new strokes/shapes go to. Setting <c>true</c> calls
-        ///     <see cref="LayerDocumentController.SetActiveLayer" />; setting <c>false</c> directly is a no-op -
-        ///     a layer stack always has exactly one active layer (or none), so "deactivate" only happens by
-        ///     activating something else.
+        /// Gets or sets whether this is the layer new strokes/shapes go to. Setting <c>true</c> calls
+        /// <see cref="LayerDocumentController.SetActiveLayer" />; setting <c>false</c> directly is a no-op -
+        /// a layer stack always has exactly one active layer (or none), so "deactivate" only happens by
+        /// activating something else.
         /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is active; otherwise, <c>false</c>.
+        /// </value>
         public bool IsActive
         {
             get => _controller.ActiveLayerId == Id;
@@ -124,7 +164,12 @@ namespace SlimViews.DataObjects
             }
         }
 
-        /// <summary>Gets the small preview image shown in the row, or null while none is available (see remarks).</summary>
+        /// <summary>
+        /// Gets the small preview image shown in the row, or null while none is available (see remarks).
+        /// </summary>
+        /// <value>
+        /// The thumbnail.
+        /// </value>
         public BitmapSource? Thumbnail { get; private set; }
 
         /// <summary>
@@ -140,7 +185,9 @@ namespace SlimViews.DataObjects
             RefreshThumbnail();
         }
 
-        /// <summary>Re-raises PropertyChanged for <see cref="IsActive" />. Call from <c>ActiveLayerChanged</c>.</summary>
+        /// <summary>
+        /// Re-raises PropertyChanged for <see cref="IsActive" />. Call from <c>ActiveLayerChanged</c>.
+        /// </summary>
         public void RefreshIsActive() => OnPropertyChanged(nameof(IsActive));
 
         /// <summary>

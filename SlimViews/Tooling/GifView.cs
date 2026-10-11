@@ -135,7 +135,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Path where individual frames are extracted to.
         /// </summary>
-        private string? ImageExportPath => Path.Combine(OutputPath, ViewResources.ImagesPath);
+        private string ImageExportPath => Path.Combine(OutputPath, ViewResources.ImagesPath);
 
         /// <summary>
         ///     Path where new GIF previews are generated.

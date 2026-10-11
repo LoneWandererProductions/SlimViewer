@@ -181,7 +181,7 @@ namespace SlimViews
         private void UpdateActiveLayerGating()
         {
             var isRaster = Layers is null
-                           || Layers.ActiveLayerId is { } id && Layers.Document.FindLayer(id) is RasterLayer;
+                           || (Layers.ActiveLayerId is { } id && Layers.Document.FindLayer(id) is RasterLayer);
 
             MyDrawingState.IsActiveLayerRaster = isRaster;
 
@@ -222,6 +222,12 @@ namespace SlimViews
             Image.BitmapImage = flattened.ToBitmapSource();
         }
 
+        /// <summary>
+        /// Gets the history manager.
+        /// </summary>
+        /// <value>
+        /// The history manager.
+        /// </value>
         public ImageHistoryManager HistoryManager { get; }
 
         /// <summary>
@@ -242,7 +248,7 @@ namespace SlimViews
         /// <value>
         /// The command bindings.
         /// </value>
-        public Dictionary<Tuple<ModifierKeys, Key>, ICommand> CommandBindings { get; set; }
+        public Dictionary<Tuple<ModifierKeys, Key>, ICommand>? CommandBindings { get; set; }
 
         // --- 2. UI BINDING PROPERTIES (Proxies to Contexts) ---
 
@@ -602,7 +608,7 @@ namespace SlimViews
                 var isLast = stroke?.IsLast ?? true;
 
                 // Connect this batch to the previous one so batch boundaries don't leave gaps.
-                System.Drawing.Point? previous = isFirst ? null : _lastStrokePoint;
+                var previous = isFirst ? null : _lastStrokePoint;
                 _lastStrokePoint = isLast ? null : points[^1];
 
                 // The queue clones the current bitmap once, hands the clone to
@@ -712,7 +718,7 @@ namespace SlimViews
         /// factored out so the layered path above can run the exact same edit against just the active layer.
         /// </summary>
         private static Bitmap? ApplyFrameEdit(Bitmap bitmap, SelectionFrame frame, DrawTool tool, AreaMode mode,
-            string fillColor, string texName, string filterName)
+            string fillColor, string? texName, string? filterName)
         {
             if (tool == DrawTool.Eraser)
             {
@@ -755,19 +761,23 @@ namespace SlimViews
                 };
 
         /// <summary>
-        /// Turns a completed shape gesture into an <see cref="Shape"/> record for the active shape layer.
-        /// Mirrors <see cref="ApplyFrameEdit"/>'s mode handling, but produces data instead of pixels. Returns
+        /// Turns a completed shape gesture into an <see cref="Shape" /> record for the active shape layer.
+        /// Mirrors <see cref="ApplyFrameEdit" />'s mode handling, but produces data instead of pixels. Returns
         /// null for a gesture that has no shape-layer equivalent (currently: FreeForm, which stays a
         /// destructive-only tool since a hand-drawn stroke isn't one of the closed shape kinds).
         /// </summary>
-        /// <param name="filled">
-        /// Whether the shape's interior should be filled at all - see <see cref="DrawingState.ShapeFilled"/>.
-        /// When <c>false</c>, <paramref name="mode"/>/<paramref name="fillColor"/>/<paramref name="texName"/>/
-        /// <paramref name="filterName"/> are ignored and the shape is stroke-only, same as the open shapes
-        /// (Trace/Polyline) always are.
-        /// </param>
+        /// <param name="frame">The frame.</param>
+        /// <param name="mode">The mode.</param>
+        /// <param name="fillColor">Color of the fill.</param>
+        /// <param name="texName">Name of the tex.</param>
+        /// <param name="filterName">Name of the filter.</param>
+        /// <param name="filled">Whether the shape's interior should be filled at all - see <see cref="DrawingState.ShapeFilled" />.
+        /// When <c>false</c>, <paramref name="mode" />/<paramref name="fillColor" />/<paramref name="texName" />/
+        /// <paramref name="filterName" /> are ignored and the shape is stroke-only, same as the open shapes
+        /// (Trace/Polyline) always are.</param>
+        /// <returns></returns>
         private static Shape? BuildShapeFromFrame(SelectionFrame frame, AreaMode mode, string fillColor,
-            string texName, string filterName, bool filled)
+            string? texName, string? filterName, bool filled)
         {
             var fill = filled ? BuildFillFromMode(mode, fillColor, texName, filterName) : FillSpec.None;
             var stroke = new StrokeSpec(unchecked((uint)ColorTranslator.FromHtml(fillColor).ToArgb()), 1.0);
@@ -794,7 +804,15 @@ namespace SlimViews
             }
         }
 
-        private static FillSpec BuildFillFromMode(AreaMode mode, string fillColor, string texName, string filterName) =>
+        /// <summary>
+        /// Builds the fill from mode.
+        /// </summary>
+        /// <param name="mode">The mode.</param>
+        /// <param name="fillColor">Color of the fill.</param>
+        /// <param name="texName">Name of the tex.</param>
+        /// <param name="filterName">Name of the filter.</param>
+        /// <returns>The fill specification.</returns>
+        private static FillSpec BuildFillFromMode(AreaMode mode, string fillColor, string? texName, string? filterName) =>
             mode switch
             {
                 AreaMode.Fill => new SolidFill(unchecked((uint)ColorTranslator.FromHtml(fillColor).ToArgb())),
@@ -1153,6 +1171,15 @@ namespace SlimViews
             if (pathObj == null || !File.Exists(pathObj.FilePath)) return;
 
             _ = GenerateCbrViewAsync(pathObj);
+        }
+
+        /// <summary>
+        /// Generates the atlas action.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        internal void GenerateAtlasAction(object obj)
+        {
+            _ = GenerateTextureAtlasAsync();
         }
 
         /// <summary>
@@ -1551,6 +1578,8 @@ namespace SlimViews
         /// <summary>
         /// Generates the thumb view from a folder path.
         /// </summary>
+        /// <param name="folder">The folder.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task GenerateThumbView(string? folder)
         {
             FileContext.CurrentPath = folder;
@@ -1643,6 +1672,7 @@ namespace SlimViews
         /// Generates the CBR view.
         /// </summary>
         /// <param name="pathObj">The path object.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task GenerateCbrViewAsync(PathObject? pathObj)
         {
             if (pathObj == null) return;
@@ -1655,6 +1685,17 @@ namespace SlimViews
 
             GenerateView(file);
             await LoadThumbs(folder, file);
+        }
+
+        /// <summary>
+        /// Generates the texture atlas asynchronous.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task GenerateTextureAtlasAsync()
+        {
+            if (FileContext.CurrentPath == null) return;
+
+            ImageProcessor.GenerateTextureAtlas(FileContext.CurrentPath);
         }
 
         /// <summary>

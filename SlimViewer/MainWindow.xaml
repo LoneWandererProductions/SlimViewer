@@ -125,8 +125,7 @@
                     <MenuItem Header="🔄 Refresh" Command="{Binding Commands.Refresh}"
                               IsEnabled="{Binding Path=Image.IsImageActive}" InputGestureText="F5"
                               ToolTip="Reload the current image" />
-                    <Separator />
-                    <MenuItem Header="❌ Close" Command="{Binding Commands.Close}" ToolTip="Close the application" />
+                    <Separator /><MenuItem Header="❌ Close" Command="{Binding Commands.Close}" ToolTip="Close the application" />
                 </MenuItem>
 
                 <MenuItem Header="👁️ View">
@@ -265,6 +264,7 @@
                               IsEnabled="{Binding Path=Image.IsImageActive}" ToolTip="Rotate image clockwise" />
                     <MenuItem Header="↺ Rotate -90°" Command="{Binding Commands.RotateBackward}"
                               IsEnabled="{Binding Path=Image.IsImageActive}" ToolTip="Rotate image counter-clockwise" />
+                    <MenuItem Header="🗂️ Generate Atlas" Command="{Binding Commands.GenerateAtlas}" ToolTip="Generate a texture atlas of the current opened folder." />
 
                     <Separator />
                     <MenuItem Header="☀️ Brighten" Command="{Binding Commands.Brighten}"

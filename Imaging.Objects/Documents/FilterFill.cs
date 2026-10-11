@@ -9,4 +9,4 @@
 namespace Imaging.Objects.Documents;
 
 /// <summary>A named filter of the imaging pipeline, applied to what is below the shape.</summary>
-public sealed record FilterFill(string Name) : FillSpec;
+public sealed record FilterFill(string? Name) : FillSpec;

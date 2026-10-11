@@ -510,7 +510,7 @@ namespace Common.Images
             ImageDct.Clear();
             ChkBox.Clear();
             Border.Clear();
-            Selection.Clear();
+            Selection?.Clear();
 
             // 4. Start the new task and track it
             _loadingTask = LoadImages(token);
@@ -593,7 +593,7 @@ namespace Common.Images
                 Border = new ConcurrentDictionary<int, Border>();
 
                 //needed because of Binding
-                Selection.Clear();
+                Selection?.Clear();
 
                 if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
