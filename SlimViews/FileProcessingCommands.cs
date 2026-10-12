@@ -204,7 +204,7 @@ namespace SlimViews
         {
             if (survivingIds == null) return -1;
 
-            var sorted = survivingIds.OrderBy(x => x).ToList();
+            var sorted = survivingIds.Order().ToList();
             if (sorted.Count == 0) return -1;
 
             foreach (var id in sorted)

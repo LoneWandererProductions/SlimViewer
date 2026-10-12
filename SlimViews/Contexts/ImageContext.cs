@@ -142,7 +142,7 @@ namespace SlimViews.Contexts
         /// </value>
         internal CustomImageFormat? CustomImageFormat { get; set; }
 
-        // Filters, textures, and processing
+        // --- Filters, textures, and processing ---
 
         /// <summary>
         /// Gets or sets the similarity.
@@ -171,7 +171,7 @@ namespace SlimViews.Contexts
             }
         }
 
-        // Display and zoom
+        // --- Display and zoom ---
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is image active.
@@ -181,7 +181,7 @@ namespace SlimViews.Contexts
         /// </value>
         public bool IsImageActive => HasImage;
 
-        // Cached flags
+        // --- Cached flags ---
 
         /// <summary>
         /// Gets a value indicating whether this instance has image.
@@ -191,7 +191,7 @@ namespace SlimViews.Contexts
         /// </value>
         public bool HasImage => Bitmap is { } || BitmapImage is { } || !string.IsNullOrEmpty(GifPath);
 
-        // Internal helpers
+        // --- Internal helpers ---
 
         /// <summary>
         /// Gets the information.

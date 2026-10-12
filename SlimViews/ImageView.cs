@@ -1036,7 +1036,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void NextAction(object obj)
         {
-            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
+            if (FileContext.Observer?.Any() != true) return;
 
             ChangeImage(Utility.GetNextElement(FileContext.CurrentId, GetNavigableKeys()));
             // Drive the thumbnail highlight/scroll from FileContext.CurrentId (now updated by ChangeImage)
@@ -1051,7 +1051,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void PreviousAction(object obj)
         {
-            if (FileContext.Observer == null || !FileContext.Observer.Any()) return;
+            if (FileContext.Observer == null || FileContext.Observer.Count == 0) return;
 
             ChangeImage(Utility.GetPreviousElement(FileContext.CurrentId, GetNavigableKeys()));
             // See NextAction: keep the thumbnail highlight/scroll anchored to the real current id.
@@ -1120,7 +1120,7 @@ namespace SlimViews
         /// <param name="obj">The object.</param>
         internal void ClearAction(object obj)
         {
-            if (FileContext.Observer != null && !FileContext.Observer.ContainsKey(FileContext.CurrentId)) return;
+            if (FileContext.Observer?.ContainsKey(FileContext.CurrentId) == false) return;
 
             UiState.Thumb?.RemoveSingleItem(FileContext.CurrentId);
             if (Count > 0) Count--;
@@ -1320,7 +1320,7 @@ namespace SlimViews
             if (!CanLoadFile(filePath)) return;
 
             // Filter out nulls if your files list contains them, or pass as-is if FileContext expects it
-            UpdateImageState(targetPath: filePath, newFiles: files.Where(f => f is { })!, customInfo: info);
+            UpdateImageState(targetPath: filePath, newFiles: files.Where(f => f is { }), customInfo: info);
         }
 
         /// <summary>
@@ -1369,7 +1369,7 @@ namespace SlimViews
 
                 try
                 {
-                    FileContext.CurrentPath = FileContext.Files.Any()
+                    FileContext.CurrentPath = FileContext.Files.Count != 0
                         ? Path.GetDirectoryName(FileContext.Files[0])
                         : string.Empty;
                 }

@@ -3,6 +3,7 @@
  * PROJECT:     SlimViewer
  * FILE:        ImageHistoryManager.cs
  * PURPOSE:     Histories the image changes, manages undo/redo, and safely replaces the active image in the UI.
+ *              An application-level manager tailored specifically to handling image edits in the UI.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 

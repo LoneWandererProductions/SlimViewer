@@ -29,15 +29,10 @@ namespace SlimViews.Tooling
     /// <inheritdoc />
     /// <summary>
     ///     ViewModel for comparing images. Handles paging through duplicates or similar images
-    ///     and provides observer groups for data binding in the Compare Window.
+    ///     and provides DuplicateGroups for data binding in the Compare Window.
     /// </summary>
     internal sealed class CompareView : ViewModelBase
     {
-        /// <summary>
-        ///     Image analysis helper for retrieving image details.
-        /// </summary>
-        private readonly ImageAnalysis _analysis = new();
-
         /// <summary>
         ///     Image comparer utility for finding duplicates or similar images.
         /// </summary>
@@ -90,23 +85,6 @@ namespace SlimViews.Tooling
         /// The thumb image clicked
         /// </summary>
         private DelegateCommand<object>? _thumbImageClicked;
-
-        /// <summary>
-        /// The page identifier to path
-        /// </summary>
-        private readonly Dictionary<int, string> _pageIdToPath = new();
-
-        /// <summary>
-        /// Observable collection of observer dictionaries for UI binding.
-        /// Each dictionary maps an item index to its file path.
-        /// </summary>
-        /// <value>
-        /// The observers.
-        /// </value>
-        public ObservableCollection<Dictionary<int, string>> Observers { get; } =
-            new ObservableCollection<Dictionary<int, string>>(
-                Enumerable.Repeat<Dictionary<int, string>>(null, 10).ToList()
-            );
 
         /// <summary>
         /// Gets or sets the current selected image information.
@@ -354,7 +332,7 @@ namespace SlimViews.Tooling
             for (var i = 0; i < 10; i++)
             {
                 List<string?>? groupPaths = _duplicates.ElementAtOrDefault(baseIndex + i);
-                if (groupPaths == null || !groupPaths.Any()) continue;
+                if (groupPaths == null || groupPaths.Count == 0) continue;
 
                 DuplicateGroups.Add(BuildGroupModel(groupPaths, i));
             }
@@ -373,7 +351,7 @@ namespace SlimViews.Tooling
             var groupModel = new DuplicateGroupModel
             {
                 GroupId = $"Group_{slotHint}",
-                NewName = Path.GetFileNameWithoutExtension(groupPaths.First()),
+                NewName = Path.GetFileNameWithoutExtension(groupPaths[0]),
                 SourcePaths = groupPaths
             };
 
@@ -488,26 +466,6 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Changes the currently displayed image for a given observer and item.
-        /// </summary>
-        /// <param name="itemId">Index of the item in the observer group.</param>
-        /// <param name="observerIndex">Observer group index (0-9).</param>
-        public void ChangeImage(int itemId, int observerIndex)
-        {
-            if (observerIndex < 0 || observerIndex >= Observers.Count)
-                return;
-
-            var dict = Observers[observerIndex];
-            if (dict?.ContainsKey(itemId) != true)
-                return;
-
-            var files = dict.Values.ToList();
-            var path = dict[itemId];
-
-            LoadImages(path, itemId, files);
-        }
-
-        /// <summary>
         /// Deletes the group asynchronous.
         /// </summary>
         /// <param name="group">The group.</param>
@@ -518,7 +476,7 @@ namespace SlimViews.Tooling
             try
             {
                 // Release the UI lock if the currently previewed image is in this group
-                if (group.Images.Values.Contains(SelectedImagePath))
+                if (group.Images.ContainsValue(SelectedImagePath))
                 {
                     SelectedImagePath = null;
                     await Task.Yield(); // Give WPF a tick to let go
@@ -723,21 +681,6 @@ namespace SlimViews.Tooling
             {
                 IsBusy = false;
             }
-        }
-
-        /// <summary>
-        ///     Loads image details and updates the ImageView.
-        /// </summary>
-        /// <param name="path">Path of the selected image.</param>
-        /// <param name="itemId">Index of the item in the group.</param>
-        /// <param name="files">List of file paths in the current observer group.</param>
-        private void LoadImages(string path, int itemId, List<string> files)
-        {
-            var cache = _analysis.GetImageDetails(files);
-            if (cache == null)
-                return;
-
-            var details = cache[itemId];
         }
 
         /// <summary>

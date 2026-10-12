@@ -11,13 +11,21 @@ using ViewModel;
 namespace SlimViews.DataObjects
 {
     /// <summary>
-    ///     Represents a single file in the rename preview grid.
-    ///     Allows the user to see the "Before" and "After" state without touching the hard drive.
+    /// Represents a single file in the rename preview grid.
+    /// Allows the user to see the "Before" and "After" state without touching the hard drive.
     /// </summary>
+    /// <seealso cref="ViewModel.ViewModelBase" />
     public class PreviewItem : ViewModelBase
     {
-        private string _newName;
-        private string _status;
+        /// <summary>
+        /// The new name
+        /// </summary>
+        private string? _newName;
+
+        /// <summary>
+        /// The status
+        /// </summary>
+        private string? _status;
 
         /// <summary>
         ///     Gets or sets the internal ID from the observer dictionary.
@@ -32,13 +40,13 @@ namespace SlimViews.DataObjects
         /// <summary>
         ///     Gets or sets the original file name (without directory).
         /// </summary>
-        public string OriginalName { get; set; }
+        public string? OriginalName { get; set; }
 
         /// <summary>
         ///     Gets or sets the predicted new file name.
         ///     Updates automatically in the UI when changed.
         /// </summary>
-        public string NewName
+        public string? NewName
         {
             get => _newName;
             set => SetProperty(ref _newName, value, nameof(NewName));
@@ -47,7 +55,7 @@ namespace SlimViews.DataObjects
         /// <summary>
         ///     Gets or sets the commit status (e.g., "Pending", "Success", "Failed").
         /// </summary>
-        public string Status
+        public string? Status
         {
             get => _status;
             set => SetProperty(ref _status, value, nameof(Status));

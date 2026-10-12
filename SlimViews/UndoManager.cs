@@ -3,6 +3,7 @@
  * PROJECT:     SlimViewer
  * FILE:        UndoManager.cs
  * PURPOSE:     Simple Undo/Redo manager for image editing operations, using LinkedLists to maintain a history of states.
+ *              A reusable, generic data structure for maintaining state history.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
@@ -78,7 +79,7 @@ namespace SlimViews
         /// Moves back one step. Returns the previous state.
         /// </summary>
         /// <param name="currentState">State of the current.</param>
-        /// <returns></returns>
+        /// <returns>Previous state.</returns>
         public T Undo(T currentState)
         {
             if (!CanUndo) return currentState;
@@ -97,7 +98,7 @@ namespace SlimViews
         /// Moves forward one step. Returns the next state.
         /// </summary>
         /// <param name="currentState">State of the current.</param>
-        /// <returns></returns>
+        /// <returns>Next state.</returns>
         public T Redo(T currentState)
         {
             if (!CanRedo) return currentState;

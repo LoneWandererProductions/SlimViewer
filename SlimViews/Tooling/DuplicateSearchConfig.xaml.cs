@@ -61,9 +61,11 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Handles the Click event of the "Add Folder" button - opens the app's own themed
-        ///     folder picker (the same one used everywhere else) rather than a raw native dialog.
+        /// Handles the Click event of the "Add Folder" button - opens the app's own themed
+        /// folder picker (the same one used everywhere else) rather than a raw native dialog.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             var startFrom = Folders.Count > 0 ? Folders[^1] : string.Empty;
@@ -78,8 +80,10 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Handles the Click event of the "Remove Selected" button.
+        /// Handles the Click event of the "Remove Selected" button.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void RemoveFolder_Click(object sender, RoutedEventArgs e)
         {
             if (FolderListBox.SelectedItem is string selected)
@@ -89,10 +93,12 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Enables/disables the similarity slider based on which mode is selected. Also fires
-        ///     during InitializeComponent before ExactRadio/SimilarRadio/SimilarityPanel are fully
-        ///     wired up, so it guards against that with a null check.
+        /// Enables/disables the similarity slider based on which mode is selected. Also fires
+        /// during InitializeComponent before ExactRadio/SimilarRadio/SimilarityPanel are fully
+        /// wired up, so it guards against that with a null check.
         /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void ModeChanged(object sender, RoutedEventArgs e)
         {
             if (SimilarityPanel == null || SimilarRadio == null) return;
@@ -101,8 +107,10 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Keeps the percentage label in sync with the slider as the user drags it.
+        /// Keeps the percentage label in sync with the slider as the user drags it.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedPropertyChangedEventArgs{System.Double}"/> instance containing the event data.</param>
         private void SimilaritySlider_ValueChanged(object sender,
             RoutedPropertyChangedEventArgs<double> e)
         {
@@ -112,9 +120,11 @@ namespace SlimViews.Tooling
         }
 
         /// <summary>
-        ///     Handles the Click event of the "Search" button: validates at least one folder is
-        ///     selected, captures the final settings, and closes the dialog with a positive result.
+        /// Handles the Click event of the "Search" button: validates at least one folder is
+        /// selected, captures the final settings, and closes the dialog with a positive result.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Search_Click(object sender, RoutedEventArgs e)
         {
             if (Folders.Count == 0)

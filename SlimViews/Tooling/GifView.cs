@@ -526,7 +526,7 @@ namespace SlimViews.Tooling
             if (pathObj == null) return;
 
             // Filter valid selections
-            if (Thumbnail.Selection == null || Thumbnail.Selection.IsEmpty) return;
+            if (Thumbnail.Selection?.IsEmpty != false) return;
 
             // 1. Get Sorted Paths (Strings)
             var selectedFiles = Thumbnail.Selection.Keys
@@ -535,7 +535,7 @@ namespace SlimViews.Tooling
                 .ToList()
                 .PathSort();
 
-            if (selectedFiles == null || !selectedFiles.Any()) return;
+            if (selectedFiles == null || selectedFiles.Count == 0) return;
 
             IsWorking = true;
             try
@@ -556,9 +556,9 @@ namespace SlimViews.Tooling
 
                             if (!kvp.Equals(default(KeyValuePair<int, string>)))
                             {
-                                if (_delays.ContainsKey(kvp.Key))
+                                if (_delays.TryGetValue(kvp.Key, out int value))
                                 {
-                                    delayMs = _delays[kvp.Key];
+                                    delayMs = value;
                                 }
                             }
 

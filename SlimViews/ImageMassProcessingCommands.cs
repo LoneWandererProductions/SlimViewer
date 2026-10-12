@@ -32,8 +32,7 @@ namespace SlimViews
         internal void FolderConvertWindow(ImageView owner)
         {
             SlimViewerRegister.ResetConvert();
-
-            var converterWindow = InitDialog<Converter>(owner, modal: true);
+            _ = InitDialog<Converter>(owner, modal: true);
 
             if (!SlimViewerRegister.IsPathsSet)
             {
@@ -51,7 +50,7 @@ namespace SlimViews
         internal void ScaleWindow(ImageView owner)
         {
             SlimViewerRegister.ResetScaling();
-            var scaleWindow = InitDialog<Scale>(owner, modal: true);
+            _ = InitDialog<Scale>(owner, modal: true);
 
             owner.Image.Bitmap = ImageProcessor.BitmapScaling(owner.Image.Bitmap, SlimViewerRegister.Scaling);
             owner.Image.Bitmap = ImageProcessor.RotateImage(owner.Image.Bitmap, SlimViewerRegister.Degree);

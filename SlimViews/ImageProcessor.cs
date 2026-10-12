@@ -86,7 +86,7 @@ namespace SlimViews
         }
 
         /// <summary>
-        /// Generates a texture atlas from all images in a specified folder (capped at 200 files), 
+        /// Generates a texture atlas from all images in a specified folder (capped at 400 files),
         /// handles varying image sizes, and saves it automatically inside the source folder.
         /// </summary>
         /// <param name="folderPath">The folder containing the source images.</param>
@@ -104,9 +104,9 @@ namespace SlimViews
                 return false;
             }
 
-            if (files.Count > 300)
+            if (files.Count > 400)
             {
-                files = files.Take(200).ToList();
+                files = files.Take(400).ToList();
             }
 
             var bitmaps = new List<Bitmap>();
@@ -257,7 +257,7 @@ namespace SlimViews
         internal static async Task GenerateExportAsync(string? informationOne, string? informationTwo, string? colorOne,
             string? colorTwo, string? similarity, Bitmap? difference)
         {
-            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenTxt, null!);
+            var pathObj = DialogHandler.HandleFileSave(ViewResources.FileOpenTxt, null);
 
             if (pathObj == null) return;
 
