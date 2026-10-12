@@ -50,7 +50,9 @@ namespace Core.MemoryLog
         /// <summary>
         /// Prevents a default instance of the <see cref="InMemoryLogger"/> class from being created.
         /// </summary>
-        private InMemoryLogger() : this(1000) { }
+        private InMemoryLogger() : this(1000)
+        {
+        }
 
         /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>

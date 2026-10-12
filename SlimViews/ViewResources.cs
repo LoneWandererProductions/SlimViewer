@@ -64,7 +64,7 @@ namespace SlimViews
 
             foreach (var (label, exts) in knownGroups)
             {
-                List<string?> present =
+                var present =
                     exts.Where(e => extensions.Contains(e, StringComparer.OrdinalIgnoreCase)).ToList();
                 if (present.Count == 0) continue;
 

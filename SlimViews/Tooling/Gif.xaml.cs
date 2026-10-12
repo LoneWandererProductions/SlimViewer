@@ -32,7 +32,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     The view
         /// </summary>
-        private GifView _view;
+        private GifView? _view;
 
         /// <summary>
         /// Gets or sets the initial file path.
@@ -68,17 +68,7 @@ namespace SlimViews.Tooling
         /// <param name="itemId">The <see cref="ImageEventArgs" /> instance containing the event data.</param>
         private void Thumb_ImageClicked(object sender, ImageEventArgs itemId)
         {
-            _view.ChangeImage(itemId.Id);
-        }
-
-        /// <summary>
-        /// Called when [close click].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void OnCloseClick(object sender, RoutedEventArgs e)
-        {
-            RequestCloseAction?.Invoke(); // ask command class to close
+            _view?.ChangeImage(itemId.Id);
         }
     }
 }

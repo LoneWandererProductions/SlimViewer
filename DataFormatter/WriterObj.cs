@@ -1,4 +1,12 @@
-﻿/*
+/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     DataFormatter
+ * FILE:        WriterObj.cs
+ * PURPOSE:     Your file purpose here
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+/*
  * PROJECT:     DataFormatter
  * FILE:        DataFormatter/WriterObj.cs
  * PURPOSE:     A basic obj File writer to match ReaderObj.

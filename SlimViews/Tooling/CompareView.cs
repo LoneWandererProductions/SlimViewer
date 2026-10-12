@@ -113,7 +113,7 @@ namespace SlimViews.Tooling
         /// <summary>
         /// The image view
         /// </summary>
-        private ImageView _imageView;
+        private ImageView? _imageView;
 
         /// <summary>
         /// Gets or sets the status text.

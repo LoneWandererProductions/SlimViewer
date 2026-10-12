@@ -254,18 +254,5 @@ namespace SlimViews
 
             return window;
         }
-
-        /// <summary>
-        /// Close all registered subwindows safely.
-        /// </summary>
-        internal void CloseAllSubWindows()
-        {
-            foreach (var w in _subWindows.ToList())
-            {
-                if (w.IsLoaded) w.Close();
-            }
-
-            _subWindows.Clear();
-        }
     }
 }

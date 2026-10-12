@@ -40,6 +40,7 @@ namespace SlimViews.Tooling
         /// <summary>
         ///     Initializes a new instance of the <see cref="T:SlimViews.Rename" /> class.
         /// </summary>
+        /// <param name="owner">The owner window.</param>
         /// <param name="observer">The Dictionary of files.</param>
         public Rename(ImageView? owner, Dictionary<int, string> observer)
         {

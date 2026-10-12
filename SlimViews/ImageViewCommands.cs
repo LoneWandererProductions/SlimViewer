@@ -485,10 +485,10 @@ namespace SlimViews
             DisableLayers = new DelegateCommand<object>(_ => owner.DisableLayers(), CanRun);
 
             SelectedPoint = new AsyncDelegateCommand<IReadOnlyList<Point>>(owner.SelectedPointAction, CanRun,
-                ex => InMemoryLogger.Instance.Log(Core.MemoryLog.LogLevel.Warning, "Error in SelectedPoint",
+                ex => InMemoryLogger.Instance.Log(LogLevel.Warning, "Error in SelectedPoint",
                     libraryName: nameof(SelectedPoint), exception: ex));
             SelectedFrame = new AsyncDelegateCommand<SelectionFrame>(owner.SelectedFrameAction, CanRun,
-                ex => InMemoryLogger.Instance.Log(Core.MemoryLog.LogLevel.Warning, "Error in SelectedFrame",
+                ex => InMemoryLogger.Instance.Log(LogLevel.Warning, "Error in SelectedFrame",
                     libraryName: nameof(SelectedFrame), exception: ex));
 
             // ---- UI / direct owner commands ----

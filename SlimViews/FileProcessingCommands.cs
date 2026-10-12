@@ -222,7 +222,7 @@ namespace SlimViews
         /// <param name="owner">The owner.</param>
         internal async Task DeleteAsync(ImageView? owner)
         {
-            if (owner?.UiState == null || owner.FileContext?.Observer == null)
+            if (owner?.UiState == null || owner.FileContext.Observer == null)
                 return;
 
             var pathsToDelete = new List<string?>();
@@ -238,7 +238,9 @@ namespace SlimViews
             else
             {
                 // Snapshot the keys to avoid "Collection Modified" errors
-                var selectedIds = owner.UiState.Thumb.Selection.Keys.ToArray();
+                var selectedIds = owner.UiState.Thumb?.Selection.Keys.ToArray();
+                if (selectedIds == null) return;
+
                 foreach (var id in selectedIds)
                 {
                     if (owner.FileContext.Observer.TryGetValue(id, out var path))

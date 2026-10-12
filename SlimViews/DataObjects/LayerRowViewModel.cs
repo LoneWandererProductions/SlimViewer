@@ -84,7 +84,7 @@ namespace SlimViews.DataObjects
         /// <summary>
         /// Gets or sets the display name. Setting commits an undoable <see cref="SetLayerPropertiesCommand" />.
         /// </summary>
-        public string Name
+        public string? Name
         {
             get => _layer.Name;
             set

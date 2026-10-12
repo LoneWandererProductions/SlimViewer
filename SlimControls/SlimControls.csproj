@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common.Controls\Common.Controls.csproj" />
-    <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
-    <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
-    <ProjectReference Include="..\Imaging\Imaging.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Common.Controls\Common.Controls.csproj" />
+        <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
+        <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
+        <ProjectReference Include="..\Imaging\Imaging.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="DrawingToolBarControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="DrawingToolBarControl.xaml.cs">
+            <SubType>Code</SubType>
+        </Compile>
+    </ItemGroup>
 
 </Project>

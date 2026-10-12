@@ -234,7 +234,7 @@ namespace SlimViews.Tooling
         /// <value>
         ///     The observer.
         /// </value>
-        public ConcurrentDictionary<int, string?>? Observer
+        public ConcurrentDictionary<int, string?> Observer
         {
             get => _observer;
             set

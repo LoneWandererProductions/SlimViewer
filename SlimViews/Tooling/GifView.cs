@@ -421,11 +421,11 @@ namespace SlimViews.Tooling
 
                 // 4. Scan for Resulting Frames (IO Bound)
                 // We scan the folder to verify generation and populate the list
-                List<string?>? fileList = await Task.Run(() =>
+                var fileList = await Task.Run(() =>
                         FileHandleSearch.GetFilesByExtensionFullPath(ImageExportPath, ImagingResources.JpgExt, false),
                     token);
 
-                if (fileList == null || fileList.Count == 0)
+                if (fileList.Count == 0)
                 {
                     Information = "No frames extracted.";
                     return;
@@ -556,7 +556,7 @@ namespace SlimViews.Tooling
 
                             if (!kvp.Equals(default(KeyValuePair<int, string>)))
                             {
-                                if (_delays.TryGetValue(kvp.Key, out int value))
+                                if (_delays.TryGetValue(kvp.Key, out var value))
                                 {
                                     delayMs = value;
                                 }

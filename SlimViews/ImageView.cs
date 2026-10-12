@@ -812,7 +812,8 @@ namespace SlimViews
         /// <param name="texName">Name of the tex.</param>
         /// <param name="filterName">Name of the filter.</param>
         /// <returns>The fill specification.</returns>
-        private static FillSpec BuildFillFromMode(AreaMode mode, string fillColor, string? texName, string? filterName) =>
+        private static FillSpec
+            BuildFillFromMode(AreaMode mode, string fillColor, string? texName, string? filterName) =>
             mode switch
             {
                 AreaMode.Fill => new SolidFill(unchecked((uint)ColorTranslator.FromHtml(fillColor).ToArgb())),
@@ -1292,7 +1293,7 @@ namespace SlimViews
         /// Changes the image.
         /// </summary>
         /// <param name="files">The files.</param>
-        public void ChangeImage(IEnumerable<string?> files)
+        public void ChangeImage(IEnumerable<string?>? files)
         {
             UpdateImageState(newFiles: files);
         }
@@ -1357,7 +1358,7 @@ namespace SlimViews
         /// <param name="newFiles">The new files.</param>
         /// <param name="customInfo">The custom information.</param>
         private void UpdateImageState(string? targetPath = null, int? targetId = null,
-            IEnumerable<string>? newFiles = null, string? customInfo = null)
+            IEnumerable<string?>? newFiles = null, string? customInfo = null)
         {
             // ==========================================
             // PHASE 1: Update File Context & Thumbnails
