@@ -12,6 +12,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 namespace DataFormatter
 {
     /// <summary>
@@ -25,7 +26,7 @@ namespace DataFormatter
         /// <param name="file">The file.</param>
         /// <param name="sep">The sep.</param>
         /// <returns>Csv file as list.</returns>
-        public static List<List<string>> ReadCsv(string file, char sep) => CsvHandler.ReadCsv(file, sep);
+        public static List<List<string>>? ReadCsv(string file, char sep) => CsvHandler.ReadCsv(file, sep);
 
         /// <summary>
         /// Writes the CSV.
@@ -33,7 +34,7 @@ namespace DataFormatter
         /// <param name="file">The file.</param>
         /// <param name="data">The data.</param>
         /// <param name="sep">The sep.</param>
-        public static void WriteCsv(string file, IEnumerable<List<string>> data, string sep) =>
+        public static void WriteCsv(string file, IEnumerable<List<string>>? data, string sep) =>
             CsvHandler.WriteCsv(file, data, sep);
 
         /// <summary>

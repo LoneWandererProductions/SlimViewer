@@ -9,7 +9,6 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
@@ -51,9 +50,7 @@ namespace Core.MemoryLog
         /// <summary>
         /// Prevents a default instance of the <see cref="InMemoryLogger"/> class from being created.
         /// </summary>
-        private InMemoryLogger() : this(1000)
-        {
-        }
+        private InMemoryLogger() : this(1000) { }
 
         /// <inheritdoc cref="IInMemoryLogger" />
         /// <summary>
@@ -63,18 +60,9 @@ namespace Core.MemoryLog
         public LogLevel LogLevel { get; set; }
 
         /// <inheritdoc />
-        /// <summary>
-        /// Gets or sets a value indicating whether [enable stack trace].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [enable stack trace]; otherwise, <c>false</c>.
-        /// </value>
-        public bool EnableStackTrace { get; set; }
+        public bool EnableStackTrace { get; set; } = false;
 
         /// <inheritdoc />
-        /// <summary>
-        /// Occurs when [log added].
-        /// </summary>
         public event EventHandler<LogEntry>? LogAdded;
 
         /// <summary>
@@ -107,10 +95,6 @@ namespace Core.MemoryLog
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// Core structured logging method.
-        /// Stores the original template and args without formatting.
-        /// </summary>
         public void Log(LogLevel level,
             string? message,
             string? libraryName = null,
@@ -155,9 +139,6 @@ namespace Core.MemoryLog
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// Default ILogger log (uses "ILogger" as library).
-        /// </summary>
         public void Log(LogLevel level, string? message, Exception? exception = null, params object[] args)
             => Log(
                 level,
@@ -339,7 +320,7 @@ namespace Core.MemoryLog
         {
             try
             {
-                return Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownLibrary";
+                return System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownLibrary";
             }
             catch
             {

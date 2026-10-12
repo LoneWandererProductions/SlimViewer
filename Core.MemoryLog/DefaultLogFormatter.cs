@@ -63,7 +63,7 @@ namespace Core.MemoryLog
                     _ => string.Empty
                 };
 
-                if (value is { }) parts.Add(value);
+                if (value != null) parts.Add(value);
             }
 
             var result = string.Join(" ", parts.Where(p => !string.IsNullOrEmpty(p)));
@@ -71,7 +71,7 @@ namespace Core.MemoryLog
             // Add exception or stack info if present
             if (!string.IsNullOrEmpty(entry.MethodName))
                 result += $"{Environment.NewLine}    at {entry.MethodName} in {entry.FileName}:{entry.LineNumber}";
-            if (entry.Exception is { })
+            if (entry.Exception != null)
                 result += $"{Environment.NewLine}    Exception: {entry.Exception}";
 
             return result;
@@ -85,14 +85,8 @@ namespace Core.MemoryLog
         /// <returns>Safe formatted message</returns>
         private static string SafeFormat(string? template, object[] args)
         {
-            try
-            {
-                return template is { } ? string.Format(template, args) : string.Empty;
-            }
-            catch
-            {
-                return template ?? string.Empty;
-            }
+            try { return template != null ? string.Format(template, args) : string.Empty; }
+            catch { return template ?? string.Empty; }
         }
     }
 }
